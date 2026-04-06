@@ -1,0 +1,447 @@
+import Link from "next/link";
+import type { PlanetaryBody } from "@/modules/astrology";
+import { Badge } from "@/components/ui/badge";
+import { buttonStyles } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Section } from "@/components/ui/section";
+import { type RemedyRecommendation } from "@/modules/remedies";
+import { getLabelForRemedyType } from "@/modules/report/components/remedy-presenter";
+import {
+  reportDisclosures,
+  type ChartReportReadyState,
+  type ChartReportState,
+} from "@/modules/report/service";
+
+function formatBody(body: PlanetaryBody) {
+  return body.charAt(0) + body.slice(1).toLowerCase();
+}
+
+function formatSign(sign: string) {
+  return sign.charAt(0) + sign.slice(1).toLowerCase();
+}
+
+function formatDateTime(value: string | null) {
+  if (!value) {
+    return "Not generated yet";
+  }
+
+  return new Date(value).toLocaleString("en-IN", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+}
+
+function ReportMetric({
+  label,
+  value,
+}: Readonly<{
+  label: string;
+  value: string;
+}>) {
+  return (
+    <div className="space-y-1 rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4">
+      <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+        {label}
+      </p>
+      <p className="text-[length:var(--font-size-body-md)] text-[color:var(--color-foreground)]">
+        {value}
+      </p>
+    </div>
+  );
+}
+
+function ReportSignalList({
+  signals,
+}: Readonly<{
+  signals: ChartReportReadyState["signals"];
+}>) {
+  return (
+    <div className="space-y-3">
+      {signals.map((signal) => (
+        <div
+          key={signal.key}
+          className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4"
+        >
+          <div className="flex flex-wrap items-center gap-3">
+            <p className="text-[length:var(--font-size-body-md)] text-[color:var(--color-foreground)]">
+              {signal.title}
+            </p>
+            <Badge tone="neutral">{signal.level}</Badge>
+          </div>
+          <p className="mt-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            {signal.rationale}
+          </p>
+          {signal.relatedBodies.length ? (
+            <p className="mt-3 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+              Related bodies: {signal.relatedBodies.map(formatBody).join(", ")}
+            </p>
+          ) : null}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function RemedyCard({
+  remedy,
+}: Readonly<{
+  remedy: RemedyRecommendation;
+}>) {
+  return (
+    <Card key={remedy.slug} interactive className="space-y-5">
+      <div className="flex flex-wrap items-center gap-3">
+        <Badge tone="accent">{getLabelForRemedyType(remedy.type)}</Badge>
+        <Badge tone="neutral">Approved Record</Badge>
+      </div>
+
+      <div className="space-y-3">
+        <h3
+          className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
+          style={{ letterSpacing: "var(--tracking-display)" }}
+        >
+          {remedy.title}
+        </h3>
+        <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+          {remedy.summary}
+        </p>
+      </div>
+
+      <div className="space-y-3 rounded-[var(--radius-xl)] border border-[rgba(215,187,131,0.18)] bg-[rgba(215,187,131,0.06)] px-4 py-4">
+        <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+          Why it appears here
+        </p>
+        <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-foreground)]">
+          {remedy.rationale}
+        </p>
+      </div>
+
+      {remedy.cautionNote ? (
+        <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+          {remedy.cautionNote}
+        </p>
+      ) : null}
+
+      {remedy.relatedProducts.length ? (
+        <div className="space-y-3">
+          <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+            Related Product Records
+          </p>
+          <div className="space-y-3">
+            {remedy.relatedProducts.map((product) => (
+              <Link
+                key={product.slug}
+                href={product.href}
+                className="block rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4 transition [transition-duration:var(--motion-duration-base)] hover:border-[color:var(--color-border-strong)] hover:bg-[rgba(255,255,255,0.04)]"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-foreground)]">
+                    {product.name}
+                  </p>
+                  <Badge tone="neutral">{product.categoryLabel}</Badge>
+                </div>
+                <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                  {product.summary}
+                </p>
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-3 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                  <span>{product.priceLabel}</span>
+                  <span>{product.relationshipNote}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            Related products are presented as optional catalog records only,
+            never as required purchases or guarantees.
+          </p>
+        </div>
+      ) : null}
+    </Card>
+  );
+}
+
+export function ChartReportPage({
+  report,
+}: Readonly<{
+  report: ChartReportState;
+}>) {
+  if (report.status === "empty") {
+    return (
+      <Section
+        eyebrow="Private Report"
+        title="Your first interpretation report will appear after chart generation."
+        description="Complete onboarding and store the initial natal chart first. The report layer depends on that persisted structured chart."
+        tone="transparent"
+        className="pt-0"
+      >
+        <Card className="space-y-5">
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            Once the birth profile and first chart are ready, this page will add
+            a calm explanation layer on top of the stored chart facts and map
+            approved remedies through deterministic rules.
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href="/dashboard/onboarding"
+              className={buttonStyles({ size: "lg" })}
+            >
+              Complete Onboarding
+            </Link>
+            <Link
+              href="/dashboard/chart"
+              className={buttonStyles({ size: "lg", tone: "secondary" })}
+            >
+              Review Chart
+            </Link>
+          </div>
+        </Card>
+      </Section>
+    );
+  }
+
+  const dominantBodies = report.overview.chart.summary.dominantBodies
+    .map(formatBody)
+    .join(", ");
+
+  return (
+    <Section
+      eyebrow="Private Report"
+      title="A calm first reading built on structured chart facts."
+      description="This report keeps the chart mathematics and remedy selection deterministic, while the explanation layer stays interpretive, premium, and carefully bounded."
+      tone="transparent"
+      className="pt-0"
+    >
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)]">
+        <Card tone="accent" className="relative overflow-hidden space-y-6">
+          <div className="pointer-events-none absolute right-[-10%] top-[-12%] h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(215,187,131,0.22)_0%,rgba(215,187,131,0)_70%)]" />
+          <div className="relative z-10 flex flex-wrap items-center gap-3">
+            <Badge tone="accent">Premium Report</Badge>
+            <Badge tone="neutral">{report.interpretation.providerKey}</Badge>
+          </div>
+
+          <div className="relative z-10 space-y-4">
+            <h2
+              className="max-w-3xl font-[family-name:var(--font-display)] text-[length:var(--font-size-title-lg)] text-[color:var(--color-foreground)]"
+              style={{ letterSpacing: "var(--tracking-display)" }}
+            >
+              {formatSign(report.overview.chart.ascendantSign)} rising with{" "}
+              {dominantBodies} carrying the clearest emphasis.
+            </h2>
+            <p className="max-w-3xl text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              {report.interpretation.summary}
+            </p>
+          </div>
+
+          <div className="relative z-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <ReportMetric
+              label="Ascendant"
+              value={formatSign(report.overview.chart.ascendantSign)}
+            />
+            <ReportMetric
+              label="Provider"
+              value={report.overview.chartRecord.providerKey}
+            />
+            <ReportMetric
+              label="Chart Generated"
+              value={formatDateTime(report.overview.chartRecord.generatedAtUtc)}
+            />
+            <ReportMetric
+              label="Report Language"
+              value={report.overview.preferredLanguageLabel}
+            />
+          </div>
+        </Card>
+
+        <Card className="space-y-5">
+          <div className="space-y-2">
+            <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+              Chart Foundations
+            </p>
+            <h2
+              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
+              style={{ letterSpacing: "var(--tracking-display)" }}
+            >
+              The stored chart remains the factual source of truth.
+            </h2>
+          </div>
+
+          <div className="space-y-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            <p>
+              Birth profile:{" "}
+              <span className="text-[color:var(--color-foreground)]">
+                {report.overview.birthProfile.label}
+              </span>
+            </p>
+            <p>
+              Birthplace:{" "}
+              <span className="text-[color:var(--color-foreground)]">
+                {report.overview.birthProfile.city}
+                {report.overview.birthProfile.region
+                  ? `, ${report.overview.birthProfile.region}`
+                  : ""}
+                {`, ${report.overview.birthProfile.country}`}
+              </span>
+            </p>
+            <p>
+              Timezone:{" "}
+              <span className="text-[color:var(--color-foreground)]">
+                {report.overview.birthProfile.timezone}
+              </span>
+            </p>
+            <p>
+              House system:{" "}
+              <span className="text-[color:var(--color-foreground)]">
+                {report.overview.chart.houseSystem === "WHOLE_SIGN"
+                  ? "Whole Sign"
+                  : "Placidus"}
+              </span>
+            </p>
+            <p>
+              Summary narrative:{" "}
+              <span className="text-[color:var(--color-foreground)]">
+                {report.overview.chart.summary.narrative}
+              </span>
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href="/dashboard/chart"
+              className={buttonStyles({ tone: "secondary", size: "lg" })}
+            >
+              View Structured Chart
+            </Link>
+            <Link
+              href="/dashboard/onboarding"
+              className={buttonStyles({ tone: "ghost", size: "lg" })}
+            >
+              Update Birth Details
+            </Link>
+          </div>
+        </Card>
+      </div>
+
+      <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+        <Card className="space-y-5">
+          <div className="space-y-2">
+            <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+              AI Interpretation
+            </p>
+            <h2
+              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
+              style={{ letterSpacing: "var(--tracking-display)" }}
+            >
+              Explanation stays interpretive, never computational.
+            </h2>
+          </div>
+
+          <div className="space-y-4">
+            {report.interpretation.sections.map((section) => (
+              <div
+                key={section.key}
+                className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-5 py-5"
+              >
+                <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                  {section.title}
+                </p>
+                <p className="mt-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                  {section.body}
+                </p>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        <Card className="space-y-5">
+          <div className="space-y-2">
+            <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+              Chart Signals
+            </p>
+            <h2
+              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
+              style={{ letterSpacing: "var(--tracking-display)" }}
+            >
+              Deterministic cues used for remedy matching.
+            </h2>
+          </div>
+
+          <ReportSignalList signals={report.signals} />
+        </Card>
+      </div>
+
+      <div className="mt-6 grid gap-6">
+        <Card className="space-y-5">
+          <div className="space-y-2">
+            <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+              Recommended Remedies
+            </p>
+            <h2
+              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
+              style={{ letterSpacing: "var(--tracking-display)" }}
+            >
+              Only approved records appear here.
+            </h2>
+          </div>
+
+          {report.remedies.length ? (
+            <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
+              {report.remedies.map((remedy) => (
+                <RemedyCard key={remedy.slug} remedy={remedy} />
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-5 py-5">
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                The chart report is ready, but no approved remedy records
+                matched the current signal set yet.
+              </p>
+            </div>
+          )}
+        </Card>
+      </div>
+
+      <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+        <Card className="space-y-5">
+          <div className="space-y-2">
+            <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+              Caution
+            </p>
+            <h2
+              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
+              style={{ letterSpacing: "var(--tracking-display)" }}
+            >
+              Read the interpretation as guidance, not certainty.
+            </h2>
+          </div>
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            {report.interpretation.caution}
+          </p>
+        </Card>
+
+        <Card className="space-y-5">
+          <div className="space-y-2">
+            <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+              Disclosures
+            </p>
+            <h2
+              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
+              style={{ letterSpacing: "var(--tracking-display)" }}
+            >
+              The boundaries of this first report page.
+            </h2>
+          </div>
+
+          <div className="space-y-3">
+            {reportDisclosures.map((line) => (
+              <p
+                key={line}
+                className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]"
+              >
+                {line}
+              </p>
+            ))}
+          </div>
+        </Card>
+      </div>
+    </Section>
+  );
+}

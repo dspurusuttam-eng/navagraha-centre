@@ -1,0 +1,70 @@
+import type { HTMLAttributes, ReactNode } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Container } from "@/components/ui/container";
+import { cn } from "@/lib/cn";
+
+type SectionTone = "default" | "muted" | "transparent";
+type SectionAlign = "left" | "center";
+
+const toneStyles: Record<SectionTone, string> = {
+  default: "py-[var(--space-12)] sm:py-[var(--space-14)]",
+  muted:
+    "py-[var(--space-12)] sm:py-[var(--space-14)] bg-[rgba(255,255,255,0.02)]",
+  transparent: "py-[var(--space-12)] sm:py-[var(--space-14)]",
+};
+
+export type SectionProps = HTMLAttributes<HTMLElement> & {
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+  align?: SectionAlign;
+  tone?: SectionTone;
+  contentClassName?: string;
+  children: ReactNode;
+};
+
+export function Section({
+  eyebrow,
+  title,
+  description,
+  align = "left",
+  tone = "default",
+  className,
+  contentClassName,
+  children,
+  ...props
+}: Readonly<SectionProps>) {
+  return (
+    <section className={cn(toneStyles[tone], className)} {...props}>
+      <Container className={contentClassName}>
+        {eyebrow || title || description ? (
+          <div
+            className={cn(
+              "mb-8 flex max-w-3xl flex-col gap-4 sm:mb-10",
+              align === "center" && "mx-auto items-center text-center"
+            )}
+          >
+            {eyebrow ? <Badge tone="accent">{eyebrow}</Badge> : null}
+            {title ? (
+              <h2
+                className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-lg)] text-[color:var(--color-foreground)]"
+                style={{
+                  letterSpacing: "var(--tracking-display)",
+                  lineHeight: "var(--line-height-tight)",
+                }}
+              >
+                {title}
+              </h2>
+            ) : null}
+            {description ? (
+              <p className="text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                {description}
+              </p>
+            ) : null}
+          </div>
+        ) : null}
+        {children}
+      </Container>
+    </section>
+  );
+}

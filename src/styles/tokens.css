@@ -1,0 +1,65 @@
+:root {
+  --color-surface: #090807;
+  --color-surface-elevated: #12100f;
+  --color-surface-floating: rgba(14, 12, 11, 0.82);
+  --color-panel: rgba(18, 16, 14, 0.88);
+  --color-panel-strong: rgba(28, 24, 19, 0.96);
+  --color-field: rgba(15, 13, 11, 0.92);
+  --color-border: rgba(215, 187, 131, 0.14);
+  --color-border-strong: rgba(215, 187, 131, 0.26);
+  --color-foreground: #f7efe4;
+  --color-muted: #c0b098;
+  --color-muted-soft: #94836d;
+  --color-accent: #d7bb83;
+  --color-accent-strong: #f2d6a0;
+  --color-accent-soft: rgba(215, 187, 131, 0.12);
+  --color-accent-ring: rgba(242, 214, 160, 0.28);
+  --color-accent-contrast: #171109;
+  --color-overlay: rgba(5, 4, 3, 0.56);
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3.5rem;
+  --space-14: 5rem;
+  --space-16: 6rem;
+
+  --radius-sm: 0.75rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.75rem;
+  --radius-2xl: 2.5rem;
+  --radius-3xl: 3rem;
+  --radius-pill: 999px;
+
+  --shadow-xs: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --shadow-sm: 0 10px 30px rgba(0, 0, 0, 0.12);
+  --shadow-md: 0 18px 50px rgba(0, 0, 0, 0.18);
+  --shadow-lg: 0 30px 90px rgba(0, 0, 0, 0.28);
+  --shadow-glow: 0 12px 45px rgba(215, 187, 131, 0.18);
+
+  --font-size-display-xl: clamp(3.5rem, 8vw, 6.75rem);
+  --font-size-display-lg: clamp(2.85rem, 6vw, 5rem);
+  --font-size-title-lg: clamp(1.8rem, 3vw, 2.7rem);
+  --font-size-title-md: clamp(1.4rem, 2.5vw, 1.9rem);
+  --font-size-body-lg: 1.125rem;
+  --font-size-body-md: 1rem;
+  --font-size-body-sm: 0.92rem;
+  --line-height-tight: 1.02;
+  --line-height-copy: 1.75;
+  --tracking-display: -0.045em;
+  --tracking-label: 0.24em;
+
+  --motion-duration-fast: 180ms;
+  --motion-duration-base: 280ms;
+  --motion-duration-slow: 520ms;
+  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --container-max: 78rem;
+}

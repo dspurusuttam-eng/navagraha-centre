@@ -1,0 +1,536 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ChartType {
+  NATAL
+  TRANSIT
+  COMPATIBILITY
+  SOLAR_RETURN
+}
+
+enum ChartStatus {
+  DRAFT
+  READY
+  ARCHIVED
+}
+
+enum ConsultationType {
+  PRIVATE_READING
+  COMPATIBILITY
+  BUSINESS_ASTROLOGY
+  REMEDY_GUIDANCE
+  FOLLOW_UP
+}
+
+enum ConsultationStatus {
+  REQUESTED
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+enum ConsultationSlotStatus {
+  OPEN
+  BOOKED
+  CANCELLED
+}
+
+enum ProductType {
+  PHYSICAL
+  DIGITAL
+  SERVICE
+}
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum ProductCategory {
+  RUDRAKSHA
+  MALAS
+  GEMSTONES
+  YANTRAS
+  IDOLS
+  MANTRA_REMEDIES
+}
+
+enum OrderStatus {
+  DRAFT
+  PENDING
+  PAID
+  FULFILLED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentProvider {
+  MANUAL_PLACEHOLDER
+  STRIPE
+}
+
+enum PaymentStatus {
+  NOT_STARTED
+  PENDING
+  AUTHORIZED
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum RemedyType {
+  MANTRA
+  RUDRAKSHA
+  MALA
+  GEMSTONE
+  YANTRA
+  PUJA
+  DONATION
+  FASTING
+  SPIRITUAL_DISCIPLINE
+}
+
+enum ArticleStatus {
+  DRAFT
+  REVIEW
+  PUBLISHED
+  ARCHIVED
+}
+
+enum AiPromptArea {
+  REPORT_INTERPRETATION
+}
+
+enum AiPromptVersionStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+model User {
+  id            String    @id
+  name          String
+  email         String
+  emailVerified Boolean
+  image         String?
+  createdAt     DateTime
+  updatedAt     DateTime
+  sessions      Session[]
+  accounts      Account[]
+
+  profile          Profile?
+  birthData        BirthData[]
+  charts           Chart[]
+  consultations    Consultation[]
+  orders           Order[]
+  authoredArticles Article[]
+  adminAssignments AdminRoleAssignment[]
+  auditEntries     AuditLog[]            @relation("AuditActor")
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
+}
+
+model Profile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  phone     String?
+  preferredLanguage String?
+  city      String?
+  region    String?
+  country   String?
+  timezone  String?
+  bio       String?
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profile")
+}
+
+model BirthData {
+  id        String   @id @default(cuid())
+  userId    String
+  label     String
+  birthDate String
+  birthTime String?
+  timezone  String
+  city      String
+  region    String?
+  country   String
+  latitude  Decimal? @db.Decimal(9, 6)
+  longitude Decimal? @db.Decimal(9, 6)
+  isPrimary Boolean  @default(false)
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  charts    Chart[]
+  consultations Consultation[]
+
+  @@index([userId, isPrimary])
+  @@map("birth_data")
+}
+
+model ConsultationPackage {
+  id              String         @id @default(cuid())
+  slug            String         @unique
+  type            ConsultationType
+  title           String
+  summary         String
+  description     String?
+  durationMinutes Int
+  priceFromMinor  Int?
+  currencyCode    String         @default("INR")
+  isFeatured      Boolean        @default(false)
+  isActive        Boolean        @default(true)
+  sortOrder       Int            @default(0)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  consultations   Consultation[]
+
+  @@index([isActive, sortOrder])
+  @@map("consultation_package")
+}
+
+model ConsultationSlot {
+  id           String                 @id @default(cuid())
+  startsAt     DateTime
+  endsAt       DateTime
+  timezone     String                 @default("Asia/Kolkata")
+  status       ConsultationSlotStatus @default(OPEN)
+  note         String?
+  createdAt    DateTime               @default(now())
+  updatedAt    DateTime               @updatedAt
+  consultation Consultation?
+
+  @@index([status, startsAt])
+  @@map("consultation_slot")
+}
+
+model Chart {
+  id                 String      @id @default(cuid())
+  userId             String
+  birthDataId        String
+  type               ChartType
+  status             ChartStatus @default(DRAFT)
+  providerKey        String      @default("deterministic-placeholder")
+  calculationVersion String?
+  chartPayload       Json?
+  generatedAt        DateTime?
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+  user               User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  birthData          BirthData   @relation(fields: [birthDataId], references: [id], onDelete: Cascade)
+
+  @@index([userId, type])
+  @@map("chart")
+}
+
+model Consultation {
+  id             String             @id @default(cuid())
+  userId         String
+  birthDataId    String?
+  packageId      String?
+  slotId         String?            @unique
+  type           ConsultationType
+  status         ConsultationStatus @default(REQUESTED)
+  confirmationCode String           @unique
+  astrologerName String             @default("Joy Prakash Sarmah")
+  serviceLabel   String
+  scheduledFor   DateTime?
+  scheduledEnd   DateTime?
+  durationMinutes Int?
+  clientTimezone String?
+  preferredLanguage String?
+  contactPhone   String?
+  topicFocus     String?
+  intakeSummary  String?
+  internalNotes  String?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  user           User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  birthData      BirthData?         @relation(fields: [birthDataId], references: [id], onDelete: SetNull)
+  package        ConsultationPackage? @relation(fields: [packageId], references: [id], onDelete: SetNull)
+  slot           ConsultationSlot?  @relation(fields: [slotId], references: [id], onDelete: SetNull)
+
+  @@index([userId, status])
+  @@index([status, scheduledFor])
+  @@map("consultation")
+}
+
+model Product {
+  id             String             @id @default(cuid())
+  slug           String             @unique
+  sku            String             @unique
+  name           String
+  summary        String
+  description    String?
+  category       ProductCategory
+  type           ProductType
+  status         ProductStatus      @default(DRAFT)
+  priceInMinor   Int?
+  currencyCode   String             @default("INR")
+  imageUrl       String?
+  badge          String?
+  materialLabel  String?
+  ritualFocus    String?
+  inventoryCount Int?
+  isFeatured     Boolean            @default(false)
+  sortOrder      Int                @default(0)
+  metadata       Json?
+  seoTitle       String?
+  seoDescription String?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  orderItems     OrderItem[]
+  remedyLinks    RemedyProductLink[]
+
+  @@index([status, category, sortOrder])
+  @@map("product")
+}
+
+model Order {
+  id                String          @id @default(cuid())
+  userId            String?
+  orderNumber       String          @unique
+  status            OrderStatus     @default(DRAFT)
+  paymentProvider   PaymentProvider @default(MANUAL_PLACEHOLDER)
+  paymentStatus     PaymentStatus   @default(NOT_STARTED)
+  checkoutReference String?         @unique
+  currencyCode      String          @default("INR")
+  subtotalAmount    Int             @default(0)
+  taxAmount         Int             @default(0)
+  shippingAmount    Int             @default(0)
+  totalAmount       Int             @default(0)
+  billingName       String?
+  customerEmail     String?
+  customerPhone     String?
+  billingTimezone   String?
+  notes             String?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  user              User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
+  items             OrderItem[]
+  paymentRecords    PaymentRecord[]
+
+  @@index([userId, status])
+  @@map("order")
+}
+
+model OrderItem {
+  id               String          @id @default(cuid())
+  orderId          String
+  productId        String?
+  titleSnapshot    String
+  skuSnapshot      String?
+  categorySnapshot ProductCategory?
+  unitAmount       Int             @default(0)
+  quantity         Int             @default(1)
+  createdAt        DateTime        @default(now())
+  order            Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product          Product?        @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+  @@map("order_item")
+}
+
+model PaymentRecord {
+  id                String          @id @default(cuid())
+  orderId           String
+  provider          PaymentProvider @default(MANUAL_PLACEHOLDER)
+  status            PaymentStatus   @default(NOT_STARTED)
+  amount            Int             @default(0)
+  currencyCode      String          @default("INR")
+  providerReference String?
+  redirectUrl       String?
+  metadata          Json?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  order             Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId, status])
+  @@map("payment_record")
+}
+
+model Remedy {
+  id           String              @id @default(cuid())
+  slug         String              @unique
+  title        String
+  summary      String
+  description  String?
+  type         RemedyType
+  cautionNote  String?
+  isFeatured   Boolean             @default(false)
+  publishedAt  DateTime?
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  productLinks RemedyProductLink[]
+
+  @@map("remedy")
+}
+
+model RemedyProductLink {
+  id               String   @id @default(cuid())
+  remedyId         String
+  productId        String
+  relationshipNote String?
+  sortOrder        Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  remedy           Remedy   @relation(fields: [remedyId], references: [id], onDelete: Cascade)
+  product          Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([remedyId, productId])
+  @@index([productId, sortOrder])
+  @@map("remedy_product_link")
+}
+
+model Article {
+  id             String        @id @default(cuid())
+  slug           String        @unique
+  title          String
+  excerpt        String
+  body           String?
+  status         ArticleStatus @default(DRAFT)
+  seoTitle       String?
+  seoDescription String?
+  publishedAt    DateTime?
+  authorId       String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  author         User?         @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  @@index([status, publishedAt])
+  @@map("article")
+}
+
+model AiPromptTemplate {
+  id              String          @id @default(cuid())
+  key             String          @unique
+  title           String
+  description     String?
+  area            AiPromptArea    @default(REPORT_INTERPRETATION)
+  activeVersionId String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  activeVersion   AiPromptVersion? @relation("PromptTemplateActiveVersion", fields: [activeVersionId], references: [id], onDelete: SetNull)
+  versions        AiPromptVersion[] @relation("PromptTemplateVersions")
+
+  @@map("ai_prompt_template")
+}
+
+model AiPromptVersion {
+  id                 String               @id @default(cuid())
+  templateId         String
+  version            Int
+  label              String
+  model              String?
+  systemPrompt       String
+  userPrompt         String
+  status             AiPromptVersionStatus @default(DRAFT)
+  releaseNotes       String?
+  activatedAt        DateTime?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  template           AiPromptTemplate     @relation("PromptTemplateVersions", fields: [templateId], references: [id], onDelete: Cascade)
+  activeForTemplates AiPromptTemplate[]   @relation("PromptTemplateActiveVersion")
+
+  @@unique([templateId, version])
+  @@index([templateId, status])
+  @@map("ai_prompt_version")
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  actorUserId String?
+  actorRoleKey String?
+  entityType  String
+  entityId    String
+  action      String
+  summary     String
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  actor       User?    @relation("AuditActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([entityType, entityId, createdAt])
+  @@index([actorUserId, createdAt])
+  @@map("audit_log")
+}
+
+model AdminRole {
+  id          String                @id @default(cuid())
+  key         String                @unique
+  name        String
+  description String?
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  assignments AdminRoleAssignment[]
+
+  @@map("admin_role")
+}
+
+model AdminRoleAssignment {
+  id        String    @id @default(cuid())
+  userId    String
+  roleId    String
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      AdminRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+  @@index([roleId])
+  @@map("admin_role_assignment")
+}
