@@ -24,6 +24,12 @@ const defaultPublicEnvironment = {
   observabilityEndpoint: "/api/observability/web-vitals",
 } as const;
 
+function toHttpsUrl(host: string) {
+  const normalizedHost = host.replace(/^https?:\/\//, "").replace(/\/+$/, "");
+
+  return normalizedHost ? `https://${normalizedHost}` : "";
+}
+
 function isValidUrl(value: string) {
   try {
     new URL(value);
@@ -77,10 +83,14 @@ function validateTrustedOrigins(
 }
 
 export function getPublicEnvironment(env: RawEnvironment = process.env) {
+  const configuredSiteUrl = getStringValue(env, "NEXT_PUBLIC_SITE_URL");
+  const productionHost =
+    getStringValue(env, "VERCEL_PROJECT_PRODUCTION_URL") ||
+    getStringValue(env, "VERCEL_URL");
+  const fallbackSiteUrl = productionHost ? toHttpsUrl(productionHost) : "";
+
   return {
-    siteUrl:
-      getStringValue(env, "NEXT_PUBLIC_SITE_URL") ||
-      defaultPublicEnvironment.siteUrl,
+    siteUrl: configuredSiteUrl || fallbackSiteUrl || defaultPublicEnvironment.siteUrl,
     siteName:
       getStringValue(env, "NEXT_PUBLIC_SITE_NAME") ||
       defaultPublicEnvironment.siteName,
