@@ -52,7 +52,7 @@ export function ShopCartPage() {
           </p>
           <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
             Browse the catalog, add spiritual support records thoughtfully, and
-            return here when you want to prepare a draft checkout.
+            return here when you want to prepare an order request.
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
@@ -80,8 +80,8 @@ export function ShopCartPage() {
                 Cart Lines
               </p>
               <p className="text-[length:var(--font-size-body-md)] text-[color:var(--color-muted)]">
-                Adjust quantities, remove records, or continue into the draft
-                checkout step.
+                Adjust quantities, remove records, or continue into the order
+                request step.
               </p>
             </div>
             <Button type="button" tone="ghost" size="sm" onClick={clearCart}>
@@ -159,11 +159,11 @@ export function ShopCartPage() {
         <Card className="space-y-5">
           <div className="space-y-2">
             <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-              Draft Checkout
+              Order Request
             </p>
             <p className="text-[length:var(--font-size-body-md)] text-[color:var(--color-muted)]">
-              This phase prepares the order and payment-ready records only. No
-              live payment capture is being attempted yet.
+              Share your details so the centre can review the order and confirm
+              the next step without pushing you into a rushed checkout.
             </p>
           </div>
 
@@ -280,7 +280,7 @@ export function ShopCartPage() {
             ) : null}
 
             <Button type="submit" size="lg" disabled={isPending}>
-              {isPending ? "Preparing Checkout..." : "Prepare Draft Checkout"}
+              {isPending ? "Saving Request..." : "Submit Order Request"}
             </Button>
           </form>
         </Card>
@@ -305,15 +305,15 @@ export function ShopCartPage() {
               </span>
             </p>
             <p>
-              Payment step:{" "}
+              Payment handling:{" "}
               <span className="text-[color:var(--color-foreground)]">
-                Prepared only
+                Confirmed separately
               </span>
             </p>
           </div>
           <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-            The current checkout abstraction stores a draft order and a
-            payment-ready record so a future gateway can be attached cleanly.
+            The order request is recorded here first so confirmation,
+            availability, and payment can be handled with clarity.
           </p>
         </Card>
 
@@ -330,7 +330,7 @@ export function ShopCartPage() {
 
             <div className="space-y-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
               <p>
-                Provider:{" "}
+                Handling:{" "}
                 <span className="text-[color:var(--color-foreground)]">
                   {state.checkout.paymentProviderLabel}
                 </span>

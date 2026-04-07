@@ -18,8 +18,8 @@ export default function NotFound() {
             This page is not part of the current NAVAGRAHA CENTRE path.
           </h1>
           <p className="max-w-2xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-            The requested route does not exist or is not available in this
-            phase.
+            The requested route does not exist or is not available on the
+            public website.
           </p>
         </div>
 

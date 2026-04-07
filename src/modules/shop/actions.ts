@@ -77,7 +77,7 @@ export async function prepareShopCheckout(
   if (!billingName) {
     return {
       status: "error",
-      message: "Add the billing name before preparing checkout.",
+      message: "Add the billing name before submitting the order request.",
       checkout: null,
     };
   }
@@ -85,7 +85,7 @@ export async function prepareShopCheckout(
   if (!customerEmail || !customerEmail.includes("@")) {
     return {
       status: "error",
-      message: "Add a valid email address before preparing checkout.",
+      message: "Add a valid email address before submitting the order request.",
       checkout: null,
     };
   }
@@ -114,7 +114,7 @@ export async function prepareShopCheckout(
     return {
       status: "success",
       message:
-        "Draft checkout prepared. The order and payment-ready record are now in place for a future payment adapter.",
+        "Your order request has been recorded. The centre can now review the details and confirm the next step.",
       checkout,
     };
   } catch (error) {
@@ -123,7 +123,7 @@ export async function prepareShopCheckout(
       message:
         error instanceof Error
           ? error.message
-          : "The shop checkout draft could not be prepared.",
+          : "The order request could not be prepared.",
       checkout: null,
     };
   }

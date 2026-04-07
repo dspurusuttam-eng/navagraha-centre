@@ -18,7 +18,7 @@ export default function AboutPage() {
       <PageHero {...aboutPage.hero} />
 
       <Section
-        description="The platform is intentionally shaped to feel precise, calm, and premium so trust can build without visual noise."
+        description="The public experience is shaped to feel precise, calm, and premium so trust can build without visual noise."
         eyebrow="Values"
         title="The brand is built around a quieter standard of spiritual presentation"
       >
@@ -49,7 +49,7 @@ export default function AboutPage() {
               "Dark premium palette with warmth",
               "Public trust shaped by clarity",
             ]}
-            description="This placeholder block stands in for future brand imagery while preserving a strong editorial rhythm across the page."
+            description="A restrained visual composition preserves the editorial rhythm of the page while keeping the brand language warm and composed."
             eyebrow="Brand Atmosphere"
             title="A premium spiritual website should feel composed before it feels complex"
           />
@@ -94,8 +94,8 @@ export default function AboutPage() {
               Explore the astrologer profile or move directly to inquiry.
             </h2>
             <p className="max-w-2xl text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              The public-facing site is designed to make the brand and the human
-              authority legible before any operational flows are added.
+              The public-facing site is designed to make the brand and the
+              human authority legible before a client moves into direct contact.
             </p>
           </div>
 

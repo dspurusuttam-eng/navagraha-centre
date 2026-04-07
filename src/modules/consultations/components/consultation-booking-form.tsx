@@ -211,9 +211,9 @@ export function ConsultationBookingForm({
           ) : (
             <div className="rounded-[var(--radius-2xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-5 py-5">
               <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                Joy Prakash Sarmah&apos;s next consultation slots have not been
-                opened yet. The flow is ready, but availability still needs to
-                be seeded or managed from the admin side.
+                Joy Prakash Sarmah&apos;s next consultation windows are not open
+                right now. Please check again shortly for the next release of
+                availability.
               </p>
             </div>
           )}
@@ -414,8 +414,8 @@ export function ConsultationBookingForm({
           </p>
           <div className="space-y-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
             <p>
-              This phase centers on a manual consultation workflow, not calendar
-              sync or automated CRM follow-up.
+              Consultations are reviewed manually so timing, context, and
+              follow-up stay clear and personal.
             </p>
             <p>
               The intake should clarify context, but it should not be used to

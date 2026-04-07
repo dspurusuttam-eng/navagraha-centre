@@ -44,11 +44,11 @@ export const homePage = {
     eyebrow: "Luxury Astrology House",
     title: "Calm, precise astrology for discerning modern lives.",
     description:
-      "NAVAGRAHA CENTRE is designed as a refined spiritual house where consultation, remedy guidance, and future commerce can feel grounded, premium, and responsibly framed from the first interaction.",
+      "NAVAGRAHA CENTRE is designed as a refined spiritual house where consultation, remedy guidance, editorial insight, and carefully presented products feel grounded, premium, and responsibly framed from the first interaction.",
     highlights: [
       "Public trust built around clear language and careful interpretation",
       "Joy Prakash Sarmah positioned as the visible consulting authority",
-      "Future remedies and commerce framed with restraint, never fear",
+      "Remedies and spiritual products framed with restraint, never fear",
     ],
     note: "Every public surface is written to feel premium and reassuring while staying transparent about what guidance can and cannot promise.",
     primaryAction: {
@@ -103,9 +103,9 @@ export const homePage = {
     {
       title: "Spiritual products",
       description:
-        "A future commerce layer for thoughtfully presented spiritual products and ritual objects.",
+        "Thoughtfully presented spiritual products and ritual objects chosen with restraint and context.",
       href: "/shop",
-      label: "Shop Teaser",
+      label: "Visit Shop",
     },
   ] satisfies MarketingCard[],
   remedyPrinciples: [
@@ -138,9 +138,9 @@ export const homePage = {
         "No. Remedies are described as spiritual supports and reflective practices, not certain outcomes.",
     },
     {
-      question: "Will the platform include products later?",
+      question: "Can visitors explore spiritual products here as well?",
       answer:
-        "Yes. The public website already holds space for a future shop focused on carefully presented spiritual products.",
+        "Yes. The public shop presents spiritual products with calm merchandising and clear, non-sensational language.",
     },
     {
       question: "Who leads the consultation authority?",
@@ -171,7 +171,7 @@ export const aboutPage = {
     highlights: [
       "Luxury presentation without occult cliche",
       "Careful communication that protects trust",
-      "Architecture shaped for future consultations, remedies, and commerce",
+      "Architecture shaped for consultations, remedies, and commerce with clear boundaries",
     ],
     note: "The intent is not to dramatize astrology, but to present it with precision, softness, and modern polish.",
     primaryAction: {
@@ -231,13 +231,13 @@ export const servicesPage = {
     eyebrow: "Services",
     title: "Services shaped for depth, discretion, and calm guidance.",
     description:
-      "The service architecture is designed to feel elevated and clearly segmented, so clients can understand the type of guidance they are seeking before any booking or operational workflow is introduced.",
+      "The service architecture is designed to feel elevated and clearly segmented, so clients can understand the type of guidance they are seeking before they reserve a session.",
     highlights: [
       "Private consultations for personal and professional transitions",
       "Compatibility and relationship-focused interpretation",
       "Remedy guidance framed with proportion and transparency",
     ],
-    note: "This phase introduces the public-facing service story only. Booking, billing, and operational workflows are intentionally left for later phases.",
+    note: "Each service is framed with clarity so clients can choose the right conversation before they commit to a session.",
     primaryAction: {
       href: "/consultation",
       label: "Book Consultation",
@@ -316,7 +316,7 @@ export const astrologerPage = {
       "Interpretation led by care, discretion, and tone",
       "Remedies framed as guidance, not guarantees",
     ],
-    note: "This page intentionally emphasizes approach and public trust. Approved biography details can be expanded later without changing the page structure.",
+    note: "This page emphasizes approach, public trust, and a measured consultation voice.",
     primaryAction: {
       href: "/consultation",
       label: "Book Consultation",
@@ -367,7 +367,7 @@ export const contactPage = {
   metadata: {
     title: "Contact NAVAGRAHA CENTRE",
     description:
-      "Contact NAVAGRAHA CENTRE for consultation inquiries, service questions, and future spiritual product interest.",
+      "Contact NAVAGRAHA CENTRE for consultation inquiries, service questions, and spiritual product interest.",
     path: "/contact",
     keywords: [
       "contact astrology consultation",
@@ -379,13 +379,13 @@ export const contactPage = {
     eyebrow: "Contact",
     title: "Begin the conversation with calm, clear expectations.",
     description:
-      "The contact experience is designed to feel composed and premium. Inquiries can be shaped around consultations, remedy questions, and future product interest without exposing visitors to noisy or overly transactional UX.",
+      "The contact experience is designed to feel composed and premium. Visitors can understand the right next step for consultations, remedy questions, and product interest without being pushed into noisy or overly transactional UX.",
     highlights: [
-      "Manual consultation flow can remain central in later operations phases",
+      "Clear next steps for consultation, product, and service questions",
       "Contact language stays calm, discreet, and trust-building",
-      "The current form block is intentionally a non-live placeholder",
+      "Every route keeps expectations explicit and measured",
     ],
-    note: "Live routing, notifications, and scheduling logic are intentionally not part of this phase.",
+    note: "The centre favors clear next steps, careful review, and direct human handling over noisy friction.",
     primaryAction: {
       href: "/services",
       label: "Review Services",
@@ -405,12 +405,12 @@ export const contactPage = {
     {
       title: "Remedy questions",
       description:
-        "Share context for remedy-related inquiries so future operations can respond with appropriate discretion.",
+        "Share context for remedy-related inquiries so the centre can respond with appropriate discretion.",
     },
     {
       title: "Shop and product interest",
       description:
-        "This route also holds space for future questions around spiritual products and related editorial commerce.",
+        "Use this route when you need guidance on product fit, ritual context, or catalog selection.",
     },
   ] satisfies MarketingCard[],
 };

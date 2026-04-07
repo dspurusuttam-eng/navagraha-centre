@@ -53,7 +53,7 @@ export default function ConsultationPage() {
           label: "View Astrologer Profile",
           tone: "secondary",
         }}
-        supportTitle="Booking Foundation"
+        supportTitle="Booking Details"
       />
 
       <Section
@@ -104,7 +104,7 @@ export default function ConsultationPage() {
       <Section
         eyebrow="How It Works"
         title="The flow stays manual, explicit, and easy to follow."
-        description="This phase keeps the consultation system intentionally narrow: no complex sync, no CRM sprawl, and no hidden timezone assumptions."
+        description="The consultation path stays human-led, avoids hidden complexity, and keeps timezone handling explicit."
         tone="muted"
       >
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">

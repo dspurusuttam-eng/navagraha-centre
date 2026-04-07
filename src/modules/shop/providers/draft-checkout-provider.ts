@@ -25,7 +25,7 @@ function buildOrderNumber() {
 }
 
 const paymentProviderLabels: Record<PaymentProvider, string> = {
-  MANUAL_PLACEHOLDER: "Draft Checkout",
+  MANUAL_PLACEHOLDER: "Manual Review",
   STRIPE: "Stripe",
 };
 
@@ -192,7 +192,7 @@ export const draftShopCheckoutProvider: ShopCheckoutProvider = {
       paymentStatus: preparedOrder.paymentStatus,
       paymentStatusLabel: paymentStatusLabels[preparedOrder.paymentStatus],
       nextStep:
-        "The order and payment-ready record are prepared. A live payment adapter can be attached in the next commerce phase without reworking the catalog or cart flow.",
+        "The order request has been recorded. NAVAGRAHA CENTRE can confirm availability and the next step before any payment is requested.",
       items: preparedOrder.items.map((item) => {
         const product = curatedShopCatalog.find(
           (entry) => entry.slug === item.product?.slug

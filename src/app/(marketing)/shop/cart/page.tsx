@@ -6,11 +6,11 @@ import { ShopCartPage } from "@/modules/shop/components/shop-cart-page";
 export const metadata = buildPageMetadata({
   title: "Cart",
   description:
-    "Review the NAVAGRAHA CENTRE cart and prepare a draft checkout for spiritual support products.",
+    "Review the NAVAGRAHA CENTRE cart and submit an order request for spiritual support products.",
   path: "/shop/cart",
   keywords: [
     "spiritual product cart",
-    "draft checkout",
+    "order request",
     "premium remedy products",
   ],
 });
@@ -20,26 +20,26 @@ export default function ShopCartRoutePage() {
     <>
       <PageHero
         eyebrow="Cart"
-        title="A calm cart flow, prepared for future payment integration."
-        description="This step keeps the commerce journey explicit. You can review the selected products, preserve a premium presentation, and prepare the draft order without forcing a payment gateway into this phase."
+        title="Review your selections and send a clear order request."
+        description="This step keeps the commerce journey explicit. You can review selected products, preserve a premium presentation, and submit a manual order request without forcing a rushed payment flow."
         highlights={[
           "Saved cart state across the public shop",
-          "Draft checkout records created without live payment capture",
-          "Clear boundaries around what the current commerce phase does and does not do",
+          "Manual order requests created without hard-selling the next step",
+          "Clear boundaries around product review, confirmation, and payment",
         ]}
-        note="Products remain optional spiritual support records. The cart and checkout abstraction do not make hard claims about remedies, outcomes, or urgency."
+        note="Products remain optional spiritual support records. The cart does not make hard claims about remedies, outcomes, or urgency."
         primaryAction={{ href: "/shop", label: "Back To Shop" }}
         secondaryAction={{
           href: "/consultation",
           label: "Need Guidance First?",
         }}
-        supportTitle="Current Flow"
+        supportTitle="Order Review"
       />
 
       <Section
-        eyebrow="Checkout Preparation"
-        title="Review the cart and prepare the next commerce layer."
-        description="The order foundation and payment-ready records are created here, while live payment collection stays intentionally outside this phase."
+        eyebrow="Order Request"
+        title="Review the cart and request a manual follow-up."
+        description="The order is recorded clearly here so confirmation and payment can be handled with care."
       >
         <ShopCartPage />
       </Section>

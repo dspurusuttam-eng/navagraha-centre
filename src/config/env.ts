@@ -24,6 +24,10 @@ const defaultPublicEnvironment = {
   observabilityEndpoint: "/api/observability/web-vitals",
 } as const;
 
+const productionPublicEnvironment = {
+  siteUrl: "https://www.navagrahacentre.com",
+} as const;
+
 function toHttpsUrl(host: string) {
   const normalizedHost = host.replace(/^https?:\/\//, "").replace(/\/+$/, "");
 
@@ -82,15 +86,22 @@ function validateTrustedOrigins(
   }
 }
 
+function isVercelProduction(env: RawEnvironment) {
+  return getStringValue(env, "VERCEL_ENV") === "production";
+}
+
 export function getPublicEnvironment(env: RawEnvironment = process.env) {
   const configuredSiteUrl = getStringValue(env, "NEXT_PUBLIC_SITE_URL");
   const productionHost =
     getStringValue(env, "VERCEL_PROJECT_PRODUCTION_URL") ||
     getStringValue(env, "VERCEL_URL");
   const fallbackSiteUrl = productionHost ? toHttpsUrl(productionHost) : "";
+  const siteUrl = isVercelProduction(env)
+    ? productionPublicEnvironment.siteUrl
+    : configuredSiteUrl || fallbackSiteUrl || defaultPublicEnvironment.siteUrl;
 
   return {
-    siteUrl: configuredSiteUrl || fallbackSiteUrl || defaultPublicEnvironment.siteUrl,
+    siteUrl,
     siteName:
       getStringValue(env, "NEXT_PUBLIC_SITE_NAME") ||
       defaultPublicEnvironment.siteName,
@@ -117,6 +128,13 @@ export function getRequiredServerEnvironmentValue(
   return value;
 }
 
+function getResolvedAuthUrl(
+  env: RawEnvironment,
+  publicEnvironment = getPublicEnvironment(env)
+) {
+  return getStringValue(env, "BETTER_AUTH_URL") || publicEnvironment.siteUrl;
+}
+
 export function validateLaunchEnvironment(
   env: RawEnvironment = process.env
 ): LaunchEnvironmentValidation {
@@ -124,7 +142,7 @@ export function validateLaunchEnvironment(
   const publicEnvironment = getPublicEnvironment(env);
   const databaseUrl = getStringValue(env, "DATABASE_URL");
   const authSecret = getStringValue(env, "BETTER_AUTH_SECRET");
-  const authUrl = getStringValue(env, "BETTER_AUTH_URL");
+  const authUrl = getResolvedAuthUrl(env, publicEnvironment);
   const aiProvider = getStringValue(env, "AI_PROVIDER") || "mock-curated";
   const astrologyProvider =
     getStringValue(env, "ASTROLOGY_PROVIDER") || "mock-deterministic";
@@ -147,14 +165,7 @@ export function validateLaunchEnvironment(
     );
   }
 
-  if (!authUrl) {
-    pushIssue(
-      issues,
-      "BETTER_AUTH_URL",
-      "error",
-      "Authentication base URL is required for callback and cookie integrity."
-    );
-  } else if (!isValidUrl(authUrl)) {
+  if (!isValidUrl(authUrl)) {
     pushIssue(
       issues,
       "BETTER_AUTH_URL",

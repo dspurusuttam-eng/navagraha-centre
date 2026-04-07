@@ -8,7 +8,7 @@ export function Footer() {
     <footer className="border-t border-[color:var(--color-border)] bg-[rgba(7,6,5,0.86)]">
       <Container className="grid gap-10 py-[var(--space-12)] lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1.75fr)]">
         <div className="space-y-5">
-          <Badge tone="neutral">Platform Foundation</Badge>
+          <Badge tone="neutral">NAVAGRAHA CENTRE</Badge>
           <div className="space-y-3">
             <h2
               className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-md)] text-[color:var(--color-foreground)]"

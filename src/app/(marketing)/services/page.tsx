@@ -18,7 +18,7 @@ export default function ServicesPage() {
       <PageHero {...servicesPage.hero} />
 
       <Section
-        description="The public service structure keeps the offer legible and premium before booking, billing, and operational layers are introduced."
+        description="The public service structure keeps the offer legible and premium before a client chooses a session."
         eyebrow="Offerings"
         title="Service categories with clear boundaries"
       >
@@ -45,7 +45,7 @@ export default function ServicesPage() {
 
       <Section
         tone="muted"
-        description="A premium consultation journey should help the client feel oriented at every step, even before live workflows are added."
+        description="A premium consultation journey should help the client feel oriented at every step."
         eyebrow="Process"
         title="How the experience is meant to feel"
       >
@@ -67,7 +67,7 @@ export default function ServicesPage() {
               "Human-led interpretation",
               "Calm remedy framing",
             ]}
-            description="The visual placeholder suggests a future consultation atmosphere without pretending that booking and fulfillment flows already exist."
+            description="The visual language suggests a calm consultation atmosphere while keeping the offer clear and human-led."
             eyebrow="Experience"
             title="A premium service page should explain the journey before it explains the tools"
             tone="midnight"
@@ -93,8 +93,7 @@ export default function ServicesPage() {
             </h2>
             <p className="max-w-2xl text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
               Once the visitor understands the structure, the best next step is
-              a calm inquiry that can later connect to the manual consultation
-              workflow.
+              a calm inquiry or a direct consultation booking.
             </p>
           </div>
 

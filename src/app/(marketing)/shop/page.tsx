@@ -39,7 +39,7 @@ export default function ShopPage() {
         description="The NAVAGRAHA CENTRE shop is designed to feel composed, editorial, and calm. Every record is framed as a thoughtful support product rather than a hard claim, urgency trigger, or guaranteed result."
         highlights={[
           "Curated categories for Rudraksha, malas, gemstones, yantras, idols, and mantra remedies",
-          "Cart and checkout foundation prepared without locking the UI to a payment gateway yet",
+          "A clear order-request path without rushed or noisy checkout language",
           "Remedy records can point to related products without turning them into prescriptions",
         ]}
         note="The catalog language stays transparent on purpose: spiritual products can support a practice, but they do not replace discernment, consultation, or practical judgment."
@@ -77,7 +77,7 @@ export default function ShopPage() {
       <Section
         eyebrow="Featured Edit"
         title="A first premium edit for careful spiritual commerce."
-        description="The featured selection keeps the early catalog focused, polished, and easy to understand before more complex inventory or payment workflows arrive."
+        description="The featured selection keeps the catalog focused, polished, and easy to understand."
         id="featured-edit"
         tone="muted"
       >
@@ -88,8 +88,8 @@ export default function ShopPage() {
             description="The visual system keeps the shop premium and grounded: dark surfaces, refined material language, and a visible refusal to turn spiritual products into fear-based conversion devices."
             annotations={[
               "Clear category structure",
-              "Elegant placeholder art until final photography arrives",
-              "Checkout prepared without payment lock-in",
+              "Elegant merchandising art with restrained warmth",
+              "Order requests handled without pressure",
               "Remedy links kept optional and transparent",
             ]}
             tone="gold"
@@ -121,17 +121,16 @@ export default function ShopPage() {
       ))}
 
       <Section
-        eyebrow="Checkout Foundation"
-        title="The cart flow is ready for the next commerce phase."
-        description="This foundation already supports browsing, product detail, saved cart state, and draft checkout preparation. The next payment phase can plug in without reworking the public catalog."
+        eyebrow="Order Requests"
+        title="The cart lets visitors review selections and request a follow-up."
+        description="Browsing, product detail, saved cart state, and order preparation are all kept explicit so the public commerce surface stays calm and honest."
         tone="muted"
       >
         <Card tone="accent" className="space-y-5">
           <p className="text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-            Orders and payment-ready records are prepared through a clean
-            checkout abstraction. That keeps the commerce layer modular while
-            the current phase stays focused on catalog, cart, and premium
-            merchandising surfaces.
+            Orders are captured as structured requests so availability,
+            confirmation, and payment can be handled with care rather than
+            rushed through an unfinished checkout.
           </p>
           <div className="flex flex-wrap gap-3">
             <Link href="/shop/cart" className={buttonStyles({ size: "lg" })}>

@@ -13,11 +13,11 @@ export default function MarketingError({
     <RouteErrorState
       error={error}
       reset={reset}
-      eyebrow="Marketing Fallback"
+      eyebrow="Public Site"
       title="The public page could not be rendered normally."
-      description="The premium fallback keeps the public experience graceful while the route is retried."
+      description="The page could not be completed right now. Please try again or return to the homepage."
       homeHref="/"
-      homeLabel="Marketing Home"
+      homeLabel="Return Home"
     />
   );
 }

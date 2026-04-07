@@ -2,6 +2,8 @@ import type { MetadataRoute } from "next";
 import { siteConfig } from "@/config/site";
 
 export default function robots(): MetadataRoute.Robots {
+  const host = new URL(siteConfig.url).host;
+
   return {
     rules: [
       {
@@ -20,6 +22,6 @@ export default function robots(): MetadataRoute.Robots {
       },
     ],
     sitemap: new URL("/sitemap.xml", siteConfig.url).toString(),
-    host: siteConfig.url,
+    host,
   };
 }

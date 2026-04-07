@@ -29,8 +29,8 @@ export default function JoyPrakashSarmahPage() {
               "Measured interpretation style",
               "Premium public-facing trust",
             ]}
-            description="This premium placeholder image block reserves space for future approved portraiture or branded illustration."
-            eyebrow="Portrait Placeholder"
+            description="A refined visual treatment supports the profile while keeping the emphasis on tone, presence, and approach."
+            eyebrow="Profile Portrait"
             title="Joy Prakash Sarmah"
           />
 
@@ -93,7 +93,7 @@ export default function JoyPrakashSarmahPage() {
             </h2>
             <p className="max-w-2xl text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
               This profile page is designed to build confidence before a client
-              ever reaches a booking or consultation workflow.
+              ever steps into a private consultation.
             </p>
           </div>
 

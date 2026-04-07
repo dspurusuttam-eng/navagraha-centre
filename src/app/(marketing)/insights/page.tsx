@@ -45,13 +45,13 @@ export default async function InsightsPage() {
       <PageHero
         eyebrow="Insights"
         title="Editorial content designed for long-term authority, not filler."
-        description="The insights library gives NAVAGRAHA CENTRE an evergreen content foundation for search, trust, and future editorial expansion. Each piece is structured for clarity, human review, and disciplined publishing."
+        description="The insights library gives NAVAGRAHA CENTRE an evergreen content foundation for search, trust, and editorial authority. Each piece is structured for clarity, human review, and disciplined publishing."
         highlights={[
           "Typed content records for articles, forecasts, FAQs, remedy explainers, and service guides",
-          "A CMS-ready adapter boundary without tying the public site to a live CMS yet",
+          "A CMS-ready adapter boundary that keeps publishing clean and portable",
           "Structured metadata and human-reviewed publishing posture from the start",
         ]}
-        note="The system is prepared for assisted drafting later, but publication remains intentionally human-reviewed and deliberate."
+        note="Publication remains human-reviewed and deliberate so the editorial tone stays measured and trustworthy."
         primaryAction={{ href: "/consultation", label: "Book Consultation" }}
         secondaryAction={{ href: "/services", label: "View Services" }}
         supportTitle="Editorial Foundation"
@@ -71,7 +71,7 @@ export default async function InsightsPage() {
               "Human review before publication",
               "No mass-generated filler pages",
               "Structured data for article and FAQ surfaces",
-              "CMS-ready boundary for later expansion",
+              "CMS-ready boundary for disciplined publishing growth",
             ]}
             tone="midnight"
             className="h-full"
@@ -103,8 +103,8 @@ export default async function InsightsPage() {
 
       <Section
         eyebrow="Publishing Boundary"
-        title="Ready for assisted drafting, not automated publishing."
-        description="The adapter and content types are ready for a future AI-assisted draft workflow, but nothing in this phase auto-publishes or mass-produces content."
+        title="Human-reviewed publishing, with clear editorial boundaries."
+        description="The content system is designed to support disciplined drafting and review without mass publishing or filler output."
       >
         <Card tone="accent" className="space-y-5">
           <p className="text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">

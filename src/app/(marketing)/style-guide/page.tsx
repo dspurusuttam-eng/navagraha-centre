@@ -100,11 +100,11 @@ export default function StyleGuidePage() {
   return (
     <>
       <PageHero
-        description="This page previews the visual contract for future marketing, client, and admin surfaces: dark editorial planes, controlled gold accents, quiet motion, and reusable accessible primitives."
+        description="This page previews the visual contract for marketing, client, and admin surfaces: dark editorial planes, controlled gold accents, quiet motion, and reusable accessible primitives."
         eyebrow="Premium UI Foundation"
         highlights={[
           "Design tokens cover color, spacing, radius, shadow, typography, and motion",
-          "Shared primitives stay modular and ready for future product phases",
+          "Shared primitives stay modular and consistent across the product",
           "The shell is responsive, accessible, and visually restrained by default",
         ]}
         note="Use this style guide as the baseline when new public, app, or admin surfaces are introduced."
@@ -115,11 +115,11 @@ export default function StyleGuidePage() {
           tone: "secondary",
         }}
         supportTitle="System Summary"
-        title="A luxury design language, ready for the next phase."
+        title="A luxury design language, ready for the live product."
       />
 
       <Section
-        description="The brand system leans on a small number of deliberate tokens so future pages can stay premium without accumulating visual noise."
+        description="The brand system leans on a small number of deliberate tokens so every page can stay premium without accumulating visual noise."
         eyebrow="Tokens"
         title="Color, typography, spacing, and motion"
       >

@@ -18,7 +18,7 @@ export default function HomePage() {
       <PageHero {...homePage.hero} />
 
       <Section
-        description="Luxury and trust are expressed through tone, restraint, and clarity long before any consultation flow becomes operational."
+        description="Luxury and trust are expressed through tone, restraint, and clarity from the very first visit."
         eyebrow="Trust"
         title="A public experience built to feel composed from the first visit"
       >
@@ -49,9 +49,9 @@ export default function HomePage() {
               "Spiritual tone without mystical excess",
               "Luxury pacing designed for trust",
             ]}
-            description="A placeholder visual block stands in for future photography or illustration while still giving the page atmosphere and narrative weight."
-            eyebrow="Placeholder Imagery"
-            title="Premium visual rhythm without waiting for final assets"
+            description="A composed visual motif gives the page atmosphere and narrative weight while preserving the restrained editorial direction."
+            eyebrow="Editorial Atmosphere"
+            title="Premium visual rhythm shaped for calm trust"
           />
         </div>
       </Section>
@@ -104,7 +104,7 @@ export default function HomePage() {
               "Spiritual, not fear-driven",
               "Transparent in scope and intent",
             ]}
-            description="This placeholder illustration block signals the future remedies editorial direction without overstating what the platform offers today."
+            description="The visual language reinforces a remedies philosophy rooted in proportion, transparency, and care."
             eyebrow="Spiritual Support"
             title="Remedies should feel clear, proportionate, and respectfully explained"
             tone="midnight"
@@ -128,13 +128,13 @@ export default function HomePage() {
 
       <Section
         tone="muted"
-        description="A future shop can enter the public experience with the same premium restraint, careful storytelling, and editorial polish."
-        eyebrow="Shop Teaser"
-        title="Space reserved for spiritual products and ritual objects"
+        description="The shop extends the public experience with the same premium restraint, careful storytelling, and editorial polish."
+        eyebrow="Shop"
+        title="A calm catalog of spiritual products and ritual objects"
       >
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)]">
           <Card className="space-y-5">
-            <Badge tone="accent">Future Commerce</Badge>
+            <Badge tone="accent">Spiritual Shop</Badge>
             <h3
               className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-md)] text-[color:var(--color-foreground)]"
               style={{
@@ -145,12 +145,11 @@ export default function HomePage() {
               Product storytelling should feel ceremonial, not transactional.
             </h3>
             <p className="text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              The shop layer is intentionally teaser-only for now, but the
-              public site already makes space for thoughtfully presented
-              spiritual products when the commerce phase begins.
+              The shop presents thoughtfully selected spiritual products with a
+              premium, non-sensational tone so visitors can browse with clarity.
             </p>
             <Link href="/shop" className={buttonStyles({ tone: "secondary" })}>
-              View Shop Teaser
+              Visit Shop
             </Link>
           </Card>
 
@@ -158,11 +157,11 @@ export default function HomePage() {
             annotations={[
               "Product storytelling with warmth",
               "Editorial merchandising over clutter",
-              "Prepared for later commerce integration",
+              "Material detail without visual noise",
             ]}
-            description="A stylized placeholder gives the shop teaser a premium visual anchor until final brand imagery is available."
-            eyebrow="Placeholder Visual"
-            title="Objects, ritual tools, and spiritual products can enter later without breaking the brand language"
+            description="A stylized composition keeps the shop presentation premium and ceremonial without leaning on clutter or urgency."
+            eyebrow="Merchandising View"
+            title="Objects, ritual tools, and spiritual products shown with warmth and restraint"
           />
         </div>
       </Section>
@@ -203,9 +202,9 @@ export default function HomePage() {
               Start with a calm inquiry, then decide the right next step.
             </h2>
             <p className="max-w-2xl text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              The public website leads with trust, but the next step is simple:
-              learn about the astrologer or begin a direct inquiry for a future
-              consultation workflow.
+              The public website leads with trust, then offers a clear next
+              step: explore the astrologer profile or move into a direct
+              consultation path.
             </p>
           </div>
 
