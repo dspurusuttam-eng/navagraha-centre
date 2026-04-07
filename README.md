@@ -115,9 +115,32 @@ The project also exposes a lightweight health endpoint at `/api/health` and a cl
 
 - `AI_PROVIDER=mock-curated` keeps interpretation deterministic and local while the report UI is being built.
 - `AI_PROVIDER=openai-responses` enables the OpenAI-backed explanation provider.
+- `AI_USAGE_LOGGING=true` enables structured server-side usage hook logs for AI task runs.
 - `OPENAI_API_KEY` and `OPENAI_MODEL` are both required before enabling `openai-responses`.
 - If OpenAI is not fully configured, the server automatically falls back to the curated mock provider so protected report pages still render.
 - The AI layer only interprets structured chart data that has already been calculated by the astrology provider. It does not calculate chart math, invent remedies, or power open-ended chat in this phase.
+
+## AI Orchestration Foundation
+
+The AI module now includes a reusable orchestration foundation in `src/modules/ai`:
+
+- provider registry and runtime model config abstraction
+- prompt template registry with prompt version resolution (database active version with registry fallback)
+- task contracts for chart explanation, transit explanation, remedy explanation, consultation brief generation, and content draft generation
+- tool contracts for future grounded actions:
+  - `get_user_chart_snapshot`
+  - `get_approved_remedies`
+  - `get_related_products`
+  - `get_published_insights`
+  - `get_consultation_context`
+- response normalization and policy guardrails that block:
+  - chart math generation by AI
+  - unsupported remedy/commerce invention
+  - medical/legal/financial claims
+  - fear-based output
+- usage logging hooks and typed conversation/session/task-run domain contracts for future assistant workflows
+
+Current behavior remains compatible with the existing report flow: `/dashboard/report` still calls the chart interpretation boundary, and the service now applies normalization, policy checks, and safe fallback handling internally.
 
 ## Route Map
 
@@ -172,6 +195,7 @@ Set these environment variables in Vercel before the first production deploy:
 - `NEXT_PUBLIC_SITE_NAME`
 - `ASTROLOGY_PROVIDER`
 - `AI_PROVIDER`
+- `AI_USAGE_LOGGING` (optional)
 - `OPENAI_API_KEY` and `OPENAI_MODEL` only if `AI_PROVIDER=openai-responses`
 - `NEXT_PUBLIC_ANALYTICS_ENABLED`
 - `NEXT_PUBLIC_OBSERVABILITY_ENDPOINT`

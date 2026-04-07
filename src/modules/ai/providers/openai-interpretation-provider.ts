@@ -1,4 +1,6 @@
 import OpenAI from "openai";
+import { resolveAiModelConfig } from "@/modules/ai/model-config";
+import { resolvePromptVersionByTemplateKey } from "@/modules/ai/prompt-versioning";
 import type { AiInterpretationProvider } from "@/modules/ai/provider";
 import {
   buildChartInterpretationPrompt,
@@ -18,18 +20,6 @@ function getApiKey() {
   return apiKey;
 }
 
-function getModel() {
-  const model = process.env.OPENAI_MODEL?.trim();
-
-  if (!model) {
-    throw new Error(
-      "OPENAI_MODEL is not configured. Set it to a Responses API compatible model before enabling openai-responses."
-    );
-  }
-
-  return model;
-}
-
 let client: OpenAI | null = null;
 
 function getClient() {
@@ -47,8 +37,15 @@ export class OpenAIInterpretationProvider implements AiInterpretationProvider {
   readonly label = "OpenAI Responses";
 
   async generateChartInterpretation(request: ChartInterpretationRequest) {
-    const prompt = buildChartInterpretationPrompt(request);
-    const model = getModel();
+    const promptVersion = await resolvePromptVersionByTemplateKey(
+      "chart-report-interpretation"
+    );
+    const prompt = buildChartInterpretationPrompt(request, {
+      systemPrompt: promptVersion.systemPrompt,
+      userPrompt: promptVersion.userPrompt,
+    });
+    const model = resolveAiModelConfig(this.key).model;
+
     const response = await getClient().responses.create({
       model,
       instructions: prompt.instructions,
@@ -63,11 +60,17 @@ export class OpenAIInterpretationProvider implements AiInterpretationProvider {
       );
     }
 
-    return parseChartInterpretationText(
+    const parsed = parseChartInterpretationText(
       outputText,
       request,
       this.key,
       response.model ?? model
     );
+
+    return {
+      ...parsed,
+      promptTemplateKey: promptVersion.templateKey,
+      promptVersionLabel: promptVersion.label,
+    };
   }
 }

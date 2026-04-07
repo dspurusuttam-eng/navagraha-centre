@@ -113,6 +113,33 @@ enum AiPromptVersionStatus {
   ARCHIVED
 }
 
+enum AiConversationStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+enum AiMessageRole {
+  SYSTEM
+  USER
+  ASSISTANT
+  TOOL
+}
+
+enum AiTaskKind {
+  CHART_EXPLANATION
+  TRANSIT_EXPLANATION
+  REMEDY_EXPLANATION
+  CONSULTATION_BRIEF_GENERATION
+  CONTENT_DRAFT_GENERATION
+}
+
+enum AiTaskRunStatus {
+  QUEUED
+  RUNNING
+  SUCCEEDED
+  FAILED
+}
+
 model User {
   id            String    @id
   name          String
@@ -132,6 +159,8 @@ model User {
   authoredArticles Article[]
   adminAssignments AdminRoleAssignment[]
   auditEntries     AuditLog[]            @relation("AuditActor")
+  aiConversations  AiConversationSession[]
+  aiTaskRuns       AiTaskRun[]
 
   @@unique([email])
   @@map("user")
@@ -487,10 +516,80 @@ model AiPromptVersion {
   updatedAt          DateTime             @updatedAt
   template           AiPromptTemplate     @relation("PromptTemplateVersions", fields: [templateId], references: [id], onDelete: Cascade)
   activeForTemplates AiPromptTemplate[]   @relation("PromptTemplateActiveVersion")
+  taskRuns           AiTaskRun[]
 
   @@unique([templateId, version])
   @@index([templateId, status])
   @@map("ai_prompt_version")
+}
+
+model AiConversationSession {
+  id         String               @id @default(cuid())
+  userId     String?
+  channelKey String               @default("dashboard")
+  title      String?
+  status     AiConversationStatus @default(ACTIVE)
+  context    Json?
+  createdAt  DateTime             @default(now())
+  updatedAt  DateTime             @updatedAt
+  archivedAt DateTime?
+  user       User?                @relation(fields: [userId], references: [id], onDelete: SetNull)
+  messages   AiConversationMessage[]
+  taskRuns   AiTaskRun[]
+
+  @@index([userId, status, updatedAt])
+  @@map("ai_conversation_session")
+}
+
+model AiConversationMessage {
+  id          String                @id @default(cuid())
+  sessionId   String
+  role        AiMessageRole
+  content     String
+  toolName    String?
+  toolPayload Json?
+  model       String?
+  providerKey String?
+  createdAt   DateTime              @default(now())
+  session     AiConversationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, createdAt])
+  @@map("ai_conversation_message")
+}
+
+model AiTaskRun {
+  id                 String               @id @default(cuid())
+  sessionId          String?
+  userId             String?
+  taskKind           AiTaskKind
+  status             AiTaskRunStatus      @default(QUEUED)
+  providerKey        String
+  model              String?
+  promptTemplateKey  String?
+  promptVersionId    String?
+  promptVersionLabel String?
+  inputHash          String?
+  inputPayload       Json?
+  outputPayload      Json?
+  normalizedOutput   Json?
+  policyPassed       Boolean              @default(true)
+  policyViolations   Json?
+  usageInputTokens   Int?
+  usageOutputTokens  Int?
+  usageTotalTokens   Int?
+  errorMessage       String?
+  startedAt          DateTime             @default(now())
+  completedAt        DateTime?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  session            AiConversationSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  user               User?                @relation(fields: [userId], references: [id], onDelete: SetNull)
+  promptVersion      AiPromptVersion?     @relation(fields: [promptVersionId], references: [id], onDelete: SetNull)
+
+  @@index([userId, taskKind, createdAt])
+  @@index([sessionId, createdAt])
+  @@index([promptTemplateKey, createdAt])
+  @@map("ai_task_run")
 }
 
 model AuditLog {

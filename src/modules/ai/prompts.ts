@@ -48,6 +48,11 @@ export const defaultChartInterpretationPromptTemplate = {
     "Initial curated production prompt aligned with the premium report experience.",
 } as const;
 
+export type ChartInterpretationPromptTemplateContent = {
+  systemPrompt: string;
+  userPrompt: string;
+};
+
 const outputLabels = [
   "SUMMARY",
   ...sectionDefinitions.map((section) => section.label),
@@ -100,14 +105,15 @@ function buildPromptPayload(request: ChartInterpretationRequest) {
 }
 
 export function buildChartInterpretationPrompt(
-  request: ChartInterpretationRequest
+  request: ChartInterpretationRequest,
+  template: ChartInterpretationPromptTemplateContent = defaultChartInterpretationPromptTemplate
 ) {
   const payload = buildPromptPayload(request);
 
   return {
-    instructions: defaultChartInterpretationPromptTemplate.systemPrompt,
+    instructions: template.systemPrompt,
     input: [
-      defaultChartInterpretationPromptTemplate.userPrompt,
+      template.userPrompt,
       JSON.stringify(payload, null, 2),
     ].join("\n\n"),
   };
@@ -158,6 +164,10 @@ export function createFallbackInterpretation(
     ],
     caution:
       "This explanation is reflective only. It does not replace practical judgement or professional advice in medical, legal, or financial matters.",
+    promptTemplateKey:
+      request.context?.promptTemplateKey ??
+      defaultChartInterpretationPromptTemplate.key,
+    promptVersionLabel: request.context?.promptVersionLabel ?? "v1",
   };
 }
 

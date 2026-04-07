@@ -1,12 +1,20 @@
 import type { NatalChartResponse } from "@/modules/astrology";
 import type { ReportChartSignal } from "@/modules/remedies/types";
 
+export type AiTaskContext = {
+  sessionId?: string;
+  taskRunId?: string;
+  promptTemplateKey?: string;
+  promptVersionLabel?: string;
+};
+
 export type ChartInterpretationRequest = {
   reportId: string;
   subjectName: string;
   preferredLanguageLabel: string;
   chart: NatalChartResponse;
   signals: ReportChartSignal[];
+  context?: AiTaskContext;
 };
 
 export type ChartInterpretationSectionKey =
@@ -28,4 +36,6 @@ export type ChartInterpretationResult = {
   summary: string;
   sections: ChartInterpretationSection[];
   caution: string;
+  promptTemplateKey?: string;
+  promptVersionLabel?: string;
 };

@@ -7,6 +7,10 @@ export class MockInterpretationProvider implements AiInterpretationProvider {
   readonly label = "Curated Mock Interpretation";
 
   async generateChartInterpretation(request: ChartInterpretationRequest) {
-    return createFallbackInterpretation(request, this.key, "curated-template");
+    return {
+      ...createFallbackInterpretation(request, this.key, "curated-template"),
+      promptTemplateKey: "chart-report-interpretation",
+      promptVersionLabel: "v1",
+    };
   }
 }

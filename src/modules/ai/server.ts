@@ -6,3 +6,7 @@ export {
   listAvailableAiProviders,
   type AiProviderKey,
 } from "@/modules/ai/service";
+export {
+  createAiOrchestrationService,
+  getAiOrchestrationService,
+} from "@/modules/ai/orchestration";
