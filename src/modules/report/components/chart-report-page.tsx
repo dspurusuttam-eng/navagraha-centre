@@ -31,6 +31,23 @@ function formatDateTime(value: string | null) {
   });
 }
 
+function formatPriorityTier(value: RemedyRecommendation["priorityTier"]) {
+  return value.charAt(0) + value.slice(1).toLowerCase();
+}
+
+function formatConfidenceLabel(value: RemedyRecommendation["confidenceLabel"]) {
+  switch (value) {
+    case "HIGH_CONFIDENCE":
+      return "High Confidence";
+    case "MODERATE_CONFIDENCE":
+      return "Moderate Confidence";
+    case "OPTIONAL_SUPPORT":
+      return "Optional Support";
+    default:
+      return value;
+  }
+}
+
 function ReportMetric({
   label,
   value,
@@ -91,7 +108,8 @@ function RemedyCard({
     <Card key={remedy.slug} interactive className="space-y-5">
       <div className="flex flex-wrap items-center gap-3">
         <Badge tone="accent">{getLabelForRemedyType(remedy.type)}</Badge>
-        <Badge tone="neutral">Approved Record</Badge>
+        <Badge tone="neutral">{formatPriorityTier(remedy.priorityTier)}</Badge>
+        <Badge tone="neutral">{formatConfidenceLabel(remedy.confidenceLabel)}</Badge>
       </div>
 
       <div className="space-y-3">
@@ -111,14 +129,42 @@ function RemedyCard({
           Why it appears here
         </p>
         <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-foreground)]">
-          {remedy.rationale}
+          {remedy.whyThisRemedy.summary}
+        </p>
+        <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+          {remedy.whyThisRemedy.chartGrounding}
+        </p>
+        <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+          {remedy.whyThisRemedy.approvedRecordBasis}
         </p>
       </div>
 
-      {remedy.cautionNote ? (
-        <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-          {remedy.cautionNote}
-        </p>
+      {remedy.cautionNote || remedy.cautions.length ? (
+        <div className="space-y-3">
+          <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+            Care Notes
+          </p>
+          {remedy.cautionNote ? (
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              {remedy.cautionNote}
+            </p>
+          ) : null}
+          <div className="space-y-2">
+            {remedy.cautions.map((caution) => (
+              <div
+                key={caution.key}
+                className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4"
+              >
+                <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                  {caution.label}
+                </p>
+                <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                  {caution.note}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
       ) : null}
 
       {remedy.relatedProducts.length ? (
@@ -150,9 +196,40 @@ function RemedyCard({
             ))}
           </div>
           <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-            Related products are presented as optional catalog records only,
-            never as required purchases or guarantees.
+            {remedy.productMapping.note}
           </p>
+        </div>
+      ) : (
+        <div className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4">
+          <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+            Product Note
+          </p>
+          <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            {remedy.productMapping.note}
+          </p>
+        </div>
+      )}
+
+      {remedy.followUpSuggestions.length ? (
+        <div className="space-y-3">
+          <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+            Suggested Next Step
+          </p>
+          <div className="space-y-2">
+            {remedy.followUpSuggestions.slice(0, 2).map((suggestion) => (
+              <div
+                key={`${remedy.slug}-${suggestion.title}`}
+                className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4"
+              >
+                <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-foreground)]">
+                  {suggestion.title}
+                </p>
+                <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                  {suggestion.note}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       ) : null}
     </Card>

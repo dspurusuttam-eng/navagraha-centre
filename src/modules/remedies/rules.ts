@@ -23,93 +23,114 @@ const ruleCatalog = [
     remedySlug: "adi-gayatri-mantra",
     rationale:
       "A brief sunrise mantra can support steadiness and intentionality when solar themes are prominent.",
-    priority: 90,
+    basePriority: 90,
   },
   {
     signalKey: "solar-clarity",
     remedySlug: "surya-yantra-contemplation",
     rationale:
       "A visual contemplative focus can help strong solar signatures settle into an ordered daily posture.",
-    priority: 84,
+    basePriority: 84,
   },
   {
     signalKey: "solar-clarity",
     remedySlug: "sunrise-discipline-window",
     rationale:
       "A consistent morning discipline often serves solar emphasis better than occasional intensity.",
-    priority: 82,
+    basePriority: 82,
   },
   {
     signalKey: "lunar-settling",
     remedySlug: "sandalwood-japa-mala",
     rationale:
       "A slower counting practice can support rhythm and containment when lunar sensitivity is emphasized.",
-    priority: 88,
+    basePriority: 88,
   },
   {
     signalKey: "lunar-settling",
     remedySlug: "monday-fasting-reflection",
     rationale:
       "A gentle Monday observance can offer structure around reflective lunar themes when it is personally appropriate.",
-    priority: 80,
+    basePriority: 80,
+  },
+  {
+    signalKey: "lunar-settling",
+    remedySlug: "evening-quiet-window",
+    rationale:
+      "A calmer evening rhythm can support lunar sensitivity without turning the response into a dramatic ritual demand.",
+    basePriority: 78,
   },
   {
     signalKey: "saturn-discipline",
     remedySlug: "sesame-donation-saturday",
     rationale:
       "A modest act of service can ground heavier Saturn signatures in humility and practical care.",
-    priority: 92,
+    basePriority: 92,
   },
   {
     signalKey: "saturn-discipline",
     remedySlug: "sunrise-discipline-window",
     rationale:
       "Strong Saturn signatures are often served by a restrained daily discipline rather than dramatic effort.",
-    priority: 86,
+    basePriority: 86,
   },
   {
     signalKey: "jupiter-guidance",
     remedySlug: "yellow-sapphire-review",
     rationale:
       "Where Jupiter carries clear weight, gemstone discussion may be appropriate only as a careful consultation topic.",
-    priority: 76,
+    basePriority: 76,
   },
   {
     signalKey: "jupiter-guidance",
     remedySlug: "navagraha-puja-observance",
     rationale:
       "A broader devotional observance can sometimes be the more measured option when Jupiter themes call for perspective.",
-    priority: 82,
+    basePriority: 82,
   },
   {
     signalKey: "nodal-grounding",
     remedySlug: "five-mukhi-rudraksha",
     rationale:
       "Grounding supports are often preferred when nodal themes feel amplified or diffuse.",
-    priority: 90,
+    basePriority: 90,
   },
   {
     signalKey: "nodal-grounding",
     remedySlug: "navagraha-puja-observance",
     rationale:
       "A wider balancing ritual can be considered for stronger nodal signatures under trusted guidance.",
-    priority: 78,
+    basePriority: 78,
+  },
+  {
+    signalKey: "nodal-grounding",
+    remedySlug: "evening-quiet-window",
+    rationale:
+      "Reducing overstimulation is often the gentlest first response when nodal themes feel diffuse or overly activated.",
+    basePriority: 80,
   },
   {
     signalKey: "devotional-foundation",
     remedySlug: "adi-gayatri-mantra",
     rationale:
       "When no single pressure dominates, a measured devotional foundation is a safe starting point.",
-    priority: 70,
+    basePriority: 70,
   },
   {
     signalKey: "devotional-foundation",
     remedySlug: "sunrise-discipline-window",
     rationale:
       "A short, repeatable discipline keeps the remedy posture calm, practical, and sustainable.",
-    priority: 68,
+    basePriority: 68,
   },
 ] as const;
+
+function buildConfidenceScore(priority: number, signalLevel: SignalStrength) {
+  const levelBonus = signalWeights[signalLevel] * 0.05;
+  const normalizedPriority = Math.min(priority, 120) / 120;
+
+  return Number(Math.min(0.96, 0.32 + normalizedPriority * 0.52 + levelBonus).toFixed(2));
+}
 
 function getPlanet(
   chart: NatalChartResponse,
@@ -259,7 +280,7 @@ export function deriveReportChartSignals(
 export function mapSignalsToRemedyMatches(
   signals: ReportChartSignal[]
 ): RemedyRuleMatch[] {
-  const matches = new Map<string, RemedyRuleMatch>();
+  const matches: RemedyRuleMatch[] = [];
 
   for (const signal of signals) {
     const signalWeight = signalWeights[signal.level];
@@ -268,21 +289,20 @@ export function mapSignalsToRemedyMatches(
     );
 
     for (const rule of applicableRules) {
-      const priority = rule.priority + signalWeight * 10;
-      const existing = matches.get(rule.remedySlug);
+      const priority = rule.basePriority + signalWeight * 10;
 
-      if (!existing || priority > existing.priority) {
-        matches.set(rule.remedySlug, {
-          remedySlug: rule.remedySlug,
-          signalKey: signal.key,
-          rationale: rule.rationale,
-          priority,
-        });
-      }
+      matches.push({
+        remedySlug: rule.remedySlug,
+        signalKey: signal.key,
+        rationale: rule.rationale,
+        priority,
+        confidenceScore: buildConfidenceScore(priority, signal.level),
+        matchedSignalLevel: signal.level,
+      });
     }
   }
 
-  return Array.from(matches.values()).sort((left, right) => {
+  return matches.sort((left, right) => {
     return right.priority - left.priority;
   });
 }

@@ -140,11 +140,35 @@ type AskMyChartToolBundle = {
       slug: string;
       title: string;
       type: string;
+      priorityTier: string;
+      confidenceLabel: string;
       summary: string;
       cautionNote: string | null;
-      rationale: string;
+      whyThisRemedy: {
+        summary: string;
+        chartGrounding: string;
+        approvedRecordBasis: string;
+      };
+      cautions: {
+        label: string;
+        note: string;
+      }[];
+      productMapping: {
+        note: string;
+        purchaseRequired: false;
+      };
       signalKey: string;
     }[];
+    consultationPreparation: {
+      summary: string;
+      topRecommendations: {
+        slug: string;
+        title: string;
+        priorityTier: string;
+        confidenceLabel: string;
+        note: string;
+      }[];
+    };
   };
   relatedProducts: {
     products: {
@@ -170,6 +194,16 @@ type AskMyChartToolBundle = {
     serviceLabel: string;
     topicFocus: string | null;
     intakeSummary: string | null;
+    remedyPreparation?: {
+      summary: string;
+      topRecommendations: {
+        slug: string;
+        title: string;
+        priorityTier: string;
+        confidenceLabel: string;
+        note: string;
+      }[];
+    };
   };
 };
 
@@ -486,9 +520,18 @@ async function getTransitSnapshotTool(userId: string) {
   }
 }
 
-async function getApprovedRemediesTool(chart: NatalChartResponse) {
+async function getApprovedRemediesTool(
+  userId: string,
+  chartRecordId: string,
+  chart: NatalChartResponse
+) {
   const recommendations = await getRemedyRecommendationService().getRecommendations({
     chart,
+    logContext: {
+      userId,
+      chartRecordId,
+      surfaceKey: "ask-my-chart",
+    },
   });
 
   return {
@@ -497,11 +540,22 @@ async function getApprovedRemediesTool(chart: NatalChartResponse) {
       slug: recommendation.slug,
       title: recommendation.title,
       type: recommendation.type,
+      priorityTier: recommendation.priorityTier,
+      confidenceLabel: recommendation.confidenceLabel,
       summary: recommendation.summary,
       cautionNote: recommendation.cautionNote,
-      rationale: recommendation.rationale,
+      whyThisRemedy: recommendation.whyThisRemedy,
+      cautions: recommendation.cautions.map((caution) => ({
+        label: caution.label,
+        note: caution.note,
+      })),
+      productMapping: {
+        note: recommendation.productMapping.note,
+        purchaseRequired: recommendation.productMapping.purchaseRequired,
+      },
       signalKey: recommendation.signalKey,
     })),
+    consultationPreparation: recommendations.consultationPreparation,
   };
 }
 
@@ -560,7 +614,10 @@ async function getPublishedInsightsTool(question: string) {
   };
 }
 
-async function getConsultationContextTool(userId: string) {
+async function getConsultationContextTool(
+  userId: string,
+  approvedRemedies: AskMyChartToolBundle["approvedRemedies"]["remedies"]
+) {
   const consultation = await getPrisma().consultation.findFirst({
     where: {
       userId,
@@ -590,6 +647,22 @@ async function getConsultationContextTool(userId: string) {
     serviceLabel: consultation.serviceLabel,
     topicFocus: consultation.topicFocus,
     intakeSummary: consultation.intakeSummary,
+    remedyPreparation: approvedRemedies.length
+      ? {
+          summary:
+            "Use the mapped remedies as consultation prep notes only. Personal judgement remains central in the live session.",
+          topRecommendations: approvedRemedies.slice(0, 3).map((remedy) => ({
+            slug: remedy.slug,
+            title: remedy.title,
+            priorityTier: remedy.priorityTier,
+            confidenceLabel: remedy.confidenceLabel,
+            note:
+              remedy.confidenceLabel === "OPTIONAL_SUPPORT"
+                ? "Lower-confidence support is best reviewed personally before stronger action."
+                : remedy.whyThisRemedy.summary,
+          })),
+        }
+      : undefined,
   };
 }
 
@@ -622,9 +695,9 @@ function buildFallbackReply(
 
     return [
       opening,
-      `${firstRemedy.title} appears because the approved record is linked to chart signals already present in your report. ${firstRemedy.rationale}`,
+      `${firstRemedy.title} appears because the approved record is linked to chart signals already present in your report. ${firstRemedy.whyThisRemedy.summary}`,
       firstRemedy.cautionNote ??
-        "Treat remedies as optional spiritual supports rather than guarantees, and use consultation for suitability review when needed.",
+        firstRemedy.productMapping.note,
     ].join("\n\n");
   }
 
@@ -681,18 +754,21 @@ async function buildToolBundle(
     throw new Error("A stored chart is required before Ask My Chart can respond.");
   }
 
-  const [chartSnapshot, chartSummaryFacts, transitSnapshot, approvedRemedies, publishedInsights, consultationContext] =
+  const [chartSnapshot, chartSummaryFacts, transitSnapshot, approvedRemedies, publishedInsights] =
     await Promise.all([
       getChartSnapshotTool(overview),
       getChartSummaryFactsTool(question, overview),
       getTransitSnapshotTool(userId),
-      getApprovedRemediesTool(overview.chart),
+      getApprovedRemediesTool(userId, overview.chartRecord.id, overview.chart),
       getPublishedInsightsTool(question),
-      getConsultationContextTool(userId),
     ]);
 
   const relatedProducts = await getRelatedProductsTool(
     approvedRemedies.remedies.map((remedy) => remedy.slug)
+  );
+  const consultationContext = await getConsultationContextTool(
+    userId,
+    approvedRemedies.remedies
   );
 
   return {

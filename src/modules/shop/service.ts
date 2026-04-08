@@ -27,6 +27,7 @@ const remedyTypeLabels = {
   DONATION: "Donation",
   FASTING: "Fasting",
   SPIRITUAL_DISCIPLINE: "Spiritual Discipline",
+  LIFESTYLE_SUPPORT: "Lifestyle Support",
 } as const;
 
 function sortCatalogRecords(

@@ -117,6 +117,19 @@ export const curatedRemedyCatalog: readonly CuratedRemedyRecord[] = [
     publishedAt: "2026-01-15T00:00:00.000Z",
   },
   {
+    slug: "evening-quiet-window",
+    title: "Evening Quiet Window",
+    summary:
+      "A low-stimulation closing ritual that supports gentler settling when the chart points toward emotional or nodal overextension.",
+    description:
+      "This lifestyle support record keeps the emphasis on calmer rhythm, reflection, and reduced overstimulation. It is intentionally simple and does not require any purchase.",
+    type: "LIFESTYLE_SUPPORT",
+    cautionNote:
+      "Keep the practice light and humane. The goal is steadiness and space, not rigid austerity or social withdrawal.",
+    isFeatured: false,
+    publishedAt: "2026-01-15T00:00:00.000Z",
+  },
+  {
     slug: "sunrise-discipline-window",
     title: "Sunrise Discipline Window",
     summary:

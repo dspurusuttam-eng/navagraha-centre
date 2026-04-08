@@ -56,6 +56,11 @@ export async function getChartReport(
   const remedyService = getRemedyRecommendationService();
   const recommendations = await remedyService.getRecommendations({
     chart: overview.chart,
+    logContext: {
+      userId,
+      chartRecordId: overview.chartRecord.id,
+      surfaceKey: "report",
+    },
   });
 
   const interpretation =

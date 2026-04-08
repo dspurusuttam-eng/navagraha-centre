@@ -1,5 +1,9 @@
 import type { PlanetaryBody, TransitEvent } from "@/modules/astrology/types";
 import type { ContentType } from "@/modules/content/types";
+import type {
+  RemedyConfidenceLabel,
+  RemedyPriorityTier,
+} from "@/modules/remedies/types";
 import type { RemedyType } from "@prisma/client";
 
 export const aiToolNames = [
@@ -77,11 +81,35 @@ export type GetApprovedRemediesOutput = {
     slug: string;
     title: string;
     type: RemedyType;
+    priorityTier: RemedyPriorityTier;
+    confidenceLabel: RemedyConfidenceLabel;
     summary: string;
     cautionNote: string | null;
-    rationale: string;
+    whyThisRemedy: {
+      summary: string;
+      chartGrounding: string;
+      approvedRecordBasis: string;
+    };
+    cautions: {
+      label: string;
+      note: string;
+    }[];
+    productMapping: {
+      note: string;
+      purchaseRequired: false;
+    };
     signalKey: string;
   }[];
+  consultationPreparation: {
+    summary: string;
+    topRecommendations: {
+      slug: string;
+      title: string;
+      priorityTier: RemedyPriorityTier;
+      confidenceLabel: RemedyConfidenceLabel;
+      note: string;
+    }[];
+  };
 };
 
 export type GetCurrentTransitSnapshotInput = {
@@ -150,6 +178,16 @@ export type GetConsultationContextOutput = {
   serviceLabel: string;
   topicFocus: string | null;
   intakeSummary: string | null;
+  remedyPreparation?: {
+    summary: string;
+    topRecommendations: {
+      slug: string;
+      title: string;
+      priorityTier: RemedyPriorityTier;
+      confidenceLabel: RemedyConfidenceLabel;
+      note: string;
+    }[];
+  };
   upcomingTransits?: TransitEvent[];
 };
 
@@ -247,6 +285,7 @@ export const aiToolContracts = {
     },
     output: {
       remedies: "ApprovedRemedy[]",
+      consultationPreparation: "ConsultationRemedyPreparation",
     },
   },
   get_related_products: {
@@ -285,6 +324,7 @@ export const aiToolContracts = {
       serviceLabel: "string",
       topicFocus: "string|null",
       intakeSummary: "string|null",
+      remedyPreparation: "ConsultationRemedyPreparation|undefined",
       upcomingTransits: "TransitEvent[]|undefined",
     },
   },

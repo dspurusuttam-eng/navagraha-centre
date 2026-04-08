@@ -10,6 +10,7 @@ const remedyTypeLabels: Record<RemedyType, string> = {
   DONATION: "Donation",
   FASTING: "Fasting",
   SPIRITUAL_DISCIPLINE: "Spiritual Discipline",
+  LIFESTYLE_SUPPORT: "Lifestyle Support",
 };
 
 export function getLabelForRemedyType(type: RemedyType) {

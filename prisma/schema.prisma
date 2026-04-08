@@ -94,6 +94,7 @@ enum RemedyType {
   DONATION
   FASTING
   SPIRITUAL_DISCIPLINE
+  LIFESTYLE_SUPPORT
 }
 
 enum ArticleStatus {
@@ -465,6 +466,23 @@ model RemedyProductLink {
   @@unique([remedyId, productId])
   @@index([productId, sortOrder])
   @@map("remedy_product_link")
+}
+
+model RemedyRecommendationRun {
+  id                     String   @id @default(cuid())
+  userId                 String?
+  chartRecordId          String?
+  surfaceKey             String
+  inputHash              String?
+  signalKeys             String[]
+  topRecommendationSlugs String[]
+  recommendationSnapshot Json
+  createdAt              DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([chartRecordId, createdAt])
+  @@index([surfaceKey, createdAt])
+  @@map("remedy_recommendation_run")
 }
 
 model Article {
