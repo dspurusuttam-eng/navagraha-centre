@@ -750,7 +750,7 @@ async function buildToolBundle(
   question: string,
   overview: ChartOverview
 ) {
-  if (!overview.chart) {
+  if (!overview.chart || !overview.chartRecord) {
     throw new Error("A stored chart is required before Ask My Chart can respond.");
   }
 

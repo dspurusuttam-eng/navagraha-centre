@@ -122,6 +122,24 @@ const promptTemplateRegistry = [
         "Initial grounded assistant prompt for authenticated chart-aware member conversations.",
     },
   },
+  {
+    key: "astrologer-copilot-brief",
+    taskKind: "CONSULTATION_BRIEF_GENERATION",
+    title: "Astrologer Copilot Brief",
+    description:
+      "Grounded internal consultation brief prompt for Joy Prakash Sarmah and admin astrologer workflows.",
+    defaultVersion: {
+      version: 1,
+      label: "v1",
+      model: "curated-template",
+      systemPrompt:
+        "You are the NAVAGRAHA CENTRE Astrologer Copilot. Work only with supplied grounded chart and remedy intelligence context. Do not calculate chart math, invent remedies, use fear-based language, or make medical/legal/financial claims. Keep authority with the astrologer and clearly mark low-confidence or sensitive items for expert judgement.",
+      userPrompt:
+        "Return plain text with labels in this order: HEADLINE, FOCUS_FIRST, QUESTIONS, AVOID_OVERSTATING, FOLLOW_UP_DRAFT, RECAP_DRAFT, ASTROLOGER_NOTES_DRAFT.",
+      releaseNotes:
+        "Initial internal astrologer-assistance prompt for grounded pre-consultation and recap drafting.",
+    },
+  },
 ] as const satisfies readonly PromptTemplateRecord[];
 
 export function listPromptTemplates() {

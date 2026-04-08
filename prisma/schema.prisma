@@ -485,6 +485,32 @@ model RemedyRecommendationRun {
   @@map("remedy_recommendation_run")
 }
 
+model AstrologerCopilotSnapshot {
+  id                  String   @id @default(cuid())
+  consultationId      String
+  astrologerUserId    String
+  providerKey         String
+  model               String?
+  promptTemplateKey   String?
+  promptVersionLabel  String?
+  inputHash           String?
+  snapshotPayload     Json
+  briefText           String
+  followUpDraft       String
+  recapDraft          String
+  astrologerNotesDraft String
+  copyCount           Int      @default(0)
+  exportCount         Int      @default(0)
+  lastCopiedAt        DateTime?
+  lastExportedAt      DateTime?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([consultationId, createdAt])
+  @@index([astrologerUserId, createdAt])
+  @@map("astrologer_copilot_snapshot")
+}
+
 model Article {
   id             String        @id @default(cuid())
   slug           String        @unique

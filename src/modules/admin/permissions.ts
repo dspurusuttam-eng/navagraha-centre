@@ -35,6 +35,13 @@ export const adminRouteCatalog = [
     allowedRoles: ["founder", "support"],
   },
   {
+    href: "/admin/astrologer-copilot",
+    label: "Astrologer Copilot",
+    description:
+      "Generate grounded consultation briefs and recap drafts for manual sessions.",
+    allowedRoles: ["founder", "support"],
+  },
+  {
     href: "/admin/bookings",
     label: "Bookings",
     description:

@@ -11,9 +11,11 @@ export const aiToolNames = [
   "get_current_chart_summary_facts",
   "get_current_transit_snapshot",
   "get_approved_remedies",
+  "get_remedy_intelligence_summary",
   "get_related_products",
   "get_published_insights",
   "get_consultation_context",
+  "get_consultation_history",
 ] as const;
 
 export type AiToolName = (typeof aiToolNames)[number];
@@ -138,6 +140,22 @@ export type GetCurrentTransitSnapshotOutput = {
   }[];
 };
 
+export type GetRemedyIntelligenceSummaryInput = {
+  userId: string;
+};
+
+export type GetRemedyIntelligenceSummaryOutput = {
+  generatedAtUtc: string;
+  signalKeys: string[];
+  topRecommendations: {
+    slug: string;
+    title: string;
+    priorityTier: RemedyPriorityTier;
+    confidenceLabel: RemedyConfidenceLabel;
+    whyThisRemedy: string;
+  }[];
+};
+
 export type GetRelatedProductsInput = {
   remedySlugs: string[];
 };
@@ -191,6 +209,22 @@ export type GetConsultationContextOutput = {
   upcomingTransits?: TransitEvent[];
 };
 
+export type GetConsultationHistoryInput = {
+  userId: string;
+};
+
+export type GetConsultationHistoryOutput = {
+  consultations: {
+    id: string;
+    confirmationCode: string;
+    status: string;
+    serviceLabel: string;
+    scheduledForUtc: string | null;
+    topicFocus: string | null;
+    intakeSummary: string | null;
+  }[];
+};
+
 export type AiToolContractRegistry = {
   get_user_chart_snapshot: AiToolContract<
     "get_user_chart_snapshot",
@@ -206,6 +240,11 @@ export type AiToolContractRegistry = {
     "get_current_transit_snapshot",
     GetCurrentTransitSnapshotInput,
     GetCurrentTransitSnapshotOutput
+  >;
+  get_remedy_intelligence_summary: AiToolContract<
+    "get_remedy_intelligence_summary",
+    GetRemedyIntelligenceSummaryInput,
+    GetRemedyIntelligenceSummaryOutput
   >;
   get_approved_remedies: AiToolContract<
     "get_approved_remedies",
@@ -226,6 +265,11 @@ export type AiToolContractRegistry = {
     "get_consultation_context",
     GetConsultationContextInput,
     GetConsultationContextOutput
+  >;
+  get_consultation_history: AiToolContract<
+    "get_consultation_history",
+    GetConsultationHistoryInput,
+    GetConsultationHistoryOutput
   >;
 };
 
@@ -288,6 +332,19 @@ export const aiToolContracts = {
       consultationPreparation: "ConsultationRemedyPreparation",
     },
   },
+  get_remedy_intelligence_summary: {
+    name: "get_remedy_intelligence_summary",
+    summary:
+      "Returns ranked remedy-intelligence output mapped from deterministic chart signals and approved records.",
+    input: {
+      userId: "string",
+    },
+    output: {
+      generatedAtUtc: "string",
+      signalKeys: "string[]",
+      topRecommendations: "RemedyIntelligenceSummaryEntry[]",
+    },
+  },
   get_related_products: {
     name: "get_related_products",
     summary:
@@ -326,6 +383,17 @@ export const aiToolContracts = {
       intakeSummary: "string|null",
       remedyPreparation: "ConsultationRemedyPreparation|undefined",
       upcomingTransits: "TransitEvent[]|undefined",
+    },
+  },
+  get_consultation_history: {
+    name: "get_consultation_history",
+    summary:
+      "Returns recent consultation history for grounding astrologer preparation flows.",
+    input: {
+      userId: "string",
+    },
+    output: {
+      consultations: "ConsultationHistoryEntry[]",
     },
   },
 } as const;
