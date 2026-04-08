@@ -5,19 +5,24 @@ import type {
 import { MockInterpretationProvider } from "@/modules/ai/providers/mock-interpretation-provider";
 import { OpenAIInterpretationProvider } from "@/modules/ai/providers/openai-interpretation-provider";
 
+export const aiProviderKeys = [
+  "mock-curated",
+  "openai-responses",
+] as const;
+
+export type AiProviderKey = (typeof aiProviderKeys)[number];
+
 const providerFactories = {
   "mock-curated": () => new MockInterpretationProvider(),
   "openai-responses": () => new OpenAIInterpretationProvider(),
-} as const satisfies Record<string, AiInterpretationProviderFactory>;
-
-export type AiProviderKey = keyof typeof providerFactories;
+} as const satisfies Record<AiProviderKey, AiInterpretationProviderFactory>;
 
 export function isAiProviderKey(value: string): value is AiProviderKey {
-  return Object.prototype.hasOwnProperty.call(providerFactories, value);
+  return (aiProviderKeys as readonly string[]).includes(value);
 }
 
 export function listRegisteredAiProviderKeys() {
-  return Object.keys(providerFactories) as AiProviderKey[];
+  return [...aiProviderKeys];
 }
 
 export function createAiProvider(providerKey: AiProviderKey): AiInterpretationProvider {

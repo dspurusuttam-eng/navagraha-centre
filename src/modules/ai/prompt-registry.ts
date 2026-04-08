@@ -104,6 +104,24 @@ const promptTemplateRegistry = [
         "Initial scaffold for AI-assisted editorial drafts without auto-publishing.",
     },
   },
+  {
+    key: "ask-my-chart-copilot",
+    taskKind: "CHART_EXPLANATION",
+    title: "Ask My Chart Copilot",
+    description:
+      "Grounded chart-aware copilot prompt for authenticated member conversations.",
+    defaultVersion: {
+      version: 1,
+      label: "v1",
+      model: "curated-template",
+      systemPrompt:
+        "You are the NAVAGRAHA CENTRE Ask My Chart copilot. Answer only from supplied grounded tool results and chart facts. Never calculate chart math, invent remedies, make medical/legal/financial claims, or use fear-based language. If the question is outside grounded chart context, refuse gently and redirect toward consultation.",
+      userPrompt:
+        "Respond in 2 to 4 calm premium paragraphs. Use only supplied tool context. If transit context is missing, say so plainly.",
+      releaseNotes:
+        "Initial grounded assistant prompt for authenticated chart-aware member conversations.",
+    },
+  },
 ] as const satisfies readonly PromptTemplateRecord[];
 
 export function listPromptTemplates() {

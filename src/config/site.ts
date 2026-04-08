@@ -31,6 +31,7 @@ const marketingNav = [
 const appNav = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/dashboard/onboarding", label: "Onboarding" },
+  { href: "/dashboard/ask-my-chart", label: "Ask My Chart" },
   { href: "/dashboard/consultations", label: "Consultations" },
   { href: "/dashboard/chart", label: "Chart" },
   { href: "/dashboard/report", label: "Report" },

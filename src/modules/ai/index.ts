@@ -1,4 +1,5 @@
 export * from "@/modules/ai/config";
+export * from "@/modules/ai/grounded-text-service";
 export * from "@/modules/ai/model-config";
 export * from "@/modules/ai/orchestration";
 export * from "@/modules/ai/policy";

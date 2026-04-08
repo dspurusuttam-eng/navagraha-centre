@@ -78,6 +78,75 @@ function collectPatternViolations(
   return violations;
 }
 
+export function assessAiTextPolicy(text: string): AiPolicyAssessment {
+  const normalizedText = text.trim();
+
+  return {
+    passed: !normalizedText
+      ? false
+      : [
+            ...collectPatternViolations(
+              normalizedText,
+              chartMathPatterns,
+              "NO_AI_CHART_MATH",
+              "AI output appears to claim direct chart calculations."
+            ),
+            ...collectPatternViolations(
+              normalizedText,
+              unsupportedRemedyPatterns,
+              "NO_UNSUPPORTED_REMEDY_INVENTION",
+              "AI output appears to prescribe unsupported remedy or commerce actions."
+            ),
+            ...collectPatternViolations(
+              normalizedText,
+              claimsPatterns,
+              "NO_MEDICAL_LEGAL_FINANCIAL_CLAIMS",
+              "AI output includes disallowed medical, legal, or financial certainty claims."
+            ),
+            ...collectPatternViolations(
+              normalizedText,
+              fearPatterns,
+              "NO_FEAR_BASED_OUTPUT",
+              "AI output appears to use fear-based language."
+            ),
+          ].length === 0,
+    violations: !normalizedText
+      ? [
+          {
+            rule: "NO_FEAR_BASED_OUTPUT",
+            message: "AI output was empty and could not be validated safely.",
+            match: "empty-response",
+          },
+        ]
+      : [
+          ...collectPatternViolations(
+            normalizedText,
+            chartMathPatterns,
+            "NO_AI_CHART_MATH",
+            "AI output appears to claim direct chart calculations."
+          ),
+          ...collectPatternViolations(
+            normalizedText,
+            unsupportedRemedyPatterns,
+            "NO_UNSUPPORTED_REMEDY_INVENTION",
+            "AI output appears to prescribe unsupported remedy or commerce actions."
+          ),
+          ...collectPatternViolations(
+            normalizedText,
+            claimsPatterns,
+            "NO_MEDICAL_LEGAL_FINANCIAL_CLAIMS",
+            "AI output includes disallowed medical, legal, or financial certainty claims."
+          ),
+          ...collectPatternViolations(
+            normalizedText,
+            fearPatterns,
+            "NO_FEAR_BASED_OUTPUT",
+            "AI output appears to use fear-based language."
+          ),
+        ],
+  };
+}
+
 function getPolicyText(result: ChartInterpretationResult) {
   return [
     result.summary,
@@ -93,32 +162,8 @@ export function assessChartInterpretationPolicy(
   result: ChartInterpretationResult
 ): AiPolicyAssessment {
   const text = getPolicyText(result);
-  const violations: AiPolicyViolation[] = [
-    ...collectPatternViolations(
-      text,
-      chartMathPatterns,
-      "NO_AI_CHART_MATH",
-      "AI output appears to claim direct chart calculations."
-    ),
-    ...collectPatternViolations(
-      text,
-      unsupportedRemedyPatterns,
-      "NO_UNSUPPORTED_REMEDY_INVENTION",
-      "AI output appears to prescribe unsupported remedy or commerce actions."
-    ),
-    ...collectPatternViolations(
-      text,
-      claimsPatterns,
-      "NO_MEDICAL_LEGAL_FINANCIAL_CLAIMS",
-      "AI output includes disallowed medical, legal, or financial certainty claims."
-    ),
-    ...collectPatternViolations(
-      text,
-      fearPatterns,
-      "NO_FEAR_BASED_OUTPUT",
-      "AI output appears to use fear-based language."
-    ),
-  ];
+  const baseAssessment = assessAiTextPolicy(text);
+  const violations: AiPolicyViolation[] = [...baseAssessment.violations];
 
   if (!request.chart.metadata.deterministic) {
     violations.push({
