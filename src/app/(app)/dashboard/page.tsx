@@ -2,6 +2,9 @@ import Link from "next/link";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
+import { generateChartInsights } from "@/lib/ai/chart-analysis";
+import { generateUserReport } from "@/lib/ai/report-generator";
+import type { ChartInsights } from "@/lib/ai/types";
 import { buildPageMetadata } from "@/lib/metadata";
 import { getDashboardOverview } from "@/modules/account/service";
 import { requireUserSession } from "@/modules/auth/server";
@@ -17,12 +20,57 @@ export const metadata = buildPageMetadata({
 
 export default async function DashboardPage() {
   const session = await requireUserSession();
-  const [overview, chartOverview] = await Promise.all([
+  const [overviewResult, chartOverviewResult, insightsResult, reportResult] =
+    await Promise.allSettled([
     getDashboardOverview(session.user.id),
     getChartOverview(session.user.id),
+    generateChartInsights(session.user.id),
+    generateUserReport(session.user.id, session.user.name),
   ]);
+  const overview =
+    overviewResult.status === "fulfilled"
+      ? overviewResult.value
+      : {
+          readinessScore: 0,
+          counts: {
+            birthData: 0,
+            charts: 0,
+            consultations: 0,
+            orders: 0,
+          },
+        };
+  const chartOverview =
+    chartOverviewResult.status === "fulfilled"
+      ? chartOverviewResult.value
+      : {
+          preferredLanguage: null,
+          preferredLanguageLabel: "English",
+          birthProfile: null,
+          chartRecord: null,
+          chart: null,
+        };
+  const insights: ChartInsights =
+    insightsResult.status === "fulfilled"
+      ? insightsResult.value
+      : {
+          summary:
+            "Your private dashboard is available, but the chart insight layer could not be loaded just now.",
+          strengths: [
+            "Your protected account shell remains intact and ready for the next refresh.",
+          ],
+          challenges: [
+            "The content intelligence layer is not available for this request yet.",
+          ],
+          recommendations: [
+            "Refresh the route and continue from your saved chart or onboarding flow.",
+          ],
+        };
+  const report =
+    reportResult.status === "fulfilled" ? reportResult.value : null;
   const hasBirthProfile = Boolean(chartOverview.birthProfile);
   const hasChart = Boolean(chartOverview.chartRecord && chartOverview.chart);
+  const leadConsultationNote = report?.consultationNotes[0]?.note ?? null;
+  const leadRemedy = report?.remedies[0] ?? null;
 
   return (
     <Section
@@ -108,10 +156,9 @@ export default async function DashboardPage() {
 
           <div className="space-y-4 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
             <p>
-              The protected member flow now supports secure birth-profile
-              intake, consultation booking, chart persistence, and a dedicated
-              chart overview route.
+              {insights.summary}
             </p>
+            <p>{report?.reportSummary.overview ?? "Your content layer is ready to combine chart data, consultation context, and future AI support in one private workspace."}</p>
             <div className="flex flex-wrap gap-3">
               <Link
                 href="/dashboard/onboarding"
@@ -131,6 +178,38 @@ export default async function DashboardPage() {
               >
                 View Consultations
               </Link>
+            </div>
+            <div className="grid gap-4 md:grid-cols-3">
+              <div className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4">
+                <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                  Strengths
+                </p>
+                <div className="mt-3 space-y-2">
+                  {insights.strengths.slice(0, 2).map((strength) => (
+                    <p key={strength}>{strength}</p>
+                  ))}
+                </div>
+              </div>
+              <div className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4">
+                <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                  Challenges
+                </p>
+                <div className="mt-3 space-y-2">
+                  {insights.challenges.slice(0, 2).map((challenge) => (
+                    <p key={challenge}>{challenge}</p>
+                  ))}
+                </div>
+              </div>
+              <div className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4">
+                <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                  Next Steps
+                </p>
+                <div className="mt-3 space-y-2">
+                  {insights.recommendations.slice(0, 2).map((recommendation) => (
+                    <p key={recommendation}>{recommendation}</p>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </Card>
@@ -163,6 +242,18 @@ export default async function DashboardPage() {
                       timeStyle: "short",
                     })
                   : "Not generated yet"}
+              </span>
+            </p>
+            <p>
+              Consultation context:{" "}
+              <span className="text-[color:var(--color-foreground)]">
+                {leadConsultationNote ?? "No consultation notes saved yet"}
+              </span>
+            </p>
+            <p>
+              Supportive remedy cue:{" "}
+              <span className="text-[color:var(--color-foreground)]">
+                {leadRemedy?.title ?? "Will appear after chart insights are available"}
               </span>
             </p>
           </div>

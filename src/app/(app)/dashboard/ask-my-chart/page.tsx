@@ -28,7 +28,43 @@ export default async function AskMyChartPage({
 }>) {
   const session = await requireUserSession();
   const { session: sessionId } = await searchParams;
-  const pageData = await getAskMyChartPageData(session.user.id, sessionId);
+  let pageData: Awaited<ReturnType<typeof getAskMyChartPageData>>;
+
+  try {
+    pageData = await getAskMyChartPageData(session.user.id, sessionId);
+  } catch {
+    return (
+      <Section
+        eyebrow="Ask My Chart"
+        title="The copilot surface is available, but the chart context needs a fresh load."
+        description="Your protected assistant route is still in place. Please refresh the page or return after confirming your saved chart data."
+        tone="transparent"
+        className="pt-0"
+      >
+        <Card className="space-y-5">
+          <p className="max-w-2xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            NAVAGRAHA CENTRE kept this route stable instead of surfacing a hard
+            error. Once the chart context reconnects, the assistant will return
+            to grounded replies from your stored data.
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href="/dashboard"
+              className={buttonStyles({ size: "lg", tone: "secondary" })}
+            >
+              Back to Dashboard
+            </Link>
+            <Link
+              href="/dashboard/onboarding"
+              className={buttonStyles({ size: "lg" })}
+            >
+              Review Birth Details
+            </Link>
+          </div>
+        </Card>
+      </Section>
+    );
+  }
 
   if (pageData.status === "needs-chart") {
     return (

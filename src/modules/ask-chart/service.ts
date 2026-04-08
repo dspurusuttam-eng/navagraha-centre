@@ -1,5 +1,6 @@
 import "server-only";
 
+import { generateConsultationReply } from "@/lib/ai/consultation-engine";
 import { getPrisma } from "@/lib/prisma";
 import { getAiGroundedTextService } from "@/modules/ai/server";
 import { resolvePromptVersionByTemplateKey } from "@/modules/ai/prompt-versioning";
@@ -1091,30 +1092,24 @@ export async function sendAskMyChartMessage(input: {
     });
   }
 
-  const toolBundle = await buildToolBundle(input.userId, question, overview);
   const promptTemplateKey = "ask-my-chart-copilot";
 
   try {
-    const reply = await generateAssistantReply(
-      input.userName,
-      question,
-      overview,
-      toolBundle
-    );
+    const reply = await generateConsultationReply(question, input.userId);
 
     await Promise.all([
       prisma.aiConversationMessage.create({
         data: {
           sessionId: sessionRecord.id,
           role: "ASSISTANT",
-          content: reply.assistantMessage,
+          content: reply.answer,
           providerKey: reply.providerKey,
           model: reply.model,
           toolName: askMyChartChannelKey,
           toolPayload: {
-            usedToolNames: reply.usedToolNames,
-            classification: reply.classification.intent,
-            refused: reply.refused,
+            sourceLabels: reply.sourceLabels,
+            followUpSuggestions: reply.followUpSuggestions,
+            supported: reply.supported,
           },
         },
       }),
@@ -1122,28 +1117,33 @@ export async function sendAskMyChartMessage(input: {
         data: {
           sessionId: sessionRecord.id,
           userId: input.userId,
-          taskKind: reply.taskKind,
+          taskKind: classifyQuestion(question).taskKind,
           status: "SUCCEEDED",
           providerKey: reply.providerKey,
           model: reply.model,
-          promptTemplateKey: reply.promptTemplateKey,
-          promptVersionLabel: reply.promptVersionLabel,
+          promptTemplateKey: "mock-consultation-engine",
+          promptVersionLabel: "v1",
           inputHash: createInputHash(question),
           inputPayload: {
             question,
-            classification: reply.classification.intent,
-            usedToolNames: reply.usedToolNames,
+            sourceLabels: reply.sourceLabels,
           },
           outputPayload: {
-            answer: reply.assistantMessage,
+            answer: reply.answer,
+            followUpSuggestions: reply.followUpSuggestions,
           },
           normalizedOutput: {
-            answer: reply.assistantMessage,
+            answer: reply.answer,
           },
-          policyPassed: !reply.refused,
-          policyViolations: reply.refused
-            ? [{ rule: "OUT_OF_SCOPE", message: "Question was outside grounded chart context." }]
-            : [],
+          policyPassed: reply.supported,
+          policyViolations: reply.supported
+            ? []
+            : [
+                {
+                  rule: "OUT_OF_SCOPE",
+                  message: "Question was outside grounded chart context.",
+                },
+              ],
           completedAt: new Date(),
         },
       }),
@@ -1157,7 +1157,7 @@ export async function sendAskMyChartMessage(input: {
         userId: input.userId,
         taskKind: classifyQuestion(question).taskKind,
         status: "FAILED",
-        providerKey: getAiGroundedTextService().providerKey,
+        providerKey: "mock-consultation-engine",
         model: null,
         promptTemplateKey,
         promptVersionLabel: "v1",

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { GeneratedUserReport } from "@/lib/ai/types";
 import type { PlanetaryBody } from "@/modules/astrology";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
@@ -6,11 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
 import { type RemedyRecommendation } from "@/modules/remedies";
 import { getLabelForRemedyType } from "@/modules/report/components/remedy-presenter";
-import {
-  reportDisclosures,
-  type ChartReportReadyState,
-  type ChartReportState,
-} from "@/modules/report/service";
+import { reportDisclosures, type ChartReportReadyState } from "@/modules/report/service";
 
 function formatBody(body: PlanetaryBody) {
   return body.charAt(0) + body.slice(1).toLowerCase();
@@ -239,9 +236,11 @@ function RemedyCard({
 export function ChartReportPage({
   report,
 }: Readonly<{
-  report: ChartReportState;
+  report: GeneratedUserReport;
 }>) {
-  if (report.status === "empty") {
+  const chartReport = report.chartReport;
+
+  if (chartReport.status === "empty") {
     return (
       <Section
         eyebrow="Private Report"
@@ -252,10 +251,34 @@ export function ChartReportPage({
       >
         <Card className="space-y-5">
           <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-            Once the birth profile and first chart are ready, this page will add
-            a calm explanation layer on top of the stored chart facts and map
-            approved remedies through deterministic rules.
+            {report.insights.summary}
           </p>
+          <div className="grid gap-4 lg:grid-cols-2">
+            <div className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4">
+              <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                Next Steps
+              </p>
+              <div className="mt-3 space-y-2">
+                {report.insights.recommendations.map((line) => (
+                  <p
+                    key={line}
+                    className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]"
+                  >
+                    {line}
+                  </p>
+                ))}
+              </div>
+            </div>
+            <div className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4">
+              <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                Consultation Context
+              </p>
+              <p className="mt-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                {report.consultationNotes[0]?.note ??
+                  "No consultation notes are attached yet. This report will become richer once a chart and consultation context are both saved."}
+              </p>
+            </div>
+          </div>
           <div className="flex flex-wrap gap-3">
             <Link
               href="/dashboard/onboarding"
@@ -275,7 +298,7 @@ export function ChartReportPage({
     );
   }
 
-  const dominantBodies = report.overview.chart.summary.dominantBodies
+  const dominantBodies = chartReport.overview.chart.summary.dominantBodies
     .map(formatBody)
     .join(", ");
 
@@ -292,7 +315,7 @@ export function ChartReportPage({
           <div className="pointer-events-none absolute right-[-10%] top-[-12%] h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(215,187,131,0.22)_0%,rgba(215,187,131,0)_70%)]" />
           <div className="relative z-10 flex flex-wrap items-center gap-3">
             <Badge tone="accent">Premium Report</Badge>
-            <Badge tone="neutral">{report.interpretation.providerKey}</Badge>
+            <Badge tone="neutral">{chartReport.interpretation.providerKey}</Badge>
           </div>
 
           <div className="relative z-10 space-y-4">
@@ -300,30 +323,30 @@ export function ChartReportPage({
               className="max-w-3xl font-[family-name:var(--font-display)] text-[length:var(--font-size-title-lg)] text-[color:var(--color-foreground)]"
               style={{ letterSpacing: "var(--tracking-display)" }}
             >
-              {formatSign(report.overview.chart.ascendantSign)} rising with{" "}
+              {formatSign(chartReport.overview.chart.ascendantSign)} rising with{" "}
               {dominantBodies} carrying the clearest emphasis.
             </h2>
             <p className="max-w-3xl text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              {report.interpretation.summary}
+              {chartReport.interpretation.summary}
             </p>
           </div>
 
           <div className="relative z-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <ReportMetric
               label="Ascendant"
-              value={formatSign(report.overview.chart.ascendantSign)}
+              value={formatSign(chartReport.overview.chart.ascendantSign)}
             />
             <ReportMetric
               label="Provider"
-              value={report.overview.chartRecord.providerKey}
+              value={chartReport.overview.chartRecord.providerKey}
             />
             <ReportMetric
               label="Chart Generated"
-              value={formatDateTime(report.overview.chartRecord.generatedAtUtc)}
+              value={formatDateTime(chartReport.overview.chartRecord.generatedAtUtc)}
             />
             <ReportMetric
               label="Report Language"
-              value={report.overview.preferredLanguageLabel}
+              value={chartReport.overview.preferredLanguageLabel}
             />
           </div>
         </Card>
@@ -345,29 +368,29 @@ export function ChartReportPage({
             <p>
               Birth profile:{" "}
               <span className="text-[color:var(--color-foreground)]">
-                {report.overview.birthProfile.label}
+                {chartReport.overview.birthProfile.label}
               </span>
             </p>
             <p>
               Birthplace:{" "}
               <span className="text-[color:var(--color-foreground)]">
-                {report.overview.birthProfile.city}
-                {report.overview.birthProfile.region
-                  ? `, ${report.overview.birthProfile.region}`
+                {chartReport.overview.birthProfile.city}
+                {chartReport.overview.birthProfile.region
+                  ? `, ${chartReport.overview.birthProfile.region}`
                   : ""}
-                {`, ${report.overview.birthProfile.country}`}
+                {`, ${chartReport.overview.birthProfile.country}`}
               </span>
             </p>
             <p>
               Timezone:{" "}
               <span className="text-[color:var(--color-foreground)]">
-                {report.overview.birthProfile.timezone}
+                {chartReport.overview.birthProfile.timezone}
               </span>
             </p>
             <p>
               House system:{" "}
               <span className="text-[color:var(--color-foreground)]">
-                {report.overview.chart.houseSystem === "WHOLE_SIGN"
+                {chartReport.overview.chart.houseSystem === "WHOLE_SIGN"
                   ? "Whole Sign"
                   : "Placidus"}
               </span>
@@ -375,7 +398,7 @@ export function ChartReportPage({
             <p>
               Summary narrative:{" "}
               <span className="text-[color:var(--color-foreground)]">
-                {report.overview.chart.summary.narrative}
+                {chartReport.overview.chart.summary.narrative}
               </span>
             </p>
           </div>
@@ -401,6 +424,72 @@ export function ChartReportPage({
         <Card className="space-y-5">
           <div className="space-y-2">
             <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+              Content Intelligence
+            </p>
+            <h2
+              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
+              style={{ letterSpacing: "var(--tracking-display)" }}
+            >
+              A calmer summary layer for the stored chart and recent context.
+            </h2>
+          </div>
+
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            {report.reportSummary.overview}
+          </p>
+
+          <div className="grid gap-4 lg:grid-cols-3">
+            <div className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4">
+              <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                Strengths
+              </p>
+              <div className="mt-3 space-y-2">
+                {report.insights.strengths.map((line) => (
+                  <p
+                    key={line}
+                    className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]"
+                  >
+                    {line}
+                  </p>
+                ))}
+              </div>
+            </div>
+            <div className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4">
+              <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                Challenges
+              </p>
+              <div className="mt-3 space-y-2">
+                {report.insights.challenges.map((line) => (
+                  <p
+                    key={line}
+                    className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]"
+                  >
+                    {line}
+                  </p>
+                ))}
+              </div>
+            </div>
+            <div className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4">
+              <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                Recommendations
+              </p>
+              <div className="mt-3 space-y-2">
+                {report.insights.recommendations.map((line) => (
+                  <p
+                    key={line}
+                    className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]"
+                  >
+                    {line}
+                  </p>
+                ))}
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        <Card className="space-y-5">
+          <div className="space-y-2">
+            <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
               AI Interpretation
             </p>
             <h2
@@ -412,7 +501,7 @@ export function ChartReportPage({
           </div>
 
           <div className="space-y-4">
-            {report.interpretation.sections.map((section) => (
+            {chartReport.interpretation.sections.map((section) => (
               <div
                 key={section.key}
                 className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-5 py-5"
@@ -441,11 +530,58 @@ export function ChartReportPage({
             </h2>
           </div>
 
-          <ReportSignalList signals={report.signals} />
+          <ReportSignalList signals={chartReport.signals} />
         </Card>
       </div>
 
       <div className="mt-6 grid gap-6">
+        <Card className="space-y-5">
+          <div className="space-y-2">
+            <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+              Consultation Context
+            </p>
+            <h2
+              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
+              style={{ letterSpacing: "var(--tracking-display)" }}
+            >
+              Recent notes that can support a more informed next conversation.
+            </h2>
+          </div>
+
+          {report.consultationNotes.length ? (
+            <div className="grid gap-4 lg:grid-cols-2">
+              {report.consultationNotes.map((note) => (
+                <div
+                  key={note.id}
+                  className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-foreground)]">
+                      {note.serviceLabel}
+                    </p>
+                    <Badge tone="neutral">{note.statusLabel}</Badge>
+                  </div>
+                  <p className="mt-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                    {note.note}
+                  </p>
+                  {note.scheduledForUtc ? (
+                    <p className="mt-3 text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                      {formatDateTime(note.scheduledForUtc)}
+                    </p>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-5 py-5">
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                No consultation notes are attached yet. When they are added, this
+                report will keep them available beside the chart summary.
+              </p>
+            </div>
+          )}
+        </Card>
+
         <Card className="space-y-5">
           <div className="space-y-2">
             <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
@@ -459,9 +595,9 @@ export function ChartReportPage({
             </h2>
           </div>
 
-          {report.remedies.length ? (
+          {chartReport.remedies.length ? (
             <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
-              {report.remedies.map((remedy) => (
+              {chartReport.remedies.map((remedy) => (
                 <RemedyCard key={remedy.slug} remedy={remedy} />
               ))}
             </div>
@@ -490,7 +626,7 @@ export function ChartReportPage({
             </h2>
           </div>
           <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-            {report.interpretation.caution}
+            {chartReport.interpretation.caution}
           </p>
         </Card>
 
