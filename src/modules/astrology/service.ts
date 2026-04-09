@@ -4,6 +4,7 @@ import { unstable_cache } from "next/cache";
 import type { AstrologyProvider } from "@/modules/astrology/provider";
 import { CircularNatalHoroscopeProvider } from "@/modules/astrology/providers/circular-natal-horoscope-provider";
 import { MockDeterministicAstrologyProvider } from "@/modules/astrology/providers/mock-deterministic-provider";
+import { SwissEphemerisVedicProvider } from "@/modules/astrology/providers/swisseph-vedic-provider";
 import type {
   AstrologyValidationResult,
   BirthDetails,
@@ -27,6 +28,7 @@ import {
 } from "@/modules/astrology/validation";
 
 const providerFactories = {
+  "swisseph-vedic": () => new SwissEphemerisVedicProvider(),
   "mock-deterministic": () => new MockDeterministicAstrologyProvider(),
   "circular-natal-real": () => new CircularNatalHoroscopeProvider(),
 } as const;
@@ -44,9 +46,12 @@ const getCachedNatalChart = unstable_cache(
   { tags: ["astrology", "astrology:natal"] }
 );
 
-function getNatalCacheKey(request: NatalChartRequest) {
+function getNatalCacheKey(
+  providerKey: AstrologyProviderKey,
+  request: NatalChartRequest
+) {
   return JSON.stringify({
-    providerKey: request.kind,
+    providerKey,
     birthDetails: request.birthDetails,
     houseSystem: request.houseSystem,
   });
@@ -71,7 +76,7 @@ export function getDefaultAstrologyProviderKey(): AstrologyProviderKey {
     return configuredProvider;
   }
 
-  return "mock-deterministic";
+  return "swisseph-vedic";
 }
 
 export interface AstrologyService {
@@ -112,7 +117,7 @@ export function createAstrologyService(
         providerKey,
         JSON.stringify({
           ...validatedRequest,
-          requestId: getNatalCacheKey(validatedRequest),
+          requestId: getNatalCacheKey(providerKey, validatedRequest),
         })
       ).then((response) => ({
         ...response,

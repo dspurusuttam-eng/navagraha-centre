@@ -2,6 +2,7 @@ import "server-only";
 
 import { unstable_cache } from "next/cache";
 import { Horoscope, Origin } from "circular-natal-horoscope-js";
+import { getNakshatraPlacement } from "@/lib/astrology/ephemeris";
 import {
   houseNumbers,
   planetaryBodies,
@@ -272,17 +273,22 @@ function mapPlanetPosition(
   body: PlanetaryBody,
   retrograde: boolean
 ): PlanetPosition {
+  const longitude = point.ChartPosition.Ecliptic.DecimalDegrees;
   const { degree, minute } = getDegreeParts(
-    point.ChartPosition.Ecliptic.DecimalDegrees
+    longitude
   );
 
   return {
     body,
     sign: mapSign(point.Sign.key),
+    longitude,
     degree,
     minute,
     house: mapHouseNumber(point.House.id),
     retrograde,
+    speed: retrograde ? -1 : 1,
+    latitude: 0,
+    nakshatra: getNakshatraPlacement(longitude),
   };
 }
 

@@ -41,8 +41,8 @@ export type ConsultationReply = {
   followUpSuggestions: string[];
   sourceLabels: string[];
   remedies: RemedySuggestion[];
-  providerKey: "mock-consultation-engine";
-  model: null;
+  providerKey: string;
+  model: string | null;
   supported: boolean;
 };
 

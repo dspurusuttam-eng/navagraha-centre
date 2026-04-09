@@ -271,7 +271,11 @@ function classifyQuestion(question: string): AskMyChartClassification {
     };
   }
 
-  if (/\b(current cycle|transit|transits|right now|current period|current phase)\b/i.test(normalized)) {
+  if (
+    /\b(current cycle|transit|transits|right now|current period|current phase|dasha|mahadasha)\b/i.test(
+      normalized
+    )
+  ) {
     return {
       intent: "TRANSIT_EXPLANATION",
       taskKind: "TRANSIT_EXPLANATION",
@@ -1121,7 +1125,7 @@ export async function sendAskMyChartMessage(input: {
           status: "SUCCEEDED",
           providerKey: reply.providerKey,
           model: reply.model,
-          promptTemplateKey: "mock-consultation-engine",
+          promptTemplateKey: "vedic-consultation-engine",
           promptVersionLabel: "v1",
           inputHash: createInputHash(question),
           inputPayload: {
@@ -1157,7 +1161,7 @@ export async function sendAskMyChartMessage(input: {
         userId: input.userId,
         taskKind: classifyQuestion(question).taskKind,
         status: "FAILED",
-        providerKey: "mock-consultation-engine",
+        providerKey: "vedic-consultation-engine",
         model: null,
         promptTemplateKey,
         promptVersionLabel: "v1",

@@ -30,6 +30,8 @@ type OnboardingWizardProps = {
     region: string;
     country: string;
     timezone: string;
+    latitude: string;
+    longitude: string;
   };
   status: {
     hasBirthProfile: boolean;
@@ -63,7 +65,7 @@ const steps = [
     title: "Birthplace and final review",
     description:
       "Store the birthplace profile that will stay attached to the chart record and later consultation flows.",
-    fields: ["city", "region", "country"],
+    fields: ["city", "region", "country", "latitude", "longitude"],
   },
 ] as const;
 
@@ -283,6 +285,46 @@ export function OnboardingWizard({
                   required
                 />
               </div>
+
+              <div className="space-y-2">
+                <label
+                  htmlFor="onboarding-latitude"
+                  className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]"
+                >
+                  Latitude
+                </label>
+                <Input
+                  id="onboarding-latitude"
+                  name="latitude"
+                  type="number"
+                  step="0.000001"
+                  min="-90"
+                  max="90"
+                  defaultValue={defaults.latitude}
+                  placeholder="26.1445"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label
+                  htmlFor="onboarding-longitude"
+                  className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]"
+                >
+                  Longitude
+                </label>
+                <Input
+                  id="onboarding-longitude"
+                  name="longitude"
+                  type="number"
+                  step="0.000001"
+                  min="-180"
+                  max="180"
+                  defaultValue={defaults.longitude}
+                  placeholder="91.7362"
+                  required
+                />
+              </div>
             </div>
           </div>
 
@@ -398,8 +440,8 @@ export function OnboardingWizard({
               account.
             </p>
             <p>
-              The initial chart is generated server-side and attached to your
-              member record for later phases.
+              The initial chart is generated server-side from the exact birth
+              coordinates and attached to your member record for later phases.
             </p>
             <p>
               After save, you will be taken directly to the chart overview page.

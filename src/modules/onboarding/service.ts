@@ -39,6 +39,8 @@ export type OnboardingDefaults = {
   region: string;
   country: string;
   timezone: string;
+  latitude: string;
+  longitude: string;
 };
 
 export type OnboardingSnapshot = {
@@ -63,6 +65,8 @@ export type ChartOverview = {
     city: string;
     region: string | null;
     country: string;
+    latitude: number | null;
+    longitude: number | null;
   } | null;
   chartRecord: {
     id: string;
@@ -82,6 +86,10 @@ type SaveOnboardingInput = {
 
 function decimalToNumber(value: Prisma.Decimal | null) {
   return value === null ? null : Number(value);
+}
+
+function numberToInputValue(value: Prisma.Decimal | null) {
+  return value === null ? "" : Number(value).toString();
 }
 
 function birthProfileToDetails(profile: PersistedBirthProfile): BirthDetails {
@@ -121,13 +129,16 @@ function parseStoredNatalChart(payload: Prisma.JsonValue | null) {
 
 function resolveProviderKey(birthDetails: BirthDetails): AstrologyProviderKey {
   const defaultProvider = getDefaultAstrologyProviderKey();
+  const hasCoordinates =
+    birthDetails.place.latitude !== null &&
+    birthDetails.place.latitude !== undefined &&
+    birthDetails.place.longitude !== null &&
+    birthDetails.place.longitude !== undefined;
 
   if (
-    defaultProvider === "circular-natal-real" &&
-    (birthDetails.place.latitude === null ||
-      birthDetails.place.latitude === undefined ||
-      birthDetails.place.longitude === null ||
-      birthDetails.place.longitude === undefined)
+    (defaultProvider === "circular-natal-real" ||
+      defaultProvider === "swisseph-vedic") &&
+    !hasCoordinates
   ) {
     return "mock-deterministic";
   }
@@ -181,6 +192,10 @@ export async function getOnboardingSnapshot(
       region: primaryBirthProfile?.region ?? profile.region ?? "",
       country: primaryBirthProfile?.country ?? profile.country ?? "",
       timezone: primaryBirthProfile?.timezone ?? profile.timezone ?? "",
+      latitude:
+        numberToInputValue(primaryBirthProfile?.latitude ?? profile.latitude),
+      longitude:
+        numberToInputValue(primaryBirthProfile?.longitude ?? profile.longitude),
     },
     status: {
       hasBirthProfile: Boolean(primaryBirthProfile),
@@ -210,18 +225,26 @@ export async function saveOnboardingAndGenerateChart({
       where: { userId },
       update: {
         preferredLanguage,
+        dob: birthDetails.dateLocal,
+        tob: birthDetails.timeLocal,
         city: birthDetails.place.city,
         region: birthDetails.place.region ?? null,
         country: birthDetails.place.country,
         timezone: birthDetails.timezone,
+        latitude: birthDetails.place.latitude ?? null,
+        longitude: birthDetails.place.longitude ?? null,
       },
       create: {
         userId,
         preferredLanguage,
+        dob: birthDetails.dateLocal,
+        tob: birthDetails.timeLocal,
         city: birthDetails.place.city,
         region: birthDetails.place.region ?? null,
         country: birthDetails.place.country,
         timezone: birthDetails.timezone,
+        latitude: birthDetails.place.latitude ?? null,
+        longitude: birthDetails.place.longitude ?? null,
       },
     });
 
@@ -295,20 +318,38 @@ export async function saveOnboardingAndGenerateChart({
     };
 
     if (existingChart) {
-      return tx.chart.update({
+      const updatedChart = await tx.chart.update({
         where: { id: existingChart.id },
         data: chartData,
         select: { id: true },
       });
+
+      await tx.profile.update({
+        where: { userId },
+        data: {
+          chartData: serializeChartPayload(chart),
+        },
+      });
+
+      return updatedChart;
     }
 
-    return tx.chart.create({
+    const createdChart = await tx.chart.create({
       data: {
         userId,
         ...chartData,
       },
       select: { id: true },
     });
+
+    await tx.profile.update({
+      where: { userId },
+      data: {
+        chartData: serializeChartPayload(chart),
+      },
+    });
+
+    return createdChart;
   });
 
   return {
@@ -349,6 +390,8 @@ export async function getChartOverview(userId: string): Promise<ChartOverview> {
           city: primaryBirthProfile.city,
           region: primaryBirthProfile.region,
           country: primaryBirthProfile.country,
+          latitude: decimalToNumber(primaryBirthProfile.latitude),
+          longitude: decimalToNumber(primaryBirthProfile.longitude),
         }
       : null,
     chartRecord: latestNatalChart

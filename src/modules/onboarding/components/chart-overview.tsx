@@ -28,6 +28,14 @@ function formatSign(sign: string) {
   return sign.charAt(0) + sign.slice(1).toLowerCase();
 }
 
+function formatNakshatraLabel(value: string) {
+  return value
+    .toLowerCase()
+    .split("_")
+    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
+    .join(" ");
+}
+
 export function ChartOverviewPanel({ overview }: Readonly<ChartOverviewProps>) {
   if (!overview.birthProfile) {
     return (
@@ -214,6 +222,15 @@ export function ChartOverviewPanel({ overview }: Readonly<ChartOverviewProps>) {
               </span>
             </p>
             <p>
+              Coordinates:{" "}
+              <span className="text-[color:var(--color-foreground)]">
+                {overview.birthProfile.latitude !== null &&
+                overview.birthProfile.longitude !== null
+                  ? `${overview.birthProfile.latitude}, ${overview.birthProfile.longitude}`
+                  : "Not recorded"}
+              </span>
+            </p>
+            <p>
               Preferred language:{" "}
               <span className="text-[color:var(--color-foreground)]">
                 {overview.preferredLanguageLabel}
@@ -262,6 +279,12 @@ export function ChartOverviewPanel({ overview }: Readonly<ChartOverviewProps>) {
                 <p className="mt-3 text-[length:var(--font-size-body-sm)] text-[color:var(--color-muted)]">
                   House {planet.house}
                 </p>
+                {planet.nakshatra ? (
+                  <p className="mt-1 text-[length:var(--font-size-body-sm)] text-[color:var(--color-muted)]">
+                    {formatNakshatraLabel(planet.nakshatra.name)} pada{" "}
+                    {planet.nakshatra.pada}
+                  </p>
+                ) : null}
               </div>
             ))}
           </div>
@@ -342,21 +365,52 @@ export function ChartOverviewPanel({ overview }: Readonly<ChartOverviewProps>) {
         <Card className="space-y-5">
           <div className="space-y-2">
             <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-              Next Step
+              Dasha And Yogas
             </p>
             <h2
               className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
               style={{ letterSpacing: "var(--tracking-display)" }}
             >
-              Refine the birth profile whenever better details become available.
+              Timing and pattern notes from the stored Jyotish layer.
             </h2>
           </div>
 
-          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-            This overview intentionally stays structured and factual. Later
-            phases can layer interpretation, remedies, and consultation logic on
-            top of the persisted chart foundation.
-          </p>
+          <div className="space-y-4 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            {overview.chart.currentDasha ? (
+              <p>
+                Current dasha:{" "}
+                <span className="text-[color:var(--color-foreground)]">
+                  {formatBody(overview.chart.currentDasha.lord)}
+                </span>{" "}
+                until{" "}
+                <span className="text-[color:var(--color-foreground)]">
+                  {formatDateTime(overview.chart.currentDasha.endAtUtc)}
+                </span>
+              </p>
+            ) : (
+              <p>No current dasha snapshot is stored on this chart yet.</p>
+            )}
+
+            {overview.chart.yogas?.length ? (
+              <div className="space-y-2">
+                {overview.chart.yogas.map((yoga) => (
+                  <div
+                    key={yoga.key}
+                    className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4"
+                  >
+                    <p className="text-[length:var(--font-size-body-md)] text-[color:var(--color-foreground)]">
+                      {yoga.title}
+                    </p>
+                    <p className="mt-2 text-[length:var(--font-size-body-sm)] text-[color:var(--color-muted)]">
+                      {yoga.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>No named yoga pattern is stored on this chart yet.</p>
+            )}
+          </div>
 
           <Link
             href="/dashboard/onboarding"

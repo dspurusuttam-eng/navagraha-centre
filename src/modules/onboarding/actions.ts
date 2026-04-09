@@ -60,6 +60,27 @@ function normalizeOptionalText(
   return normalized;
 }
 
+function normalizeCoordinate(
+  value: FormDataEntryValue | null,
+  label: string,
+  min: number,
+  max: number
+) {
+  const normalized = value?.toString().trim() ?? "";
+
+  if (!normalized) {
+    throw new Error(`${label} is required for accurate chart generation.`);
+  }
+
+  const parsed = Number(normalized);
+
+  if (!Number.isFinite(parsed) || parsed < min || parsed > max) {
+    throw new Error(`${label} must be a valid number between ${min} and ${max}.`);
+  }
+
+  return parsed;
+}
+
 function formatValidationError(error: AstrologyValidationError) {
   return (
     error.issues[0]?.message ?? "Please review the birth details and try again."
@@ -114,6 +135,18 @@ export async function completeBirthOnboarding(
         city: normalizeRequiredText(formData.get("city"), "Birth city", 80),
         region: normalizeOptionalText(formData.get("region"), 80) ?? undefined,
         country: normalizeRequiredText(formData.get("country"), "Country", 80),
+        latitude: normalizeCoordinate(
+          formData.get("latitude"),
+          "Latitude",
+          -90,
+          90
+        ),
+        longitude: normalizeCoordinate(
+          formData.get("longitude"),
+          "Longitude",
+          -180,
+          180
+        ),
       },
     });
 

@@ -17,18 +17,34 @@ import type {
   ZodiacSign,
 } from "@/modules/astrology/types";
 
+type FixturePlanetPosition = Omit<
+  PlanetPosition,
+  "longitude" | "speed"
+> &
+  Partial<
+    Pick<PlanetPosition, "longitude" | "speed" | "latitude" | "nakshatra">
+  >;
+
+type FixtureDivisionalChart = Omit<DivisionalChart, "planets"> & {
+  planets: FixturePlanetPosition[];
+};
+
+type FixtureNatalPayload = Omit<
+  NatalChartResponse,
+  "kind" | "metadata" | "birthDetails" | "houseSystem" | "planets"
+> & {
+  planets: FixturePlanetPosition[];
+};
+
 type FixtureBundle = {
   key: string;
   generatedAtUtc: string;
-  natal: Omit<
-    NatalChartResponse,
-    "kind" | "metadata" | "birthDetails" | "houseSystem"
-  >;
+  natal: FixtureNatalPayload;
   transits: Omit<
     TransitChartResponse,
     "kind" | "metadata" | "birthDetails" | "houseSystem" | "window"
   >;
-  divisionalCharts: Record<DivisionalChartCode, DivisionalChart>;
+  divisionalCharts: Record<DivisionalChartCode, FixtureDivisionalChart>;
 };
 
 function createWholeSignHouses(ascendantSign: ZodiacSign): HousePlacement[] {
@@ -50,9 +66,9 @@ function createDivisionalChart(
   title: string,
   focus: string,
   ascendantSign: ZodiacSign,
-  planets: PlanetPosition[],
+  planets: FixturePlanetPosition[],
   highlights: string[]
-): DivisionalChart {
+): FixtureDivisionalChart {
   return {
     code,
     title,
@@ -64,7 +80,7 @@ function createDivisionalChart(
   };
 }
 
-const oceanicPlanets: PlanetPosition[] = [
+const oceanicPlanets: FixturePlanetPosition[] = [
   {
     body: "SUN",
     sign: "TAURUS",
@@ -230,7 +246,7 @@ const oceanicTransitEvents: TransitEvent[] = [
   },
 ];
 
-const mercurialPlanets: PlanetPosition[] = [
+const mercurialPlanets: FixturePlanetPosition[] = [
   {
     body: "SUN",
     sign: "CAPRICORN",

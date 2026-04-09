@@ -1,12 +1,17 @@
 import type {
   aspectTypes,
+  dashaSystems,
   chartPoints,
   divisionalChartCodes,
   houseNumbers,
   houseSystems,
+  nakshatraNames,
   planetaryBodies,
   remedySignalCategories,
   signalStrengths,
+  vedicAspectRelations,
+  yogaKeys,
+  yogaStrengths,
   zodiacSigns,
 } from "@/modules/astrology/constants";
 
@@ -19,6 +24,18 @@ export type HouseNumber = (typeof houseNumbers)[number];
 export type DivisionalChartCode = (typeof divisionalChartCodes)[number];
 export type RemedySignalCategory = (typeof remedySignalCategories)[number];
 export type SignalStrength = (typeof signalStrengths)[number];
+export type NakshatraName = (typeof nakshatraNames)[number];
+export type DashaSystem = (typeof dashaSystems)[number];
+export type VedicAspectRelation = (typeof vedicAspectRelations)[number];
+export type YogaKey = (typeof yogaKeys)[number];
+export type YogaStrength = (typeof yogaStrengths)[number];
+
+export type NakshatraPlacement = {
+  name: NakshatraName;
+  pada: 1 | 2 | 3 | 4;
+  ruler: PlanetaryBody;
+  degreesIntoNakshatra: number;
+};
 
 export type BirthPlaceInput = {
   city: string;
@@ -116,16 +133,22 @@ export type ChartRequest =
 export type PlanetPosition = {
   body: PlanetaryBody;
   sign: ZodiacSign;
+  longitude: number;
   degree: number;
   minute: number;
   house: HouseNumber;
   retrograde: boolean;
+  speed: number;
+  latitude?: number;
+  nakshatra?: NakshatraPlacement;
 };
 
 export type HousePlacement = {
   house: HouseNumber;
   sign: ZodiacSign;
   ruler: PlanetaryBody;
+  cuspLongitude?: number;
+  nextCuspLongitude?: number;
 };
 
 export type AstrologicalAspect = {
@@ -135,6 +158,44 @@ export type AstrologicalAspect = {
   orb: number;
   applying: boolean;
   exact: boolean;
+};
+
+export type VedicAspect = {
+  source: PlanetaryBody;
+  target: PlanetaryBody | ChartPoint;
+  relation: VedicAspectRelation;
+  houseOffset: number;
+  orb: number;
+  exact: boolean;
+  rationale: string;
+};
+
+export type LagnaDetails = {
+  sign: ZodiacSign;
+  longitude: number;
+  degree: number;
+  minute: number;
+  nakshatra: NakshatraPlacement;
+};
+
+export type YogaResult = {
+  key: YogaKey;
+  title: string;
+  description: string;
+  strength: YogaStrength;
+  evidence: string[];
+  relatedBodies: PlanetaryBody[];
+};
+
+export type DashaPeriod = {
+  system: DashaSystem;
+  lord: PlanetaryBody;
+  nextLord: PlanetaryBody;
+  startAtUtc: string;
+  endAtUtc: string;
+  balanceYears: number;
+  progress: number;
+  sourceNakshatra: NakshatraName;
 };
 
 export type TransitEvent = {
@@ -182,14 +243,27 @@ export type NatalChartResponse = {
   birthDetails: BirthDetails;
   houseSystem: HouseSystem;
   ascendantSign: ZodiacSign;
+  lagna?: LagnaDetails;
   planets: PlanetPosition[];
   houses: HousePlacement[];
   aspects: AstrologicalAspect[];
+  vedicAspects?: VedicAspect[];
   divisionalCharts: DivisionalChart[];
   remedySignals: RemedySignal[];
+  yogas?: YogaResult[];
+  currentDasha?: DashaPeriod;
+  nakshatras?: {
+    body: PlanetaryBody | ChartPoint;
+    placement: NakshatraPlacement;
+  }[];
   summary: {
     dominantBodies: PlanetaryBody[];
     narrative: string;
+    strongestPlanets?: PlanetaryBody[];
+    challengingPlanets?: PlanetaryBody[];
+    challengingHouses?: HouseNumber[];
+    yogaKeys?: YogaKey[];
+    currentDashaLord?: PlanetaryBody;
   };
 };
 
@@ -202,6 +276,7 @@ export type TransitChartResponse = {
   transits: TransitEvent[];
   aspects: AstrologicalAspect[];
   remedySignals: RemedySignal[];
+  currentDasha?: DashaPeriod;
 };
 
 export type DivisionalChartResponse = {

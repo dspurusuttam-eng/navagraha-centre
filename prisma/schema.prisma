@@ -217,10 +217,15 @@ model Profile {
   userId    String   @unique
   phone     String?
   preferredLanguage String?
+  dob       String?
+  tob       String?
   city      String?
   region    String?
   country   String?
   timezone  String?
+  latitude  Decimal? @db.Decimal(9, 6)
+  longitude Decimal? @db.Decimal(9, 6)
+  chartData Json?
   bio       String?
   notes     String?
   createdAt DateTime @default(now())
