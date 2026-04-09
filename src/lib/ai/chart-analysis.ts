@@ -18,6 +18,31 @@ type ChartAnalysisContext = {
   consultationNotes: ConsultationNoteSummary[];
 };
 
+export const fallbackChartInsights: ChartInsights = {
+  summary: "No chart data available yet.",
+  strengths: [],
+  challenges: [],
+  recommendations: [],
+};
+
+export function createEmptyChartOverview(): ChartOverview {
+  return {
+    preferredLanguage: null,
+    preferredLanguageLabel: "English",
+    birthProfile: null,
+    chartRecord: null,
+    chart: null,
+  };
+}
+
+function createFallbackChartAnalysisContext(): ChartAnalysisContext {
+  return {
+    user: null,
+    overview: createEmptyChartOverview(),
+    consultationNotes: [],
+  };
+}
+
 function formatBody(body: PlanetaryBody) {
   return body.charAt(0) + body.slice(1).toLowerCase();
 }
@@ -188,61 +213,77 @@ function buildSummary(context: ChartAnalysisContext) {
 export async function loadChartAnalysisContext(
   userId: string
 ): Promise<ChartAnalysisContext> {
-  const prisma = getPrisma();
-  const [user, overview, consultations] = await Promise.all([
-    prisma.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        name: true,
-      },
-    }),
-    getChartOverview(userId),
-    prisma.consultation.findMany({
-      where: { userId },
-      orderBy: [
-        { scheduledFor: "desc" },
-        { updatedAt: "desc" },
-      ],
-      take: 3,
-      select: {
-        id: true,
-        serviceLabel: true,
-        status: true,
-        scheduledFor: true,
-        internalNotes: true,
-        intakeSummary: true,
-        topicFocus: true,
-      },
-    }),
-  ]);
+  try {
+    const prisma = getPrisma();
+    const [user, overview, consultations] = await Promise.all([
+      prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          id: true,
+          name: true,
+        },
+      }),
+      getChartOverview(userId),
+      prisma.consultation.findMany({
+        where: { userId },
+        orderBy: [
+          { scheduledFor: "desc" },
+          { updatedAt: "desc" },
+        ],
+        take: 3,
+        select: {
+          id: true,
+          serviceLabel: true,
+          status: true,
+          scheduledFor: true,
+          internalNotes: true,
+          intakeSummary: true,
+          topicFocus: true,
+        },
+      }),
+    ]);
 
-  return {
-    user,
-    overview,
-    consultationNotes: consultations.map((consultation) => ({
-      id: consultation.id,
-      serviceLabel: consultation.serviceLabel,
-      statusLabel: formatStatus(consultation.status),
-      scheduledForUtc: consultation.scheduledFor?.toISOString() ?? null,
-      note:
-        consultation.internalNotes ??
-        consultation.intakeSummary ??
-        consultation.topicFocus ??
-        "A consultation context record is available for future follow-up.",
-    })),
-  };
+    return {
+      user,
+      overview,
+      consultationNotes: consultations.map((consultation) => ({
+        id: consultation.id,
+        serviceLabel: consultation.serviceLabel,
+        statusLabel: formatStatus(consultation.status),
+        scheduledForUtc: consultation.scheduledFor?.toISOString() ?? null,
+        note:
+          consultation.internalNotes ??
+          consultation.intakeSummary ??
+          consultation.topicFocus ??
+          "A consultation context record is available for future follow-up.",
+      })),
+    };
+  } catch (error) {
+    console.error("loadChartAnalysisContext failed", error);
+
+    return createFallbackChartAnalysisContext();
+  }
 }
 
 export async function generateChartInsights(
   userId: string
 ): Promise<ChartInsights> {
-  const context = await loadChartAnalysisContext(userId);
+  try {
+    const context = await loadChartAnalysisContext(userId);
 
-  return {
-    summary: buildSummary(context),
-    strengths: buildStrengths(context),
-    challenges: buildChallenges(context),
-    recommendations: buildRecommendations(context),
-  };
+    if (!context.overview.chart || !context.overview.chartRecord) {
+      return fallbackChartInsights;
+    }
+
+    return {
+      summary: buildSummary(context),
+      strengths: buildStrengths(context),
+      challenges: buildChallenges(context),
+      recommendations: buildRecommendations(context),
+    };
+  } catch (error) {
+    console.error("generateChartInsights failed", error);
+
+    return fallbackChartInsights;
+  }
 }

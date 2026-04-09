@@ -95,6 +95,7 @@ The project also exposes a lightweight health endpoint at `/api/health` and a cl
 - `npm run db:setup` - generate Prisma client, push schema, and seed launch data
 - `npm run db:studio` - open Prisma Studio
 - `npm run env:check` - validate launch-critical environment variables
+- `npm run setup:swisseph:windows` - install and patch `swisseph` on Windows without changing package manifests
 - `npm run check:images` - fail if raw `<img>` tags are found in `src/`
 - `npm run test:smoke` - run smoke checks for launch-critical utilities
 - `npm run launch:check` - run environment, image, and smoke launch checks
@@ -110,6 +111,30 @@ The project also exposes a lightweight health endpoint at `/api/health` and a cl
 - Transit snapshots and divisional charts remain on the mock provider until later phases.
 - Live natal requests must include birth latitude and longitude in `birthDetails.place`.
 - Server code should import the chart boundary from `@/modules/astrology/server` so calculation logic stays isolated from UI code.
+
+## Windows Swiss Ephemeris Setup
+
+If you are preparing for the Swiss Ephemeris adapter on Windows, use the repo helper instead of a plain `npm install swisseph`:
+
+```bash
+npm run setup:swisseph:windows
+```
+
+What the helper does:
+
+- installs `swisseph` locally with `--ignore-scripts --no-save`
+- regenerates the native Visual Studio project with `node-gyp`
+- patches the generated Windows project to use MSVC `v143`
+- applies the required C++20 setting for Node 24 headers
+- builds and verifies the native addon with a runtime load check
+
+Prerequisites:
+
+- Python 3 available in PowerShell
+- Visual Studio 2022 Build Tools with Desktop C++ workload
+- a Windows 10 SDK component available to `node-gyp` (for example `19041`)
+
+This helper is intentionally local-only and does not change `package.json` or `package-lock.json`.
 
 ## AI Interpretation Setup
 

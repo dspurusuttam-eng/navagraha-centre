@@ -2,9 +2,13 @@ import Link from "next/link";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
-import { generateChartInsights } from "@/lib/ai/chart-analysis";
+import {
+  createEmptyChartOverview,
+  fallbackChartInsights,
+  generateChartInsights,
+} from "@/lib/ai/chart-analysis";
 import { generateUserReport } from "@/lib/ai/report-generator";
-import type { ChartInsights } from "@/lib/ai/types";
+import type { ChartInsights, GeneratedUserReport } from "@/lib/ai/types";
 import { buildPageMetadata } from "@/lib/metadata";
 import { getDashboardOverview } from "@/modules/account/service";
 import { requireUserSession } from "@/modules/auth/server";
@@ -18,59 +22,79 @@ export const metadata = buildPageMetadata({
   keywords: ["member dashboard", "private astrology account", "account home"],
 });
 
+function createFallbackDashboardOverview() {
+  return {
+    readinessScore: 0,
+    counts: {
+      birthData: 0,
+      charts: 0,
+      consultations: 0,
+      orders: 0,
+    },
+  };
+}
+
+function createFallbackUserReport(): GeneratedUserReport {
+  return {
+    chartReport: {
+      status: "empty",
+      overview: createEmptyChartOverview(),
+    },
+    insights: fallbackChartInsights,
+    consultationNotes: [],
+    remedies: [],
+    reportSummary: {
+      headline: "Your private workspace is available.",
+      overview:
+        "No chart or consultation data is available yet, so the dashboard is showing a safe fallback state.",
+    },
+  };
+}
+
 export default async function DashboardPage() {
   const session = await requireUserSession();
-  const [overviewResult, chartOverviewResult, insightsResult, reportResult] =
-    await Promise.allSettled([
-    getDashboardOverview(session.user.id),
-    getChartOverview(session.user.id),
-    generateChartInsights(session.user.id),
-    generateUserReport(session.user.id, session.user.name),
+  const [overview, chartOverview, insights, report] = await Promise.all([
+    (async () => {
+      try {
+        return await getDashboardOverview(session.user.id);
+      } catch (error) {
+        console.error("Dashboard overview failed", error);
+
+        return createFallbackDashboardOverview();
+      }
+    })(),
+    (async () => {
+      try {
+        return await getChartOverview(session.user.id);
+      } catch (error) {
+        console.error("Chart overview failed", error);
+
+        return createEmptyChartOverview();
+      }
+    })(),
+    (async (): Promise<ChartInsights> => {
+      try {
+        return await generateChartInsights(session.user.id);
+      } catch (error) {
+        console.error("Dashboard insights failed", error);
+
+        return fallbackChartInsights;
+      }
+    })(),
+    (async (): Promise<GeneratedUserReport> => {
+      try {
+        return await generateUserReport(session.user.id, session.user.name);
+      } catch (error) {
+        console.error("Dashboard report failed", error);
+
+        return createFallbackUserReport();
+      }
+    })(),
   ]);
-  const overview =
-    overviewResult.status === "fulfilled"
-      ? overviewResult.value
-      : {
-          readinessScore: 0,
-          counts: {
-            birthData: 0,
-            charts: 0,
-            consultations: 0,
-            orders: 0,
-          },
-        };
-  const chartOverview =
-    chartOverviewResult.status === "fulfilled"
-      ? chartOverviewResult.value
-      : {
-          preferredLanguage: null,
-          preferredLanguageLabel: "English",
-          birthProfile: null,
-          chartRecord: null,
-          chart: null,
-        };
-  const insights: ChartInsights =
-    insightsResult.status === "fulfilled"
-      ? insightsResult.value
-      : {
-          summary:
-            "Your private dashboard is available, but the chart insight layer could not be loaded just now.",
-          strengths: [
-            "Your protected account shell remains intact and ready for the next refresh.",
-          ],
-          challenges: [
-            "The content intelligence layer is not available for this request yet.",
-          ],
-          recommendations: [
-            "Refresh the route and continue from your saved chart or onboarding flow.",
-          ],
-        };
-  const report =
-    reportResult.status === "fulfilled" ? reportResult.value : null;
   const hasBirthProfile = Boolean(chartOverview.birthProfile);
   const hasChart = Boolean(chartOverview.chartRecord && chartOverview.chart);
-  const leadConsultationNote = report?.consultationNotes[0]?.note ?? null;
-  const leadRemedy = report?.remedies[0] ?? null;
+  const leadConsultationNote = report.consultationNotes[0]?.note ?? null;
+  const leadRemedy = report.remedies[0] ?? null;
 
   return (
     <Section
@@ -155,10 +179,8 @@ export default async function DashboardPage() {
           </div>
 
           <div className="space-y-4 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-            <p>
-              {insights.summary}
-            </p>
-            <p>{report?.reportSummary.overview ?? "Your content layer is ready to combine chart data, consultation context, and future AI support in one private workspace."}</p>
+            <p>{insights.summary}</p>
+            <p>{report.reportSummary.overview}</p>
             <div className="flex flex-wrap gap-3">
               <Link
                 href="/dashboard/onboarding"
