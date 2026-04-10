@@ -129,8 +129,8 @@ export default function ShopPage() {
         <Card tone="accent" className="space-y-5">
           <p className="text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
             Orders are captured as structured requests so availability,
-            confirmation, and payment can be handled with care rather than
-            rushed through an unfinished checkout.
+            confirmation, and payment can be handled with care through a
+            deliberate order-confirmation process.
           </p>
           <div className="flex flex-wrap gap-3">
             <Link href="/shop/cart" className={buttonStyles({ size: "lg" })}>

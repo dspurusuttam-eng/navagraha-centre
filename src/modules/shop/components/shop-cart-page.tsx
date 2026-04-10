@@ -36,7 +36,7 @@ export function ShopCartPage() {
           Cart
         </p>
         <p className="text-[length:var(--font-size-body-md)] text-[color:var(--color-muted)]">
-          Loading your saved cart...
+          Opening your saved cart...
         </p>
       </Card>
     );

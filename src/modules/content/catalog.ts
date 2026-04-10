@@ -13,7 +13,7 @@ export const contentTypeDescriptions: Record<ContentType, string> = {
   BLOG_ARTICLE:
     "Longer-form editorial pieces that build trust, tone, and authority around the platform's public philosophy.",
   DAILY_HOROSCOPE:
-    "Short-form daily guidance content designed for cadence, reflection, and future editorial scheduling.",
+    "Short-form daily guidance content designed for cadence, reflection, and editorial consistency.",
   MONTHLY_FORECAST:
     "Calendar-based editorial outlook pieces that can support seasonal ranking without becoming filler.",
   REMEDIES_ARTICLE:
@@ -115,12 +115,12 @@ export const curatedContentEntries: readonly ContentEntry[] = [
     readingTimeMinutes: 3,
     heroEyebrow: "Daily Horoscope",
     heroHighlights: [
-      "A short-form content type ready for editorial cadence later",
+      "A short-form format maintained with steady editorial cadence",
       "Written as reflective guidance, not deterministic promise",
-      "Suitable for human review before any future assisted drafting",
+      "Reviewed with the same tone and safety standards as long-form pieces",
     ],
     heroNote:
-      "Daily pieces are kept intentionally disciplined so future publishing cadence does not slip into filler or automation-first content.",
+      "Daily pieces are kept intentionally disciplined so the library remains calm, useful, and high-signal.",
     author: joyPrakashSarmah,
     reviewer: editorialReviewer,
     sections: [
@@ -170,7 +170,7 @@ export const curatedContentEntries: readonly ContentEntry[] = [
     heroHighlights: [
       "A recurring content format that supports seasonality and search depth",
       "Structured for reflective planning rather than sensational prediction",
-      "Built to support future human-reviewed draft workflows",
+      "Maintained through deliberate human review standards",
     ],
     heroNote:
       "Monthly forecast content should deepen authority over time, not chase short-term traffic through exaggerated claims.",
@@ -284,7 +284,7 @@ export const curatedContentEntries: readonly ContentEntry[] = [
     heroHighlights: [
       "Designed for clients who want operational clarity before booking",
       "Pairs evergreen service intent with long-term search value",
-      "Supports future CMS and draft workflows without changing the route contract",
+      "Structured to remain portable across CMS tooling without changing the route contract",
     ],
     heroNote:
       "Service explainers help the public site rank on intent-driven queries while keeping expectations clear and humane.",
@@ -363,9 +363,9 @@ export const curatedContentEntries: readonly ContentEntry[] = [
           "Yes. The consultation flow is centered on Joy Prakash Sarmah and the booking path keeps that authorship visible.",
       },
       {
-        question: "Will future drafts be auto-published?",
+        question: "Are insights reviewed before publication?",
         answer:
-          "No. The content system is being prepared for assisted drafting later, but publication still requires deliberate human review.",
+          "Yes. Published insights pass through deliberate human review so tone, safety, and factual boundaries stay clear.",
       },
     ],
     relatedSlugs: [

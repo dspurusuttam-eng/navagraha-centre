@@ -83,7 +83,7 @@ export const curatedRemedyCatalog: readonly CuratedRemedyRecord[] = [
     summary:
       "A formal ritual option reserved for cases where a broader balancing observance may be worth discussing with a trusted guide.",
     description:
-      "Included as a transparent ritual placeholder for later consultation workflows. It should never be framed through fear or urgency.",
+      "Included as a transparent ritual option for consultation-led review. It should never be framed through fear or urgency.",
     type: "PUJA",
     cautionNote:
       "Formal puja should be chosen deliberately and only when it feels aligned with personal tradition, trust, and capacity.",

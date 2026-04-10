@@ -115,7 +115,7 @@ export default async function InsightDetailPage({
       <Section
         eyebrow="Published Detail"
         title="A public content record built for clarity, search value, and trust."
-        description="The detail page keeps metadata, authorship, and structured content explicit so the system is useful now and scalable later."
+        description="The detail page keeps metadata, authorship, and structured content explicit so each article stays useful today and durable over time."
       >
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(300px,0.8fr)]">
           <div className="space-y-6">
@@ -202,10 +202,10 @@ export default async function InsightDetailPage({
                   </span>
                 </p>
                 <p>
-                  Draft workflow:{" "}
+                  Editorial standard:{" "}
                   <span className="text-[color:var(--color-foreground)]">
-                    AI-assisted drafts can be prepared later, but publishing
-                    remains human-reviewed.
+                    Every article is reviewed for tone, safety, and factual
+                    clarity before publication.
                   </span>
                 </p>
               </div>

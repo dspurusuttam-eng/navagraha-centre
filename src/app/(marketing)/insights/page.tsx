@@ -104,7 +104,7 @@ export default async function InsightsPage() {
       <Section
         eyebrow="Publishing Boundary"
         title="Human-reviewed publishing, with clear editorial boundaries."
-        description="The content system is designed to support disciplined drafting and review without mass publishing or filler output."
+        description="The content system is designed for disciplined writing, careful review, and high-signal publishing without filler output."
       >
         <Card tone="accent" className="space-y-5">
           <p className="text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
