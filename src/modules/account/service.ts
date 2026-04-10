@@ -1,5 +1,6 @@
 import "server-only";
 
+import { Prisma } from "@prisma/client";
 import { getPrisma } from "@/lib/prisma";
 
 type SaveProfileInput = {
@@ -16,11 +17,31 @@ type SaveProfileInput = {
 };
 
 export async function ensureUserProfile(userId: string) {
-  return getPrisma().profile.upsert({
+  const prisma = getPrisma();
+  const existingProfile = await prisma.profile.findUnique({
     where: { userId },
-    update: {},
-    create: { userId },
   });
+
+  if (existingProfile) {
+    return existingProfile;
+  }
+
+  try {
+    return await prisma.profile.create({
+      data: { userId },
+    });
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      return prisma.profile.findUniqueOrThrow({
+        where: { userId },
+      });
+    }
+
+    throw error;
+  }
 }
 
 export async function getDashboardOverview(userId: string) {
