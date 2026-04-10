@@ -1,7 +1,7 @@
 import "server-only";
 
 import type { ConsultationStatus } from "@prisma/client";
-import { buildChartSummaryInsights } from "@/lib/astrology/chart-generator";
+import { buildChartSummaryInsights } from "@/lib/astrology/chart-summary";
 import { nakshatraLabelMap, planetLabelMap, zodiacSignLabelMap } from "@/lib/astrology/constants";
 import { getPrisma } from "@/lib/prisma";
 import { getChartOverview, type ChartOverview } from "@/modules/onboarding/service";

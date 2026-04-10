@@ -1,6 +1,6 @@
 import "server-only";
 
-import { buildChartSummaryInsights } from "@/lib/astrology/chart-generator";
+import { buildChartSummaryInsights } from "@/lib/astrology/chart-summary";
 import { nakshatraLabelMap, planetLabelMap, zodiacSignLabelMap } from "@/lib/astrology/constants";
 import { fallbackChartInsights, loadChartAnalysisContext } from "@/lib/ai/chart-analysis";
 import { suggestRemedies } from "@/lib/ai/remedies-engine";
