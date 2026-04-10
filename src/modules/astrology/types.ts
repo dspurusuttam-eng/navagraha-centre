@@ -273,6 +273,8 @@ export type TransitChartResponse = {
   birthDetails: BirthDetails;
   houseSystem: HouseSystem;
   window: TransitWindow;
+  asOfUtc: string;
+  planets: PlanetPosition[];
   transits: TransitEvent[];
   aspects: AstrologicalAspect[];
   remedySignals: RemedySignal[];

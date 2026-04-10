@@ -1,12 +1,13 @@
 import "server-only";
 
 import { buildChartSummaryInsights } from "@/lib/astrology/chart-summary";
+import { fallbackCurrentCycleSummary } from "@/lib/astrology/current-cycle";
 import { nakshatraLabelMap, planetLabelMap, zodiacSignLabelMap } from "@/lib/astrology/constants";
 import { fallbackChartInsights, loadChartAnalysisContext } from "@/lib/ai/chart-analysis";
+import { getCurrentCycleSummary } from "@/lib/ai/current-cycle";
 import { suggestRemedies } from "@/lib/ai/remedies-engine";
 import type { ConsultationReply } from "@/lib/ai/types";
-import { getAstrologyService } from "@/modules/astrology/server";
-import type { BirthDetails, NatalChartResponse, PlanetPosition, PlanetaryBody } from "@/modules/astrology/types";
+import type { NatalChartResponse, PlanetPosition, PlanetaryBody } from "@/modules/astrology/types";
 
 const supportedQuestionPattern =
   /\b(ascendant|rising|chart|theme|themes|planet|sun|moon|mars|mercury|jupiter|venus|saturn|rahu|ketu|house|aspect|cycle|transit|dasha|remedy|recommend)\b/i;
@@ -28,6 +29,13 @@ const bodyPatterns = [
 
 function normalizeQuestion(question: string) {
   return question.trim().replace(/\s+/g, " ");
+}
+
+function isCareerTimingQuestion(question: string) {
+  return (
+    /\b(career|work|profession|reputation|public role)\b/i.test(question) &&
+    /\b(period|timing|cycle|right now|current|focus)\b/i.test(question)
+  );
 }
 
 function formatBody(body: PlanetaryBody) {
@@ -90,23 +98,6 @@ function getMentionedHouse(question: string) {
   return Number.isFinite(value) ? value : null;
 }
 
-function toBirthDetails(
-  chart: NonNullable<Awaited<ReturnType<typeof loadChartAnalysisContext>>["overview"]["birthProfile"]>
-): BirthDetails {
-  return {
-    dateLocal: chart.birthDate,
-    timeLocal: chart.birthTime ?? "00:00",
-    timezone: chart.timezone,
-    place: {
-      city: chart.city,
-      region: chart.region ?? undefined,
-      country: chart.country,
-      latitude: chart.latitude,
-      longitude: chart.longitude,
-    },
-  };
-}
-
 function getPlanetLine(planet: PlanetPosition) {
   const nakshatraLine = planet.nakshatra
     ? ` in ${nakshatraLabelMap[planet.nakshatra.name]} pada ${planet.nakshatra.pada}`
@@ -149,33 +140,6 @@ function getAspectLine(chart: NatalChartResponse) {
   return `${formatBody(aspect.source as PlanetaryBody)} forms a ${aspect.type.toLowerCase()} with ${formatBody(aspect.target as PlanetaryBody)} at an orb of ${aspect.orb.toFixed(2)} degrees.`;
 }
 
-async function getTransitLine(
-  birthDetails: BirthDetails
-) {
-  try {
-    const transitSnapshot = await getAstrologyService().getTransitSnapshot({
-      kind: "TRANSIT_SNAPSHOT",
-      requestId: crypto.randomUUID(),
-      birthDetails,
-      window: {
-        fromDateUtc: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-        toDateUtc: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
-      },
-    });
-    const leadTransit = transitSnapshot.transits[0];
-
-    if (!leadTransit) {
-      return null;
-    }
-
-    return `${formatBody(leadTransit.body)} is currently moving through ${formatSign(leadTransit.sign)} in the ${ordinalHouse(leadTransit.house)} house. ${leadTransit.summary}`;
-  } catch (error) {
-    console.error("getTransitLine failed", error);
-
-    return null;
-  }
-}
-
 function buildSummaryAnswer(chart: NatalChartResponse) {
   const summaryInsights = buildChartSummaryInsights(chart);
   const yogaLine = chart.yogas?.length
@@ -195,24 +159,90 @@ function buildSummaryAnswer(chart: NatalChartResponse) {
   ].join("\n\n");
 }
 
+function buildCurrentCycleAnswer(
+  question: string,
+  currentCycle: typeof fallbackCurrentCycleSummary
+) {
+  if (currentCycle.status !== "ready") {
+    return [
+      currentCycle.unavailableReason ??
+        "Current timing could not be refreshed just now.",
+      "I do not want to improvise timing language without a grounded dasha and transit snapshot.",
+    ].join("\n\n");
+  }
+
+  const wantsCareerTiming = isCareerTimingQuestion(question);
+  const relevantLifeAreaPattern = wantsCareerTiming
+    ? /\bcareer\b|\breputation\b|\bpublic role\b|\bwork routines\b/i
+    : null;
+  const focusAreas = relevantLifeAreaPattern
+    ? currentCycle.synthesis.activeAreas.filter((area) =>
+        area.lifeAreas.some((lifeArea) => relevantLifeAreaPattern.test(lifeArea))
+      )
+    : currentCycle.synthesis.activeAreas;
+  const supportiveWindows = relevantLifeAreaPattern
+    ? currentCycle.synthesis.supportiveWindows.filter((area) =>
+        area.lifeAreas.some((lifeArea) => relevantLifeAreaPattern.test(lifeArea))
+      )
+    : currentCycle.synthesis.supportiveWindows;
+  const cautionWindows = relevantLifeAreaPattern
+    ? currentCycle.synthesis.cautionWindows.filter((area) =>
+        area.lifeAreas.some((lifeArea) => relevantLifeAreaPattern.test(lifeArea))
+      )
+    : currentCycle.synthesis.cautionWindows;
+  const focusLine = focusAreas[0]?.summary ?? currentCycle.synthesis.overview;
+  const supportiveLine = supportiveWindows[0]
+    ? `${supportiveWindows[0].title} ${supportiveWindows[0].summary}`
+    : wantsCareerTiming
+      ? "No especially supportive career window stands out more strongly than the broader chart context right now."
+      : "No especially supportive transit window stands out more strongly than the broader chart context right now.";
+  const cautionLine = cautionWindows[0]
+    ? `${cautionWindows[0].title} ${cautionWindows[0].summary}`
+    : wantsCareerTiming
+      ? "Career timing does not show a clear warning signal beyond the need for measured pacing and realistic expectations."
+      : "No single caution window dominates beyond the usual need for steadier judgement.";
+  const dashaLine = currentCycle.dasha
+    ? `${formatBody(currentCycle.dasha.lord)} mahadasha is active until ${new Date(currentCycle.dasha.endAtUtc).toLocaleDateString("en-IN", {
+        dateStyle: "medium",
+      })}.`
+    : "The current dasha could not be refreshed just now.";
+
+  return [
+    dashaLine,
+    focusLine,
+    supportiveLine,
+    cautionLine,
+    wantsCareerTiming
+      ? "Read this as a timing emphasis around career and public role, not as a guaranteed yes-or-no outcome."
+      : "Read this as a timing emphasis, not a fixed prediction.",
+  ].join("\n\n");
+}
+
 export async function generateConsultationReply(
   question: string,
   userId: string
 ): Promise<ConsultationReply> {
   try {
     const normalizedQuestion = normalizeQuestion(question);
-    const [context, insights, remedies] = await Promise.all([
+    const [context, insights, currentCycle, remedies] = await Promise.all([
       loadChartAnalysisContext(userId),
       loadChartAnalysisContext(userId).then((loaded) =>
         loaded.overview.chart ? buildChartSummaryInsights(loaded.overview.chart) : fallbackChartInsights
       ),
+      getCurrentCycleSummary(userId).catch((error) => {
+        console.error("getCurrentCycleSummary failed", error);
+        return fallbackCurrentCycleSummary;
+      }),
       suggestRemedies(userId).catch((error) => {
         console.error("suggestRemedies failed", error);
         return [];
       }),
     ]);
 
-    if (!supportedQuestionPattern.test(normalizedQuestion)) {
+    if (
+      !supportedQuestionPattern.test(normalizedQuestion) &&
+      !isCareerTimingQuestion(normalizedQuestion)
+    ) {
       return {
         answer: buildUnsupportedAnswer(),
         followUpSuggestions: [
@@ -353,26 +383,17 @@ export async function generateConsultationReply(
       };
     }
 
-    if (/cycle|transit|dasha/i.test(normalizedQuestion)) {
-      const transitLine = await getTransitLine(toBirthDetails(context.overview.birthProfile));
-      const dashaLine = chart.currentDasha
-        ? `${formatBody(chart.currentDasha.lord)} mahadasha is active until ${new Date(chart.currentDasha.endAtUtc).toLocaleDateString("en-IN", {
-            dateStyle: "medium",
-          })}.`
-        : "No dasha timing is stored yet.";
-
+    if (
+      /cycle|transit|dasha/i.test(normalizedQuestion) ||
+      isCareerTimingQuestion(normalizedQuestion)
+    ) {
       return {
-        answer: [
-          dashaLine,
-          transitLine ??
-            "A fresh transit snapshot is not available right now, so I am staying with the stored dasha and natal pattern instead of improvising.",
-          chart.summary.narrative,
-        ].join("\n\n"),
+        answer: buildCurrentCycleAnswer(normalizedQuestion, currentCycle),
         followUpSuggestions: [
-          "Ask which graha is strongest in your chart.",
-          "Ask what your ascendant means in this cycle.",
+          "Ask which life areas are most emphasized in this cycle.",
+          "Ask what your ascendant means in the current timing context.",
         ],
-        sourceLabels: ["dasha", "transit", "chart-summary"],
+        sourceLabels: ["dasha", "transit", "current-cycle"],
         remedies,
         providerKey: "vedic-consultation-engine",
         model: null,

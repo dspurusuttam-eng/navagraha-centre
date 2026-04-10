@@ -1,4 +1,5 @@
 import type { ChartReportState } from "@/modules/report/service";
+import type { CurrentCycleSummary } from "@/lib/astrology/current-cycle";
 
 export type ChartInsights = {
   summary: string;
@@ -49,6 +50,7 @@ export type ConsultationReply = {
 export type GeneratedUserReport = {
   chartReport: ChartReportState;
   insights: ChartInsights;
+  currentCycle: CurrentCycleSummary;
   consultationNotes: ConsultationNoteSummary[];
   remedies: RemedySuggestion[];
   reportSummary: {

@@ -611,6 +611,8 @@ export function generateTransitSnapshot(input: {
     birthDetails: input.birthDetails,
     houseSystem,
     window: input.window,
+    asOfUtc: transitDate.toISOString(),
+    planets: transitPlanets,
     transits,
     aspects: getTransitToNatalAspects(transitPlanets, natalChart.planets),
     remedySignals: natalChart.remedySignals,

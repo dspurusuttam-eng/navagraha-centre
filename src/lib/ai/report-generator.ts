@@ -1,11 +1,13 @@
 import "server-only";
 
+import { fallbackCurrentCycleSummary } from "@/lib/astrology/current-cycle";
 import {
   createEmptyChartOverview,
   fallbackChartInsights,
   generateChartInsights,
   loadChartAnalysisContext,
 } from "@/lib/ai/chart-analysis";
+import { getCurrentCycleSummary } from "@/lib/ai/current-cycle";
 import { suggestRemedies } from "@/lib/ai/remedies-engine";
 import type { GeneratedUserReport } from "@/lib/ai/types";
 import { getChartReport } from "@/modules/report/service";
@@ -17,6 +19,7 @@ function createFallbackUserReport(): GeneratedUserReport {
       overview: createEmptyChartOverview(),
     },
     insights: fallbackChartInsights,
+    currentCycle: fallbackCurrentCycleSummary,
     consultationNotes: [],
     remedies: [],
     reportSummary: {
@@ -32,9 +35,10 @@ export async function generateUserReport(
   subjectName?: string | null
 ): Promise<GeneratedUserReport> {
   try {
-    const [chartReport, insights, context, remedies] = await Promise.all([
+    const [chartReport, insights, currentCycle, context, remedies] = await Promise.all([
       getChartReport(userId, subjectName ?? "NAVAGRAHA CENTRE member"),
       generateChartInsights(userId),
+      getCurrentCycleSummary(userId),
       loadChartAnalysisContext(userId),
       suggestRemedies(userId).catch((error) => {
         console.error("suggestRemedies failed", error);
@@ -49,6 +53,7 @@ export async function generateUserReport(
           overview: createEmptyChartOverview(),
         },
       insights: insights ?? fallbackChartInsights,
+      currentCycle,
       consultationNotes: context.consultationNotes ?? [],
       remedies: remedies ?? [],
       reportSummary: {

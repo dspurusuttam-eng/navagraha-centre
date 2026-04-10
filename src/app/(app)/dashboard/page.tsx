@@ -7,6 +7,7 @@ import {
   fallbackChartInsights,
   generateChartInsights,
 } from "@/lib/ai/chart-analysis";
+import { fallbackCurrentCycleSummary } from "@/lib/astrology/current-cycle";
 import { generateUserReport } from "@/lib/ai/report-generator";
 import type { ChartInsights, GeneratedUserReport } from "@/lib/ai/types";
 import { buildPageMetadata } from "@/lib/metadata";
@@ -41,6 +42,7 @@ function createFallbackUserReport(): GeneratedUserReport {
       overview: createEmptyChartOverview(),
     },
     insights: fallbackChartInsights,
+    currentCycle: fallbackCurrentCycleSummary,
     consultationNotes: [],
     remedies: [],
     reportSummary: {
@@ -95,6 +97,7 @@ export default async function DashboardPage() {
   const hasChart = Boolean(chartOverview.chartRecord && chartOverview.chart);
   const leadConsultationNote = report.consultationNotes[0]?.note ?? null;
   const leadRemedy = report.remedies[0] ?? null;
+  const currentCycle = report.currentCycle;
 
   return (
     <Section
@@ -276,6 +279,136 @@ export default async function DashboardPage() {
               Supportive remedy cue:{" "}
               <span className="text-[color:var(--color-foreground)]">
                 {leadRemedy?.title ?? "Will appear after chart insights are available"}
+              </span>
+            </p>
+          </div>
+        </Card>
+      </div>
+
+      <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
+        <Card className="space-y-5">
+          <div className="space-y-2">
+            <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+              Current Cycle
+            </p>
+            <h2
+              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-md)] text-[color:var(--color-foreground)]"
+              style={{ letterSpacing: "var(--tracking-display)" }}
+            >
+              Timing context grounded in live transits and the current dasha.
+            </h2>
+          </div>
+
+          {currentCycle.status === "ready" ? (
+            <div className="space-y-4 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              <p>{currentCycle.synthesis.overview}</p>
+              <div className="grid gap-4 md:grid-cols-3">
+                <div className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4">
+                  <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                    Top Focus Areas
+                  </p>
+                  <div className="mt-3 space-y-3">
+                    {currentCycle.synthesis.activeAreas.slice(0, 2).map((area) => (
+                      <div key={area.key} className="space-y-1">
+                        <p className="text-[color:var(--color-foreground)]">
+                          {area.title}
+                        </p>
+                        <p>{area.summary}</p>
+                        <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                          {area.timeframeLabel}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4">
+                  <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                    Caution Notes
+                  </p>
+                  <div className="mt-3 space-y-3">
+                    {currentCycle.synthesis.cautionWindows.slice(0, 2).map((item) => (
+                      <div key={item.key} className="space-y-1">
+                        <p className="text-[color:var(--color-foreground)]">
+                          {item.title}
+                        </p>
+                        <p>{item.summary}</p>
+                      </div>
+                    ))}
+                    {!currentCycle.synthesis.cautionWindows.length ? (
+                      <p>
+                        No dominant caution window stands out beyond the normal need
+                        for measured pacing.
+                      </p>
+                    ) : null}
+                  </div>
+                </div>
+
+                <div className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4">
+                  <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                    Time-Sensitive Highlights
+                  </p>
+                  <div className="mt-3 space-y-2">
+                    {currentCycle.synthesis.timeSensitiveHighlights.map((line) => (
+                      <p key={line}>{line}</p>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-5 py-5">
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                {currentCycle.unavailableReason}
+              </p>
+            </div>
+          )}
+        </Card>
+
+        <Card tone="accent" className="space-y-5">
+          <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+            Timing Snapshot
+          </p>
+          <div className="space-y-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            <p>
+              Dasha:{" "}
+              <span className="text-[color:var(--color-foreground)]">
+                {currentCycle.dasha
+                  ? `${currentCycle.dasha.lord} until ${new Date(
+                      currentCycle.dasha.endAtUtc
+                    ).toLocaleDateString("en-IN", {
+                      dateStyle: "medium",
+                    })}`
+                  : "Not available"}
+              </span>
+            </p>
+            <p>
+              Transit snapshot:{" "}
+              <span className="text-[color:var(--color-foreground)]">
+                {currentCycle.transitSnapshot.asOfUtc
+                  ? new Date(currentCycle.transitSnapshot.asOfUtc).toLocaleString(
+                      "en-IN",
+                      {
+                        dateStyle: "medium",
+                        timeStyle: "short",
+                      }
+                    )
+                  : "Not available"}
+              </span>
+            </p>
+            <p>
+              Lead transit:{" "}
+              <span className="text-[color:var(--color-foreground)]">
+                {currentCycle.transitSnapshot.planets[0]
+                  ? `${currentCycle.transitSnapshot.planets[0].body} in ${currentCycle.transitSnapshot.planets[0].sign}, house ${currentCycle.transitSnapshot.planets[0].house}`
+                  : "No transit snapshot available"}
+              </span>
+            </p>
+            <p>
+              Follow-up theme:{" "}
+              <span className="text-[color:var(--color-foreground)]">
+                {currentCycle.synthesis.followUpThemes[0]?.title ??
+                  "Will appear once timing context is available"}
               </span>
             </p>
           </div>

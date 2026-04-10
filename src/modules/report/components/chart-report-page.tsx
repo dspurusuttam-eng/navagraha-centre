@@ -490,6 +490,100 @@ export function ChartReportPage({
         <Card className="space-y-5">
           <div className="space-y-2">
             <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+              Current Timing
+            </p>
+            <h2
+              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
+              style={{ letterSpacing: "var(--tracking-display)" }}
+            >
+              A transit-aware timing layer built from current dasha and live graha movement.
+            </h2>
+          </div>
+
+          {report.currentCycle.status === "ready" ? (
+            <div className="space-y-4">
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                {report.currentCycle.synthesis.overview}
+              </p>
+
+              <div className="grid gap-4 lg:grid-cols-2">
+                <div className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4">
+                  <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                    Active Areas
+                  </p>
+                  <div className="mt-3 space-y-3">
+                    {report.currentCycle.synthesis.activeAreas.slice(0, 2).map((area) => (
+                      <div key={area.key} className="space-y-1">
+                        <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-foreground)]">
+                          {area.title}
+                        </p>
+                        <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                          {area.summary}
+                        </p>
+                        <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                          {area.timeframeLabel}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4">
+                  <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                    Care In Timing
+                  </p>
+                  <div className="mt-3 space-y-3">
+                    {report.currentCycle.synthesis.cautionWindows.slice(0, 2).map((item) => (
+                      <div key={item.key} className="space-y-1">
+                        <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-foreground)]">
+                          {item.title}
+                        </p>
+                        <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                          {item.summary}
+                        </p>
+                      </div>
+                    ))}
+                    {!report.currentCycle.synthesis.cautionWindows.length ? (
+                      <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                        No dominant caution window is standing out beyond the need
+                        for measured pacing.
+                      </p>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-4 lg:grid-cols-3">
+                <ReportMetric
+                  label="Dasha Lord"
+                  value={report.currentCycle.dasha?.lord ?? "Not available"}
+                />
+                <ReportMetric
+                  label="Transit Snapshot"
+                  value={formatDateTime(report.currentCycle.transitSnapshot.asOfUtc)}
+                />
+                <ReportMetric
+                  label="Lead Transit"
+                  value={
+                    report.currentCycle.transitSnapshot.planets[0]
+                      ? `${formatBody(report.currentCycle.transitSnapshot.planets[0].body)} / house ${report.currentCycle.transitSnapshot.planets[0].house}`
+                      : "Not available"
+                  }
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-5 py-5">
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                {report.currentCycle.unavailableReason}
+              </p>
+            </div>
+          )}
+        </Card>
+
+        <Card className="space-y-5">
+          <div className="space-y-2">
+            <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
               AI Interpretation
             </p>
             <h2

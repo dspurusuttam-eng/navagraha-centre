@@ -42,7 +42,7 @@ type FixtureBundle = {
   natal: FixtureNatalPayload;
   transits: Omit<
     TransitChartResponse,
-    "kind" | "metadata" | "birthDetails" | "houseSystem" | "window"
+    "kind" | "metadata" | "birthDetails" | "houseSystem" | "window" | "asOfUtc" | "planets"
   >;
   divisionalCharts: Record<DivisionalChartCode, FixtureDivisionalChart>;
 };

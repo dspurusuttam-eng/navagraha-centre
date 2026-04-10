@@ -119,10 +119,23 @@ export type GetCurrentTransitSnapshotInput = {
 };
 
 export type GetCurrentTransitSnapshotOutput = {
+  asOfUtc: string;
   window: {
     fromDateUtc: string;
     toDateUtc: string;
   };
+  planets: {
+    body: PlanetaryBody;
+    sign: string;
+    degree: number;
+    minute: number;
+    longitude: number;
+    house: number;
+    retrograde: boolean;
+    nakshatra: string | null;
+    intensity: string;
+    summary: string;
+  }[];
   transits: {
     id: string;
     body: PlanetaryBody;
@@ -315,7 +328,9 @@ export const aiToolContracts = {
       userId: "string",
     },
     output: {
+      asOfUtc: "string",
       window: "TransitWindow",
+      planets: "TransitPlanetSnapshot[]",
       transits: "TransitFact[]",
       aspects: "TransitAspectFact[]",
     },

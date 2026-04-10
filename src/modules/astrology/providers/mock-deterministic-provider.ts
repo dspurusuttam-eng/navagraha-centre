@@ -8,6 +8,7 @@ import type {
   NatalChartRequest,
   NatalChartResponse,
   PlanetPosition,
+  PlanetaryBody,
   TransitChartRequest,
   TransitChartResponse,
   ZodiacSign,
@@ -49,6 +50,25 @@ function getLongitudeForPlanet(planet: Pick<PlanetPosition, "sign" | "degree" | 
   return zodiacOffsets[planet.sign] + planet.degree + planet.minute / 60;
 }
 
+const fallbackTransitDegrees: Record<
+  PlanetaryBody,
+  {
+    degree: number;
+    minute: number;
+    speed: number;
+  }
+> = {
+  SUN: { degree: 11, minute: 14, speed: 0.98 },
+  MOON: { degree: 18, minute: 9, speed: 12.4 },
+  MARS: { degree: 7, minute: 26, speed: 0.53 },
+  MERCURY: { degree: 23, minute: 8, speed: 1.14 },
+  JUPITER: { degree: 15, minute: 31, speed: 0.21 },
+  VENUS: { degree: 4, minute: 52, speed: 1.08 },
+  SATURN: { degree: 19, minute: 17, speed: 0.11 },
+  RAHU: { degree: 8, minute: 42, speed: -0.05 },
+  KETU: { degree: 8, minute: 42, speed: -0.05 },
+};
+
 function enrichPlanetPosition(planet: FixturePlanetPosition): PlanetPosition {
   const longitude = planet.longitude ?? getLongitudeForPlanet(planet);
   const { degree, minute } = getDegreeMinute(longitude);
@@ -62,6 +82,37 @@ function enrichPlanetPosition(planet: FixturePlanetPosition): PlanetPosition {
     latitude: planet.latitude ?? 0,
     nakshatra: planet.nakshatra ?? getNakshatraPlacement(longitude),
   };
+}
+
+function buildTransitPlanets(fixture: (typeof mockAstrologyFixtures)[number]) {
+  const transitEventsByBody = new Map(
+    fixture.transits.transits.map((event) => [event.body, event] as const)
+  );
+
+  return fixture.natal.planets.map((planet) => {
+    const transitEvent = transitEventsByBody.get(planet.body);
+
+    if (!transitEvent) {
+      return enrichPlanetPosition(planet);
+    }
+
+    const fallbackDegrees = fallbackTransitDegrees[planet.body];
+
+    return enrichPlanetPosition({
+      ...planet,
+      sign: transitEvent.sign,
+      house: transitEvent.house,
+      degree: fallbackDegrees.degree,
+      minute: fallbackDegrees.minute,
+      retrograde:
+        planet.body === "RAHU" || planet.body === "KETU"
+          ? true
+          : planet.retrograde,
+      speed: fallbackDegrees.speed,
+      longitude: undefined,
+      nakshatra: undefined,
+    });
+  });
 }
 
 export class MockDeterministicAstrologyProvider implements AstrologyProvider {
@@ -174,6 +225,8 @@ export class MockDeterministicAstrologyProvider implements AstrologyProvider {
       birthDetails: cloneValue(request.birthDetails),
       houseSystem: request.houseSystem,
       window: cloneValue(request.window),
+      asOfUtc: fixture.generatedAtUtc,
+      planets: buildTransitPlanets(fixture),
       transits: cloneValue(fixture.transits.transits),
       aspects: cloneValue(fixture.transits.aspects),
       remedySignals: cloneValue(fixture.transits.remedySignals),
