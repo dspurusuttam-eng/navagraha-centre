@@ -33,6 +33,13 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   compress: true,
   serverExternalPackages: ["swisseph"],
+  outputFileTracingIncludes: {
+    "/*": [
+      "./node_modules/swisseph/build/Release/**/*",
+      "./node_modules/swisseph/lib/**/*",
+      "./node_modules/swisseph/ephe/**/*",
+    ],
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 60 * 60 * 24 * 7,
