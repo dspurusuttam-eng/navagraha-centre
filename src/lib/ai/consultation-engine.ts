@@ -10,7 +10,7 @@ import type { ConsultationReply } from "@/lib/ai/types";
 import type { NatalChartResponse, PlanetPosition, PlanetaryBody } from "@/modules/astrology/types";
 
 const supportedQuestionPattern =
-  /\b(ascendant|rising|chart|theme|themes|planet|sun|moon|mars|mercury|jupiter|venus|saturn|rahu|ketu|house|aspect|cycle|transit|dasha|remedy|recommend)\b/i;
+  /\b(ascendant|rising|chart|theme|themes|planet|sun|moon|mars|mercury|jupiter|venus|saturn|rahu|ketu|house|aspect|cycle|transit|dasha|remedy|recommend|week|weeks|month|months|calendar|roadmap|upcoming)\b/i;
 
 const bodyPatterns = [
   { body: "SUN", pattern: /\bsun\b|\bsolar\b/i },
@@ -35,6 +35,12 @@ function isCareerTimingQuestion(question: string) {
   return (
     /\b(career|work|profession|reputation|public role)\b/i.test(question) &&
     /\b(period|timing|cycle|right now|current|focus)\b/i.test(question)
+  );
+}
+
+function isGuidanceCalendarQuestion(question: string) {
+  return /\b(next week|next few weeks|next month|next 30 days|next 90 days|upcoming|calendar|roadmap|coming weeks|coming month)\b/i.test(
+    question
   );
 }
 
@@ -218,6 +224,59 @@ function buildCurrentCycleAnswer(
   ].join("\n\n");
 }
 
+function buildGuidanceCalendarAnswer(
+  question: string,
+  currentCycle: typeof fallbackCurrentCycleSummary
+) {
+  if (currentCycle.status !== "ready") {
+    return [
+      currentCycle.unavailableReason ??
+        "A grounded timing calendar is not available right now.",
+      "I do not want to improvise a timeline without a stored chart and a fresh transit snapshot.",
+    ].join("\n\n");
+  }
+
+  const normalizedQuestion = question.toLowerCase();
+  const bucket =
+    normalizedQuestion.includes("next week") ||
+    normalizedQuestion.includes("coming weeks")
+      ? currentCycle.guidanceCalendar.buckets.find(
+          (entry) => entry.key === "NEXT_7_DAYS"
+        )
+      : normalizedQuestion.includes("next month") ||
+          normalizedQuestion.includes("next 30 days")
+        ? currentCycle.guidanceCalendar.buckets.find(
+            (entry) => entry.key === "NEXT_30_DAYS"
+          )
+        : normalizedQuestion.includes("next 90 days")
+          ? currentCycle.guidanceCalendar.buckets.find(
+              (entry) => entry.key === "NEXT_90_DAYS"
+            )
+          : currentCycle.guidanceCalendar.buckets.find(
+              (entry) => entry.key === "NEXT_30_DAYS"
+            );
+
+  if (!bucket) {
+    return currentCycle.guidanceCalendar.overview;
+  }
+
+  const leadEntry = bucket.entries[0];
+  const cautionEntry = bucket.entries.find(
+    (entry) => entry.kind === "CAUTION_WINDOW"
+  );
+
+  return [
+    bucket.summary,
+    leadEntry
+      ? `${leadEntry.title} ${leadEntry.summary}`
+      : "No stronger timing entry is standing out in this window beyond steady pacing.",
+    cautionEntry
+      ? `${cautionEntry.title} ${cautionEntry.summary}`
+      : "No dominant caution window is standing out more strongly than the broader chart pattern here.",
+    "Use this as a planning guide, not as a guaranteed prediction.",
+  ].join("\n\n");
+}
+
 export async function generateConsultationReply(
   question: string,
   userId: string
@@ -385,15 +444,21 @@ export async function generateConsultationReply(
 
     if (
       /cycle|transit|dasha/i.test(normalizedQuestion) ||
+      isGuidanceCalendarQuestion(normalizedQuestion) ||
       isCareerTimingQuestion(normalizedQuestion)
     ) {
       return {
-        answer: buildCurrentCycleAnswer(normalizedQuestion, currentCycle),
+        answer: isGuidanceCalendarQuestion(normalizedQuestion)
+          ? buildGuidanceCalendarAnswer(normalizedQuestion, currentCycle)
+          : buildCurrentCycleAnswer(normalizedQuestion, currentCycle),
         followUpSuggestions: [
           "Ask which life areas are most emphasized in this cycle.",
           "Ask what your ascendant means in the current timing context.",
+          "Ask what the next month emphasizes most.",
         ],
-        sourceLabels: ["dasha", "transit", "current-cycle"],
+        sourceLabels: isGuidanceCalendarQuestion(normalizedQuestion)
+          ? ["dasha", "transit", "guidance-calendar"]
+          : ["dasha", "transit", "current-cycle"],
         remedies,
         providerKey: "vedic-consultation-engine",
         model: null,

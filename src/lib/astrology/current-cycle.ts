@@ -81,6 +81,45 @@ export type CurrentCycleAdminSupport = {
   followUpWindows: CurrentCycleWindow[];
 };
 
+export type GuidanceCalendarBucketKey =
+  | "NEXT_7_DAYS"
+  | "NEXT_30_DAYS"
+  | "NEXT_90_DAYS";
+
+export type GuidanceCalendarEntryKind =
+  | "FOCUS"
+  | "SUPPORTIVE_WINDOW"
+  | "CAUTION_WINDOW"
+  | "FOLLOW_UP";
+
+export type GuidanceCalendarEntry = {
+  key: string;
+  bucketKey: GuidanceCalendarBucketKey;
+  kind: GuidanceCalendarEntryKind;
+  source: CurrentCycleSource;
+  title: string;
+  summary: string;
+  timeframeLabel: string;
+  startAtUtc: string | null;
+  endAtUtc: string | null;
+  intensity: SignalStrength;
+  lifeAreas: string[];
+  relatedBodies: PlanetaryBody[];
+  consultationRecommended: boolean;
+};
+
+export type GuidanceCalendarBucket = {
+  key: GuidanceCalendarBucketKey;
+  label: string;
+  summary: string;
+  entries: GuidanceCalendarEntry[];
+};
+
+export type GuidanceCalendarSummary = {
+  overview: string;
+  buckets: GuidanceCalendarBucket[];
+};
+
 export type CurrentCycleSummary = {
   status: CurrentCycleStatus;
   generatedAtUtc: string;
@@ -100,6 +139,7 @@ export type CurrentCycleSummary = {
   };
   synthesis: DashaTransitSynthesis;
   adminSupport: CurrentCycleAdminSupport;
+  guidanceCalendar: GuidanceCalendarSummary;
 };
 
 const ordinalHouseLabels: Record<HouseNumber, string> = {
@@ -268,6 +308,33 @@ function buildUnavailableSynthesis(): DashaTransitSynthesis {
   };
 }
 
+function buildUnavailableGuidanceCalendar(): GuidanceCalendarSummary {
+  return {
+    overview:
+      "A near-term guidance calendar will appear once a stored chart and fresh transit data are both available.",
+    buckets: [
+      {
+        key: "NEXT_7_DAYS",
+        label: "Next 7 Days",
+        summary: "No immediate timing guidance is available yet.",
+        entries: [],
+      },
+      {
+        key: "NEXT_30_DAYS",
+        label: "Next 30 Days",
+        summary: "No near-term timing guidance is available yet.",
+        entries: [],
+      },
+      {
+        key: "NEXT_90_DAYS",
+        label: "Next 90 Days",
+        summary: "No longer-range timing guidance is available yet.",
+        entries: [],
+      },
+    ],
+  };
+}
+
 export const fallbackCurrentCycleSummary: CurrentCycleSummary = {
   status: "unavailable",
   generatedAtUtc: new Date(0).toISOString(),
@@ -286,6 +353,7 @@ export const fallbackCurrentCycleSummary: CurrentCycleSummary = {
     timingSensitiveCautions: [],
     followUpWindows: [],
   },
+  guidanceCalendar: buildUnavailableGuidanceCalendar(),
 };
 
 export function createCurrentTransitWindow(now = new Date()): TransitWindow {
@@ -589,6 +657,269 @@ function buildOverview(input: {
   ].join(" ");
 }
 
+function getDaysUntil(value: string | null, now: Date) {
+  if (!value) {
+    return Number.POSITIVE_INFINITY;
+  }
+
+  const timestamp = new Date(value).getTime();
+
+  if (Number.isNaN(timestamp)) {
+    return Number.POSITIVE_INFINITY;
+  }
+
+  return (timestamp - now.getTime()) / (1000 * 60 * 60 * 24);
+}
+
+function getBucketKeyForDate(
+  startAtUtc: string | null,
+  fallback: GuidanceCalendarBucketKey,
+  now: Date
+): GuidanceCalendarBucketKey {
+  const dayDelta = getDaysUntil(startAtUtc, now);
+
+  if (dayDelta <= 7) {
+    return "NEXT_7_DAYS";
+  }
+
+  if (dayDelta <= 30) {
+    return "NEXT_30_DAYS";
+  }
+
+  if (dayDelta <= 90) {
+    return "NEXT_90_DAYS";
+  }
+
+  return fallback;
+}
+
+function compareEntries(
+  left: GuidanceCalendarEntry,
+  right: GuidanceCalendarEntry
+) {
+  const intensityRank: Record<SignalStrength, number> = {
+    HIGH: 3,
+    MEDIUM: 2,
+    LOW: 1,
+  };
+  const leftStart = left.startAtUtc
+    ? new Date(left.startAtUtc).getTime()
+    : Number.MAX_SAFE_INTEGER;
+  const rightStart = right.startAtUtc
+    ? new Date(right.startAtUtc).getTime()
+    : Number.MAX_SAFE_INTEGER;
+
+  if (leftStart !== rightStart) {
+    return leftStart - rightStart;
+  }
+
+  return intensityRank[right.intensity] - intensityRank[left.intensity];
+}
+
+function summarizeBucket(
+  label: string,
+  entries: GuidanceCalendarEntry[],
+  fallback: string
+) {
+  if (!entries.length) {
+    return fallback;
+  }
+
+  const focusEntry = entries[0];
+
+  return `${label} is led by ${focusEntry.title.toLowerCase()}${focusEntry.consultationRecommended ? " and benefits from steadier judgement." : "."}`;
+}
+
+function buildGuidanceCalendar(input: {
+  dasha: DashaPeriod | null;
+  transitSnapshot: TransitChartResponse;
+  synthesis: DashaTransitSynthesis;
+}): GuidanceCalendarSummary {
+  const now = new Date();
+  const entries: GuidanceCalendarEntry[] = [];
+  const pushEntry = (entry: GuidanceCalendarEntry) => {
+    if (!entries.some((candidate) => candidate.key === entry.key)) {
+      entries.push(entry);
+    }
+  };
+
+  if (input.dasha && input.synthesis.activeAreas[0]?.source === "DASHA") {
+    pushEntry({
+      key: `calendar-dasha-${input.dasha.lord.toLowerCase()}`,
+      bucketKey: "NEXT_90_DAYS",
+      kind: "FOCUS",
+      source: "DASHA",
+      title: input.synthesis.activeAreas[0].title,
+      summary: input.synthesis.activeAreas[0].summary,
+      timeframeLabel: input.synthesis.activeAreas[0].timeframeLabel,
+      startAtUtc: input.dasha.startAtUtc,
+      endAtUtc: input.dasha.endAtUtc,
+      intensity: input.synthesis.activeAreas[0].intensity,
+      lifeAreas: input.synthesis.activeAreas[0].lifeAreas,
+      relatedBodies: input.synthesis.activeAreas[0].relatedBodies,
+      consultationRecommended: false,
+    });
+  }
+
+  for (const area of input.synthesis.activeAreas.filter(
+    (entry) => entry.source === "TRANSIT"
+  )) {
+    const matchingEvent =
+      input.transitSnapshot.transits.find((transit) =>
+        area.relatedBodies.includes(transit.body)
+      ) ?? null;
+
+    pushEntry({
+      key: `calendar-${area.key}`,
+      bucketKey: getBucketKeyForDate(
+        matchingEvent?.startsAtUtc ?? null,
+        "NEXT_30_DAYS",
+        now
+      ),
+      kind: "FOCUS",
+      source: area.source,
+      title: area.title,
+      summary: area.summary,
+      timeframeLabel: area.timeframeLabel,
+      startAtUtc: matchingEvent?.startsAtUtc ?? null,
+      endAtUtc: matchingEvent?.endsAtUtc ?? null,
+      intensity: area.intensity,
+      lifeAreas: area.lifeAreas,
+      relatedBodies: area.relatedBodies,
+      consultationRecommended: false,
+    });
+  }
+
+  for (const window of input.synthesis.supportiveWindows) {
+    const matchingEvent =
+      input.transitSnapshot.transits.find((transit) =>
+        window.relatedBodies.includes(transit.body)
+      ) ?? null;
+
+    pushEntry({
+      key: `calendar-${window.key}`,
+      bucketKey: getBucketKeyForDate(
+        matchingEvent?.startsAtUtc ?? null,
+        "NEXT_30_DAYS",
+        now
+      ),
+      kind: "SUPPORTIVE_WINDOW",
+      source: "TRANSIT",
+      title: window.title,
+      summary: window.summary,
+      timeframeLabel: window.timeframeLabel,
+      startAtUtc: matchingEvent?.startsAtUtc ?? null,
+      endAtUtc: matchingEvent?.endsAtUtc ?? null,
+      intensity: window.intensity,
+      lifeAreas: window.lifeAreas,
+      relatedBodies: window.relatedBodies,
+      consultationRecommended: false,
+    });
+  }
+
+  for (const window of input.synthesis.cautionWindows) {
+    const matchingEvent =
+      input.transitSnapshot.transits.find((transit) =>
+        window.relatedBodies.includes(transit.body)
+      ) ?? null;
+
+    pushEntry({
+      key: `calendar-${window.key}`,
+      bucketKey: getBucketKeyForDate(
+        matchingEvent?.startsAtUtc ?? null,
+        "NEXT_7_DAYS",
+        now
+      ),
+      kind: "CAUTION_WINDOW",
+      source: "TRANSIT",
+      title: window.title,
+      summary: window.summary,
+      timeframeLabel: window.timeframeLabel,
+      startAtUtc: matchingEvent?.startsAtUtc ?? null,
+      endAtUtc: matchingEvent?.endsAtUtc ?? null,
+      intensity: window.intensity,
+      lifeAreas: window.lifeAreas,
+      relatedBodies: window.relatedBodies,
+      consultationRecommended: true,
+    });
+  }
+
+  for (const theme of input.synthesis.followUpThemes) {
+    pushEntry({
+      key: `calendar-${theme.key}`,
+      bucketKey: theme.consultationRecommended ? "NEXT_30_DAYS" : "NEXT_90_DAYS",
+      kind: "FOLLOW_UP",
+      source: "SYNTHESIS",
+      title: theme.title,
+      summary: theme.note,
+      timeframeLabel: theme.consultationRecommended
+        ? "Review in the coming weeks"
+        : "Track across the coming months",
+      startAtUtc: null,
+      endAtUtc: null,
+      intensity: theme.consultationRecommended ? "MEDIUM" : "LOW",
+      lifeAreas: [],
+      relatedBodies: theme.relatedBodies,
+      consultationRecommended: theme.consultationRecommended,
+    });
+  }
+
+  const buckets: GuidanceCalendarBucket[] = [
+    {
+      key: "NEXT_7_DAYS",
+      label: "Next 7 Days",
+      summary: "",
+      entries: entries
+        .filter((entry) => entry.bucketKey === "NEXT_7_DAYS")
+        .sort(compareEntries)
+        .slice(0, 4),
+    },
+    {
+      key: "NEXT_30_DAYS",
+      label: "Next 30 Days",
+      summary: "",
+      entries: entries
+        .filter((entry) => entry.bucketKey === "NEXT_30_DAYS")
+        .sort(compareEntries)
+        .slice(0, 4),
+    },
+    {
+      key: "NEXT_90_DAYS",
+      label: "Next 90 Days",
+      summary: "",
+      entries: entries
+        .filter((entry) => entry.bucketKey === "NEXT_90_DAYS")
+        .sort(compareEntries)
+        .slice(0, 4),
+    },
+  ];
+
+  buckets[0]!.summary = summarizeBucket(
+    buckets[0]!.label,
+    buckets[0]!.entries,
+    "No immediate timing shift is standing out beyond steady pacing."
+  );
+  buckets[1]!.summary = summarizeBucket(
+    buckets[1]!.label,
+    buckets[1]!.entries,
+    "No distinct near-term timing window is standing out more strongly than the broader chart pattern."
+  );
+  buckets[2]!.summary = summarizeBucket(
+    buckets[2]!.label,
+    buckets[2]!.entries,
+    "The broader timing picture remains anchored in the existing natal and dasha context."
+  );
+
+  return {
+    overview: [
+      buckets[0]!.summary,
+      buckets[1]!.summary,
+      buckets[2]!.summary,
+    ].join(" "),
+    buckets,
+  };
+}
+
 export function buildDashaTransitSynthesis(input: {
   chart: NatalChartResponse;
   transitSnapshot: TransitChartResponse;
@@ -639,6 +970,11 @@ export function buildCurrentCycleSummary(input: {
 }): CurrentCycleSummary {
   const generatedAtUtc = new Date().toISOString();
   const { dasha, transitPlanets, synthesis } = buildDashaTransitSynthesis(input);
+  const guidanceCalendar = buildGuidanceCalendar({
+    dasha,
+    transitSnapshot: input.transitSnapshot,
+    synthesis,
+  });
 
   return {
     status: "ready",
@@ -663,5 +999,6 @@ export function buildCurrentCycleSummary(input: {
       timingSensitiveCautions: synthesis.cautionWindows,
       followUpWindows: synthesis.supportiveWindows,
     },
+    guidanceCalendar,
   };
 }

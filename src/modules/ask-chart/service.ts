@@ -27,6 +27,7 @@ const starterPrompts = [
   "Why was this remedy recommended?",
   "What are the strongest themes in my chart?",
   "How should I understand my current cycle?",
+  "What should I focus on over the next month?",
 ] as const;
 
 const planetaryKeywordMap = [

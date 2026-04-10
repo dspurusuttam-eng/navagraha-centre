@@ -571,6 +571,42 @@ export function ChartReportPage({
                   }
                 />
               </div>
+
+              <div className="space-y-3">
+                <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                  Guidance Calendar
+                </p>
+                <div className="grid gap-4 lg:grid-cols-3">
+                  {report.currentCycle.guidanceCalendar.buckets.map((bucket) => (
+                    <div
+                      key={bucket.key}
+                      className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4"
+                    >
+                      <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                        {bucket.label}
+                      </p>
+                      <p className="mt-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                        {bucket.summary}
+                      </p>
+                      <div className="mt-3 space-y-3">
+                        {bucket.entries.slice(0, 2).map((entry) => (
+                          <div key={entry.key} className="space-y-1">
+                            <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-foreground)]">
+                              {entry.title}
+                            </p>
+                            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                              {entry.summary}
+                            </p>
+                            <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                              {entry.timeframeLabel}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           ) : (
             <div className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-5 py-5">
