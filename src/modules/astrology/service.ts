@@ -4,7 +4,6 @@ import { unstable_cache } from "next/cache";
 import type { AstrologyProvider } from "@/modules/astrology/provider";
 import { CircularNatalHoroscopeProvider } from "@/modules/astrology/providers/circular-natal-horoscope-provider";
 import { MockDeterministicAstrologyProvider } from "@/modules/astrology/providers/mock-deterministic-provider";
-import { SwissEphemerisVedicProvider } from "@/modules/astrology/providers/swisseph-vedic-provider";
 import type {
   AstrologyValidationResult,
   BirthDetails,
@@ -28,16 +27,53 @@ import {
 } from "@/modules/astrology/validation";
 
 const providerFactories = {
-  "swisseph-vedic": () => new SwissEphemerisVedicProvider(),
   "mock-deterministic": () => new MockDeterministicAstrologyProvider(),
   "circular-natal-real": () => new CircularNatalHoroscopeProvider(),
 } as const;
 
-export type AstrologyProviderKey = keyof typeof providerFactories;
+export type AstrologyProviderKey =
+  | keyof typeof providerFactories
+  | "swisseph-vedic";
+
+const providerCache = new Map<AstrologyProviderKey, Promise<AstrologyProvider>>();
+
+async function createSwissEphemerisProvider(): Promise<AstrologyProvider> {
+  try {
+    const module = await import(
+      "@/modules/astrology/providers/swisseph-vedic-provider"
+    );
+
+    return new module.SwissEphemerisVedicProvider();
+  } catch (error) {
+    console.error(
+      "swisseph-vedic provider unavailable, falling back to mock-deterministic",
+      error
+    );
+
+    return new MockDeterministicAstrologyProvider();
+  }
+}
+
+function resolveProvider(providerKey: AstrologyProviderKey) {
+  const cachedProvider = providerCache.get(providerKey);
+
+  if (cachedProvider) {
+    return cachedProvider;
+  }
+
+  const providerPromise =
+    providerKey === "swisseph-vedic"
+      ? createSwissEphemerisProvider()
+      : Promise.resolve(providerFactories[providerKey]());
+
+  providerCache.set(providerKey, providerPromise);
+
+  return providerPromise;
+}
 
 const getCachedNatalChart = unstable_cache(
   async (providerKey: AstrologyProviderKey, serializedRequest: string) => {
-    const provider = providerFactories[providerKey]();
+    const provider = await resolveProvider(providerKey);
     const request = JSON.parse(serializedRequest) as NatalChartRequest;
 
     return provider.getNatalChart(request);
@@ -102,7 +138,6 @@ function assertSuccess<T>(result: AstrologyValidationResult<T>) {
 }
 
 export function createAstrologyService(
-  provider: AstrologyProvider,
   providerKey: AstrologyProviderKey
 ): AstrologyService {
   return {
@@ -131,6 +166,7 @@ export function createAstrologyService(
       const validatedRequest = assertSuccess(
         validateTransitChartRequest(request)
       );
+      const provider = await resolveProvider(providerKey);
 
       return provider.getTransitSnapshot(
         JSON.parse(
@@ -142,6 +178,7 @@ export function createAstrologyService(
       const validatedRequest = assertSuccess(
         validateDivisionalChartRequest(request)
       );
+      const provider = await resolveProvider(providerKey);
 
       return provider.getDivisionalChart(
         JSON.parse(
@@ -155,9 +192,12 @@ export function createAstrologyService(
 export function getAstrologyService(
   providerKey: AstrologyProviderKey = getDefaultAstrologyProviderKey()
 ) {
-  return createAstrologyService(providerFactories[providerKey](), providerKey);
+  return createAstrologyService(providerKey);
 }
 
 export function listAvailableAstrologyProviders() {
-  return Object.keys(providerFactories) as AstrologyProviderKey[];
+  return [
+    "swisseph-vedic",
+    ...(Object.keys(providerFactories) as Array<keyof typeof providerFactories>),
+  ];
 }
