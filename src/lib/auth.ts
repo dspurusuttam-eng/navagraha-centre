@@ -23,6 +23,27 @@ function normalizeOrigin(value: string) {
   }
 }
 
+function normalizeHostToOrigin(value: string) {
+  const trimmed = value.trim();
+
+  if (!trimmed) {
+    return null;
+  }
+
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+    return normalizeOrigin(trimmed);
+  }
+
+  return normalizeOrigin(`https://${trimmed}`);
+}
+
+function parseConfiguredOrigins(value: string) {
+  return value
+    .split(/[\s,;]+/g)
+    .map((entry) => normalizeOrigin(entry))
+    .filter((origin): origin is string => Boolean(origin));
+}
+
 function isVercelProduction() {
   return process.env.VERCEL_ENV === "production";
 }
@@ -64,13 +85,16 @@ function getTrustedOrigins() {
   const configuredPublicSiteUrl = normalizeOrigin(
     process.env.NEXT_PUBLIC_SITE_URL ?? ""
   );
+  const vercelOrigins = [
+    process.env.VERCEL_PROJECT_PRODUCTION_URL,
+    process.env.VERCEL_BRANCH_URL,
+    process.env.VERCEL_URL,
+  ]
+    .map((value) => normalizeHostToOrigin(value ?? ""))
+    .filter((origin): origin is string => Boolean(origin));
 
-  for (const value of configuredOrigins.split(",")) {
-    const origin = normalizeOrigin(value);
-
-    if (origin) {
-      trustedOrigins.add(origin);
-    }
+  for (const origin of parseConfiguredOrigins(configuredOrigins)) {
+    trustedOrigins.add(origin);
   }
 
   if (configuredBaseUrl) {
@@ -86,6 +110,10 @@ function getTrustedOrigins() {
   if (isVercelProduction()) {
     for (const productionOrigin of getProductionOriginVariants()) {
       trustedOrigins.add(productionOrigin);
+    }
+
+    for (const vercelOrigin of vercelOrigins) {
+      trustedOrigins.add(vercelOrigin);
     }
   }
 
