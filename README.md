@@ -227,9 +227,9 @@ Set these environment variables in Vercel before the first production deploy:
 
 Recommended production values:
 
-- `BETTER_AUTH_URL=https://your-domain.com`
-- `BETTER_AUTH_TRUSTED_ORIGINS=https://your-domain.com,https://your-project.vercel.app`
-- `NEXT_PUBLIC_SITE_URL=https://your-domain.com`
+- `BETTER_AUTH_URL=https://www.navagrahacentre.com`
+- `BETTER_AUTH_TRUSTED_ORIGINS=https://www.navagrahacentre.com,https://navagrahacentre.com`
+- `NEXT_PUBLIC_SITE_URL=https://www.navagrahacentre.com`
 
 Deployment flow:
 
