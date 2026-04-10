@@ -6,7 +6,6 @@ import {
   planetLabelMap,
   zodiacSignLabelMap,
 } from "@/lib/astrology/constants";
-import { buildJulianDayFromLocal } from "@/lib/astrology/ephemeris";
 import { calculateCurrentVimshottariDasha } from "@/lib/astrology/rules/dasha";
 import type {
   DashaPeriod,
@@ -163,6 +162,63 @@ function formatBody(body: PlanetaryBody) {
   return planetLabelMap[body];
 }
 
+function getTimeZoneParts(date: Date, timeZone: string) {
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hourCycle: "h23",
+  });
+
+  const parts = formatter.formatToParts(date);
+
+  return {
+    year: Number(parts.find((part) => part.type === "year")?.value ?? "0"),
+    month: Number(parts.find((part) => part.type === "month")?.value ?? "1"),
+    day: Number(parts.find((part) => part.type === "day")?.value ?? "1"),
+    hour: Number(parts.find((part) => part.type === "hour")?.value ?? "0"),
+    minute: Number(parts.find((part) => part.type === "minute")?.value ?? "0"),
+    second: Number(parts.find((part) => part.type === "second")?.value ?? "0"),
+  };
+}
+
+function getTimeZoneOffsetMs(date: Date, timeZone: string) {
+  const parts = getTimeZoneParts(date, timeZone);
+  const asUtc = Date.UTC(
+    parts.year,
+    parts.month - 1,
+    parts.day,
+    parts.hour,
+    parts.minute,
+    parts.second
+  );
+
+  return asUtc - date.getTime();
+}
+
+function convertZonedBirthToUtcDate(
+  dateLocal: string,
+  timeLocal: string,
+  timezone: string
+) {
+  const [year, month, day] = dateLocal.split("-").map(Number);
+  const [hour, minute] = timeLocal.split(":").map(Number);
+  const naiveUtcMs = Date.UTC(year, month - 1, day, hour, minute, 0);
+  const initialOffset = getTimeZoneOffsetMs(new Date(naiveUtcMs), timezone);
+  let utcMs = naiveUtcMs - initialOffset;
+  const correctedOffset = getTimeZoneOffsetMs(new Date(utcMs), timezone);
+
+  if (correctedOffset !== initialOffset) {
+    utcMs = naiveUtcMs - correctedOffset;
+  }
+
+  return new Date(utcMs);
+}
+
 function formatSign(sign: PlanetPosition["sign"]) {
   return zodiacSignLabelMap[sign];
 }
@@ -252,7 +308,7 @@ export function calculateLiveCurrentDasha(
     return chart.currentDasha ?? null;
   }
 
-  const { utcDate } = buildJulianDayFromLocal(
+  const utcDate = convertZonedBirthToUtcDate(
     chart.birthDetails.dateLocal,
     chart.birthDetails.timeLocal,
     chart.birthDetails.timezone

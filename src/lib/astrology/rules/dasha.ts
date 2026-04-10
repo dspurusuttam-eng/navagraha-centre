@@ -3,11 +3,16 @@ import "server-only";
 import {
   dashaSequence,
   dashaYearsByLord,
+  nakshatraCatalog,
   daysPerDashaYear,
+  padaSpanDegrees,
   nakshatraSpanDegrees,
 } from "@/lib/astrology/constants";
-import { getNakshatraPlacement } from "@/lib/astrology/ephemeris";
-import type { DashaPeriod, PlanetaryBody } from "@/modules/astrology/types";
+import type {
+  DashaPeriod,
+  NakshatraPlacement,
+  PlanetaryBody,
+} from "@/modules/astrology/types";
 
 function addDays(date: Date, days: number) {
   return new Date(date.getTime() + days * 24 * 60 * 60 * 1000);
@@ -21,6 +26,30 @@ function getNextLord(currentLord: PlanetaryBody) {
   const currentIndex = dashaSequence.indexOf(currentLord);
 
   return dashaSequence[(currentIndex + 1) % dashaSequence.length] ?? "KETU";
+}
+
+function normalizeLongitude(value: number) {
+  return ((value % 360) + 360) % 360;
+}
+
+function getNakshatraPlacement(longitude: number): NakshatraPlacement {
+  const normalized = normalizeLongitude(longitude);
+  const nakshatraIndex =
+    Math.floor(normalized / nakshatraSpanDegrees) % nakshatraCatalog.length;
+  const offsetWithinNakshatra =
+    normalized - nakshatraIndex * nakshatraSpanDegrees;
+  const pada = Math.min(
+    4,
+    Math.floor(offsetWithinNakshatra / padaSpanDegrees) + 1
+  ) as 1 | 2 | 3 | 4;
+  const entry = nakshatraCatalog[nakshatraIndex];
+
+  return {
+    name: entry.name,
+    pada,
+    ruler: entry.ruler,
+    degreesIntoNakshatra: Number(offsetWithinNakshatra.toFixed(4)),
+  };
 }
 
 export function calculateCurrentVimshottariDasha(input: {
