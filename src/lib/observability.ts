@@ -1,3 +1,5 @@
+import { sendOpsAlert } from "@/lib/ops-alerts";
+
 export type ObservabilityLevel = "info" | "warning" | "error";
 
 type ObservabilityContext = Record<string, unknown>;
@@ -23,6 +25,14 @@ function serializeContext(context: ObservabilityContext) {
   }
 }
 
+function shouldEscalate(level: ObservabilityLevel) {
+  if (level === "error") {
+    return true;
+  }
+
+  return level === "warning" && process.env.OPS_ALERT_ON_WARNINGS === "true";
+}
+
 export function trackServerEvent(
   event: string,
   context: ObservabilityContext = {},
@@ -37,6 +47,18 @@ export function trackServerEvent(
       ...context,
     })
   );
+
+  if (typeof window === "undefined" && shouldEscalate(level)) {
+    void sendOpsAlert({
+      title: `Server ${level}: ${event}`,
+      message: `Observed ${level} event in server runtime.`,
+      severity: level === "error" ? "critical" : "warning",
+      source: "observability",
+      dedupeKey: `observability:${level}:${event}`,
+      cooldownMs: 2 * 60 * 1_000,
+      context,
+    });
+  }
 }
 
 export function captureException(

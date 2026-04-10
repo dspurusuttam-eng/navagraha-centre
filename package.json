@@ -28,9 +28,12 @@
     "db:setup": "npm run db:generate && npm run db:push && npm run db:seed",
     "db:studio": "prisma studio",
     "env:check": "tsx scripts/validate-env.ts",
+    "env:audit": "tsx scripts/audit-env-secrets.ts",
     "setup:swisseph:windows": "node scripts/setup-swisseph-windows.js",
     "check:images": "tsx scripts/check-optimized-images.ts",
     "test:smoke": "tsx scripts/smoke-tests.ts",
+    "test:smoke:critical": "tsx scripts/smoke-critical-flows.ts",
+    "ops:health-monitor": "tsx scripts/health-monitor.ts",
     "launch:check": "npm run env:check && npm run check:images && npm run test:smoke",
     "format": "prettier --write .",
     "format:check": "prettier --check ."

@@ -146,6 +146,13 @@ export function validateLaunchEnvironment(
   const aiProvider = getStringValue(env, "AI_PROVIDER") || "mock-curated";
   const astrologyProvider =
     getStringValue(env, "ASTROLOGY_PROVIDER") || "mock-deterministic";
+  const opsAlertsEnabled = getStringValue(env, "OPS_ALERTS_ENABLED") === "true";
+  const opsAlertWebhookUrl = getStringValue(env, "OPS_ALERT_WEBHOOK_URL");
+  const healthCheckUrl = getStringValue(env, "OPS_HEALTHCHECK_URL");
+  const healthCheckTimeout = getStringValue(
+    env,
+    "OPS_HEALTHCHECK_TIMEOUT_MS"
+  );
 
   if (!databaseUrl) {
     pushIssue(
@@ -225,6 +232,37 @@ export function validateLaunchEnvironment(
       "warning",
       "The live astrology adapter is enabled, but the database is not configured in this environment."
     );
+  }
+
+  if (opsAlertsEnabled && !opsAlertWebhookUrl) {
+    pushIssue(
+      issues,
+      "OPS_ALERT_WEBHOOK_URL",
+      "warning",
+      "Ops alerting is enabled but no OPS_ALERT_WEBHOOK_URL is configured."
+    );
+  }
+
+  if (healthCheckUrl && !isValidUrl(healthCheckUrl)) {
+    pushIssue(
+      issues,
+      "OPS_HEALTHCHECK_URL",
+      "error",
+      "OPS_HEALTHCHECK_URL must be a valid absolute URL."
+    );
+  }
+
+  if (healthCheckTimeout) {
+    const timeout = Number(healthCheckTimeout);
+
+    if (!Number.isFinite(timeout) || timeout <= 0) {
+      pushIssue(
+        issues,
+        "OPS_HEALTHCHECK_TIMEOUT_MS",
+        "error",
+        "OPS_HEALTHCHECK_TIMEOUT_MS must be a positive number."
+      );
+    }
   }
 
   return {

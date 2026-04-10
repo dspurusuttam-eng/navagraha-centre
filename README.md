@@ -44,6 +44,13 @@ cp .env.example .env.local
 - `ASTROLOGY_PROVIDER`
 - `AI_PROVIDER`
 - `OPENAI_API_KEY` and `OPENAI_MODEL` if enabling live AI interpretation
+- optional ops monitoring vars:
+  - `OPS_ALERTS_ENABLED`
+  - `OPS_ALERT_WEBHOOK_URL`
+  - `OPS_ALERT_ON_WARNINGS`
+  - `OPS_HEALTHCHECK_URL`
+  - `OPS_HEALTHCHECK_TIMEOUT_MS`
+  - `SMOKE_BASE_URL`
 
 4. Generate the Prisma client and apply the initial schema:
 
@@ -72,8 +79,10 @@ Before any deployment handoff, run:
 
 ```bash
 npm run env:check
+npm run env:audit
 npm run check:images
 npm run test:smoke
+npm run test:smoke:critical
 ```
 
 The project also exposes a lightweight health endpoint at `/api/health` and a client web-vitals intake endpoint at `/api/observability/web-vitals`.
@@ -95,9 +104,12 @@ The project also exposes a lightweight health endpoint at `/api/health` and a cl
 - `npm run db:setup` - generate Prisma client, push schema, and seed launch data
 - `npm run db:studio` - open Prisma Studio
 - `npm run env:check` - validate launch-critical environment variables
+- `npm run env:audit` - audit env/secrets contract for missing or weak values
 - `npm run setup:swisseph:windows` - install and patch `swisseph` on Windows without changing package manifests
 - `npm run check:images` - fail if raw `<img>` tags are found in `src/`
 - `npm run test:smoke` - run smoke checks for launch-critical utilities
+- `npm run test:smoke:critical` - run 5 route-level critical flow checks (`/`, `/sign-in`, `/dashboard`, `/dashboard/report`, `/dashboard/ask-my-chart`)
+- `npm run ops:health-monitor` - poll `/api/health` and fail fast on unhealthy status (optionally sends webhook alert)
 - `npm run launch:check` - run environment, image, and smoke launch checks
 - `npm run format` - format the codebase with Prettier
 - `npm run format:check` - verify Prettier formatting
@@ -263,3 +275,4 @@ npm run build
 - `/sitemap.xml`
 
 Use `docs/launch-checklist.md` as the final release checklist.
+Use `docs/database-backup-restore.md` for production backup/restore operations.
