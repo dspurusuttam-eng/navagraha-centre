@@ -7,12 +7,14 @@ import {
   getAstrologyService,
   getDefaultAstrologyProviderKey,
   type AstrologyProviderKey,
+  type AstrologyService,
 } from "@/modules/astrology/server";
 import type { BirthDetails } from "@/modules/astrology/types";
 import { getPrisma } from "@/lib/prisma";
 import {
   defaultPreferredLanguage,
   getPreferredLanguageLabel,
+  isPreferredLanguage,
   type PreferredLanguage,
 } from "@/modules/onboarding/constants";
 
@@ -82,7 +84,28 @@ type SaveOnboardingInput = {
   name: string;
   preferredLanguage: PreferredLanguage;
   birthDetails: BirthDetails;
+  astrologyServiceOverride?: AstrologyService;
 };
+
+type SnapshotUserRecord = {
+  name: string;
+} | null;
+
+type SnapshotBirthRecord = {
+  birthDate: string;
+  birthTime: string | null;
+  city: string;
+  region: string | null;
+  country: string;
+  timezone: string;
+  latitude: Prisma.Decimal | null;
+  longitude: Prisma.Decimal | null;
+} | null;
+
+type SnapshotChartRecord = {
+  providerKey: string;
+  generatedAt: Date | null;
+} | null;
 
 function decimalToNumber(value: Prisma.Decimal | null) {
   return value === null ? null : Number(value);
@@ -127,6 +150,64 @@ function parseStoredNatalChart(payload: Prisma.JsonValue | null) {
   return payload as unknown as NatalChartResponse;
 }
 
+function toPreferredLanguage(
+  value: string | null | undefined
+): PreferredLanguage {
+  const candidate = value ?? "";
+
+  return isPreferredLanguage(candidate) ? candidate : defaultPreferredLanguage;
+}
+
+function getErrorMessage(error: unknown) {
+  return error instanceof Error ? error.message : "unknown-error";
+}
+
+function logOnboardingSnapshotIssue(
+  userId: string,
+  segment: string,
+  error: unknown
+) {
+  console.error("[onboarding][snapshot] read failure", {
+    routeKey: "dashboard:onboarding",
+    userId,
+    segment,
+    error: getErrorMessage(error),
+  });
+}
+
+function buildFallbackOnboardingSnapshot(input: {
+  userName?: string | null;
+  preferredLanguage?: string | null;
+  primaryBirthProfile?: SnapshotBirthRecord;
+  latestNatalChart?: SnapshotChartRecord;
+}): OnboardingSnapshot {
+  const preferredLanguage = toPreferredLanguage(input.preferredLanguage);
+
+  return {
+    defaults: {
+      name: input.userName ?? "Member",
+      preferredLanguage,
+      birthDate: input.primaryBirthProfile?.birthDate ?? "",
+      birthTime: input.primaryBirthProfile?.birthTime ?? "",
+      city: input.primaryBirthProfile?.city ?? "",
+      region: input.primaryBirthProfile?.region ?? "",
+      country: input.primaryBirthProfile?.country ?? "",
+      timezone: input.primaryBirthProfile?.timezone ?? "",
+      latitude: numberToInputValue(input.primaryBirthProfile?.latitude ?? null),
+      longitude: numberToInputValue(
+        input.primaryBirthProfile?.longitude ?? null
+      ),
+    },
+    status: {
+      hasBirthProfile: Boolean(input.primaryBirthProfile),
+      hasChart: Boolean(input.latestNatalChart),
+      generatedAtUtc: input.latestNatalChart?.generatedAt?.toISOString() ?? null,
+      providerKey: input.latestNatalChart?.providerKey ?? null,
+      preferredLanguageLabel: getPreferredLanguageLabel(preferredLanguage),
+    },
+  };
+}
+
 function resolveProviderKey(birthDetails: BirthDetails): AstrologyProviderKey {
   const defaultProvider = getDefaultAstrologyProviderKey();
   const hasCoordinates =
@@ -150,52 +231,87 @@ export async function getOnboardingSnapshot(
   userId: string
 ): Promise<OnboardingSnapshot> {
   const prisma = getPrisma();
-  const profile = await ensureUserProfile(userId);
-  const [user, primaryBirthProfile, latestNatalChart] = await Promise.all([
-    prisma.user.findUniqueOrThrow({
-      where: { id: userId },
-      select: { name: true },
-    }),
-    prisma.birthData.findFirst({
-      where: { userId, isPrimary: true },
-      orderBy: [{ updatedAt: "desc" }],
-    }),
-    prisma.chart.findFirst({
-      where: {
-        userId,
-        type: ChartType.NATAL,
-        status: ChartStatus.READY,
-      },
-      orderBy: [{ generatedAt: "desc" }, { updatedAt: "desc" }],
-      select: {
-        providerKey: true,
-        generatedAt: true,
-      },
-    }),
-  ]);
+  const [profileResult, userResult, primaryBirthProfileResult, latestChartResult] =
+    await Promise.allSettled([
+      ensureUserProfile(userId),
+      prisma.user.findUnique({
+        where: { id: userId },
+        select: { name: true },
+      }),
+      prisma.birthData.findFirst({
+        where: { userId, isPrimary: true },
+        orderBy: [{ updatedAt: "desc" }],
+      }),
+      prisma.chart.findFirst({
+        where: {
+          userId,
+          type: ChartType.NATAL,
+          status: ChartStatus.READY,
+        },
+        orderBy: [{ generatedAt: "desc" }, { updatedAt: "desc" }],
+        select: {
+          providerKey: true,
+          generatedAt: true,
+        },
+      }),
+    ]);
 
-  const preferredLanguage =
-    profile.preferredLanguage ?? defaultPreferredLanguage;
+  if (profileResult.status === "rejected") {
+    logOnboardingSnapshotIssue(userId, "profile", profileResult.reason);
+  }
+
+  if (userResult.status === "rejected") {
+    logOnboardingSnapshotIssue(userId, "user", userResult.reason);
+  }
+
+  if (primaryBirthProfileResult.status === "rejected") {
+    logOnboardingSnapshotIssue(
+      userId,
+      "birth-data",
+      primaryBirthProfileResult.reason
+    );
+  }
+
+  if (latestChartResult.status === "rejected") {
+    logOnboardingSnapshotIssue(userId, "chart", latestChartResult.reason);
+  }
+
+  const profile = profileResult.status === "fulfilled" ? profileResult.value : null;
+  const user = userResult.status === "fulfilled" ? userResult.value : null;
+  const primaryBirthProfile =
+    primaryBirthProfileResult.status === "fulfilled"
+      ? primaryBirthProfileResult.value
+      : null;
+  const latestNatalChart =
+    latestChartResult.status === "fulfilled" ? latestChartResult.value : null;
+
+  if (!user) {
+    return buildFallbackOnboardingSnapshot({
+      userName: null,
+      preferredLanguage: profile?.preferredLanguage,
+      primaryBirthProfile,
+      latestNatalChart,
+    });
+  }
+
+  const preferredLanguage = toPreferredLanguage(profile?.preferredLanguage);
 
   return {
     defaults: {
       name: user.name,
-      preferredLanguage:
-        preferredLanguage === "hi" ||
-        preferredLanguage === "as" ||
-        preferredLanguage === "bn"
-          ? preferredLanguage
-          : defaultPreferredLanguage,
+      preferredLanguage,
       birthDate: primaryBirthProfile?.birthDate ?? "",
       birthTime: primaryBirthProfile?.birthTime ?? "",
-      city: primaryBirthProfile?.city ?? profile.city ?? "",
-      region: primaryBirthProfile?.region ?? profile.region ?? "",
-      country: primaryBirthProfile?.country ?? profile.country ?? "",
-      timezone: primaryBirthProfile?.timezone ?? profile.timezone ?? "",
-      latitude:
-        numberToInputValue(primaryBirthProfile?.latitude ?? profile.latitude),
-      longitude:
-        numberToInputValue(primaryBirthProfile?.longitude ?? profile.longitude),
+      city: primaryBirthProfile?.city ?? profile?.city ?? "",
+      region: primaryBirthProfile?.region ?? profile?.region ?? "",
+      country: primaryBirthProfile?.country ?? profile?.country ?? "",
+      timezone: primaryBirthProfile?.timezone ?? profile?.timezone ?? "",
+      latitude: numberToInputValue(
+        primaryBirthProfile?.latitude ?? profile?.latitude ?? null
+      ),
+      longitude: numberToInputValue(
+        primaryBirthProfile?.longitude ?? profile?.longitude ?? null
+      ),
     },
     status: {
       hasBirthProfile: Boolean(primaryBirthProfile),
@@ -212,6 +328,7 @@ export async function saveOnboardingAndGenerateChart({
   name,
   preferredLanguage,
   birthDetails,
+  astrologyServiceOverride,
 }: SaveOnboardingInput) {
   const prisma = getPrisma();
 
@@ -288,7 +405,9 @@ export async function saveOnboardingAndGenerateChart({
   });
 
   const providerKey = resolveProviderKey(birthProfileToDetails(birthProfile));
-  const chart = await getAstrologyService(providerKey).getNatalChart({
+  const astrologyService =
+    astrologyServiceOverride ?? getAstrologyService(providerKey);
+  const chart = await astrologyService.getNatalChart({
     kind: "NATAL",
     requestId: crypto.randomUUID(),
     subjectId: userId,

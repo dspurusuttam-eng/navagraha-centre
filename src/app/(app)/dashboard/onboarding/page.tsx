@@ -3,7 +3,11 @@ import { Section } from "@/components/ui/section";
 import { buildPageMetadata } from "@/lib/metadata";
 import { requireUserSession } from "@/modules/auth/server";
 import { OnboardingWizard } from "@/modules/onboarding/components/onboarding-wizard";
-import { getOnboardingSnapshot } from "@/modules/onboarding/service";
+import {
+  getOnboardingSnapshot,
+  type OnboardingSnapshot,
+} from "@/modules/onboarding/service";
+import { defaultPreferredLanguage } from "@/modules/onboarding/constants";
 
 export const metadata = buildPageMetadata({
   title: "Birth Onboarding",
@@ -19,7 +23,39 @@ export const metadata = buildPageMetadata({
 
 export default async function DashboardOnboardingPage() {
   const session = await requireUserSession();
-  const snapshot = await getOnboardingSnapshot(session.user.id);
+  let snapshot: OnboardingSnapshot = {
+    defaults: {
+      name: session.user.name ?? "Member",
+      preferredLanguage: defaultPreferredLanguage,
+      birthDate: "",
+      birthTime: "",
+      city: "",
+      region: "",
+      country: "",
+      timezone: "",
+      latitude: "",
+      longitude: "",
+    },
+    status: {
+      hasBirthProfile: false,
+      hasChart: false,
+      generatedAtUtc: null,
+      providerKey: null,
+      preferredLanguageLabel: "English",
+    },
+  };
+  let hasSnapshotFallback = false;
+
+  try {
+    snapshot = await getOnboardingSnapshot(session.user.id);
+  } catch (error) {
+    hasSnapshotFallback = true;
+    console.error("[onboarding][page] snapshot fallback", {
+      routeKey: "dashboard:onboarding",
+      userId: session.user.id,
+      error: error instanceof Error ? error.message : "unknown-error",
+    });
+  }
 
   return (
     <Section
@@ -68,6 +104,16 @@ export default async function DashboardOnboardingPage() {
           </div>
         </Card>
       </div>
+
+      {hasSnapshotFallback ? (
+        <Card className="mb-6">
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            Your onboarding surface is available, but some saved details could
+            not be loaded right now. You can continue, and data will sync again
+            on the next successful load.
+          </p>
+        </Card>
+      ) : null}
 
       <OnboardingWizard defaults={snapshot.defaults} status={snapshot.status} />
     </Section>

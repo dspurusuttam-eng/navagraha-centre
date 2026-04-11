@@ -27,6 +27,7 @@
     "db:seed:launch": "npm run db:generate && npm run db:seed",
     "db:setup": "npm run db:generate && npm run db:push && npm run db:seed",
     "db:studio": "prisma studio",
+    "qa:seed:user": "tsx scripts/create-local-qa-user.ts",
     "env:check": "tsx scripts/validate-env.ts",
     "env:audit": "tsx scripts/audit-env-secrets.ts",
     "setup:swisseph:windows": "node scripts/setup-swisseph-windows.js",

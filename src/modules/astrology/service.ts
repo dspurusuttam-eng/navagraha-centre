@@ -147,6 +147,10 @@ export interface AstrologyService {
   ): Promise<DivisionalChartResponse>;
 }
 
+type AstrologyServiceOptions = {
+  disableNatalCache?: boolean;
+};
+
 function assertSuccess<T>(result: AstrologyValidationResult<T>) {
   if (!result.success) {
     throw new AstrologyValidationError(result.issues);
@@ -156,7 +160,8 @@ function assertSuccess<T>(result: AstrologyValidationResult<T>) {
 }
 
 export function createAstrologyService(
-  providerKey: AstrologyProviderKey
+  providerKey: AstrologyProviderKey,
+  options: AstrologyServiceOptions = {}
 ): AstrologyService {
   return {
     providerKey,
@@ -165,20 +170,25 @@ export function createAstrologyService(
       const validatedRequest = assertSuccess(
         validateNatalChartRequest(request)
       );
+      const requestPayload = JSON.stringify({
+        ...validatedRequest,
+        requestId: getNatalCacheKey(providerKey, validatedRequest),
+      });
+      const response = options.disableNatalCache
+        ? await resolveProvider(providerKey).then((provider) =>
+            provider.getNatalChart(
+              JSON.parse(requestPayload) as NatalChartRequest
+            )
+          )
+        : await getCachedNatalChart(providerKey, requestPayload);
 
-      return getCachedNatalChart(
-        providerKey,
-        JSON.stringify({
-          ...validatedRequest,
-          requestId: getNatalCacheKey(providerKey, validatedRequest),
-        })
-      ).then((response) => ({
+      return {
         ...response,
         metadata: {
           ...response.metadata,
           requestId: validatedRequest.requestId,
         },
-      }));
+      };
     },
     async getTransitSnapshot(request) {
       const validatedRequest = assertSuccess(

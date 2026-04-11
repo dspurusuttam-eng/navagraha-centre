@@ -103,6 +103,7 @@ The project also exposes a lightweight health endpoint at `/api/health` and a cl
 - `npm run db:seed:launch` - generate Prisma client and seed launch data
 - `npm run db:setup` - generate Prisma client, push schema, and seed launch data
 - `npm run db:studio` - open Prisma Studio
+- `npm run qa:seed:user` - create or refresh a safe local QA member account with chart, report, inquiry, and consultation context
 - `npm run env:check` - validate launch-critical environment variables
 - `npm run env:audit` - audit env/secrets contract for missing or weak values
 - `npm run setup:swisseph:windows` - install and patch `swisseph` on Windows without changing package manifests
@@ -147,6 +148,50 @@ Prerequisites:
 - a Windows 10 SDK component available to `node-gyp` (for example `19041`)
 
 This helper is intentionally local-only and does not change `package.json` or `package-lock.json`.
+
+## Local QA Test User Workflow
+
+For protected-route QA, you can seed a reusable local member account instead of using production credentials:
+
+```bash
+npm run qa:seed:user
+```
+
+What the workflow does:
+
+- refuses to run if `BETTER_AUTH_URL` or `NEXT_PUBLIC_SITE_URL` does not point to a local host
+- creates or refreshes a local Better Auth email/password account
+- completes onboarding with a real generated natal chart
+- seeds one completed consultation, one upcoming consultation, and one compatibility-focused inquiry
+- prints the login credentials and the most useful protected QA routes
+
+Default local credentials:
+
+- email: `qa-member@navagraha.local`
+- password: `NavagrahaQA123!`
+
+Optional flags:
+
+- `--keep-existing` preserves the existing QA user instead of recreating it
+- `--email <value>` overrides the email
+- `--password <value>` overrides the password
+- `--name <value>` overrides the display name
+
+Suggested QA flow after seeding:
+
+1. Run `npm run dev`
+2. Open [http://localhost:3000/sign-in](http://localhost:3000/sign-in)
+3. Sign in with the printed QA credentials
+4. Verify:
+   - `/dashboard`
+   - `/dashboard/report`
+   - `/dashboard/consultations`
+   - the seeded completed consultation detail route printed by the script
+
+For live production verification, use the canonical domain:
+
+- [https://www.navagrahacentre.com/sign-in](https://www.navagrahacentre.com/sign-in)
+- [https://www.navagrahacentre.com/dashboard/onboarding](https://www.navagrahacentre.com/dashboard/onboarding)
 
 ## AI Interpretation Setup
 
