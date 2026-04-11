@@ -26,7 +26,16 @@ function buildOrderNumber() {
 }
 
 function getDraftWebhookSecret() {
-  return process.env.SHOP_DRAFT_WEBHOOK_SECRET ?? process.env.SHOP_WEBHOOK_SECRET;
+  const candidate =
+    process.env.SHOP_DRAFT_WEBHOOK_SECRET ?? process.env.SHOP_WEBHOOK_SECRET;
+
+  if (!candidate) {
+    return null;
+  }
+
+  const trimmed = candidate.trim();
+
+  return trimmed.length ? trimmed : null;
 }
 
 function buildDraftWebhookSignature(body: string, secret: string) {
