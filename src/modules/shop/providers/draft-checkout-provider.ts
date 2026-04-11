@@ -1,5 +1,6 @@
 import "server-only";
 
+import { createHmac, timingSafeEqual } from "node:crypto";
 import {
   OrderStatus,
   PaymentProvider,
@@ -9,6 +10,7 @@ import {
 import { getPrisma } from "@/lib/prisma";
 import type {
   PrepareShopCheckoutInput,
+  ShopPaymentLifecycleStatus,
   ShopPaymentProvider,
 } from "@/modules/shop/payment-boundary";
 import {
@@ -21,6 +23,61 @@ function buildOrderNumber() {
   const suffix = crypto.randomUUID().slice(0, 8).toUpperCase();
 
   return `NC-${stamp}-${suffix}`;
+}
+
+function getDraftWebhookSecret() {
+  return process.env.SHOP_DRAFT_WEBHOOK_SECRET ?? process.env.SHOP_WEBHOOK_SECRET;
+}
+
+function buildDraftWebhookSignature(body: string, secret: string) {
+  return createHmac("sha256", secret).update(body, "utf8").digest("hex");
+}
+
+function verifyDraftWebhookSignature(signature: string | null, body: string) {
+  const secret = getDraftWebhookSecret();
+
+  if (!secret) {
+    return false;
+  }
+
+  if (!signature) {
+    return false;
+  }
+
+  const candidate = signature.trim();
+
+  if (!candidate) {
+    return false;
+  }
+
+  const expected = buildDraftWebhookSignature(body, secret);
+  const expectedBuffer = Buffer.from(expected, "utf8");
+  const candidateBuffer = Buffer.from(candidate, "utf8");
+
+  if (expectedBuffer.length !== candidateBuffer.length) {
+    return false;
+  }
+
+  return timingSafeEqual(expectedBuffer, candidateBuffer);
+}
+
+function normalizeDraftEventTypeToStatus(
+  eventType: string
+): ShopPaymentLifecycleStatus | null {
+  switch (eventType) {
+    case "payment.pending":
+      return "PENDING";
+    case "payment.authorized":
+      return "AUTHORIZED";
+    case "payment.paid":
+      return "PAID";
+    case "payment.failed":
+      return "FAILED";
+    case "payment.refunded":
+      return "REFUNDED";
+    default:
+      return null;
+  }
 }
 
 function buildCheckoutReference(idempotencyKey?: string) {
@@ -53,9 +110,80 @@ const paymentStatusLabels: Record<PaymentStatus, string> = {
   REFUNDED: "Refunded",
 };
 
+type DraftWebhookPayload = {
+  id?: unknown;
+  type?: unknown;
+  createdAtUtc?: unknown;
+  data?: {
+    checkoutReference?: unknown;
+    orderNumber?: unknown;
+    paymentReference?: unknown;
+    amount?: unknown;
+    currencyCode?: unknown;
+  };
+};
+
 export const draftShopCheckoutProvider: ShopPaymentProvider = {
   key: "draft-order",
   label: "Draft Order",
+  normalizeProviderStatus(providerStatus) {
+    return normalizeDraftEventTypeToStatus(providerStatus) ?? "PENDING";
+  },
+  async verifyWebhookEvent(rawBody, signature) {
+    const verified = verifyDraftWebhookSignature(signature, rawBody);
+    let parsedPayload: DraftWebhookPayload | null = null;
+
+    if (verified) {
+      try {
+        parsedPayload = JSON.parse(rawBody) as DraftWebhookPayload;
+      } catch {
+        parsedPayload = null;
+      }
+    }
+
+    const payload: DraftWebhookPayload = parsedPayload ?? {
+      id: "unverified",
+      type: "unverified",
+      createdAtUtc: new Date().toISOString(),
+      data: {},
+    };
+
+    const eventType =
+      typeof payload.type === "string" ? payload.type : "unknown";
+    const occurredAtUtc =
+      typeof payload.createdAtUtc === "string"
+        ? payload.createdAtUtc
+        : new Date().toISOString();
+    const normalizedStatus = normalizeDraftEventTypeToStatus(eventType);
+
+    return {
+      providerKey: "draft-order",
+      eventId: typeof payload.id === "string" ? payload.id : "unknown",
+      eventType,
+      occurredAtUtc,
+      verified,
+      payload,
+      checkoutReference:
+        typeof payload.data?.checkoutReference === "string"
+          ? payload.data.checkoutReference
+          : undefined,
+      orderNumber:
+        typeof payload.data?.orderNumber === "string"
+          ? payload.data.orderNumber
+          : undefined,
+      paymentReference:
+        typeof payload.data?.paymentReference === "string"
+          ? payload.data.paymentReference
+          : undefined,
+      amount:
+        typeof payload.data?.amount === "number" ? payload.data.amount : undefined,
+      currencyCode:
+        typeof payload.data?.currencyCode === "string"
+          ? payload.data.currencyCode
+          : undefined,
+      normalizedStatus: normalizedStatus ?? undefined,
+    };
+  },
   async createCheckoutSession(input) {
     return {
       providerKey: "draft-order",

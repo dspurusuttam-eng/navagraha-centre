@@ -15,7 +15,7 @@ const registeredProviders: Partial<
   "draft-order": draftShopCheckoutProvider,
 };
 
-function isShopCheckoutProviderKey(
+export function isShopCheckoutProviderKey(
   value: string | undefined
 ): value is ShopCheckoutProviderKey {
   return value === "draft-order" || value === "stripe";

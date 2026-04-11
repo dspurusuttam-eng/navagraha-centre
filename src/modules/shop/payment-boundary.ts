@@ -59,6 +59,12 @@ export type ShopPaymentWebhookEvent = {
   occurredAtUtc: string;
   verified: boolean;
   payload: unknown;
+  checkoutReference?: string;
+  orderNumber?: string;
+  paymentReference?: string;
+  amount?: number;
+  currencyCode?: string;
+  normalizedStatus?: ShopPaymentLifecycleStatus;
 };
 
 export interface ShopPaymentProvider {
