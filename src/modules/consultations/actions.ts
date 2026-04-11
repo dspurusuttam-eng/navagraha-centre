@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { assertRateLimit, buildRateLimitKey } from "@/lib/rate-limit";
 import { requireUserSession } from "@/modules/auth/server";
 import { createConsultationBooking } from "@/modules/consultations/service";
+import { markLatestInquiryLeadBookedForUser } from "@/modules/consultations/inquiry-lifecycle";
 
 export type ConsultationBookingActionState = {
   status: "idle" | "success" | "error";
@@ -48,6 +49,7 @@ export async function submitConsultationBooking(
       topicFocus: getFormValue(formData, "topicFocus"),
       intakeSummary: getFormValue(formData, "intakeSummary"),
     });
+    await markLatestInquiryLeadBookedForUser(session.user.id).catch(() => null);
 
     revalidatePath("/consultation");
     revalidatePath("/dashboard");

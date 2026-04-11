@@ -6,16 +6,42 @@ import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
 import { buildPageMetadata } from "@/lib/metadata";
+import { recommendConsultationNextAction } from "@/modules/consultations";
 import { astrologerPage } from "@/modules/marketing/content";
 
 export const metadata = buildPageMetadata({
   ...astrologerPage.metadata,
 });
 
-export default function JoyPrakashSarmahPage() {
+export default async function JoyPrakashSarmahPage({
+  searchParams,
+}: Readonly<{
+  searchParams: Promise<{
+    intent?: string;
+  }>;
+}>) {
+  const resolvedSearchParams = await searchParams;
+  const conversion = recommendConsultationNextAction({
+    surface: "astrologer-profile",
+    explicitIntent: resolvedSearchParams.intent,
+    contextHint: "astrologer profile review",
+  });
+
   return (
     <>
-      <PageHero {...astrologerPage.hero} />
+      <PageHero
+        {...astrologerPage.hero}
+        note={`${astrologerPage.hero.note} Recommended path: ${conversion.intentLabel}.`}
+        primaryAction={{
+          href: conversion.bestNextAction.href,
+          label: conversion.bestNextAction.label,
+        }}
+        secondaryAction={{
+          href: conversion.alternateAction.href,
+          label: conversion.alternateAction.label,
+          tone: "secondary",
+        }}
+      />
 
       <Section
         description="This public profile is designed to establish trust through tone, presence, and approach rather than invented biography details or exaggerated claims."
@@ -92,20 +118,25 @@ export default function JoyPrakashSarmahPage() {
               Continue to inquiry when the fit feels right.
             </h2>
             <p className="max-w-2xl text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              This profile page is designed to build confidence before a client
-              ever steps into a private consultation.
+              {conversion.guidanceLine}
+            </p>
+            <p className="max-w-2xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              {conversion.bestNextAction.description}
             </p>
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <Link href="/consultation" className={buttonStyles({ size: "lg" })}>
-              Book With Joy Prakash Sarmah
+            <Link
+              href={conversion.bestNextAction.href}
+              className={buttonStyles({ size: "lg" })}
+            >
+              {conversion.bestNextAction.label}
             </Link>
             <Link
-              href="/dashboard/consultations/book"
+              href={conversion.alternateAction.href}
               className={buttonStyles({ size: "lg", tone: "secondary" })}
             >
-              Reserve A Time
+              {conversion.alternateAction.label}
             </Link>
           </div>
         </Card>

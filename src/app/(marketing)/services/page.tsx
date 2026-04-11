@@ -6,13 +6,27 @@ import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
 import { buildPageMetadata } from "@/lib/metadata";
+import { recommendConsultationNextAction } from "@/modules/consultations";
 import { servicesPage } from "@/modules/marketing/content";
 
 export const metadata = buildPageMetadata({
   ...servicesPage.metadata,
 });
 
-export default function ServicesPage() {
+export default async function ServicesPage({
+  searchParams,
+}: Readonly<{
+  searchParams: Promise<{
+    intent?: string;
+  }>;
+}>) {
+  const resolvedSearchParams = await searchParams;
+  const conversion = recommendConsultationNextAction({
+    surface: "services",
+    explicitIntent: resolvedSearchParams.intent,
+    contextHint: "service exploration",
+  });
+
   return (
     <>
       <PageHero {...servicesPage.hero} />
@@ -92,20 +106,25 @@ export default function ServicesPage() {
               Move from service exploration to a direct inquiry.
             </h2>
             <p className="max-w-2xl text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              Once the visitor understands the structure, the best next step is
-              a calm inquiry or a direct consultation booking.
+              {conversion.guidanceLine}
+            </p>
+            <p className="max-w-2xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              {conversion.bestNextAction.description}
             </p>
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <Link href="/contact" className={buttonStyles({ size: "lg" })}>
-              Start an Inquiry
+            <Link
+              href={conversion.bestNextAction.href}
+              className={buttonStyles({ size: "lg" })}
+            >
+              {conversion.bestNextAction.label}
             </Link>
             <Link
-              href="/joy-prakash-sarmah"
+              href={conversion.alternateAction.href}
               className={buttonStyles({ size: "lg", tone: "secondary" })}
             >
-              View Astrologer Profile
+              {conversion.alternateAction.label}
             </Link>
           </div>
         </Card>

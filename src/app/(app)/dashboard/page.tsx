@@ -14,6 +14,12 @@ import { buildPageMetadata } from "@/lib/metadata";
 import { getDashboardOverview } from "@/modules/account/service";
 import { requireUserSession } from "@/modules/auth/server";
 import { getChartOverview } from "@/modules/onboarding/service";
+import {
+  createEmptyOfferRecommendationResult,
+  type OfferRecommendationResult,
+  getOfferRecommendations,
+} from "@/modules/offers";
+import { OfferRecommendationPanel } from "@/modules/offers/components/offer-recommendation-panel";
 
 export const metadata = buildPageMetadata({
   title: "Dashboard",
@@ -55,7 +61,7 @@ function createFallbackUserReport(): GeneratedUserReport {
 
 export default async function DashboardPage() {
   const session = await requireUserSession();
-  const [overview, chartOverview, insights, report] = await Promise.all([
+  const [overview, chartOverview, insights, report, offers] = await Promise.all([
     (async () => {
       try {
         return await getDashboardOverview(session.user.id);
@@ -90,6 +96,18 @@ export default async function DashboardPage() {
         console.error("Dashboard report failed", error);
 
         return createFallbackUserReport();
+      }
+    })(),
+    (async (): Promise<OfferRecommendationResult> => {
+      try {
+        return await getOfferRecommendations({
+          userId: session.user.id,
+          surfaceKey: "dashboard",
+        });
+      } catch (error) {
+        console.error("Dashboard offers failed", error);
+
+        return createEmptyOfferRecommendationResult("dashboard");
       }
     })(),
   ]);
@@ -239,50 +257,60 @@ export default async function DashboardPage() {
           </div>
         </Card>
 
-        <Card tone="accent" className="space-y-5">
-          <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-            Chart Status
-          </p>
-          <div className="space-y-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-            <p>
-              Birth profile:{" "}
-              <span className="text-[color:var(--color-foreground)]">
-                {hasBirthProfile ? "Saved" : "Not added yet"}
-              </span>
+        <div className="space-y-6">
+          <Card tone="accent" className="space-y-5">
+            <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+              Chart Status
             </p>
-            <p>
-              Latest provider:{" "}
-              <span className="text-[color:var(--color-foreground)]">
-                {chartOverview.chartRecord?.providerKey ?? "Not generated yet"}
-              </span>
-            </p>
-            <p>
-              Generated:{" "}
-              <span className="text-[color:var(--color-foreground)]">
-                {chartOverview.chartRecord?.generatedAtUtc
-                  ? new Date(
-                      chartOverview.chartRecord.generatedAtUtc
-                    ).toLocaleString("en-IN", {
-                      dateStyle: "medium",
-                      timeStyle: "short",
-                    })
-                  : "Not generated yet"}
-              </span>
-            </p>
-            <p>
-              Consultation context:{" "}
-              <span className="text-[color:var(--color-foreground)]">
-                {leadConsultationNote ?? "No consultation notes saved yet"}
-              </span>
-            </p>
-            <p>
-              Supportive remedy cue:{" "}
-              <span className="text-[color:var(--color-foreground)]">
-                {leadRemedy?.title ?? "Will appear after chart insights are available"}
-              </span>
-            </p>
-          </div>
-        </Card>
+            <div className="space-y-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              <p>
+                Birth profile:{" "}
+                <span className="text-[color:var(--color-foreground)]">
+                  {hasBirthProfile ? "Saved" : "Not added yet"}
+                </span>
+              </p>
+              <p>
+                Latest provider:{" "}
+                <span className="text-[color:var(--color-foreground)]">
+                  {chartOverview.chartRecord?.providerKey ?? "Not generated yet"}
+                </span>
+              </p>
+              <p>
+                Generated:{" "}
+                <span className="text-[color:var(--color-foreground)]">
+                  {chartOverview.chartRecord?.generatedAtUtc
+                    ? new Date(
+                        chartOverview.chartRecord.generatedAtUtc
+                      ).toLocaleString("en-IN", {
+                        dateStyle: "medium",
+                        timeStyle: "short",
+                      })
+                    : "Not generated yet"}
+                </span>
+              </p>
+              <p>
+                Consultation context:{" "}
+                <span className="text-[color:var(--color-foreground)]">
+                  {leadConsultationNote ?? "No consultation notes saved yet"}
+                </span>
+              </p>
+              <p>
+                Supportive remedy cue:{" "}
+                <span className="text-[color:var(--color-foreground)]">
+                  {leadRemedy?.title ??
+                    "Will appear after chart insights are available"}
+                </span>
+              </p>
+            </div>
+          </Card>
+
+          <OfferRecommendationPanel
+            eyebrow="Recommended Next Offer"
+            title="A calm next step, based on your current member context."
+            description="These suggestions stay advisory and context-led. They do not imply urgency, scarcity, or any missing payment flow."
+            recommendations={offers}
+          />
+        </div>
       </div>
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">

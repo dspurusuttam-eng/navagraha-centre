@@ -12,6 +12,7 @@ import { getPrisma } from "@/lib/prisma";
 import { recordAuditLog } from "@/modules/admin/audit";
 import { adminRoleKeys, type AdminRoleKey } from "@/modules/admin/permissions";
 import { requireAdminSession } from "@/modules/auth/server";
+import { markLatestInquiryLeadPostSessionForUser } from "@/modules/consultations/inquiry-lifecycle";
 
 const consultationStatuses = [
   ConsultationStatus.REQUESTED,
@@ -214,11 +215,19 @@ export async function updateConsultationAction(formData: FormData) {
     },
     select: {
       id: true,
+      userId: true,
       confirmationCode: true,
       serviceLabel: true,
       status: true,
     },
   });
+
+  if (consultation.status === ConsultationStatus.COMPLETED) {
+    await markLatestInquiryLeadPostSessionForUser(
+      consultation.userId,
+      session.user.id
+    ).catch(() => null);
+  }
 
   await recordAuditLog({
     actorUserId: session.user.id,

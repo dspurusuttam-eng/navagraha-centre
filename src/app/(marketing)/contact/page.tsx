@@ -6,13 +6,28 @@ import { Section } from "@/components/ui/section";
 import { EditorialPlaceholder } from "@/components/site/editorial-placeholder";
 import { PageHero } from "@/components/site/page-hero";
 import { buildPageMetadata } from "@/lib/metadata";
+import {
+  getDefaultDesiredServiceForInquiryType,
+  mapIntentToInquiryType,
+} from "@/modules/consultations/inquiry-lifecycle";
+import { PublicInquiryForm } from "@/modules/consultations/components/public-inquiry-form";
 import { contactPage } from "@/modules/marketing/content";
 
 export const metadata = buildPageMetadata({
   ...contactPage.metadata,
 });
 
-export default function ContactPage() {
+export default async function ContactPage({
+  searchParams,
+}: Readonly<{
+  searchParams: Promise<{
+    intent?: string;
+  }>;
+}>) {
+  const resolvedSearchParams = await searchParams;
+  const inquiryType = mapIntentToInquiryType(resolvedSearchParams.intent);
+  const desiredServiceSlug = getDefaultDesiredServiceForInquiryType(inquiryType);
+
   return (
     <>
       <PageHero {...contactPage.hero} />
@@ -47,8 +62,14 @@ export default function ContactPage() {
         eyebrow="Contact Path"
         title="Choose the most direct route"
       >
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)]">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)]">
           <div className="grid gap-6">
+            <PublicInquiryForm
+              defaultInquiryType={inquiryType}
+              defaultDesiredServiceSlug={desiredServiceSlug}
+              sourcePath="/contact"
+            />
+
             <Card className="space-y-5">
               <div className="space-y-2">
                 <Badge tone="accent">Consultation Route</Badge>

@@ -3,6 +3,11 @@ import { buildPageMetadata } from "@/lib/metadata";
 import { requireUserSession } from "@/modules/auth/server";
 import { ConsultationConfirmation } from "@/modules/consultations/components/consultation-confirmation";
 import { getConsultationDetail } from "@/modules/consultations/service";
+import {
+  createEmptyOfferRecommendationResult,
+  getOfferRecommendations,
+  type OfferRecommendationResult,
+} from "@/modules/offers";
 
 export const metadata = buildPageMetadata({
   title: "Consultation Confirmation",
@@ -25,14 +30,28 @@ export default async function ConsultationConfirmationPage({
 }>) {
   const session = await requireUserSession();
   const { consultationId } = await params;
-  const consultation = await getConsultationDetail(
-    session.user.id,
-    consultationId
-  );
+  const [consultation, offers] = await Promise.all([
+    getConsultationDetail(session.user.id, consultationId),
+    (async (): Promise<OfferRecommendationResult> => {
+      try {
+        return await getOfferRecommendations({
+          userId: session.user.id,
+          surfaceKey: "consultation-detail",
+          consultationId,
+        });
+      } catch (error) {
+        console.error("Consultation detail offers failed", error);
+
+        return createEmptyOfferRecommendationResult("consultation-detail");
+      }
+    })(),
+  ]);
 
   if (!consultation) {
     notFound();
   }
 
-  return <ConsultationConfirmation consultation={consultation} />;
+  return (
+    <ConsultationConfirmation consultation={consultation} offers={offers} />
+  );
 }

@@ -9,13 +9,17 @@ import {
   formatDualTimeZoneSlot,
 } from "@/modules/consultations";
 import type { ConsultationDetail } from "@/modules/consultations/service";
+import { OfferRecommendationPanel } from "@/modules/offers/components/offer-recommendation-panel";
+import type { OfferRecommendationResult } from "@/modules/offers/types";
 
 type ConsultationConfirmationProps = {
   consultation: ConsultationDetail;
+  offers: OfferRecommendationResult;
 };
 
 export function ConsultationConfirmation({
   consultation,
+  offers,
 }: Readonly<ConsultationConfirmationProps>) {
   const dualTime =
     consultation.scheduledForUtc && consultation.scheduledEndUtc
@@ -147,6 +151,19 @@ export function ConsultationConfirmation({
           </p>
         </Card>
       </div>
+
+      {consultation.status === "COMPLETED" ||
+      offers.contextSummary.hasDueFollowUp ? (
+        <div className="mt-6">
+          <OfferRecommendationPanel
+            eyebrow="Post-Session Offer"
+            title="A calm next step after this consultation."
+            description="When follow-up is useful, the next recommendation stays grounded in your existing consultation, chart, and retention context."
+            recommendations={offers}
+            variant="expanded"
+          />
+        </div>
+      ) : null}
     </Section>
   );
 }

@@ -9,6 +9,7 @@ import {
   consultationHost,
   consultationPackages,
   consultationProcess,
+  recommendConsultationNextAction,
 } from "@/modules/consultations";
 
 export const metadata = buildPageMetadata({
@@ -31,7 +32,20 @@ function formatCurrencyFromMinor(amount: number) {
   }).format(amount / 100);
 }
 
-export default function ConsultationPage() {
+export default async function ConsultationPage({
+  searchParams,
+}: Readonly<{
+  searchParams: Promise<{
+    intent?: string;
+  }>;
+}>) {
+  const resolvedSearchParams = await searchParams;
+  const conversion = recommendConsultationNextAction({
+    surface: "consultation",
+    explicitIntent: resolvedSearchParams.intent,
+    contextHint: "consultation package selection",
+  });
+
   return (
     <>
       <PageHero
@@ -43,24 +57,50 @@ export default function ConsultationPage() {
           "Explicit timezone handling for both client and astrologer calendar views",
           "Manual workflow centered on Joy Prakash Sarmah rather than generic automation",
         ]}
-        note="Sign in before reserving a time. The private dashboard holds the booking form, confirmation, and consultation history."
+        note={`Recommended path: ${conversion.intentLabel}. Sign in before reserving a time. The private dashboard holds the booking form, confirmation, and consultation history.`}
         primaryAction={{
-          href: "/dashboard/consultations/book",
-          label: "Book Consultation",
+          href: conversion.bestNextAction.href,
+          label: conversion.bestNextAction.label,
         }}
         secondaryAction={{
-          href: "/joy-prakash-sarmah",
-          label: "View Astrologer Profile",
+          href: conversion.alternateAction.href,
+          label: conversion.alternateAction.label,
           tone: "secondary",
         }}
-        supportTitle="Booking Details"
+        supportTitle="Recommended Next Step"
       />
 
       <Section
         eyebrow="Service Packages"
         title="Packages built for different kinds of consultation depth."
-        description="Each format is intentionally framed so visitors can choose the right level of guidance before any slot is reserved."
+        description={conversion.guidanceLine}
       >
+        <Card className="mb-5 flex flex-col gap-3" tone="accent">
+          <div className="flex flex-wrap gap-2">
+            <Badge tone="accent">{conversion.intentLabel}</Badge>
+            <Badge tone="outline">
+              Confidence: {conversion.classification.confidence}
+            </Badge>
+          </div>
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            {conversion.bestNextAction.description}
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href={conversion.bestNextAction.href}
+              className={buttonStyles({ tone: "secondary", size: "sm" })}
+            >
+              {conversion.bestNextAction.label}
+            </Link>
+            <Link
+              href={conversion.alternateAction.href}
+              className={buttonStyles({ tone: "ghost", size: "sm" })}
+            >
+              {conversion.alternateAction.label}
+            </Link>
+          </div>
+        </Card>
+
         <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
           {consultationPackages.map((item) => (
             <Card key={item.slug} interactive className="flex flex-col gap-5">

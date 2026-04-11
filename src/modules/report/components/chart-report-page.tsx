@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
+import { OfferRecommendationPanel } from "@/modules/offers/components/offer-recommendation-panel";
+import type { OfferRecommendationResult } from "@/modules/offers/types";
 import { type RemedyRecommendation } from "@/modules/remedies";
 import { getLabelForRemedyType } from "@/modules/report/components/remedy-presenter";
 import { reportDisclosures, type ChartReportReadyState } from "@/modules/report/service";
@@ -235,8 +237,10 @@ function RemedyCard({
 
 export function ChartReportPage({
   report,
+  offers,
 }: Readonly<{
   report: GeneratedUserReport;
+  offers: OfferRecommendationResult;
 }>) {
   const chartReport = report.chartReport;
 
@@ -418,6 +422,13 @@ export function ChartReportPage({
             </Link>
           </div>
         </Card>
+
+        <OfferRecommendationPanel
+          eyebrow="Recommended Next Step"
+          title="Keep the next step aligned to the chart, the session context, and the approved remedy record."
+          description="These recommendations stay soft by design and never imply extra payment features or guaranteed outcomes."
+          recommendations={offers}
+        />
       </div>
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">

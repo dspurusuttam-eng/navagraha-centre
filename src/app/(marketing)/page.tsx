@@ -6,6 +6,7 @@ import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
 import { buildPageMetadata } from "@/lib/metadata";
+import { recommendConsultationNextAction } from "@/modules/consultations";
 import { homePage } from "@/modules/marketing/content";
 
 export const metadata = buildPageMetadata({
@@ -13,6 +14,10 @@ export const metadata = buildPageMetadata({
 });
 
 export default function HomePage() {
+  const conversion = recommendConsultationNextAction({
+    surface: "home",
+  });
+
   return (
     <>
       <PageHero {...homePage.hero} />
@@ -202,21 +207,25 @@ export default function HomePage() {
               Start with a calm inquiry, then decide the right next step.
             </h2>
             <p className="max-w-2xl text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              The public website leads with trust, then offers a clear next
-              step: explore the astrologer profile or move into a direct
-              consultation path.
+              {conversion.guidanceLine}
+            </p>
+            <p className="max-w-2xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              {conversion.bestNextAction.description}
             </p>
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <Link href="/contact" className={buttonStyles({ size: "lg" })}>
-              Contact NAVAGRAHA CENTRE
+            <Link
+              href={conversion.bestNextAction.href}
+              className={buttonStyles({ size: "lg" })}
+            >
+              {conversion.bestNextAction.label}
             </Link>
             <Link
-              href="/joy-prakash-sarmah"
+              href={conversion.alternateAction.href}
               className={buttonStyles({ size: "lg", tone: "secondary" })}
             >
-              Meet Joy Prakash Sarmah
+              {conversion.alternateAction.label}
             </Link>
           </div>
         </Card>

@@ -52,8 +52,8 @@ export const homePage = {
     ],
     note: "Every public surface is written to feel premium and reassuring while staying transparent about what guidance can and cannot promise.",
     primaryAction: {
-      href: "/contact",
-      label: "Start an Inquiry",
+      href: "/contact?intent=general-inquiry",
+      label: "Start A Calm Inquiry",
     },
     secondaryAction: {
       href: "/services",
@@ -83,22 +83,22 @@ export const homePage = {
       title: "Private consultations",
       description:
         "Structured one-to-one sessions for life transitions, timing, and reflective decision support.",
-      href: "/services",
-      label: "Explore Services",
+      href: "/consultation?intent=consultation-ready",
+      label: "Choose Consultation Format",
     },
     {
       title: "Compatibility readings",
       description:
         "Relationship-focused consultations designed to bring clarity, tone, and perspective to shared dynamics.",
-      href: "/services",
-      label: "See Offerings",
+      href: "/consultation?intent=compatibility-focused",
+      label: "View Compatibility Path",
     },
     {
       title: "Remedy guidance",
       description:
         "Carefully framed spiritual recommendations with an emphasis on transparency, intention, and proportion.",
-      href: "/services",
-      label: "Read More",
+      href: "/consultation?intent=remedy-focused",
+      label: "View Remedy Guidance Path",
     },
     {
       title: "Spiritual products",
@@ -239,8 +239,8 @@ export const servicesPage = {
     ],
     note: "Each service is framed with clarity so clients can choose the right conversation before they commit to a session.",
     primaryAction: {
-      href: "/consultation",
-      label: "Book Consultation",
+      href: "/consultation?intent=consultation-ready",
+      label: "Move To Consultation",
     },
     secondaryAction: {
       href: "/joy-prakash-sarmah",
@@ -318,12 +318,12 @@ export const astrologerPage = {
     ],
     note: "This page emphasizes approach, public trust, and a measured consultation voice.",
     primaryAction: {
-      href: "/consultation",
-      label: "Book Consultation",
+      href: "/consultation?intent=consultation-ready",
+      label: "Move To Consultation",
     },
     secondaryAction: {
-      href: "/dashboard/consultations/book",
-      label: "Reserve A Time",
+      href: "/consultation?intent=returning-member-follow-up",
+      label: "Returning Member Follow-Up",
     },
     supportTitle: "Public Profile",
   } satisfies MarketingHero,

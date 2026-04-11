@@ -40,6 +40,29 @@ enum ConsultationSlotStatus {
   CANCELLED
 }
 
+enum InquiryType {
+  GENERAL_INQUIRY
+  CONSULTATION_READY
+  COMPATIBILITY_FOCUSED
+  REMEDY_FOCUSED
+  RETURNING_FOLLOW_UP
+}
+
+enum InquiryUrgencyLevel {
+  LOW
+  STANDARD
+  ELEVATED
+}
+
+enum InquiryLifecycleStage {
+  NEW_INQUIRY
+  CONSULTATION_INTEREST
+  AWAITING_RESPONSE
+  BOOKED
+  POST_SESSION
+  FOLLOW_UP_ELIGIBLE
+}
+
 enum ProductType {
   PHYSICAL
   DIGITAL
@@ -162,6 +185,8 @@ model User {
   auditEntries     AuditLog[]            @relation("AuditActor")
   aiConversations  AiConversationSession[]
   aiTaskRuns       AiTaskRun[]
+  inquiryLeads     InquiryLead[]
+  inquiryLifecycleEvents InquiryLifecycleEvent[] @relation("InquiryLifecycleActor")
 
   @@unique([email])
   @@map("user")
@@ -344,6 +369,48 @@ model Consultation {
   @@index([userId, status])
   @@index([status, scheduledFor])
   @@map("consultation")
+}
+
+model InquiryLead {
+  id                 String                @id @default(cuid())
+  userId             String?
+  fullName           String
+  email              String
+  phone              String?
+  timezone           String?
+  inquiryType        InquiryType
+  urgencyLevel       InquiryUrgencyLevel   @default(STANDARD)
+  desiredServiceSlug String?
+  message            String
+  sourcePath         String?
+  lifecycleStage     InquiryLifecycleStage
+  lastLifecycleAt    DateTime              @default(now())
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
+  user               User?                 @relation(fields: [userId], references: [id], onDelete: SetNull)
+  lifecycleEvents    InquiryLifecycleEvent[]
+
+  @@index([email, createdAt])
+  @@index([userId, createdAt])
+  @@index([lifecycleStage, updatedAt])
+  @@map("inquiry_lead")
+}
+
+model InquiryLifecycleEvent {
+  id          String                @id @default(cuid())
+  leadId      String
+  fromStage   InquiryLifecycleStage?
+  toStage     InquiryLifecycleStage
+  note        String?
+  actorUserId String?
+  createdAt   DateTime              @default(now())
+  lead        InquiryLead           @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  actor       User?                 @relation("InquiryLifecycleActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([leadId, createdAt])
+  @@index([toStage, createdAt])
+  @@index([actorUserId, createdAt])
+  @@map("inquiry_lifecycle_event")
 }
 
 model Product {
