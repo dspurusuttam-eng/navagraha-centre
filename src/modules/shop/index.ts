@@ -27,3 +27,12 @@ export type {
   ShopProductPreview,
   ShopRelatedRemedy,
 } from "@/modules/shop/types";
+export type {
+  PrepareShopCheckoutInput,
+  ShopCheckoutProviderKey,
+  ShopCheckoutSession,
+  ShopCheckoutSessionInput,
+  ShopPaymentLifecycleStatus,
+  ShopPaymentProvider,
+  ShopPaymentWebhookEvent,
+} from "@/modules/shop/payment-boundary";

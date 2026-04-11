@@ -1,22 +1,14 @@
 import "server-only";
 
-import { draftShopCheckoutProvider } from "@/modules/shop/providers/draft-checkout-provider";
-import type { PreparedCheckout, ShopCartLineInput } from "@/modules/shop/types";
+import type {
+  PrepareShopCheckoutInput,
+  ShopPaymentProvider,
+} from "@/modules/shop/payment-boundary";
+import { getRegisteredShopCheckoutProvider } from "@/modules/shop/payment-registry";
 
-export type PrepareShopCheckoutInput = {
-  items: ShopCartLineInput[];
-  billingName: string;
-  customerEmail: string;
-  customerPhone?: string;
-  billingTimezone: string;
-  notes?: string;
-};
-
-export interface ShopCheckoutProvider {
-  key: "draft-order";
-  prepareCheckout(input: PrepareShopCheckoutInput): Promise<PreparedCheckout>;
-}
+export type { PrepareShopCheckoutInput };
+export type ShopCheckoutProvider = ShopPaymentProvider;
 
 export function getShopCheckoutService(): ShopCheckoutProvider {
-  return draftShopCheckoutProvider;
+  return getRegisteredShopCheckoutProvider();
 }

@@ -10,8 +10,8 @@ import { getPrisma } from "@/lib/prisma";
 import { curatedShopCatalog } from "@/modules/shop/catalog";
 import type {
   PrepareShopCheckoutInput,
-  ShopCheckoutProvider,
-} from "@/modules/shop/checkout";
+  ShopPaymentProvider,
+} from "@/modules/shop/payment-boundary";
 import {
   buildValidatedCartLines,
   formatShopPrice,
@@ -38,8 +38,9 @@ const paymentStatusLabels: Record<PaymentStatus, string> = {
   REFUNDED: "Refunded",
 };
 
-export const draftShopCheckoutProvider: ShopCheckoutProvider = {
+export const draftShopCheckoutProvider: ShopPaymentProvider = {
   key: "draft-order",
+  label: "Draft Order",
   async prepareCheckout(input: PrepareShopCheckoutInput) {
     const lines = buildValidatedCartLines(input.items);
     const prisma = getPrisma();
