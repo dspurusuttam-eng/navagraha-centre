@@ -1,6 +1,7 @@
 "use server";
 
 import { assertRateLimit, buildRateLimitKey } from "@/lib/rate-limit";
+import { getSession } from "@/modules/auth/server";
 import { getShopCheckoutService } from "@/modules/shop/checkout";
 import type { PreparedCheckout, ShopCartLineInput } from "@/modules/shop/types";
 
@@ -102,6 +103,7 @@ export async function prepareShopCheckout(
       message:
         "Too many checkout attempts. Please wait a little before trying again.",
     });
+    const session = await getSession();
     const checkout = await getShopCheckoutService().prepareCheckout({
       items,
       billingName,
@@ -109,6 +111,7 @@ export async function prepareShopCheckout(
       customerPhone: customerPhone || undefined,
       billingTimezone,
       notes: notes || undefined,
+      userId: session?.user.id,
     });
 
     return {

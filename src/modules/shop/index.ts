@@ -28,6 +28,7 @@ export type {
   ShopRelatedRemedy,
 } from "@/modules/shop/types";
 export type {
+  InitializedShopCheckout,
   PrepareShopCheckoutInput,
   ShopCheckoutProviderKey,
   ShopCheckoutSession,

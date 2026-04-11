@@ -9,6 +9,8 @@ export type PrepareShopCheckoutInput = {
   customerPhone?: string;
   billingTimezone: string;
   notes?: string;
+  userId?: string;
+  idempotencyKey?: string;
 };
 
 export type ShopCheckoutSessionInput = {
@@ -29,6 +31,17 @@ export type ShopCheckoutSession = {
   redirectUrl?: string;
   clientSecret?: string;
   expiresAtUtc?: string;
+};
+
+export type InitializedShopCheckout = {
+  orderId: string;
+  orderNumber: string;
+  providerKey: ShopCheckoutProviderKey;
+  amount: number;
+  amountLabel: string;
+  currencyCode: string;
+  paymentStatus: ShopPaymentLifecycleStatus;
+  session: ShopCheckoutSession;
 };
 
 export type ShopPaymentLifecycleStatus =

@@ -7,7 +7,6 @@ import {
   ProductStatus,
 } from "@prisma/client";
 import { getPrisma } from "@/lib/prisma";
-import { curatedShopCatalog } from "@/modules/shop/catalog";
 import type {
   PrepareShopCheckoutInput,
   ShopPaymentProvider,
@@ -22,6 +21,22 @@ function buildOrderNumber() {
   const suffix = crypto.randomUUID().slice(0, 8).toUpperCase();
 
   return `NC-${stamp}-${suffix}`;
+}
+
+function buildCheckoutReference(idempotencyKey?: string) {
+  if (idempotencyKey) {
+    const normalized = idempotencyKey
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9_-]/g, "-")
+      .slice(0, 64);
+
+    if (normalized) {
+      return `shop_${normalized}`;
+    }
+  }
+
+  return `shop_${crypto.randomUUID()}`;
 }
 
 const paymentProviderLabels: Record<PaymentProvider, string> = {
@@ -41,11 +56,74 @@ const paymentStatusLabels: Record<PaymentStatus, string> = {
 export const draftShopCheckoutProvider: ShopPaymentProvider = {
   key: "draft-order",
   label: "Draft Order",
+  async createCheckoutSession(input) {
+    return {
+      providerKey: "draft-order",
+      sessionReference: `draft_${input.orderNumber}`,
+    };
+  },
   async prepareCheckout(input: PrepareShopCheckoutInput) {
     const lines = buildValidatedCartLines(input.items);
     const prisma = getPrisma();
     const orderNumber = buildOrderNumber();
-    const checkoutReference = `shop_${crypto.randomUUID()}`;
+    const checkoutReference = buildCheckoutReference(input.idempotencyKey);
+
+    const existingOrder = await prisma.order.findUnique({
+      where: {
+        checkoutReference,
+      },
+      select: {
+        id: true,
+        orderNumber: true,
+        currencyCode: true,
+        subtotalAmount: true,
+        totalAmount: true,
+        paymentProvider: true,
+        paymentStatus: true,
+        items: {
+          select: {
+            titleSnapshot: true,
+            quantity: true,
+            unitAmount: true,
+            product: {
+              select: {
+                slug: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (existingOrder) {
+      return {
+        orderId: existingOrder.id,
+        orderNumber: existingOrder.orderNumber,
+        currencyCode: existingOrder.currencyCode,
+        subtotalAmount: existingOrder.subtotalAmount,
+        subtotalLabel: formatShopPrice(existingOrder.subtotalAmount),
+        totalAmount: existingOrder.totalAmount,
+        totalLabel: formatShopPrice(existingOrder.totalAmount),
+        paymentProvider: existingOrder.paymentProvider,
+        paymentProviderLabel:
+          paymentProviderLabels[existingOrder.paymentProvider],
+        paymentStatus: existingOrder.paymentStatus,
+        paymentStatusLabel: paymentStatusLabels[existingOrder.paymentStatus],
+        nextStep:
+          "The order request has been recorded. NAVAGRAHA CENTRE can confirm availability and the next step before any payment is requested.",
+        items: existingOrder.items.map((item) => {
+          const lineTotal = item.unitAmount * item.quantity;
+
+          return {
+            slug: item.product?.slug ?? "",
+            titleSnapshot: item.titleSnapshot,
+            quantity: item.quantity,
+            lineTotalLabel: formatShopPrice(lineTotal),
+            href: item.product?.slug ? `/shop/${item.product.slug}` : "/shop",
+          };
+        }),
+      };
+    }
 
     const preparedOrder = await prisma.$transaction(async (tx) => {
       const productIds = new Map<string, string>();
@@ -120,6 +198,7 @@ export const draftShopCheckoutProvider: ShopPaymentProvider = {
 
       return tx.order.create({
         data: {
+          userId: input.userId ?? null,
           orderNumber,
           status: OrderStatus.PENDING,
           paymentProvider: PaymentProvider.MANUAL_PLACEHOLDER,
@@ -152,6 +231,9 @@ export const draftShopCheckoutProvider: ShopPaymentProvider = {
               metadata: {
                 type: "shop-foundation-draft",
                 productSlugs: lines.map((line) => line.product.slug),
+                trustedSubtotalAmount: subtotalAmount,
+                trustedCurrencyCode: "INR",
+                idempotencyKey: input.idempotencyKey ?? null,
               },
             },
           },
@@ -168,6 +250,7 @@ export const draftShopCheckoutProvider: ShopPaymentProvider = {
             select: {
               titleSnapshot: true,
               quantity: true,
+              unitAmount: true,
               product: {
                 select: {
                   slug: true,
@@ -195,10 +278,7 @@ export const draftShopCheckoutProvider: ShopPaymentProvider = {
       nextStep:
         "The order request has been recorded. NAVAGRAHA CENTRE can confirm availability and the next step before any payment is requested.",
       items: preparedOrder.items.map((item) => {
-        const product = curatedShopCatalog.find(
-          (entry) => entry.slug === item.product?.slug
-        );
-        const lineTotal = (product?.priceInMinor ?? 0) * item.quantity;
+        const lineTotal = item.unitAmount * item.quantity;
 
         return {
           slug: item.product?.slug ?? "",
