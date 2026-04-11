@@ -16,6 +16,10 @@ import {
   getRegisteredShopCheckoutProvider,
   isShopCheckoutProviderKey,
 } from "@/modules/shop/payment-registry";
+import {
+  finalizePaidOrderFromWebhook,
+  type OrderConfirmationTarget,
+} from "@/modules/shop/order-finalization";
 
 export const SHOP_PROCESSABLE_WEBHOOK_EVENT_TYPES = [
   "payment.paid",
@@ -28,6 +32,7 @@ type ProcessableWebhookStatus = "PAID" | "FAILED" | "REFUNDED";
 export type ShopWebhookProcessingOutcome =
   | "processed"
   | "duplicate"
+  | "already-finalized"
   | "ignored"
   | "invalid-signature"
   | "unsupported-provider"
@@ -48,6 +53,7 @@ export type ProcessShopPaymentWebhookResult = {
   orderId?: string;
   paymentStatus?: PaymentStatus;
   orderStatus?: OrderStatus;
+  confirmationTarget?: OrderConfirmationTarget;
 };
 
 function getWebhookMarkerId(providerKey: string, eventId: string) {
@@ -185,6 +191,71 @@ export async function processShopPaymentWebhook(
       eventId,
       eventType: webhookEvent.eventType,
       message: "Webhook event is missing order reference fields.",
+    };
+  }
+
+  if (normalizedStatus === "PAID") {
+    const finalizationResult = await finalizePaidOrderFromWebhook({
+      providerKey: provider.key,
+      eventId,
+      eventType: webhookEvent.eventType,
+      occurredAtUtc: webhookEvent.occurredAtUtc,
+      checkoutReference: webhookEvent.checkoutReference,
+      orderNumber: webhookEvent.orderNumber,
+      paymentReference: webhookEvent.paymentReference,
+      providerSessionReference: webhookEvent.checkoutReference,
+      amount: webhookEvent.amount,
+      currencyCode: webhookEvent.currencyCode,
+    });
+
+    if (finalizationResult.outcome === "missing-record") {
+      return {
+        outcome: "missing-record",
+        providerKey: provider.key,
+        eventId,
+        eventType: webhookEvent.eventType,
+        message: finalizationResult.message,
+      };
+    }
+
+    if (finalizationResult.outcome === "duplicate-event") {
+      return {
+        outcome: "duplicate",
+        providerKey: provider.key,
+        eventId,
+        eventType: webhookEvent.eventType,
+        orderId: finalizationResult.orderId,
+        paymentStatus: finalizationResult.paymentStatus,
+        orderStatus: finalizationResult.orderStatus,
+        confirmationTarget: finalizationResult.confirmationTarget,
+        message: finalizationResult.message,
+      };
+    }
+
+    if (finalizationResult.outcome === "already-finalized") {
+      return {
+        outcome: "already-finalized",
+        providerKey: provider.key,
+        eventId,
+        eventType: webhookEvent.eventType,
+        orderId: finalizationResult.orderId,
+        paymentStatus: finalizationResult.paymentStatus,
+        orderStatus: finalizationResult.orderStatus,
+        confirmationTarget: finalizationResult.confirmationTarget,
+        message: finalizationResult.message,
+      };
+    }
+
+    return {
+      outcome: "processed",
+      providerKey: provider.key,
+      eventId,
+      eventType: webhookEvent.eventType,
+      orderId: finalizationResult.orderId,
+      paymentStatus: finalizationResult.paymentStatus,
+      orderStatus: finalizationResult.orderStatus,
+      confirmationTarget: finalizationResult.confirmationTarget,
+      message: finalizationResult.message,
     };
   }
 
