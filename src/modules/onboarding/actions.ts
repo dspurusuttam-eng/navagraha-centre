@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { assertRateLimit, buildRateLimitKey } from "@/lib/rate-limit";
 import { requireUserSession } from "@/modules/auth/server";
+import type { OnboardingActionState } from "@/modules/onboarding/action-state";
 import {
   defaultPreferredLanguage,
   isPreferredLanguage,
@@ -12,16 +13,6 @@ import {
   AstrologyValidationError,
   validateBirthDetails,
 } from "@/modules/astrology/validation";
-
-export type OnboardingActionState = {
-  status: "idle" | "success" | "error";
-  message?: string;
-  redirectTo?: string;
-};
-
-export const initialOnboardingActionState: OnboardingActionState = {
-  status: "idle",
-};
 
 function normalizeRequiredText(
   value: FormDataEntryValue | null,

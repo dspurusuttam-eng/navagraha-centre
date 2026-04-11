@@ -15,8 +15,8 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import {
   completeBirthOnboarding,
-  initialOnboardingActionState,
 } from "@/modules/onboarding/actions";
+import { initialOnboardingActionState } from "@/modules/onboarding/action-state";
 import { preferredLanguageOptions } from "@/modules/onboarding/constants";
 import { cn } from "@/lib/cn";
 
