@@ -111,6 +111,7 @@ The project also exposes a lightweight health endpoint at `/api/health` and a cl
 - `npm run test:smoke` - run smoke checks for launch-critical utilities
 - `npm run test:smoke:critical` - run 5 route-level critical flow checks (`/`, `/sign-in`, `/dashboard`, `/dashboard/report`, `/dashboard/ask-my-chart`)
 - `npm run ops:health-monitor` - poll `/api/health` and fail fast on unhealthy status (optionally sends webhook alert)
+- `npm run ops:follow-up-automation` - run consultation follow-up lifecycle automation (`--dry-run` for preview, `--record-audit` to persist run metadata in admin audit history)
 - `npm run launch:check` - run environment, image, and smoke launch checks
 - `npm run format` - format the codebase with Prettier
 - `npm run format:check` - verify Prettier formatting
@@ -321,3 +322,4 @@ npm run build
 
 Use `docs/launch-checklist.md` as the final release checklist.
 Use `docs/database-backup-restore.md` for production backup/restore operations.
+Use `docs/phase-9-completion.md` for consultation conversion, lifecycle, retention, and follow-up automation QA coverage.

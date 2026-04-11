@@ -11,15 +11,18 @@ import {
 import type { ConsultationDetail } from "@/modules/consultations/service";
 import { OfferRecommendationPanel } from "@/modules/offers/components/offer-recommendation-panel";
 import type { OfferRecommendationResult } from "@/modules/offers/types";
+import type { PostConsultationRetentionSnapshot } from "@/modules/consultations/retention";
 
 type ConsultationConfirmationProps = {
   consultation: ConsultationDetail;
   offers: OfferRecommendationResult;
+  retentionSnapshot: PostConsultationRetentionSnapshot | null;
 };
 
 export function ConsultationConfirmation({
   consultation,
   offers,
+  retentionSnapshot,
 }: Readonly<ConsultationConfirmationProps>) {
   const dualTime =
     consultation.scheduledForUtc && consultation.scheduledEndUtc
@@ -130,6 +133,84 @@ export function ConsultationConfirmation({
           </div>
         </Card>
       </div>
+
+      <Card className="mt-6 space-y-4">
+        <div className="space-y-2">
+          <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+            Retention Timeline
+          </p>
+          <h3
+            className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
+            style={{ letterSpacing: "var(--tracking-display)" }}
+          >
+            Post-session checkpoints and next recommended action
+          </h3>
+        </div>
+
+        {!retentionSnapshot ? (
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            Retention guidance is temporarily unavailable. This consultation
+            confirmation remains valid and your account data is intact.
+          </p>
+        ) : retentionSnapshot.status === "pending-session" ? (
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            Structured post-session retention activates after at least one
+            consultation is marked completed.
+          </p>
+        ) : (
+          <div className="space-y-4">
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+              {retentionSnapshot.states.map((state) => (
+                <div
+                  key={state.key}
+                  className="space-y-2 rounded-[var(--radius-lg)] border border-[color:var(--color-border)] px-4 py-4 text-[length:var(--font-size-body-sm)] text-[color:var(--color-muted)]"
+                >
+                  <Badge
+                    tone={
+                      state.status === "ACTION_DUE"
+                        ? "outline"
+                        : state.status === "ACHIEVED"
+                          ? "accent"
+                          : "neutral"
+                    }
+                  >
+                    {state.status === "ACTION_DUE"
+                      ? "Action Due"
+                      : state.status === "ACHIEVED"
+                        ? "Achieved"
+                        : "Not Ready"}
+                  </Badge>
+                  <p className="text-[color:var(--color-foreground)]">
+                    {state.title}
+                  </p>
+                  <p>{state.summary}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="rounded-[var(--radius-lg)] border border-[color:var(--color-border)] px-4 py-4 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                Next Recommended Action
+              </p>
+              <p className="mt-2 text-[color:var(--color-foreground)]">
+                {retentionSnapshot.nextRecommendedAction.title}
+              </p>
+              <p className="mt-2">
+                {retentionSnapshot.nextRecommendedAction.description}
+              </p>
+              <p className="mt-2">{retentionSnapshot.nextRecommendedAction.rationale}</p>
+              {retentionSnapshot.nextRecommendedAction.href ? (
+                <Link
+                  href={retentionSnapshot.nextRecommendedAction.href}
+                  className={buttonStyles({ size: "sm" })}
+                >
+                  Open Recommended Action
+                </Link>
+              ) : null}
+            </div>
+          </div>
+        )}
+      </Card>
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <Card className="space-y-4">

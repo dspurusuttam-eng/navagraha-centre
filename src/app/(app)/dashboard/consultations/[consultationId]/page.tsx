@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { buildPageMetadata } from "@/lib/metadata";
 import { requireUserSession } from "@/modules/auth/server";
 import { ConsultationConfirmation } from "@/modules/consultations/components/consultation-confirmation";
+import { getPostConsultationRetentionSnapshot } from "@/modules/consultations/retention";
 import { getConsultationDetail } from "@/modules/consultations/service";
 import {
   createEmptyOfferRecommendationResult,
@@ -30,7 +31,7 @@ export default async function ConsultationConfirmationPage({
 }>) {
   const session = await requireUserSession();
   const { consultationId } = await params;
-  const [consultation, offers] = await Promise.all([
+  const [consultation, offers, retentionSnapshot] = await Promise.all([
     getConsultationDetail(session.user.id, consultationId),
     (async (): Promise<OfferRecommendationResult> => {
       try {
@@ -45,6 +46,15 @@ export default async function ConsultationConfirmationPage({
         return createEmptyOfferRecommendationResult("consultation-detail");
       }
     })(),
+    (async () => {
+      try {
+        return await getPostConsultationRetentionSnapshot(session.user.id);
+      } catch (error) {
+        console.error("Consultation detail retention snapshot failed", error);
+
+        return null;
+      }
+    })(),
   ]);
 
   if (!consultation) {
@@ -52,6 +62,10 @@ export default async function ConsultationConfirmationPage({
   }
 
   return (
-    <ConsultationConfirmation consultation={consultation} offers={offers} />
+    <ConsultationConfirmation
+      consultation={consultation}
+      offers={offers}
+      retentionSnapshot={retentionSnapshot}
+    />
   );
 }

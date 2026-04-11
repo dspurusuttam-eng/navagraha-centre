@@ -12,6 +12,7 @@ import { getPrisma } from "@/lib/prisma";
 import { recordAuditLog } from "@/modules/admin/audit";
 import { adminRoleKeys, type AdminRoleKey } from "@/modules/admin/permissions";
 import { requireAdminSession } from "@/modules/auth/server";
+import { runFollowUpAutomation } from "@/modules/consultations/follow-up-automation";
 import { markLatestInquiryLeadPostSessionForUser } from "@/modules/consultations/inquiry-lifecycle";
 
 const consultationStatuses = [
@@ -243,6 +244,29 @@ export async function updateConsultationAction(formData: FormData) {
   });
 
   revalidateAdminPaths(["/admin/consultations"]);
+}
+
+export async function runFollowUpAutomationAction(formData: FormData) {
+  const session = await requireAdminSession({
+    allowedRoles: ["founder", "support"],
+  });
+  const mode = getRequiredStringValue(formData, "mode");
+
+  if (mode !== "dry-run" && mode !== "live-run") {
+    throw new Error("Unsupported follow-up automation mode.");
+  }
+
+  await runFollowUpAutomation({
+    dryRun: mode === "dry-run",
+    limit: 120,
+    recordAudit: true,
+    actorUserId: session.user.id,
+    actorRoleKey: session.adminRole.key,
+  });
+
+  revalidateAdminPaths(["/admin/consultations"]);
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/consultations");
 }
 
 export async function updateBookingSlotAction(formData: FormData) {

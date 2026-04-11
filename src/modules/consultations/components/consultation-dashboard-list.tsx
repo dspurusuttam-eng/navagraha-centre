@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
+import type { PostConsultationRetentionSnapshot } from "@/modules/consultations/retention";
 import {
   formatConsultationCreatedLine,
   formatConsultationScheduleLine,
@@ -11,6 +12,7 @@ import {
 
 type ConsultationDashboardListProps = {
   consultations: ConsultationListItem[];
+  retentionSnapshot: PostConsultationRetentionSnapshot | null;
 };
 
 function getStatusTone(status: ConsultationListItem["status"]) {
@@ -26,7 +28,12 @@ function getStatusTone(status: ConsultationListItem["status"]) {
 
 export function ConsultationDashboardList({
   consultations,
+  retentionSnapshot,
 }: Readonly<ConsultationDashboardListProps>) {
+  const actionDueCount =
+    retentionSnapshot?.states.filter((state) => state.status === "ACTION_DUE")
+      .length ?? 0;
+
   if (!consultations.length) {
     return (
       <Section
@@ -60,6 +67,92 @@ export function ConsultationDashboardList({
       tone="transparent"
       className="pt-0"
     >
+      <Card className="space-y-4">
+        <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+          Post-Consultation Guidance
+        </p>
+
+        {!retentionSnapshot ? (
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            Your consultation schedule is available. Follow-up guidance is
+            temporarily unavailable and will return automatically.
+          </p>
+        ) : retentionSnapshot.status === "pending-session" ? (
+          <div className="space-y-3">
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              Complete at least one consultation to unlock structured
+              post-session guidance for report, remedy, and timing follow-up.
+            </p>
+            <Link
+              href="/dashboard/consultations/book"
+              className={buttonStyles({ size: "sm" })}
+            >
+              Book First Consultation
+            </Link>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <h2
+                className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
+                style={{ letterSpacing: "var(--tracking-display)" }}
+              >
+                {retentionSnapshot.nextRecommendedAction.title}
+              </h2>
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                {retentionSnapshot.nextRecommendedAction.description}
+              </p>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-3">
+              <div className="space-y-1">
+                <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                  Completed Session
+                </p>
+                <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-foreground)]">
+                  {retentionSnapshot.consultation?.serviceLabel ?? "Not available"}
+                </p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                  Action-Due Signals
+                </p>
+                <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-foreground)]">
+                  {actionDueCount}
+                </p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                  Snapshot Updated
+                </p>
+                <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-foreground)]">
+                  {new Date(retentionSnapshot.generatedAtUtc).toLocaleString(
+                    "en-IN",
+                    {
+                      dateStyle: "medium",
+                      timeStyle: "short",
+                    }
+                  )}
+                </p>
+              </div>
+            </div>
+
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              {retentionSnapshot.nextRecommendedAction.rationale}
+            </p>
+
+            {retentionSnapshot.nextRecommendedAction.href ? (
+              <Link
+                href={retentionSnapshot.nextRecommendedAction.href}
+                className={buttonStyles({ size: "sm" })}
+              >
+                Open Recommended Step
+              </Link>
+            ) : null}
+          </div>
+        )}
+      </Card>
+
       <div className="grid gap-4">
         {consultations.map((consultation) => (
           <Card key={consultation.id} className="space-y-5">

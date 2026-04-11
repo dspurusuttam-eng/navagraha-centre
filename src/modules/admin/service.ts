@@ -4,10 +4,16 @@ import {
   ArticleStatus,
   ConsultationSlotStatus,
   ConsultationStatus,
+  InquiryLifecycleStage,
   ProductStatus,
 } from "@prisma/client";
 import { getPrisma } from "@/lib/prisma";
 import { getContentAdapter } from "@/modules/content/server";
+import { getConsultationConversionFunnelSnapshot } from "@/modules/consultations/funnel-snapshot";
+import {
+  getFollowUpAutomationSnapshot,
+  getFollowUpReminderQueue,
+} from "@/modules/consultations/follow-up-automation";
 
 export async function getAdminDashboardData() {
   const prisma = getPrisma();
@@ -258,6 +264,91 @@ export async function listAdminConsultations() {
           endsAt: true,
           timezone: true,
           status: true,
+        },
+      },
+    },
+  });
+}
+
+export async function getAdminConsultationOpsSnapshot() {
+  const prisma = getPrisma();
+  const [
+    inquiryStageCounts,
+    followUpAutomationSnapshot,
+    reminderQueue,
+    funnelSnapshot,
+  ] =
+    await Promise.all([
+      prisma.inquiryLead.groupBy({
+        by: ["lifecycleStage"],
+        _count: {
+          _all: true,
+        },
+      }),
+      getFollowUpAutomationSnapshot({
+        limit: 80,
+      }),
+      getFollowUpReminderQueue({
+        limit: 80,
+      }),
+      getConsultationConversionFunnelSnapshot(),
+    ]);
+
+  const lifecycleStageCounts = {
+    NEW_INQUIRY: 0,
+    CONSULTATION_INTEREST: 0,
+    AWAITING_RESPONSE: 0,
+    BOOKED: 0,
+    POST_SESSION: 0,
+    FOLLOW_UP_ELIGIBLE: 0,
+  };
+
+  for (const item of inquiryStageCounts) {
+    lifecycleStageCounts[item.lifecycleStage] = item._count._all;
+  }
+
+  const activeFollowUpOpsCount =
+    followUpAutomationSnapshot.skippedByReason.ACTIVE_FOLLOW_UP_ALREADY_BOOKED;
+  const postSessionLeadCount =
+    lifecycleStageCounts[InquiryLifecycleStage.POST_SESSION];
+  const followUpEligibleLeadCount =
+    lifecycleStageCounts[InquiryLifecycleStage.FOLLOW_UP_ELIGIBLE];
+
+  return {
+    lifecycleStageCounts,
+    postSessionLeadCount,
+    followUpEligibleLeadCount,
+    activeFollowUpOpsCount,
+    followUpAutomationSnapshot,
+    reminderQueuePreview: reminderQueue.slice(0, 6),
+    funnelSnapshot,
+  };
+}
+
+export async function listAdminFollowUpAutomationRuns() {
+  return getPrisma().auditLog.findMany({
+    where: {
+      entityType: "INQUIRY_LEAD",
+      entityId: "follow-up-automation",
+      action: {
+        in: ["FOLLOW_UP_AUTOMATION_RUN", "FOLLOW_UP_AUTOMATION_DRY_RUN"],
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: 8,
+    select: {
+      id: true,
+      action: true,
+      summary: true,
+      actorRoleKey: true,
+      createdAt: true,
+      metadata: true,
+      actor: {
+        select: {
+          name: true,
+          email: true,
         },
       },
     },

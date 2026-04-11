@@ -1,6 +1,7 @@
 import { buildPageMetadata } from "@/lib/metadata";
 import { requireUserSession } from "@/modules/auth/server";
 import { ConsultationDashboardList } from "@/modules/consultations/components/consultation-dashboard-list";
+import { getPostConsultationRetentionSnapshot } from "@/modules/consultations/retention";
 import { getUserConsultations } from "@/modules/consultations/service";
 
 export const metadata = buildPageMetadata({
@@ -17,7 +18,23 @@ export const metadata = buildPageMetadata({
 
 export default async function DashboardConsultationsPage() {
   const session = await requireUserSession();
-  const consultations = await getUserConsultations(session.user.id);
+  const [consultations, retentionSnapshot] = await Promise.all([
+    getUserConsultations(session.user.id),
+    (async () => {
+      try {
+        return await getPostConsultationRetentionSnapshot(session.user.id);
+      } catch (error) {
+        console.error("Consultation retention snapshot failed", error);
 
-  return <ConsultationDashboardList consultations={consultations} />;
+        return null;
+      }
+    })(),
+  ]);
+
+  return (
+    <ConsultationDashboardList
+      consultations={consultations}
+      retentionSnapshot={retentionSnapshot}
+    />
+  );
 }
