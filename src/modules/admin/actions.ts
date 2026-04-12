@@ -246,6 +246,48 @@ export async function updateConsultationAction(formData: FormData) {
   revalidateAdminPaths(["/admin/consultations"]);
 }
 
+export async function updateOrderFulfillmentNoteAction(formData: FormData) {
+  const session = await requireAdminSession({
+    allowedRoles: ["founder", "support"],
+  });
+  const orderId = getRequiredStringValue(formData, "orderId");
+  const internalNote = getStringValue(formData, "internalNote");
+
+  const order = await getPrisma().order.update({
+    where: {
+      id: orderId,
+    },
+    data: {
+      notes: internalNote || null,
+    },
+    select: {
+      id: true,
+      orderNumber: true,
+      status: true,
+      paymentStatus: true,
+    },
+  });
+
+  await recordAuditLog({
+    actorUserId: session.user.id,
+    actorRoleKey: session.adminRole.key,
+    entityType: "order",
+    entityId: order.id,
+    action: "order.fulfillment-note.updated",
+    summary: `Updated internal fulfillment notes for order ${order.orderNumber}.`,
+    metadata: {
+      orderStatus: order.status,
+      paymentStatus: order.paymentStatus,
+      hasInternalNote: Boolean(internalNote),
+    },
+  });
+
+  revalidateAdminPaths([
+    "/admin/orders",
+    `/admin/orders/${encodeURIComponent(order.orderNumber)}`,
+  ]);
+}
+
 export async function runFollowUpAutomationAction(formData: FormData) {
   const session = await requireAdminSession({
     allowedRoles: ["founder", "support"],

@@ -5,6 +5,8 @@ import {
   ConsultationSlotStatus,
   ConsultationStatus,
   InquiryLifecycleStage,
+  PaymentProvider,
+  Prisma,
   ProductStatus,
 } from "@prisma/client";
 import { getPrisma } from "@/lib/prisma";
@@ -14,6 +16,7 @@ import {
   getFollowUpAutomationSnapshot,
   getFollowUpReminderQueue,
 } from "@/modules/consultations/follow-up-automation";
+import { formatAdminCurrency } from "@/modules/admin/format";
 
 export async function getAdminDashboardData() {
   const prisma = getPrisma();
@@ -522,4 +525,233 @@ export async function listAiPromptTemplates() {
       },
     },
   });
+}
+
+type AdminOrderLifecycleState = "PENDING" | "PAID" | "FAILED";
+
+const paymentProviderLabels: Record<PaymentProvider, string> = {
+  MANUAL_PLACEHOLDER: "Centre Payment Review",
+  STRIPE: "Stripe",
+};
+
+function readJsonObject(
+  value: Prisma.JsonValue | null | undefined
+): Prisma.JsonObject | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return null;
+  }
+
+  return value as Prisma.JsonObject;
+}
+
+function readStringFromObject(object: Prisma.JsonObject | null, key: string) {
+  if (!object) {
+    return null;
+  }
+
+  const value = object[key];
+
+  return typeof value === "string" ? value : null;
+}
+
+function toAdminOrderLifecycleState(status: string, paymentStatus: string) {
+  if (
+    paymentStatus === "PAID" ||
+    status === "PAID" ||
+    status === "FULFILLED"
+  ) {
+    return "PAID" satisfies AdminOrderLifecycleState;
+  }
+
+  if (paymentStatus === "FAILED" || status === "CANCELLED") {
+    return "FAILED" satisfies AdminOrderLifecycleState;
+  }
+
+  return "PENDING" satisfies AdminOrderLifecycleState;
+}
+
+export async function listAdminOrders() {
+  const rows = await getPrisma().order.findMany({
+    take: 36,
+    orderBy: [{ createdAt: "desc" }],
+    select: {
+      id: true,
+      orderNumber: true,
+      createdAt: true,
+      status: true,
+      paymentStatus: true,
+      paymentProvider: true,
+      totalAmount: true,
+      currencyCode: true,
+      billingName: true,
+      customerEmail: true,
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+      _count: {
+        select: {
+          items: true,
+        },
+      },
+    },
+  });
+
+  return rows.map((row) => {
+    const lifecycleState = toAdminOrderLifecycleState(
+      row.status,
+      row.paymentStatus
+    );
+
+    return {
+      id: row.id,
+      orderNumber: row.orderNumber,
+      createdAt: row.createdAt,
+      status: row.status,
+      paymentStatus: row.paymentStatus,
+      paymentProvider: row.paymentProvider,
+      paymentProviderLabel: paymentProviderLabels[row.paymentProvider],
+      totalAmount: row.totalAmount,
+      currencyCode: row.currencyCode,
+      totalLabel: formatAdminCurrency(row.totalAmount, row.currencyCode),
+      itemCount: row._count.items,
+      lifecycleState,
+      customer: row.user
+        ? {
+            userId: row.user.id,
+            name: row.user.name,
+            email: row.user.email,
+          }
+        : {
+            userId: null,
+            name: row.billingName || "Guest checkout",
+            email: row.customerEmail || "No email captured",
+          },
+    };
+  });
+}
+
+export async function getAdminOrderDetail(orderNumber: string) {
+  const row = await getPrisma().order.findFirst({
+    where: {
+      orderNumber,
+    },
+    select: {
+      id: true,
+      orderNumber: true,
+      createdAt: true,
+      updatedAt: true,
+      status: true,
+      paymentStatus: true,
+      paymentProvider: true,
+      checkoutReference: true,
+      totalAmount: true,
+      currencyCode: true,
+      billingName: true,
+      customerEmail: true,
+      customerPhone: true,
+      notes: true,
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+      items: {
+        orderBy: [{ createdAt: "asc" }],
+        select: {
+          id: true,
+          titleSnapshot: true,
+          skuSnapshot: true,
+          quantity: true,
+          unitAmount: true,
+        },
+      },
+      paymentRecords: {
+        orderBy: [{ createdAt: "desc" }],
+        take: 1,
+        select: {
+          id: true,
+          provider: true,
+          status: true,
+          amount: true,
+          currencyCode: true,
+          providerReference: true,
+          metadata: true,
+          createdAt: true,
+        },
+      },
+    },
+  });
+
+  if (!row) {
+    return null;
+  }
+
+  const latestPayment = row.paymentRecords[0] ?? null;
+  const paymentMetadata = readJsonObject(latestPayment?.metadata);
+  const finalizedAtUtc = readStringFromObject(paymentMetadata, "finalizedAtUtc");
+
+  return {
+    id: row.id,
+    orderNumber: row.orderNumber,
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
+    status: row.status,
+    paymentStatus: row.paymentStatus,
+    lifecycleState: toAdminOrderLifecycleState(row.status, row.paymentStatus),
+    paymentProvider: row.paymentProvider,
+    paymentProviderLabel: paymentProviderLabels[row.paymentProvider],
+    checkoutReference: row.checkoutReference,
+    totalAmount: row.totalAmount,
+    totalLabel: formatAdminCurrency(row.totalAmount, row.currencyCode),
+    currencyCode: row.currencyCode,
+    trustedAmountSnapshot: latestPayment?.amount ?? row.totalAmount,
+    trustedAmountCurrencyCode: latestPayment?.currencyCode ?? row.currencyCode,
+    trustedAmountLabel: formatAdminCurrency(
+      latestPayment?.amount ?? row.totalAmount,
+      latestPayment?.currencyCode ?? row.currencyCode
+    ),
+    latestPaymentRecord: latestPayment
+      ? {
+          id: latestPayment.id,
+          provider: latestPayment.provider,
+          providerLabel: paymentProviderLabels[latestPayment.provider],
+          status: latestPayment.status,
+          providerReference: latestPayment.providerReference,
+          createdAt: latestPayment.createdAt,
+        }
+      : null,
+    finalizedAtUtc,
+    internalNotes: row.notes ?? "",
+    customer: row.user
+      ? {
+          userId: row.user.id,
+          name: row.user.name,
+          email: row.user.email,
+        }
+      : {
+          userId: null,
+          name: row.billingName || "Guest checkout",
+          email: row.customerEmail || "No email captured",
+        },
+    customerPhone: row.customerPhone,
+    items: row.items.map((item) => ({
+      id: item.id,
+      titleSnapshot: item.titleSnapshot,
+      skuSnapshot: item.skuSnapshot,
+      quantity: item.quantity,
+      unitAmount: item.unitAmount,
+      unitAmountLabel: formatAdminCurrency(item.unitAmount, row.currencyCode),
+      lineTotal: item.unitAmount * item.quantity,
+      lineTotalLabel: formatAdminCurrency(
+        item.unitAmount * item.quantity,
+        row.currencyCode
+      ),
+    })),
+  };
 }

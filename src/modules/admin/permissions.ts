@@ -35,6 +35,13 @@ export const adminRouteCatalog = [
     allowedRoles: ["founder", "support"],
   },
   {
+    href: "/admin/orders",
+    label: "Orders",
+    description:
+      "Review order and payment states with internal fulfillment notes.",
+    allowedRoles: ["founder", "support"],
+  },
+  {
     href: "/admin/astrologer-copilot",
     label: "Astrologer Copilot",
     description:
