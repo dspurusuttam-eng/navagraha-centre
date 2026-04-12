@@ -169,8 +169,12 @@ function RemedyCard({
       {remedy.relatedProducts.length ? (
         <div className="space-y-3">
           <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-            Related Product Records
+            Optional Related Product Records
           </p>
+          <div className="flex flex-wrap gap-2">
+            <Badge tone="outline">{remedy.productMapping.safety.optionalPurchaseLabel}</Badge>
+            <Badge tone="neutral">Contextual Reference</Badge>
+          </div>
           <div className="space-y-3">
             {remedy.relatedProducts.map((product) => (
               <Link
@@ -197,6 +201,12 @@ function RemedyCard({
           <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
             {remedy.productMapping.note}
           </p>
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            {remedy.productMapping.safety.nonGuaranteeNote}
+          </p>
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            {remedy.productMapping.safety.noPressureNote}
+          </p>
         </div>
       ) : (
         <div className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4">
@@ -205,6 +215,9 @@ function RemedyCard({
           </p>
           <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
             {remedy.productMapping.note}
+          </p>
+          <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            {remedy.productMapping.safety.standaloneRemedyNote}
           </p>
         </div>
       )}

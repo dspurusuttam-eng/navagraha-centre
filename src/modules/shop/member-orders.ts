@@ -20,6 +20,8 @@ export type MemberOrderStatusMessage = {
   description: string;
   nextStepLabel?: string;
   nextStepHref?: string;
+  secondaryStepLabel?: string;
+  secondaryStepHref?: string;
 };
 
 export type MemberOrderConfirmationTarget = {
@@ -111,16 +113,20 @@ function getStatusMessage(
         title: "Payment confirmed",
         description:
           "Your order is secured. The centre now handles the next fulfillment step and updates will remain visible in your protected account.",
-        nextStepLabel: "Return To Dashboard",
-        nextStepHref: "/dashboard",
+        nextStepLabel: "Review Orders",
+        nextStepHref: "/dashboard/orders",
+        secondaryStepLabel: "Back To Dashboard",
+        secondaryStepHref: "/dashboard",
       };
     case "FAILED":
       return {
         title: "Payment needs another attempt",
         description:
           "This order could not be completed. You can begin a fresh checkout from your cart whenever you are ready.",
-        nextStepLabel: "Open Cart",
+        nextStepLabel: "Retry From Cart",
         nextStepHref: "/shop/cart",
+        secondaryStepLabel: "Review Orders",
+        secondaryStepHref: "/dashboard/orders",
       };
     case "REFUNDED":
       return {
@@ -129,14 +135,18 @@ function getStatusMessage(
           "This order has moved to a refunded state. If you need support, use the contact route and include your order reference.",
         nextStepLabel: "Contact The Centre",
         nextStepHref: "/contact",
+        secondaryStepLabel: "Browse Shop",
+        secondaryStepHref: "/shop",
       };
     default:
       return {
         title: "Payment is being confirmed",
         description:
           "The order is recorded and awaiting final payment confirmation. No action is required until status updates here.",
-        nextStepLabel: "View Cart",
-        nextStepHref: "/shop/cart",
+        nextStepLabel: "Refresh Orders",
+        nextStepHref: "/dashboard/orders",
+        secondaryStepLabel: "Open Cart",
+        secondaryStepHref: "/shop/cart",
       };
   }
 }

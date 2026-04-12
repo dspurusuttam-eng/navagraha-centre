@@ -1,6 +1,7 @@
 import { assertRateLimit, buildRateLimitKey } from "@/lib/rate-limit";
 import { getSession } from "@/modules/auth/server";
 import { initializeShopCheckout } from "@/modules/shop/checkout";
+import { resolveShopCheckoutErrorState } from "@/modules/shop/error-states";
 import type { ShopCartLineInput } from "@/modules/shop/types";
 
 export const dynamic = "force-dynamic";
@@ -129,12 +130,14 @@ export async function POST(request: Request) {
       }
     );
   } catch (error) {
+    const checkoutError = resolveShopCheckoutErrorState(error);
+
     return Response.json(
       {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Checkout could not be initialized.",
+        error: checkoutError.message,
+        code: checkoutError.code,
+        title: checkoutError.title,
+        recoveryActions: checkoutError.recoveryActions,
       },
       {
         status: 400,

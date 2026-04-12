@@ -3,18 +3,29 @@
 import { assertRateLimit, buildRateLimitKey } from "@/lib/rate-limit";
 import { getSession } from "@/modules/auth/server";
 import { getShopCheckoutService } from "@/modules/shop/checkout";
+import {
+  resolveShopCheckoutErrorState,
+  type ShopCheckoutErrorCode,
+  type ShopRecoveryAction,
+} from "@/modules/shop/error-states";
 import type { PreparedCheckout, ShopCartLineInput } from "@/modules/shop/types";
 
 export type ShopCheckoutActionState = {
   status: "idle" | "success" | "error";
   message: string | null;
   checkout: PreparedCheckout | null;
+  errorCode: ShopCheckoutErrorCode | null;
+  errorTitle: string | null;
+  recoveryActions: ShopRecoveryAction[];
 };
 
 export const initialShopCheckoutActionState: ShopCheckoutActionState = {
   status: "idle",
   message: null,
   checkout: null,
+  errorCode: null,
+  errorTitle: null,
+  recoveryActions: [],
 };
 
 function getStringValue(formData: FormData, key: string) {
@@ -80,6 +91,9 @@ export async function prepareShopCheckout(
       status: "error",
       message: "Add the billing name before submitting the order request.",
       checkout: null,
+      errorCode: "CHECKOUT_STATE_INVALID_OR_EXPIRED",
+      errorTitle: "Billing details are incomplete.",
+      recoveryActions: [{ label: "Return To Cart", href: "/shop/cart" }],
     };
   }
 
@@ -88,6 +102,9 @@ export async function prepareShopCheckout(
       status: "error",
       message: "Add a valid email address before submitting the order request.",
       checkout: null,
+      errorCode: "CHECKOUT_STATE_INVALID_OR_EXPIRED",
+      errorTitle: "Email details are incomplete.",
+      recoveryActions: [{ label: "Return To Cart", href: "/shop/cart" }],
     };
   }
 
@@ -119,15 +136,20 @@ export async function prepareShopCheckout(
       message:
         "Your order request has been recorded. The centre can now review the details and confirm the next step.",
       checkout,
+      errorCode: null,
+      errorTitle: null,
+      recoveryActions: [],
     };
   } catch (error) {
+    const checkoutError = resolveShopCheckoutErrorState(error);
+
     return {
       status: "error",
-      message:
-        error instanceof Error
-          ? error.message
-          : "The order request could not be prepared.",
+      message: checkoutError.message,
       checkout: null,
+      errorCode: checkoutError.code,
+      errorTitle: checkoutError.title,
+      recoveryActions: checkoutError.recoveryActions,
     };
   }
 }

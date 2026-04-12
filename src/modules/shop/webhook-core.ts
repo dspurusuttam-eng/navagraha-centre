@@ -8,6 +8,8 @@ import {
   Prisma,
 } from "@prisma/client";
 import { getPrisma } from "@/lib/prisma";
+import { emitCommerceAnalyticsEventSafely } from "@/modules/shop/analytics-audit";
+import { emitShopNotificationEventSafely } from "@/modules/shop/notification-hooks";
 import type {
   ShopCheckoutProviderKey,
   ShopPaymentLifecycleStatus,
@@ -20,6 +22,7 @@ import {
   finalizePaidOrderFromWebhook,
   type OrderConfirmationTarget,
 } from "@/modules/shop/order-finalization";
+import type { ShopReceiptData } from "@/modules/shop/receipt";
 
 export const SHOP_PROCESSABLE_WEBHOOK_EVENT_TYPES = [
   "payment.paid",
@@ -54,6 +57,7 @@ export type ProcessShopPaymentWebhookResult = {
   paymentStatus?: PaymentStatus;
   orderStatus?: OrderStatus;
   confirmationTarget?: OrderConfirmationTarget;
+  receipt?: ShopReceiptData;
 };
 
 function getWebhookMarkerId(providerKey: string, eventId: string) {
@@ -132,6 +136,17 @@ export async function processShopPaymentWebhook(
   input: ProcessShopPaymentWebhookInput
 ): Promise<ProcessShopPaymentWebhookResult> {
   const providerKeyCandidate = input.providerKey ?? undefined;
+  const receivedAtUtc = new Date().toISOString();
+
+  await emitCommerceAnalyticsEventSafely({
+    eventName: "payment.webhook.received",
+    occurredAtUtc: receivedAtUtc,
+    providerKey: providerKeyCandidate ?? "unknown",
+    context: {
+      hasSignature: Boolean(input.signature),
+      bodyLength: input.rawBody.length,
+    },
+  });
 
   if (!isShopCheckoutProviderKey(providerKeyCandidate)) {
     return {
@@ -173,6 +188,22 @@ export async function processShopPaymentWebhook(
       message: "Webhook signature verification failed.",
     };
   }
+
+  await emitCommerceAnalyticsEventSafely({
+    eventName: "payment.verified",
+    occurredAtUtc: webhookEvent.occurredAtUtc,
+    orderNumber: webhookEvent.orderNumber,
+    checkoutReference: webhookEvent.checkoutReference,
+    providerKey: provider.key,
+    providerReference: webhookEvent.paymentReference,
+    amount: webhookEvent.amount,
+    currencyCode: webhookEvent.currencyCode,
+    context: {
+      eventId,
+      eventType: webhookEvent.eventType,
+      normalizedStatus: normalizedStatus ?? "ignored",
+    },
+  });
 
   if (!normalizedStatus) {
     return {
@@ -228,6 +259,7 @@ export async function processShopPaymentWebhook(
         paymentStatus: finalizationResult.paymentStatus,
         orderStatus: finalizationResult.orderStatus,
         confirmationTarget: finalizationResult.confirmationTarget,
+        receipt: finalizationResult.receipt,
         message: finalizationResult.message,
       };
     }
@@ -242,6 +274,7 @@ export async function processShopPaymentWebhook(
         paymentStatus: finalizationResult.paymentStatus,
         orderStatus: finalizationResult.orderStatus,
         confirmationTarget: finalizationResult.confirmationTarget,
+        receipt: finalizationResult.receipt,
         message: finalizationResult.message,
       };
     }
@@ -255,6 +288,7 @@ export async function processShopPaymentWebhook(
       paymentStatus: finalizationResult.paymentStatus,
       orderStatus: finalizationResult.orderStatus,
       confirmationTarget: finalizationResult.confirmationTarget,
+      receipt: finalizationResult.receipt,
       message: finalizationResult.message,
     };
   }
@@ -270,9 +304,15 @@ export async function processShopPaymentWebhook(
     },
     select: {
       id: true,
+      orderNumber: true,
       status: true,
+      paymentStatus: true,
       totalAmount: true,
       currencyCode: true,
+      billingName: true,
+      customerEmail: true,
+      customerPhone: true,
+      billingTimezone: true,
     },
   });
 
@@ -292,6 +332,10 @@ export async function processShopPaymentWebhook(
     webhookEvent.paymentReference || `${provider.key}:${eventId}`;
   const eventEntityId = `${provider.key}:${eventId}`;
   const eventMarkerId = getWebhookMarkerId(provider.key, eventId);
+  const resolvedAmount =
+    typeof webhookEvent.amount === "number" ? webhookEvent.amount : order.totalAmount;
+  const resolvedCurrencyCode =
+    webhookEvent.currencyCode || order.currencyCode;
 
   try {
     await getPrisma().$transaction(async (tx) => {
@@ -335,16 +379,19 @@ export async function processShopPaymentWebhook(
         },
       });
 
-      const resolvedAmount =
-        typeof webhookEvent.amount === "number" ? webhookEvent.amount : order.totalAmount;
-      const resolvedCurrencyCode =
-        webhookEvent.currencyCode || order.currencyCode;
-
       const webhookMetadataPatch: Prisma.InputJsonObject = {
         webhookEventId: eventId,
         webhookEventType: webhookEvent.eventType,
         webhookProvider: provider.key,
         webhookOccurredAtUtc: webhookEvent.occurredAtUtc,
+        inventoryReservationStatus:
+          normalizedStatus === "FAILED" || normalizedStatus === "REFUNDED"
+            ? "RELEASED"
+            : "ACTIVE",
+        inventoryReservationReleasedAtUtc:
+          normalizedStatus === "FAILED" || normalizedStatus === "REFUNDED"
+            ? new Date().toISOString()
+            : null,
       };
 
       if (latestRecord) {
@@ -393,6 +440,51 @@ export async function processShopPaymentWebhook(
     }
 
     throw error;
+  }
+
+  if (normalizedStatus === "FAILED" || normalizedStatus === "REFUNDED") {
+    await emitShopNotificationEventSafely({
+      eventName:
+        normalizedStatus === "FAILED"
+          ? "order.payment.failed"
+          : "order.refunded",
+      occurredAtUtc: webhookEvent.occurredAtUtc,
+      orderId: order.id,
+      orderNumber: order.orderNumber,
+      orderStatus: nextOrderStatus,
+      paymentStatus: nextPaymentStatus,
+      trustedAmount: resolvedAmount,
+      currencyCode: resolvedCurrencyCode,
+      customer: {
+        billingName: order.billingName,
+        customerEmail: order.customerEmail,
+        customerPhone: order.customerPhone,
+        billingTimezone: order.billingTimezone,
+      },
+    });
+
+    await emitCommerceAnalyticsEventSafely({
+      eventName: "payment.failed",
+      occurredAtUtc: webhookEvent.occurredAtUtc,
+      orderId: order.id,
+      orderNumber: order.orderNumber,
+      providerKey: provider.key,
+      providerReference,
+      orderStatusFrom: order.status,
+      orderStatusTo: nextOrderStatus,
+      paymentStatusFrom: order.paymentStatus,
+      paymentStatusTo: nextPaymentStatus,
+      amount: resolvedAmount,
+      currencyCode: resolvedCurrencyCode,
+      reason:
+        normalizedStatus === "REFUNDED"
+          ? "Webhook reported a refunded payment state."
+          : "Webhook reported a failed payment state.",
+      context: {
+        eventId,
+        eventType: webhookEvent.eventType,
+      },
+    });
   }
 
   return {

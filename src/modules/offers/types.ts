@@ -37,6 +37,7 @@ export type OfferRecommendation = {
   href: string;
   ctaLabel: string;
   rationale: string;
+  safetyNote: string;
   supportingSignals: string[];
   kindLabel: string;
   optionalPurchase: boolean;

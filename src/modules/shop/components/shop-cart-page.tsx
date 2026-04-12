@@ -12,6 +12,46 @@ import {
   prepareShopCheckout,
 } from "@/modules/shop/actions";
 import { useShopCart } from "@/modules/shop/components/shop-cart-provider";
+import type { PreparedCheckout } from "@/modules/shop/types";
+
+function getPreparedOrderRecoveryState(checkout: PreparedCheckout) {
+  if (checkout.paymentStatus === "PAID") {
+    return {
+      title: "This order is already confirmed.",
+      description:
+        "The order is in a paid state. You can review the finalized record in your protected orders dashboard.",
+      actions: [{ label: "Review Orders", href: "/dashboard/orders" }],
+    };
+  }
+
+  if (checkout.paymentStatus === "FAILED") {
+    return {
+      title: "This request needs a fresh checkout attempt.",
+      description:
+        "Payment was not completed for this order. Return to the cart to submit a fresh request whenever you are ready.",
+      actions: [
+        { label: "Retry From Cart", href: "/shop/cart" },
+        { label: "Review Orders", href: "/dashboard/orders" },
+      ],
+    };
+  }
+
+  if (checkout.paymentStatus === "REFUNDED") {
+    return {
+      title: "This request has moved to a refunded state.",
+      description:
+        "If you want help with a follow-up order, contact the centre with your order reference.",
+      actions: [{ label: "Contact The Centre", href: "/contact" }],
+    };
+  }
+
+  return {
+    title: "Payment confirmation is still in progress.",
+    description:
+      "Your request is safely recorded. Please check your protected orders for the next status update.",
+    actions: [{ label: "Review Orders", href: "/dashboard/orders" }],
+  };
+}
 
 export function ShopCartPage() {
   const [state, formAction, isPending] = useActionState(
@@ -261,9 +301,9 @@ export function ShopCartPage() {
             </div>
 
             {state.message ? (
-              <p
+              <div
                 aria-live="polite"
-                className="rounded-[var(--radius-xl)] border px-4 py-3 text-[length:var(--font-size-body-sm)] text-[color:var(--color-foreground)]"
+                className="space-y-3 rounded-[var(--radius-xl)] border px-4 py-4 text-[length:var(--font-size-body-sm)]"
                 style={{
                   borderColor:
                     state.status === "error"
@@ -275,8 +315,26 @@ export function ShopCartPage() {
                       : "rgba(215,187,131,0.08)",
                 }}
               >
-                {state.message}
-              </p>
+                {state.errorTitle ? (
+                  <p className="text-[length:var(--font-size-body-md)] text-[color:var(--color-foreground)]">
+                    {state.errorTitle}
+                  </p>
+                ) : null}
+                <p className="text-[color:var(--color-foreground)]">{state.message}</p>
+                {state.status === "error" && state.recoveryActions.length ? (
+                  <div className="flex flex-wrap gap-3">
+                    {state.recoveryActions.map((action) => (
+                      <Link
+                        key={`${action.href}-${action.label}`}
+                        href={action.href}
+                        className={buttonStyles({ tone: "secondary", size: "sm" })}
+                      >
+                        {action.label}
+                      </Link>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
             ) : null}
 
             <Button type="submit" size="lg" disabled={isPending}>
@@ -319,6 +377,35 @@ export function ShopCartPage() {
 
         {state.checkout ? (
           <Card className="space-y-5">
+            {(() => {
+              const recoveryState = getPreparedOrderRecoveryState(state.checkout);
+
+              return (
+                <div className="space-y-3 rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4">
+                  <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                    Checkout Recovery
+                  </p>
+                  <p className="text-[length:var(--font-size-body-md)] text-[color:var(--color-foreground)]">
+                    {recoveryState.title}
+                  </p>
+                  <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                    {recoveryState.description}
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    {recoveryState.actions.map((action) => (
+                      <Link
+                        key={`${action.href}-${action.label}`}
+                        href={action.href}
+                        className={buttonStyles({ tone: "secondary", size: "sm" })}
+                      >
+                        {action.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
+
             <div className="space-y-2">
               <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
                 Prepared Order

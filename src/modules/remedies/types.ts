@@ -1,4 +1,5 @@
 import type { RemedyType } from "@prisma/client";
+import type { RemedyCommerceSafetyPayload } from "@/modules/remedies/commerce-safety";
 import type { RemedyLinkedProduct } from "@/modules/shop";
 import type {
   NatalChartResponse,
@@ -54,6 +55,7 @@ export type RemedyProductMapping = {
   products: RemedyLinkedProduct[];
   purchaseRequired: false;
   note: string;
+  safety: RemedyCommerceSafetyPayload;
 };
 
 export type RemedyFollowUpSuggestion = {

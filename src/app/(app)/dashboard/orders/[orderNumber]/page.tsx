@@ -32,31 +32,80 @@ export default async function DashboardOrderDetailPage({
     resolvedOrderNumber = orderNumber;
   }
 
-  const order = await getMemberOrderDetail(
-    session.user.id,
-    resolvedOrderNumber
-  );
+  let order = null;
 
-  if (!order) {
+  try {
+    order = await getMemberOrderDetail(session.user.id, resolvedOrderNumber);
+  } catch {
     return (
       <Section
         eyebrow="Order Detail"
-        title="This order could not be located."
-        description="The reference may be invalid, or this order belongs to a different account."
+        title="This order cannot be loaded right now."
+        description="Your order record is still protected. Please retry this route in a moment."
         tone="transparent"
         className="pt-0"
       >
         <Card className="space-y-5">
           <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-            Your protected dashboard remains secure. Return to the order history
-            to open a valid reference.
+            You can return to your order list now and try this order again
+            shortly.
           </p>
-          <Link
-            href="/dashboard/orders"
-            className={buttonStyles({ size: "sm", tone: "secondary" })}
-          >
-            Back To Orders
-          </Link>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href={`/dashboard/orders/${encodeURIComponent(resolvedOrderNumber)}`}
+              className={buttonStyles({ size: "sm" })}
+            >
+              Retry This Order
+            </Link>
+            <Link
+              href="/dashboard/orders"
+              className={buttonStyles({ size: "sm", tone: "secondary" })}
+            >
+              Back To Orders
+            </Link>
+            <Link
+              href="/contact"
+              className={buttonStyles({ size: "sm", tone: "ghost" })}
+            >
+              Contact Support
+            </Link>
+          </div>
+        </Card>
+      </Section>
+    );
+  }
+
+  if (!order) {
+    return (
+      <Section
+        eyebrow="Order Detail"
+        title="This order reference is not available."
+        description="The order may not exist in this account, or the reference may have expired."
+        tone="transparent"
+        className="pt-0"
+      >
+        <Card className="space-y-5">
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            Your protected dashboard remains secure. Please return to your order
+            list and select a valid order, or begin a fresh cart request.
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href="/dashboard/orders"
+              className={buttonStyles({ size: "sm", tone: "secondary" })}
+            >
+              Back To Orders
+            </Link>
+            <Link href="/shop/cart" className={buttonStyles({ size: "sm" })}>
+              Open Cart
+            </Link>
+            <Link
+              href="/contact"
+              className={buttonStyles({ size: "sm", tone: "ghost" })}
+            >
+              Contact Support
+            </Link>
+          </div>
         </Card>
       </Section>
     );

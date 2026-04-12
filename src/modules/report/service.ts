@@ -17,6 +17,7 @@ export const reportDisclosures = [
   "All chart facts on this page come from the deterministic astrology provider layer, not from the AI system.",
   "Recommended remedies are selected only from approved NAVAGRAHA CENTRE records through deterministic rules.",
   "Traditional supports remain optional and should be approached with personal discernment, health awareness, and consultation where needed.",
+  "Any product references stay optional and contextual. Remedy practice is never contingent on purchase.",
 ] as const;
 
 type ReadyChartOverview = ChartOverview & {

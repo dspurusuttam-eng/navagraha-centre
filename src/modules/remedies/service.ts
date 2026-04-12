@@ -120,6 +120,7 @@ async function logRecommendationRun(
               note: recommendation.productMapping.note,
               purchaseRequired: recommendation.productMapping.purchaseRequired,
               productSlugs: recommendation.productMapping.products.map((product) => product.slug),
+              safety: recommendation.productMapping.safety,
             },
           })),
         },

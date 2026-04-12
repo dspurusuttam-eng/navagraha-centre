@@ -91,6 +91,9 @@ export function OfferRecommendationPanel({
           <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
             {recommendation.rationale}
           </p>
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            {recommendation.safetyNote}
+          </p>
         </div>
 
         <div className="flex flex-wrap gap-3">
@@ -124,12 +127,18 @@ export function OfferRecommendationPanel({
                       {item.priority}
                     </Badge>
                     <Badge tone="neutral">{item.kindLabel}</Badge>
+                    {item.optionalPurchase ? (
+                      <Badge tone="outline">Optional Purchase</Badge>
+                    ) : null}
                   </div>
                   <p className="mt-3 text-[length:var(--font-size-body-sm)] text-[color:var(--color-foreground)]">
                     {item.title}
                   </p>
                   <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
                     {item.summary}
+                  </p>
+                  <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                    {item.safetyNote}
                   </p>
                   <div className="mt-3">
                     <Link

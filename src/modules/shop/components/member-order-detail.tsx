@@ -122,12 +122,23 @@ export function MemberOrderDetailView({
           ) : null}
 
           {order.statusMessage.nextStepHref && order.statusMessage.nextStepLabel ? (
-            <Link
-              href={order.statusMessage.nextStepHref}
-              className={buttonStyles({ size: "sm" })}
-            >
-              {order.statusMessage.nextStepLabel}
-            </Link>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href={order.statusMessage.nextStepHref}
+                className={buttonStyles({ size: "sm" })}
+              >
+                {order.statusMessage.nextStepLabel}
+              </Link>
+              {order.statusMessage.secondaryStepHref &&
+              order.statusMessage.secondaryStepLabel ? (
+                <Link
+                  href={order.statusMessage.secondaryStepHref}
+                  className={buttonStyles({ tone: "secondary", size: "sm" })}
+                >
+                  {order.statusMessage.secondaryStepLabel}
+                </Link>
+              ) : null}
+            </div>
           ) : null}
         </Card>
 

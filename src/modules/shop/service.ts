@@ -1,4 +1,5 @@
 import { curatedRemedyCatalog } from "@/modules/remedies/catalog";
+import { normalizeRemedyRelationshipNote } from "@/modules/remedies/commerce-safety";
 import {
   curatedShopCatalog,
   productTypeLabels,
@@ -220,7 +221,9 @@ export function getRelatedProductsForRemedySlugs(remedySlugs: string[]) {
         categoryLabel: shopCategoryLabels[product.category],
         priceLabel: formatShopPrice(product.priceInMinor, product.currencyCode),
         href: buildProductHref(product.slug),
-        relationshipNote: product.relationshipNote,
+        relationshipNote: normalizeRemedyRelationshipNote(
+          product.relationshipNote
+        ),
       });
     }
   }

@@ -13,6 +13,10 @@ import {
 import { getChartOverview } from "@/modules/onboarding/service";
 import { getRemedyRecommendationService } from "@/modules/remedies/service";
 import type { RemedyRecommendation } from "@/modules/remedies/types";
+import {
+  remedyCommerceSafetyPolicy,
+  sanitizeRemedyCommerceText,
+} from "@/modules/remedies/commerce-safety";
 import type {
   OfferRecommendation,
   OfferRecommendationContextSummary,
@@ -106,6 +110,7 @@ function createOfferCandidate(input: {
   href: string;
   ctaLabel: string;
   rationale: string;
+  safetyNote?: string;
   supportingSignals?: string[];
   optionalPurchase?: boolean;
 }): OfferCandidate {
@@ -119,6 +124,8 @@ function createOfferCandidate(input: {
     href: input.href,
     ctaLabel: input.ctaLabel,
     rationale: input.rationale,
+    safetyNote:
+      input.safetyNote ?? remedyCommerceSafetyPolicy.recommendationSafetyNote,
     supportingSignals: input.supportingSignals ?? [],
     kindLabel: kindLabels[input.kind],
     optionalPurchase: input.optionalPurchase ?? false,
@@ -246,6 +253,8 @@ function buildConsultationFollowUpCandidate(input: {
     rationale:
       input.retentionSnapshot.nextRecommendedAction.rationale ??
       "Post-session context suggests that a focused follow-up would be more useful than a generic next step.",
+    safetyNote:
+      "This follow-up suggestion is optional and should be chosen only if it feels contextually useful.",
     supportingSignals: [
       input.selectedConsultation?.serviceLabel ??
         input.retentionSnapshot.consultation?.serviceLabel ??
@@ -288,6 +297,8 @@ function buildReportUpgradeCandidate(input: {
       input.retentionSnapshot.nextRecommendedAction.key === "OPEN_REPORT"
         ? input.retentionSnapshot.nextRecommendedAction.rationale
         : "The report is already available and is the clearest structured next step from the current dashboard state.",
+    safetyNote:
+      "This is a continuation of your existing report experience, not a pressure path.",
   });
 }
 
@@ -311,6 +322,8 @@ function buildCompatibilityCandidate(input: {
     ctaLabel: "Review Compatibility Session",
     rationale:
       "Existing consultation or inquiry context suggests relationship-centered themes, but no compatibility-focused session is on file yet.",
+    safetyNote:
+      "Compatibility support remains optional and should follow your own readiness.",
   });
 }
 
@@ -355,6 +368,8 @@ function buildRemedyGuidanceCandidate(input: {
     rationale:
       leadRemedy?.whyThisRemedy.summary ??
       "Approved remedy signals are present and now benefit from a more careful follow-up conversation.",
+    safetyNote:
+      "Remedy follow-up is optional and should stay proportionate to your broader chart context.",
     supportingSignals: leadRemedy ? [leadRemedy.title, leadRemedy.slug] : [],
   });
 }
@@ -377,15 +392,21 @@ function buildProductCandidate(input: {
     kind: "SPIRITUAL_PRODUCT_RELEVANCE",
     title: "An optional product record may be relevant to this remedy path.",
     summary:
-      "If a material support feels appropriate, you can review one related product record alongside the remedy context.",
+      "If a material support feels useful, you can calmly review one related product record beside the remedy guidance.",
     description:
-      "Purchase is optional. The remedy remains primary, and the product link is only here for calm reference.",
+      "Any purchase remains optional. The remedy practice stays primary and no outcome is guaranteed from a transaction.",
     href: leadProduct.href,
-    ctaLabel: "View Related Product",
-    rationale:
+    ctaLabel: "Review Optional Product",
+    rationale: sanitizeRemedyCommerceText(
       leadProduct.relationshipNote ||
       leadRemedyWithProduct.productMapping.note ||
       "A related product record is already linked to the approved remedy set.",
+      remedyCommerceSafetyPolicy.relationshipFallback
+    ),
+    safetyNote: [
+      remedyCommerceSafetyPolicy.noPressureNote,
+      remedyCommerceSafetyPolicy.standaloneRemedyNote,
+    ].join(" "),
     supportingSignals: [leadRemedyWithProduct.title, leadProduct.name],
     optionalPurchase: true,
   });

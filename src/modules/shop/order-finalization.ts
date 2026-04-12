@@ -8,7 +8,11 @@ import {
   Prisma,
 } from "@prisma/client";
 import { getPrisma } from "@/lib/prisma";
+import { applyPaidInventoryDeduction } from "@/modules/shop/inventory";
+import { emitCommerceAnalyticsEventSafely } from "@/modules/shop/analytics-audit";
+import { emitShopNotificationEventSafely } from "@/modules/shop/notification-hooks";
 import type { ShopCheckoutProviderKey } from "@/modules/shop/payment-boundary";
+import { buildShopReceiptData, type ShopReceiptData } from "@/modules/shop/receipt";
 
 export type OrderConfirmationTarget = {
   orderNumber: string;
@@ -43,6 +47,7 @@ export type FinalizePaidOrderFromWebhookResult = {
   orderStatus?: OrderStatus;
   paymentStatus?: PaymentStatus;
   confirmationTarget?: OrderConfirmationTarget;
+  receipt?: ShopReceiptData;
   message: string;
 };
 
@@ -158,6 +163,17 @@ export async function finalizePaidOrderFromWebhook(
   });
 
   if (existingEventMarker) {
+    await emitCommerceAnalyticsEventSafely({
+      eventName: "order.finalization.skipped_duplicate",
+      occurredAtUtc: new Date().toISOString(),
+      providerKey: input.providerKey,
+      reason: "Webhook event marker already existed.",
+      context: {
+        eventId: input.eventId,
+        eventType: input.eventType,
+      },
+    });
+
     return {
       outcome: "duplicate-event",
       message: "Webhook event was already processed.",
@@ -180,6 +196,10 @@ export async function finalizePaidOrderFromWebhook(
       checkoutReference: true,
       status: true,
       paymentStatus: true,
+      billingName: true,
+      customerEmail: true,
+      customerPhone: true,
+      billingTimezone: true,
       currencyCode: true,
       totalAmount: true,
       paymentRecords: {
@@ -190,6 +210,21 @@ export async function finalizePaidOrderFromWebhook(
         select: {
           id: true,
           metadata: true,
+        },
+      },
+      items: {
+        select: {
+          titleSnapshot: true,
+          skuSnapshot: true,
+          unitAmount: true,
+          quantity: true,
+          product: {
+            select: {
+              id: true,
+              name: true,
+              inventoryCount: true,
+            },
+          },
         },
       },
     },
@@ -211,6 +246,26 @@ export async function finalizePaidOrderFromWebhook(
     matchedOrder.status === OrderStatus.PAID &&
     matchedOrder.paymentStatus === PaymentStatus.PAID
   ) {
+    await emitCommerceAnalyticsEventSafely({
+      eventName: "order.finalization.skipped_duplicate",
+      occurredAtUtc: new Date().toISOString(),
+      orderId: matchedOrder.id,
+      orderNumber: matchedOrder.orderNumber,
+      checkoutReference: matchedOrder.checkoutReference ?? undefined,
+      providerKey: input.providerKey,
+      orderStatusFrom: matchedOrder.status,
+      orderStatusTo: matchedOrder.status,
+      paymentStatusFrom: matchedOrder.paymentStatus,
+      paymentStatusTo: matchedOrder.paymentStatus,
+      amount: matchedOrder.totalAmount,
+      currencyCode: matchedOrder.currencyCode,
+      reason: "Order was already in a stable paid state.",
+      context: {
+        eventId: input.eventId,
+        eventType: input.eventType,
+      },
+    });
+
     return {
       outcome: "already-finalized",
       orderId: matchedOrder.id,
@@ -231,6 +286,29 @@ export async function finalizePaidOrderFromWebhook(
     input.paymentReference || `${input.providerKey}:${input.eventId}`;
   const finalizationMarkerId = buildFinalizationMarkerId(matchedOrder.id);
   const finalizedAtUtc = new Date().toISOString();
+  const receipt = buildShopReceiptData({
+    orderId: matchedOrder.id,
+    orderNumber: matchedOrder.orderNumber,
+    orderStatus: OrderStatus.PAID,
+    paymentStatus: PaymentStatus.PAID,
+    paymentProvider: toPaymentProvider(input.providerKey),
+    trustedAmount: resolvedAmount,
+    currencyCode: resolvedCurrencyCode,
+    finalizedAtUtc,
+    customer: {
+      billingName: matchedOrder.billingName,
+      customerEmail: matchedOrder.customerEmail,
+      customerPhone: matchedOrder.customerPhone,
+      billingTimezone: matchedOrder.billingTimezone,
+    },
+    items: matchedOrder.items.map((item) => ({
+      titleSnapshot: item.titleSnapshot,
+      skuSnapshot: item.skuSnapshot,
+      quantity: item.quantity,
+      unitAmount: item.unitAmount,
+    })),
+    confirmationTarget,
+  });
 
   try {
     await getPrisma().$transaction(async (tx) => {
@@ -287,6 +365,8 @@ export async function finalizePaidOrderFromWebhook(
         },
       });
 
+      await applyPaidInventoryDeduction(tx, matchedOrder.items);
+
       const latestRecord = await tx.paymentRecord.findFirst({
         where: {
           orderId: matchedOrder.id,
@@ -314,6 +394,8 @@ export async function finalizePaidOrderFromWebhook(
         trustedAmount: resolvedAmount,
         trustedCurrencyCode: resolvedCurrencyCode,
         confirmationTarget,
+        inventoryReservationStatus: "COMMITTED",
+        inventoryCommittedAtUtc: finalizedAtUtc,
       };
 
       if (latestRecord) {
@@ -343,12 +425,34 @@ export async function finalizePaidOrderFromWebhook(
           },
         });
       }
+    }, {
+      isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
     });
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === "P2002"
     ) {
+      await emitCommerceAnalyticsEventSafely({
+        eventName: "order.finalization.skipped_duplicate",
+        occurredAtUtc: finalizedAtUtc,
+        orderId: matchedOrder.id,
+        orderNumber: matchedOrder.orderNumber,
+        checkoutReference: matchedOrder.checkoutReference ?? undefined,
+        providerKey: input.providerKey,
+        orderStatusFrom: matchedOrder.status,
+        orderStatusTo: OrderStatus.PAID,
+        paymentStatusFrom: matchedOrder.paymentStatus,
+        paymentStatusTo: PaymentStatus.PAID,
+        amount: resolvedAmount,
+        currencyCode: resolvedCurrencyCode,
+        reason: "Paid finalization unique constraint prevented a duplicate commit.",
+        context: {
+          eventId: input.eventId,
+          eventType: input.eventType,
+        },
+      });
+
       return {
         outcome: "already-finalized",
         orderId: matchedOrder.id,
@@ -364,6 +468,40 @@ export async function finalizePaidOrderFromWebhook(
     throw error;
   }
 
+  await emitShopNotificationEventSafely({
+    eventName: "order.paid.confirmed",
+    occurredAtUtc: finalizedAtUtc,
+    orderId: matchedOrder.id,
+    orderNumber: matchedOrder.orderNumber,
+    orderStatus: OrderStatus.PAID,
+    paymentStatus: PaymentStatus.PAID,
+    trustedAmount: resolvedAmount,
+    currencyCode: resolvedCurrencyCode,
+    customer: receipt.customer,
+    confirmationTarget,
+    receipt,
+  });
+
+  await emitCommerceAnalyticsEventSafely({
+    eventName: "order.finalized",
+    occurredAtUtc: finalizedAtUtc,
+    orderId: matchedOrder.id,
+    orderNumber: matchedOrder.orderNumber,
+    checkoutReference: matchedOrder.checkoutReference ?? undefined,
+    providerKey: input.providerKey,
+    providerReference,
+    orderStatusFrom: matchedOrder.status,
+    orderStatusTo: OrderStatus.PAID,
+    paymentStatusFrom: matchedOrder.paymentStatus,
+    paymentStatusTo: PaymentStatus.PAID,
+    amount: resolvedAmount,
+    currencyCode: resolvedCurrencyCode,
+    context: {
+      eventId: input.eventId,
+      eventType: input.eventType,
+    },
+  });
+
   return {
     outcome: "finalized",
     orderId: matchedOrder.id,
@@ -371,6 +509,7 @@ export async function finalizePaidOrderFromWebhook(
     orderStatus: OrderStatus.PAID,
     paymentStatus: PaymentStatus.PAID,
     confirmationTarget,
+    receipt,
     message: "Order finalized successfully.",
   };
 }

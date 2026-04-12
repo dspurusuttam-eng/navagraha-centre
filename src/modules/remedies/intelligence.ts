@@ -14,6 +14,10 @@ import type {
   RemedyRuleMatch,
 } from "@/modules/remedies/types";
 import type { RemedyLinkedProduct } from "@/modules/shop";
+import {
+  buildRemedyProductSafety,
+  getRemedyProductMappingNote,
+} from "@/modules/remedies/commerce-safety";
 
 const remedyTypeLabels: Record<RemedyType, string> = {
   MANTRA: "Mantra",
@@ -126,18 +130,22 @@ function getCautionDefinitions(
 function buildProductMapping(
   relatedProducts: RemedyLinkedProduct[]
 ): RemedyProductMapping {
+  const safety = buildRemedyProductSafety();
+
   if (!relatedProducts.length) {
     return {
       products: [],
       purchaseRequired: false,
-      note: "No purchase is required for this remedy. The focus stays on the practice, observance, or reflection itself.",
+      note: getRemedyProductMappingNote(false),
+      safety,
     };
   }
 
   return {
     products: relatedProducts,
     purchaseRequired: false,
-    note: "Related catalog records are optional supports only. A purchase is never required for this remedy.",
+    note: getRemedyProductMappingNote(true),
+    safety,
   };
 }
 

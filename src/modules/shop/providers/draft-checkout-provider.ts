@@ -5,9 +5,14 @@ import {
   OrderStatus,
   PaymentProvider,
   PaymentStatus,
+  Prisma,
   ProductStatus,
 } from "@prisma/client";
 import { getPrisma } from "@/lib/prisma";
+import {
+  assertReservableInventory,
+  buildInventoryReservationMetadata,
+} from "@/modules/shop/inventory";
 import type {
   PrepareShopCheckoutInput,
   ShopPaymentLifecycleStatus,
@@ -264,6 +269,13 @@ export const draftShopCheckoutProvider: ShopPaymentProvider = {
 
     const preparedOrder = await prisma.$transaction(async (tx) => {
       const productIds = new Map<string, string>();
+      const reservableLines: Array<{
+        productId: string;
+        slug: string;
+        name: string;
+        quantity: number;
+        inventoryCount: number | null;
+      }> = [];
 
       for (const line of lines) {
         const record = line.product;
@@ -282,7 +294,6 @@ export const draftShopCheckoutProvider: ShopPaymentProvider = {
             badge: record.badge,
             materialLabel: record.materialLabel,
             ritualFocus: record.ritualFocus,
-            inventoryCount: record.inventoryCount,
             isFeatured: record.isFeatured,
             sortOrder: record.sortOrder,
             metadata: {
@@ -322,15 +333,28 @@ export const draftShopCheckoutProvider: ShopPaymentProvider = {
           },
           select: {
             id: true,
+            inventoryCount: true,
           },
         });
 
         productIds.set(record.slug, product.id);
+        reservableLines.push({
+          productId: product.id,
+          slug: record.slug,
+          name: record.name,
+          quantity: line.quantity,
+          inventoryCount: product.inventoryCount,
+        });
       }
+
+      await assertReservableInventory(tx, reservableLines);
 
       const subtotalAmount = lines.reduce(
         (total, line) => total + line.product.priceInMinor * line.quantity,
         0
+      );
+      const inventoryReservation = buildInventoryReservationMetadata(
+        reservableLines
       );
 
       return tx.order.create({
@@ -371,6 +395,7 @@ export const draftShopCheckoutProvider: ShopPaymentProvider = {
                 trustedSubtotalAmount: subtotalAmount,
                 trustedCurrencyCode: "INR",
                 idempotencyKey: input.idempotencyKey ?? null,
+                ...inventoryReservation,
               },
             },
           },
@@ -397,6 +422,8 @@ export const draftShopCheckoutProvider: ShopPaymentProvider = {
           },
         },
       });
+    }, {
+      isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
     });
 
     return {

@@ -99,6 +99,12 @@ export type GetApprovedRemediesOutput = {
     productMapping: {
       note: string;
       purchaseRequired: false;
+      safety: {
+        optionalPurchaseLabel: string;
+        nonGuaranteeNote: string;
+        noPressureNote: string;
+        standaloneRemedyNote: string;
+      };
     };
     signalKey: string;
   }[];

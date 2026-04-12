@@ -158,6 +158,12 @@ type AskMyChartToolBundle = {
       productMapping: {
         note: string;
         purchaseRequired: false;
+        safety: {
+          optionalPurchaseLabel: string;
+          nonGuaranteeNote: string;
+          noPressureNote: string;
+          standaloneRemedyNote: string;
+        };
       };
       signalKey: string;
     }[];
@@ -558,6 +564,7 @@ async function getApprovedRemediesTool(
       productMapping: {
         note: recommendation.productMapping.note,
         purchaseRequired: recommendation.productMapping.purchaseRequired,
+        safety: recommendation.productMapping.safety,
       },
       signalKey: recommendation.signalKey,
     })),
