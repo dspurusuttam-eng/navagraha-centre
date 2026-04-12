@@ -20,6 +20,12 @@ import {
   getOfferRecommendations,
 } from "@/modules/offers";
 import { OfferRecommendationPanel } from "@/modules/offers/components/offer-recommendation-panel";
+import {
+  createFallbackSubscriptionRetentionSnapshot,
+  getSubscriptionRetentionIntelligenceSnapshot,
+  type SubscriptionRetentionIntelligenceSnapshot,
+} from "@/modules/subscriptions";
+import { SubscriptionValuePanel } from "@/modules/subscriptions/components/subscription-value-panel";
 
 export const metadata = buildPageMetadata({
   title: "Dashboard",
@@ -61,7 +67,8 @@ function createFallbackUserReport(): GeneratedUserReport {
 
 export default async function DashboardPage() {
   const session = await requireUserSession();
-  const [overview, chartOverview, insights, report, offers] = await Promise.all([
+  const [overview, chartOverview, insights, report, offers, subscriptionState] =
+    await Promise.all([
     (async () => {
       try {
         return await getDashboardOverview(session.user.id);
@@ -98,24 +105,36 @@ export default async function DashboardPage() {
         return createFallbackUserReport();
       }
     })(),
-    (async (): Promise<OfferRecommendationResult> => {
-      try {
-        return await getOfferRecommendations({
-          userId: session.user.id,
-          surfaceKey: "dashboard",
-        });
-      } catch (error) {
-        console.error("Dashboard offers failed", error);
+      (async (): Promise<OfferRecommendationResult> => {
+        try {
+          return await getOfferRecommendations({
+            userId: session.user.id,
+            surfaceKey: "dashboard",
+          });
+        } catch (error) {
+          console.error("Dashboard offers failed", error);
 
-        return createEmptyOfferRecommendationResult("dashboard");
-      }
-    })(),
-  ]);
+          return createEmptyOfferRecommendationResult("dashboard");
+        }
+      })(),
+      (async (): Promise<SubscriptionRetentionIntelligenceSnapshot> => {
+        try {
+          return await getSubscriptionRetentionIntelligenceSnapshot(
+            session.user.id
+          );
+        } catch (error) {
+          console.error("Dashboard subscription state failed", error);
+
+          return createFallbackSubscriptionRetentionSnapshot();
+        }
+      })(),
+    ]);
   const hasBirthProfile = Boolean(chartOverview.birthProfile);
   const hasChart = Boolean(chartOverview.chartRecord && chartOverview.chart);
   const leadConsultationNote = report.consultationNotes[0]?.note ?? null;
   const leadRemedy = report.remedies[0] ?? null;
   const currentCycle = report.currentCycle;
+  const hasAdvancedTimingInsights = subscriptionState.featureGates.advancedTimingInsights;
 
   return (
     <Section
@@ -258,6 +277,13 @@ export default async function DashboardPage() {
         </Card>
 
         <div className="space-y-6">
+          <SubscriptionValuePanel
+            snapshot={subscriptionState}
+            eyebrow="Member Subscription"
+            title="Subscription value in your current workflow."
+            description="Your plan status, optional upgrade path, and retention guidance stay visible without pressure."
+          />
+
           <Card tone="accent" className="space-y-5">
             <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
               Chart Status
@@ -384,37 +410,60 @@ export default async function DashboardPage() {
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-                  Guidance Calendar
-                </p>
-                <div className="grid gap-4 lg:grid-cols-3">
-                  {currentCycle.guidanceCalendar.buckets.map((bucket) => (
-                    <div
-                      key={bucket.key}
-                      className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4"
-                    >
-                      <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-                        {bucket.label}
-                      </p>
-                      <p className="mt-3">{bucket.summary}</p>
-                      <div className="mt-3 space-y-3">
-                        {bucket.entries.slice(0, 2).map((entry) => (
-                          <div key={entry.key} className="space-y-1">
-                            <p className="text-[color:var(--color-foreground)]">
-                              {entry.title}
-                            </p>
-                            <p>{entry.summary}</p>
-                            <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-                              {entry.timeframeLabel}
-                            </p>
-                          </div>
-                        ))}
+              {hasAdvancedTimingInsights ? (
+                <div className="space-y-3">
+                  <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                    Guidance Calendar
+                  </p>
+                  <div className="grid gap-4 lg:grid-cols-3">
+                    {currentCycle.guidanceCalendar.buckets.map((bucket) => (
+                      <div
+                        key={bucket.key}
+                        className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4"
+                      >
+                        <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                          {bucket.label}
+                        </p>
+                        <p className="mt-3">{bucket.summary}</p>
+                        <div className="mt-3 space-y-3">
+                          {bucket.entries.slice(0, 2).map((entry) => (
+                            <div key={entry.key} className="space-y-1">
+                              <p className="text-[color:var(--color-foreground)]">
+                                {entry.title}
+                              </p>
+                              <p>{entry.summary}</p>
+                              <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                                {entry.timeframeLabel}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="rounded-[var(--radius-xl)] border border-[rgba(215,187,131,0.18)] bg-[rgba(215,187,131,0.06)] px-5 py-5">
+                  <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                    Advanced Timing
+                  </p>
+                  <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                    This deeper timing layer is part of premium access. You can
+                    continue with free timing summaries or upgrade whenever it
+                    becomes useful.
+                  </p>
+                  <Link
+                    href={
+                      subscriptionState.recommendation?.href ??
+                      subscriptionState.nextAction.href
+                    }
+                    className={buttonStyles({ size: "sm", tone: "secondary", className: "mt-4" })}
+                  >
+                    {subscriptionState.recommendation?.ctaLabel ??
+                      subscriptionState.nextAction.label}
+                  </Link>
+                </div>
+              )}
             </div>
           ) : (
             <div className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-5 py-5">
@@ -429,49 +478,62 @@ export default async function DashboardPage() {
           <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
             Timing Snapshot
           </p>
-          <div className="space-y-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-            <p>
-              Dasha:{" "}
-              <span className="text-[color:var(--color-foreground)]">
-                {currentCycle.dasha
-                  ? `${currentCycle.dasha.lord} until ${new Date(
-                      currentCycle.dasha.endAtUtc
-                    ).toLocaleDateString("en-IN", {
-                      dateStyle: "medium",
-                    })}`
-                  : "Not available"}
-              </span>
-            </p>
-            <p>
-              Transit snapshot:{" "}
-              <span className="text-[color:var(--color-foreground)]">
-                {currentCycle.transitSnapshot.asOfUtc
-                  ? new Date(currentCycle.transitSnapshot.asOfUtc).toLocaleString(
-                      "en-IN",
-                      {
+          {hasAdvancedTimingInsights ? (
+            <div className="space-y-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              <p>
+                Dasha:{" "}
+                <span className="text-[color:var(--color-foreground)]">
+                  {currentCycle.dasha
+                    ? `${currentCycle.dasha.lord} until ${new Date(
+                        currentCycle.dasha.endAtUtc
+                      ).toLocaleDateString("en-IN", {
                         dateStyle: "medium",
-                        timeStyle: "short",
-                      }
-                    )
-                  : "Not available"}
-              </span>
-            </p>
-            <p>
-              Lead transit:{" "}
-              <span className="text-[color:var(--color-foreground)]">
-                {currentCycle.transitSnapshot.planets[0]
-                  ? `${currentCycle.transitSnapshot.planets[0].body} in ${currentCycle.transitSnapshot.planets[0].sign}, house ${currentCycle.transitSnapshot.planets[0].house}`
-                  : "No transit snapshot available"}
-              </span>
-            </p>
-            <p>
-              Follow-up theme:{" "}
-              <span className="text-[color:var(--color-foreground)]">
-                {currentCycle.synthesis.followUpThemes[0]?.title ??
-                  "Will appear once timing context is available"}
-              </span>
-            </p>
-          </div>
+                      })}`
+                    : "Not available"}
+                </span>
+              </p>
+              <p>
+                Transit snapshot:{" "}
+                <span className="text-[color:var(--color-foreground)]">
+                  {currentCycle.transitSnapshot.asOfUtc
+                    ? new Date(currentCycle.transitSnapshot.asOfUtc).toLocaleString(
+                        "en-IN",
+                        {
+                          dateStyle: "medium",
+                          timeStyle: "short",
+                        }
+                      )
+                    : "Not available"}
+                </span>
+              </p>
+              <p>
+                Lead transit:{" "}
+                <span className="text-[color:var(--color-foreground)]">
+                  {currentCycle.transitSnapshot.planets[0]
+                    ? `${currentCycle.transitSnapshot.planets[0].body} in ${currentCycle.transitSnapshot.planets[0].sign}, house ${currentCycle.transitSnapshot.planets[0].house}`
+                    : "No transit snapshot available"}
+                </span>
+              </p>
+              <p>
+                Follow-up theme:{" "}
+                <span className="text-[color:var(--color-foreground)]">
+                  {currentCycle.synthesis.followUpThemes[0]?.title ??
+                    "Will appear once timing context is available"}
+                </span>
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              <p>
+                Premium timing snapshots include dasha timing windows and richer
+                transit sequencing.
+              </p>
+              <p>
+                Free access still keeps the current-cycle summary and top focus
+                areas available on this page.
+              </p>
+            </div>
+          )}
         </Card>
       </div>
     </Section>

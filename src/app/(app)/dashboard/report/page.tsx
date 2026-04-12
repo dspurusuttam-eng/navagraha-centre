@@ -8,6 +8,11 @@ import {
   getOfferRecommendations,
   type OfferRecommendationResult,
 } from "@/modules/offers";
+import {
+  createFallbackSubscriptionRetentionSnapshot,
+  getSubscriptionRetentionIntelligenceSnapshot,
+  type SubscriptionRetentionIntelligenceSnapshot,
+} from "@/modules/subscriptions";
 import { ChartReportPage } from "@/modules/report/components/chart-report-page";
 
 export const metadata = buildPageMetadata({
@@ -25,7 +30,7 @@ export const metadata = buildPageMetadata({
 export default async function DashboardReportPage() {
   const session = await requireUserSession();
   try {
-    const [report, offers] = await Promise.all([
+    const [report, offers, subscriptionState] = await Promise.all([
       generateUserReport(session.user.id, session.user.name),
       (async (): Promise<OfferRecommendationResult> => {
         try {
@@ -39,9 +44,26 @@ export default async function DashboardReportPage() {
           return createEmptyOfferRecommendationResult("report");
         }
       })(),
+      (async (): Promise<SubscriptionRetentionIntelligenceSnapshot> => {
+        try {
+          return await getSubscriptionRetentionIntelligenceSnapshot(
+            session.user.id
+          );
+        } catch (error) {
+          console.error("Report subscription state failed", error);
+
+          return createFallbackSubscriptionRetentionSnapshot();
+        }
+      })(),
     ]);
 
-    return <ChartReportPage report={report} offers={offers} />;
+    return (
+      <ChartReportPage
+        report={report}
+        offers={offers}
+        subscriptionState={subscriptionState}
+      />
+    );
   } catch {
     return (
       <Section

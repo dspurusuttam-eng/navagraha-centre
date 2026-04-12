@@ -6,6 +6,11 @@ import Link from "next/link";
 import { requireUserSession } from "@/modules/auth/server";
 import { MemberOrderList } from "@/modules/shop/components/member-order-list";
 import { listMemberOrders } from "@/modules/shop/member-orders";
+import {
+  createEmptyOfferRecommendationResult,
+  getOfferRecommendations,
+  type OfferRecommendationResult,
+} from "@/modules/offers";
 
 export const metadata = buildPageMetadata({
   title: "Orders",
@@ -23,9 +28,23 @@ export default async function DashboardOrdersPage() {
   const session = await requireUserSession();
 
   try {
-    const orders = await listMemberOrders(session.user.id);
+    const [orders, offers] = await Promise.all([
+      listMemberOrders(session.user.id),
+      (async (): Promise<OfferRecommendationResult> => {
+        try {
+          return await getOfferRecommendations({
+            userId: session.user.id,
+            surfaceKey: "dashboard",
+          });
+        } catch (error) {
+          console.error("Orders surface offers failed", error);
 
-    return <MemberOrderList orders={orders} />;
+          return createEmptyOfferRecommendationResult("dashboard");
+        }
+      })(),
+    ]);
+
+    return <MemberOrderList orders={orders} offers={offers} />;
   } catch {
     return (
       <Section

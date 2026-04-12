@@ -79,7 +79,8 @@ export function resolveShopCheckoutErrorState(
   if (
     normalized.includes("add at least one product") ||
     normalized.includes("invalid checkout payload") ||
-    normalized.includes("invalid checkout")
+    normalized.includes("invalid checkout") ||
+    normalized.includes("invalid subscription plan")
   ) {
     return {
       code: "CHECKOUT_STATE_INVALID_OR_EXPIRED",

@@ -13,6 +13,7 @@ import { emitCommerceAnalyticsEventSafely } from "@/modules/shop/analytics-audit
 import { emitShopNotificationEventSafely } from "@/modules/shop/notification-hooks";
 import type { ShopCheckoutProviderKey } from "@/modules/shop/payment-boundary";
 import { buildShopReceiptData, type ShopReceiptData } from "@/modules/shop/receipt";
+import { syncSubscriptionFromPaidOrder } from "@/modules/subscriptions";
 
 export type OrderConfirmationTarget = {
   orderNumber: string;
@@ -399,6 +400,11 @@ export async function finalizePaidOrderFromWebhook(
       };
 
       if (latestRecord) {
+        const mergedPaymentMetadata = mergeMetadata(
+          latestRecord.metadata,
+          finalizationMetadataPatch
+        );
+
         await tx.paymentRecord.update({
           where: {
             id: latestRecord.id,
@@ -409,8 +415,17 @@ export async function finalizePaidOrderFromWebhook(
             providerReference,
             amount: resolvedAmount,
             currencyCode: resolvedCurrencyCode,
-            metadata: mergeMetadata(latestRecord.metadata, finalizationMetadataPatch),
+            metadata: mergedPaymentMetadata,
           },
+        });
+
+        await syncSubscriptionFromPaidOrder(tx, {
+          userId: matchedOrder.userId,
+          orderId: matchedOrder.id,
+          orderNumber: matchedOrder.orderNumber,
+          paymentMetadata: mergedPaymentMetadata,
+          finalizedAtUtc,
+          providerKey: input.providerKey,
         });
       } else {
         await tx.paymentRecord.create({
@@ -423,6 +438,15 @@ export async function finalizePaidOrderFromWebhook(
             currencyCode: resolvedCurrencyCode,
             metadata: finalizationMetadataPatch,
           },
+        });
+
+        await syncSubscriptionFromPaidOrder(tx, {
+          userId: matchedOrder.userId,
+          orderId: matchedOrder.id,
+          orderNumber: matchedOrder.orderNumber,
+          paymentMetadata: finalizationMetadataPatch,
+          finalizedAtUtc,
+          providerKey: input.providerKey,
         });
       }
     }, {

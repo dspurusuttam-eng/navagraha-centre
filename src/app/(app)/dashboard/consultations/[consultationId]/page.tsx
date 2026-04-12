@@ -9,6 +9,11 @@ import {
   getOfferRecommendations,
   type OfferRecommendationResult,
 } from "@/modules/offers";
+import {
+  createFallbackSubscriptionRetentionSnapshot,
+  getSubscriptionRetentionIntelligenceSnapshot,
+  type SubscriptionRetentionIntelligenceSnapshot,
+} from "@/modules/subscriptions";
 
 export const metadata = buildPageMetadata({
   title: "Consultation Confirmation",
@@ -31,7 +36,8 @@ export default async function ConsultationConfirmationPage({
 }>) {
   const session = await requireUserSession();
   const { consultationId } = await params;
-  const [consultation, offers, retentionSnapshot] = await Promise.all([
+  const [consultation, offers, retentionSnapshot, subscriptionState] =
+    await Promise.all([
     getConsultationDetail(session.user.id, consultationId),
     (async (): Promise<OfferRecommendationResult> => {
       try {
@@ -46,16 +52,27 @@ export default async function ConsultationConfirmationPage({
         return createEmptyOfferRecommendationResult("consultation-detail");
       }
     })(),
-    (async () => {
-      try {
-        return await getPostConsultationRetentionSnapshot(session.user.id);
-      } catch (error) {
-        console.error("Consultation detail retention snapshot failed", error);
+      (async () => {
+        try {
+          return await getPostConsultationRetentionSnapshot(session.user.id);
+        } catch (error) {
+          console.error("Consultation detail retention snapshot failed", error);
 
-        return null;
-      }
-    })(),
-  ]);
+          return null;
+        }
+      })(),
+      (async (): Promise<SubscriptionRetentionIntelligenceSnapshot> => {
+        try {
+          return await getSubscriptionRetentionIntelligenceSnapshot(
+            session.user.id
+          );
+        } catch (error) {
+          console.error("Consultation detail subscription state failed", error);
+
+          return createFallbackSubscriptionRetentionSnapshot();
+        }
+      })(),
+    ]);
 
   if (!consultation) {
     notFound();
@@ -66,6 +83,7 @@ export default async function ConsultationConfirmationPage({
       consultation={consultation}
       offers={offers}
       retentionSnapshot={retentionSnapshot}
+      subscriptionState={subscriptionState}
     />
   );
 }

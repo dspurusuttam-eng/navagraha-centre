@@ -3,10 +3,13 @@ import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
+import { OfferRecommendationPanel } from "@/modules/offers/components/offer-recommendation-panel";
+import type { OfferRecommendationResult } from "@/modules/offers/types";
 import type { MemberOrderListItem } from "@/modules/shop/member-orders";
 
 type MemberOrderListProps = {
   orders: MemberOrderListItem[];
+  offers: OfferRecommendationResult;
 };
 
 function getLifecycleTone(state: MemberOrderListItem["lifecycleState"]) {
@@ -34,7 +37,10 @@ function getLifecycleLabel(state: MemberOrderListItem["lifecycleState"]) {
   }
 }
 
-export function MemberOrderList({ orders }: Readonly<MemberOrderListProps>) {
+export function MemberOrderList({
+  orders,
+  offers,
+}: Readonly<MemberOrderListProps>) {
   if (!orders.length) {
     return (
       <Section
@@ -61,6 +67,13 @@ export function MemberOrderList({ orders }: Readonly<MemberOrderListProps>) {
             </Link>
           </div>
         </Card>
+        <OfferRecommendationPanel
+          className="mt-6"
+          eyebrow="Recommended Next Offer"
+          title="A calm next step remains available while your first order is pending."
+          description="Recommendations stay contextual and optional, without urgency or pressure."
+          recommendations={offers}
+        />
       </Section>
     );
   }
@@ -147,6 +160,13 @@ export function MemberOrderList({ orders }: Readonly<MemberOrderListProps>) {
           </Card>
         ))}
       </div>
+      <OfferRecommendationPanel
+        className="mt-6"
+        eyebrow="Recommended Next Offer"
+        title="A context-aware next step after your order activity."
+        description="Suggestions remain advisory and non-intrusive, aligned with your chart and member journey."
+        recommendations={offers}
+      />
     </Section>
   );
 }

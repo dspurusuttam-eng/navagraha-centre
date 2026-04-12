@@ -3,10 +3,13 @@ import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
+import { OfferRecommendationPanel } from "@/modules/offers/components/offer-recommendation-panel";
+import type { OfferRecommendationResult } from "@/modules/offers/types";
 import type { MemberOrderDetail } from "@/modules/shop/member-orders";
 
 type MemberOrderDetailProps = {
   order: MemberOrderDetail;
+  offers: OfferRecommendationResult;
 };
 
 function getLifecycleTone(state: MemberOrderDetail["lifecycleState"]) {
@@ -36,6 +39,7 @@ function getLifecycleLabel(state: MemberOrderDetail["lifecycleState"]) {
 
 export function MemberOrderDetailView({
   order,
+  offers,
 }: Readonly<MemberOrderDetailProps>) {
   return (
     <Section
@@ -212,6 +216,14 @@ export function MemberOrderDetailView({
           Back To Orders
         </Link>
       </div>
+
+      <OfferRecommendationPanel
+        className="mt-6"
+        eyebrow="Post-Order Next Step"
+        title="Keep momentum with a calm, context-led recommendation."
+        description="This guidance stays optional and aligned with your existing chart, report, and consultation context."
+        recommendations={offers}
+      />
     </Section>
   );
 }

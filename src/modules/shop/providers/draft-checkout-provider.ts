@@ -22,6 +22,7 @@ import {
   buildValidatedCartLines,
   formatShopPrice,
 } from "@/modules/shop/service";
+import { isSubscriptionPlanId } from "@/modules/subscriptions/plans";
 
 function buildOrderNumber() {
   const stamp = new Date().toISOString().slice(0, 10).replaceAll("-", "");
@@ -206,6 +207,16 @@ export const draftShopCheckoutProvider: ShopPaymentProvider = {
   },
   async prepareCheckout(input: PrepareShopCheckoutInput) {
     const lines = buildValidatedCartLines(input.items);
+    const normalizedPlanId = input.subscriptionPlanId?.trim().toUpperCase();
+    const subscriptionPlanId =
+      normalizedPlanId && isSubscriptionPlanId(normalizedPlanId)
+        ? normalizedPlanId
+        : null;
+
+    if (normalizedPlanId && !subscriptionPlanId) {
+      throw new Error("Invalid subscription plan.");
+    }
+
     const prisma = getPrisma();
     const orderNumber = buildOrderNumber();
     const checkoutReference = buildCheckoutReference(input.idempotencyKey);
@@ -395,6 +406,7 @@ export const draftShopCheckoutProvider: ShopPaymentProvider = {
                 trustedSubtotalAmount: subtotalAmount,
                 trustedCurrencyCode: "INR",
                 idempotencyKey: input.idempotencyKey ?? null,
+                subscriptionPlanId,
                 ...inventoryReservation,
               },
             },

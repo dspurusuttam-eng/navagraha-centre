@@ -6,6 +6,11 @@ import { buildPageMetadata } from "@/lib/metadata";
 import { requireUserSession } from "@/modules/auth/server";
 import { MemberOrderDetailView } from "@/modules/shop/components/member-order-detail";
 import { getMemberOrderDetail } from "@/modules/shop/member-orders";
+import {
+  createEmptyOfferRecommendationResult,
+  getOfferRecommendations,
+  type OfferRecommendationResult,
+} from "@/modules/offers";
 
 export const metadata = buildPageMetadata({
   title: "Order Detail",
@@ -33,9 +38,25 @@ export default async function DashboardOrderDetailPage({
   }
 
   let order = null;
+  let offers: OfferRecommendationResult =
+    createEmptyOfferRecommendationResult("dashboard");
 
   try {
-    order = await getMemberOrderDetail(session.user.id, resolvedOrderNumber);
+    [order, offers] = await Promise.all([
+      getMemberOrderDetail(session.user.id, resolvedOrderNumber),
+      (async (): Promise<OfferRecommendationResult> => {
+        try {
+          return await getOfferRecommendations({
+            userId: session.user.id,
+            surfaceKey: "dashboard",
+          });
+        } catch (error) {
+          console.error("Order detail offers failed", error);
+
+          return createEmptyOfferRecommendationResult("dashboard");
+        }
+      })(),
+    ]);
   } catch {
     return (
       <Section
@@ -111,5 +132,5 @@ export default async function DashboardOrderDetailPage({
     );
   }
 
-  return <MemberOrderDetailView order={order} />;
+  return <MemberOrderDetailView order={order} offers={offers} />;
 }

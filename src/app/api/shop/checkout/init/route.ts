@@ -17,6 +17,7 @@ type CheckoutInitPayload = {
   billingTimezone?: unknown;
   notes?: unknown;
   idempotencyKey?: unknown;
+  subscriptionPlanId?: unknown;
 };
 
 function parseCartLines(payload: CheckoutInitPayload): ShopCartLineInput[] {
@@ -74,6 +75,7 @@ export async function POST(request: Request) {
   const customerPhone = readString(payload.customerPhone);
   const billingTimezone = readString(payload.billingTimezone) || "Asia/Kolkata";
   const notes = readString(payload.notes);
+  const subscriptionPlanId = readString(payload.subscriptionPlanId);
   const idempotencyKey =
     readString(payload.idempotencyKey) ||
     readString(request.headers.get("x-idempotency-key"));
@@ -119,6 +121,7 @@ export async function POST(request: Request) {
       notes: notes || undefined,
       userId: session?.user.id,
       idempotencyKey: idempotencyKey || undefined,
+      subscriptionPlanId: subscriptionPlanId || undefined,
     });
 
     return Response.json(

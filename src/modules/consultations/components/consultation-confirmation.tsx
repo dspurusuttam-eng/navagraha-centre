@@ -12,17 +12,21 @@ import type { ConsultationDetail } from "@/modules/consultations/service";
 import { OfferRecommendationPanel } from "@/modules/offers/components/offer-recommendation-panel";
 import type { OfferRecommendationResult } from "@/modules/offers/types";
 import type { PostConsultationRetentionSnapshot } from "@/modules/consultations/retention";
+import { SubscriptionValuePanel } from "@/modules/subscriptions/components/subscription-value-panel";
+import type { SubscriptionRetentionIntelligenceSnapshot } from "@/modules/subscriptions/types";
 
 type ConsultationConfirmationProps = {
   consultation: ConsultationDetail;
   offers: OfferRecommendationResult;
   retentionSnapshot: PostConsultationRetentionSnapshot | null;
+  subscriptionState: SubscriptionRetentionIntelligenceSnapshot;
 };
 
 export function ConsultationConfirmation({
   consultation,
   offers,
   retentionSnapshot,
+  subscriptionState,
 }: Readonly<ConsultationConfirmationProps>) {
   const dualTime =
     consultation.scheduledForUtc && consultation.scheduledEndUtc
@@ -231,6 +235,15 @@ export function ConsultationConfirmation({
               "No intake summary was provided for this consultation."}
           </p>
         </Card>
+      </div>
+
+      <div className="mt-6">
+        <SubscriptionValuePanel
+          snapshot={subscriptionState}
+          eyebrow="Membership"
+          title="Optional continuity beyond this session."
+          description="Use membership only when ongoing timing and report continuity feels relevant to your consultation path."
+        />
       </div>
 
       {consultation.status === "COMPLETED" ||

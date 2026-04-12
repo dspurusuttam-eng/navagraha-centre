@@ -17,6 +17,10 @@ import {
   remedyCommerceSafetyPolicy,
   sanitizeRemedyCommerceText,
 } from "@/modules/remedies/commerce-safety";
+import {
+  getSubscriptionRetentionIntelligenceSnapshot,
+  toOfferSubscriptionCandidate,
+} from "@/modules/subscriptions";
 import type {
   OfferRecommendation,
   OfferRecommendationContextSummary,
@@ -53,6 +57,7 @@ const compatibilityKeywords =
   /\b(compatibility|relationship|marriage|partner|couple|synastry)\b/i;
 
 const kindLabels: Record<OfferRecommendationKind, string> = {
+  SUBSCRIPTION_MEMBERSHIP: "Membership",
   CONSULTATION_FOLLOW_UP: "Follow-Up Consultation",
   REPORT_UPGRADE: "Premium Report",
   COMPATIBILITY_ADD_ON: "Compatibility Add-On",
@@ -87,6 +92,9 @@ function createEmptyContextSummary(
     remedyRecommendationCount: 0,
     productRelevantCount: 0,
     compatibilityContextDetected: false,
+    subscriptionStatus: "NONE",
+    subscriptionPlanId: null,
+    subscriptionRecommendationPlanId: null,
   };
 }
 
@@ -263,6 +271,26 @@ function buildConsultationFollowUpCandidate(input: {
   });
 }
 
+function buildSubscriptionMembershipCandidate(input: {
+  recommendation: ReturnType<typeof toOfferSubscriptionCandidate>;
+}) {
+  if (!input.recommendation) {
+    return null;
+  }
+
+  return createOfferCandidate({
+    score: input.recommendation.score,
+    kind: "SUBSCRIPTION_MEMBERSHIP",
+    title: input.recommendation.title,
+    summary: input.recommendation.summary,
+    description: input.recommendation.description,
+    href: input.recommendation.href,
+    ctaLabel: input.recommendation.ctaLabel,
+    rationale: input.recommendation.rationale,
+    safetyNote: input.recommendation.safetyNote,
+  });
+}
+
 function buildReportUpgradeCandidate(input: {
   surfaceKey: OfferRecommendationSurfaceKey;
   reportReady: boolean;
@@ -419,6 +447,7 @@ export async function getOfferRecommendations(
   const [
     chartOverview,
     retentionSnapshot,
+    subscriptionSnapshot,
     consultations,
     inquiryLeads,
     completedConsultationCount,
@@ -426,6 +455,7 @@ export async function getOfferRecommendations(
   ] = await Promise.all([
     getChartOverview(input.userId),
     getPostConsultationRetentionSnapshot(input.userId),
+    getSubscriptionRetentionIntelligenceSnapshot(input.userId),
     prisma.consultation.findMany({
       where: {
         userId: input.userId,
@@ -533,6 +563,16 @@ export async function getOfferRecommendations(
     remedyRecommendationCount: significantRemedies.length,
     productRelevantCount,
     compatibilityContextDetected,
+    subscriptionStatus:
+      subscriptionSnapshot.lifecycleState === "NO_SUBSCRIPTION"
+        ? "NONE"
+        : subscriptionSnapshot.lifecycleState,
+    subscriptionPlanId:
+      subscriptionSnapshot.access.plan?.id ??
+      subscriptionSnapshot.latestSubscription?.planId ??
+      null,
+    subscriptionRecommendationPlanId:
+      subscriptionSnapshot.recommendation?.planId ?? null,
   };
 
   if (!reportReady && completedConsultationCount === 0) {
@@ -556,6 +596,9 @@ export async function getOfferRecommendations(
   }
 
   const candidates = [
+    buildSubscriptionMembershipCandidate({
+      recommendation: toOfferSubscriptionCandidate(subscriptionSnapshot),
+    }),
     buildConsultationFollowUpCandidate({
       retentionSnapshot,
       selectedConsultation,

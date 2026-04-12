@@ -11,6 +11,7 @@ export type PrepareShopCheckoutInput = {
   notes?: string;
   userId?: string;
   idempotencyKey?: string;
+  subscriptionPlanId?: string;
 };
 
 export type ShopCheckoutSessionInput = {

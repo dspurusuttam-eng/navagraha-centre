@@ -10,6 +10,8 @@ import type { OfferRecommendationResult } from "@/modules/offers/types";
 import { type RemedyRecommendation } from "@/modules/remedies";
 import { getLabelForRemedyType } from "@/modules/report/components/remedy-presenter";
 import { reportDisclosures, type ChartReportReadyState } from "@/modules/report/service";
+import { SubscriptionValuePanel } from "@/modules/subscriptions/components/subscription-value-panel";
+import type { SubscriptionRetentionIntelligenceSnapshot } from "@/modules/subscriptions/types";
 
 function formatBody(body: PlanetaryBody) {
   return body.charAt(0) + body.slice(1).toLowerCase();
@@ -251,11 +253,14 @@ function RemedyCard({
 export function ChartReportPage({
   report,
   offers,
+  subscriptionState,
 }: Readonly<{
   report: GeneratedUserReport;
   offers: OfferRecommendationResult;
+  subscriptionState: SubscriptionRetentionIntelligenceSnapshot;
 }>) {
   const chartReport = report.chartReport;
+  const hasDeeperReportLayers = subscriptionState.featureGates.deeperReportLayers;
 
   if (chartReport.status === "empty") {
     return (
@@ -441,6 +446,13 @@ export function ChartReportPage({
           title="Keep the next step aligned to the chart, the session context, and the approved remedy record."
           description="These recommendations stay soft by design and never imply extra payment features or guaranteed outcomes."
           recommendations={offers}
+        />
+
+        <SubscriptionValuePanel
+          snapshot={subscriptionState}
+          eyebrow="Subscription"
+          title="Membership continuity for deeper report work."
+          description="Your current plan status and optional upgrade pathway stay visible while keeping this report calm and non-intrusive."
         />
       </div>
 
@@ -641,51 +653,83 @@ export function ChartReportPage({
           )}
         </Card>
 
-        <Card className="space-y-5">
-          <div className="space-y-2">
-            <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-              AI Interpretation
-            </p>
-            <h2
-              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
-              style={{ letterSpacing: "var(--tracking-display)" }}
-            >
-              Explanation stays interpretive, never computational.
-            </h2>
-          </div>
-
-          <div className="space-y-4">
-            {chartReport.interpretation.sections.map((section) => (
-              <div
-                key={section.key}
-                className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-5 py-5"
-              >
-                <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-                  {section.title}
+        {hasDeeperReportLayers ? (
+          <>
+            <Card className="space-y-5">
+              <div className="space-y-2">
+                <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                  AI Interpretation
                 </p>
-                <p className="mt-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                  {section.body}
-                </p>
+                <h2
+                  className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
+                  style={{ letterSpacing: "var(--tracking-display)" }}
+                >
+                  Explanation stays interpretive, never computational.
+                </h2>
               </div>
-            ))}
-          </div>
-        </Card>
 
-        <Card className="space-y-5">
-          <div className="space-y-2">
-            <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-              Chart Signals
+              <div className="space-y-4">
+                {chartReport.interpretation.sections.map((section) => (
+                  <div
+                    key={section.key}
+                    className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-5 py-5"
+                  >
+                    <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                      {section.title}
+                    </p>
+                    <p className="mt-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                      {section.body}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </Card>
+
+            <Card className="space-y-5">
+              <div className="space-y-2">
+                <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                  Chart Signals
+                </p>
+                <h2
+                  className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
+                  style={{ letterSpacing: "var(--tracking-display)" }}
+                >
+                  Deterministic cues used for remedy matching.
+                </h2>
+              </div>
+
+              <ReportSignalList signals={chartReport.signals} />
+            </Card>
+          </>
+        ) : (
+          <Card className="space-y-5">
+            <div className="space-y-2">
+              <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                Premium Report Layers
+              </p>
+              <h2
+                className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
+                style={{ letterSpacing: "var(--tracking-display)" }}
+              >
+                This deeper report layer is part of premium access.
+              </h2>
+            </div>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              You can continue with the current structured summary for free, or
+              unlock deeper report interpretation whenever it becomes useful.
             </p>
-            <h2
-              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
-              style={{ letterSpacing: "var(--tracking-display)" }}
+            <Link
+              href={
+                subscriptionState.recommendation?.href ??
+                subscriptionState.nextAction.href
+              }
+              className={buttonStyles({ size: "sm", tone: "secondary" })}
             >
-              Deterministic cues used for remedy matching.
-            </h2>
-          </div>
-
-          <ReportSignalList signals={chartReport.signals} />
-        </Card>
+              {subscriptionState.recommendation?.ctaLabel ??
+                subscriptionState.nextAction.label}
+            </Link>
+          </Card>
+        )}
       </div>
 
       <div className="mt-6 grid gap-6">

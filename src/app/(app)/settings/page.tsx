@@ -4,6 +4,11 @@ import { buildPageMetadata } from "@/lib/metadata";
 import { ProfileSettingsForm } from "@/modules/account/components/profile-settings-form";
 import { getProfileSettings } from "@/modules/account/service";
 import { requireUserSession } from "@/modules/auth/server";
+import {
+  createFallbackSubscriptionRetentionSnapshot,
+  getSubscriptionRetentionIntelligenceSnapshot,
+} from "@/modules/subscriptions";
+import { SubscriptionValuePanel } from "@/modules/subscriptions/components/subscription-value-panel";
 
 export const metadata = buildPageMetadata({
   title: "Account Settings",
@@ -15,7 +20,18 @@ export const metadata = buildPageMetadata({
 
 export default async function SettingsPage() {
   const session = await requireUserSession();
-  const profile = await getProfileSettings(session.user.id);
+  const [profile, subscriptionState] = await Promise.all([
+    getProfileSettings(session.user.id),
+    (async () => {
+      try {
+        return await getSubscriptionRetentionIntelligenceSnapshot(session.user.id);
+      } catch (error) {
+        console.error("Settings subscription state failed", error);
+
+        return createFallbackSubscriptionRetentionSnapshot();
+      }
+    })(),
+  ]);
 
   return (
     <Section
@@ -69,6 +85,13 @@ export default async function SettingsPage() {
             </li>
           </ul>
         </Card>
+
+        <SubscriptionValuePanel
+          snapshot={subscriptionState}
+          eyebrow="Subscription"
+          title="Membership visibility in account settings."
+          description="Review plan status and optional next membership action alongside your profile controls."
+        />
       </div>
     </Section>
   );
