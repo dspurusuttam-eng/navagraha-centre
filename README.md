@@ -44,6 +44,10 @@ cp .env.example .env.local
 - `ASTROLOGY_PROVIDER`
 - `AI_PROVIDER`
 - `OPENAI_API_KEY` and `OPENAI_MODEL` if enabling live AI interpretation
+- commerce/payment vars:
+  - `SHOP_CHECKOUT_PROVIDER` (optional, defaults to `draft-order`)
+  - `SHOP_DRAFT_WEBHOOK_SECRET` (required for webhook verification)
+  - `SHOP_WEBHOOK_SECRET` (optional fallback)
 - optional ops monitoring vars:
   - `OPS_ALERTS_ENABLED`
   - `OPS_ALERT_WEBHOOK_URL`
@@ -280,6 +284,9 @@ Set these environment variables in Vercel before the first production deploy:
 - `AI_PROVIDER`
 - `AI_USAGE_LOGGING` (optional)
 - `OPENAI_API_KEY` and `OPENAI_MODEL` only if `AI_PROVIDER=openai-responses`
+- `SHOP_CHECKOUT_PROVIDER` (optional, defaults to `draft-order`)
+- `SHOP_DRAFT_WEBHOOK_SECRET` (required for webhook verification)
+- `SHOP_WEBHOOK_SECRET` (optional fallback)
 - `NEXT_PUBLIC_ANALYTICS_ENABLED`
 - `NEXT_PUBLIC_OBSERVABILITY_ENDPOINT`
 
@@ -323,3 +330,4 @@ npm run build
 Use `docs/launch-checklist.md` as the final release checklist.
 Use `docs/database-backup-restore.md` for production backup/restore operations.
 Use `docs/phase-9-completion.md` for consultation conversion, lifecycle, retention, and follow-up automation QA coverage.
+Use `docs/COMMERCE_SETUP.md` for checkout, webhook, and order-finalization production setup/validation.
