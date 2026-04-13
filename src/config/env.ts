@@ -153,6 +153,11 @@ export function validateLaunchEnvironment(
     env,
     "OPS_HEALTHCHECK_TIMEOUT_MS"
   );
+  const geocodingProvider =
+    getStringValue(env, "GEOCODING_PROVIDER").toLowerCase() || "opencage";
+  const geocodingApiKey =
+    getStringValue(env, "GEOCODING_API_KEY") ||
+    getStringValue(env, "OPENCAGE_API_KEY");
 
   if (!databaseUrl) {
     pushIssue(
@@ -204,6 +209,24 @@ export function validateLaunchEnvironment(
   }
 
   validateTrustedOrigins(env, issues);
+
+  if (geocodingProvider !== "opencage") {
+    pushIssue(
+      issues,
+      "GEOCODING_PROVIDER",
+      "warning",
+      `Unsupported geocoding provider "${geocodingProvider}". Use GEOCODING_PROVIDER=opencage.`
+    );
+  }
+
+  if (!geocodingApiKey) {
+    pushIssue(
+      issues,
+      "GEOCODING_API_KEY",
+      "warning",
+      "Birthplace geocoding/timezone resolution will be unavailable without GEOCODING_API_KEY."
+    );
+  }
 
   if (aiProvider === "openai-responses") {
     if (!getStringValue(env, "OPENAI_API_KEY")) {

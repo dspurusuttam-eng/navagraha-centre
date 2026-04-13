@@ -2,6 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { assertRateLimit, buildRateLimitKey } from "@/lib/rate-limit";
+import { normalizeBirthContextInput } from "@/lib/astrology/birth-input-normalizer";
+import { resolveAstronomyReadyBirthContext } from "@/lib/astrology/birth-context-engine";
 import { requireUserSession } from "@/modules/auth/server";
 import type { OnboardingActionState } from "@/modules/onboarding/action-state";
 import {
@@ -51,30 +53,31 @@ function normalizeOptionalText(
   return normalized;
 }
 
-function normalizeCoordinate(
-  value: FormDataEntryValue | null,
-  label: string,
-  min: number,
-  max: number
-) {
-  const normalized = value?.toString().trim() ?? "";
-
-  if (!normalized) {
-    throw new Error(`${label} is required for accurate chart generation.`);
-  }
-
-  const parsed = Number(normalized);
-
-  if (!Number.isFinite(parsed) || parsed < min || parsed > max) {
-    throw new Error(`${label} must be a valid number between ${min} and ${max}.`);
-  }
-
-  return parsed;
-}
-
 function formatValidationError(error: AstrologyValidationError) {
   return (
     error.issues[0]?.message ?? "Please review the birth details and try again."
+  );
+}
+
+function formatBirthNormalizationError(input: {
+  issues: {
+    message: string;
+  }[];
+}) {
+  return (
+    input.issues[0]?.message ??
+    "Birth input could not be normalized. Please review date, time, and place."
+  );
+}
+
+function formatBirthContextResolutionError(input: {
+  issue: {
+    message: string;
+  };
+}) {
+  return (
+    input.issue.message ??
+    "Birth context resolution failed. Please provide a more precise birthplace."
   );
 }
 
@@ -106,38 +109,57 @@ export async function completeBirthOnboarding(
       };
     }
 
+    const birthDateInput = normalizeRequiredText(
+      formData.get("birthDate"),
+      "Birth date",
+      32
+    );
+    const birthTimeInput = normalizeRequiredText(
+      formData.get("birthTime"),
+      "Birth time",
+      32
+    );
+    const birthCity = normalizeRequiredText(formData.get("city"), "Birth city", 80);
+    const birthRegion = normalizeOptionalText(formData.get("region"), 80);
+    const birthCountry = normalizeRequiredText(formData.get("country"), "Country", 80);
+    const placeTextInput = [birthCity, birthRegion, birthCountry]
+      .filter((value) => Boolean(value))
+      .join(", ");
+    const normalizedBirthContext = normalizeBirthContextInput({
+      dateLocalInput: birthDateInput,
+      timeLocalInput: birthTimeInput,
+      placeTextInput,
+    });
+
+    if (!normalizedBirthContext.success) {
+      return {
+        status: "error",
+        message: formatBirthNormalizationError(normalizedBirthContext),
+      };
+    }
+    const resolvedBirthContext = await resolveAstronomyReadyBirthContext(
+      normalizedBirthContext.data
+    );
+
+    if (!resolvedBirthContext.success) {
+      return {
+        status: "error",
+        message: formatBirthContextResolutionError(resolvedBirthContext),
+      };
+    }
+
+    const resolvedPlace = resolvedBirthContext.data.normalized_place;
+
     const birthDetailsResult = validateBirthDetails({
-      dateLocal: normalizeRequiredText(
-        formData.get("birthDate"),
-        "Birth date",
-        10
-      ),
-      timeLocal: normalizeRequiredText(
-        formData.get("birthTime"),
-        "Birth time",
-        5
-      ),
-      timezone: normalizeRequiredText(
-        formData.get("timezone"),
-        "Timezone",
-        120
-      ),
+      dateLocal: normalizedBirthContext.data.date_local_normalized,
+      timeLocal: normalizedBirthContext.data.time_local_normalized,
+      timezone: resolvedBirthContext.data.timezone.iana,
       place: {
-        city: normalizeRequiredText(formData.get("city"), "Birth city", 80),
-        region: normalizeOptionalText(formData.get("region"), 80) ?? undefined,
-        country: normalizeRequiredText(formData.get("country"), "Country", 80),
-        latitude: normalizeCoordinate(
-          formData.get("latitude"),
-          "Latitude",
-          -90,
-          90
-        ),
-        longitude: normalizeCoordinate(
-          formData.get("longitude"),
-          "Longitude",
-          -180,
-          180
-        ),
+        city: resolvedPlace.city ?? birthCity,
+        region: resolvedPlace.region ?? birthRegion ?? undefined,
+        country: resolvedPlace.country_name || birthCountry,
+        latitude: resolvedPlace.latitude,
+        longitude: resolvedPlace.longitude,
       },
     });
 

@@ -42,6 +42,9 @@ cp .env.example .env.local
 - `NEXT_PUBLIC_SITE_URL`
 - `NEXT_PUBLIC_SITE_NAME`
 - `ASTROLOGY_PROVIDER`
+- `GEOCODING_PROVIDER` (`opencage`)
+- `GEOCODING_API_KEY` (OpenCage API key)
+- `OPENCAGE_API_KEY` (optional legacy fallback if `GEOCODING_API_KEY` is unset)
 - `AI_PROVIDER`
 - `OPENAI_API_KEY` and `OPENAI_MODEL` if enabling live AI interpretation
 - commerce/payment vars:
@@ -289,6 +292,8 @@ Set these environment variables in Vercel before the first production deploy:
 - `SHOP_WEBHOOK_SECRET` (optional fallback)
 - `NEXT_PUBLIC_ANALYTICS_ENABLED`
 - `NEXT_PUBLIC_OBSERVABILITY_ENDPOINT`
+- `GEOCODING_PROVIDER` (recommended: `opencage`)
+- `GEOCODING_API_KEY` (required for birth place resolution)
 
 Recommended production values:
 
