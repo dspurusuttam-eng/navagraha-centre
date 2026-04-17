@@ -111,6 +111,7 @@ The project also exposes a lightweight health endpoint at `/api/health` and a cl
 - `npm run db:setup` - generate Prisma client, push schema, and seed launch data
 - `npm run db:studio` - open Prisma Studio
 - `npm run qa:seed:user` - create or refresh a safe local QA member account with chart, report, inquiry, and consultation context
+- `npm run debug:birth-context -- --date <YYYY-MM-DD> --time <HH:mm> --place "<City, State, Country>"` - print internal normalize/place/timezone/UTC/validation payload for birth-context debugging
 - `npm run env:check` - validate launch-critical environment variables
 - `npm run env:audit` - audit env/secrets contract for missing or weak values
 - `npm run setup:swisseph:windows` - install and patch `swisseph` on Windows without changing package manifests

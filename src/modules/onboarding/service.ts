@@ -1,15 +1,32 @@
 import "server-only";
 
 import { ChartStatus, ChartType, type Prisma } from "@prisma/client";
+import {
+  nakshatraCatalog,
+  nakshatraSpanDegrees,
+  signRulerMap,
+  zodiacSignLabelMap,
+} from "@/lib/astrology/constants";
 import { ensureUserProfile } from "@/modules/account/service";
-import type { NatalChartResponse } from "@/modules/astrology";
+import type { SiderealBirthChart } from "@/lib/astrology/chart-builder";
 import {
   getAstrologyService,
   getDefaultAstrologyProviderKey,
   type AstrologyProviderKey,
   type AstrologyService,
 } from "@/modules/astrology/server";
-import type { BirthDetails } from "@/modules/astrology/types";
+import {
+  retrieveOrRefreshBirthChartForUser,
+  type RetrieveOrRefreshBirthChartResult,
+} from "@/modules/astrology/chart-retrieval";
+import type {
+  BirthDetails,
+  HouseNumber,
+  NakshatraName,
+  NatalChartResponse,
+  PlanetaryBody,
+  ZodiacSign,
+} from "@/modules/astrology/types";
 import { getPrisma } from "@/lib/prisma";
 import {
   defaultPreferredLanguage,
@@ -79,6 +96,10 @@ export type ChartOverview = {
   chart: NatalChartResponse | null;
 };
 
+export type GetChartOverviewOptions = {
+  preloadedSavedChartResult?: RetrieveOrRefreshBirthChartResult;
+};
+
 type SaveOnboardingInput = {
   userId: string;
   name: string;
@@ -106,6 +127,51 @@ type SnapshotChartRecord = {
   providerKey: string;
   generatedAt: Date | null;
 } | null;
+
+type BirthProfileForChartAdapter = {
+  birthDate: string;
+  birthTime: string | null;
+  timezone: string;
+  city: string;
+  region: string | null;
+  country: string;
+  latitude: Prisma.Decimal | null;
+  longitude: Prisma.Decimal | null;
+};
+
+const planetNameToBodyMap: Record<string, PlanetaryBody> = {
+  sun: "SUN",
+  moon: "MOON",
+  mars: "MARS",
+  mercury: "MERCURY",
+  jupiter: "JUPITER",
+  venus: "VENUS",
+  saturn: "SATURN",
+  rahu: "RAHU",
+  ketu: "KETU",
+};
+
+const dominantHouseWeights: Record<HouseNumber, number> = {
+  1: 12,
+  2: 5,
+  3: 4,
+  4: 7,
+  5: 8,
+  6: 3,
+  7: 10,
+  8: 2,
+  9: 8,
+  10: 11,
+  11: 6,
+  12: 2,
+};
+
+const zodiacLabelToEnumMap = new Map<Lowercase<string>, ZodiacSign>(
+  Object.entries(zodiacSignLabelMap).map(([key, label]) => [
+    label.toLowerCase() as Lowercase<string>,
+    key as ZodiacSign,
+  ])
+);
 
 function decimalToNumber(value: Prisma.Decimal | null) {
   return value === null ? null : Number(value);
@@ -148,6 +214,219 @@ function parseStoredNatalChart(payload: Prisma.JsonValue | null) {
   }
 
   return payload as unknown as NatalChartResponse;
+}
+
+function normalizeLongitude(longitude: number) {
+  const normalized = longitude % 360;
+
+  return normalized < 0 ? normalized + 360 : normalized;
+}
+
+function toHouseNumber(value: number): HouseNumber {
+  const safeValue = Math.max(1, Math.min(12, Math.round(value)));
+
+  return safeValue as HouseNumber;
+}
+
+function toSignEnum(value: string): ZodiacSign {
+  const normalized = value.trim().toLowerCase() as Lowercase<string>;
+
+  return zodiacLabelToEnumMap.get(normalized) ?? "ARIES";
+}
+
+function toPlanetaryBody(value: string): PlanetaryBody {
+  const normalized = value.trim().toLowerCase();
+
+  return planetNameToBodyMap[normalized] ?? "SUN";
+}
+
+function toDegreeMinute(longitude: number) {
+  const normalized = normalizeLongitude(longitude);
+  const degreeFloat = normalized % 30;
+  let degree = Math.floor(degreeFloat);
+  let minute = Math.round((degreeFloat - degree) * 60);
+
+  if (minute === 60) {
+    minute = 0;
+    degree += 1;
+  }
+
+  if (degree >= 30) {
+    degree = 29;
+    minute = 59;
+  }
+
+  return {
+    degree,
+    minute,
+    degreeInSign: Number(degreeFloat.toFixed(6)),
+  };
+}
+
+function toNakshatraPlacement(longitude: number) {
+  const normalized = normalizeLongitude(longitude);
+  const nakshatraIndex = Math.floor(normalized / nakshatraSpanDegrees);
+  const safeIndex = Math.min(nakshatraCatalog.length - 1, Math.max(0, nakshatraIndex));
+  const degreesIntoNakshatra = Number(
+    (normalized - safeIndex * nakshatraSpanDegrees).toFixed(6)
+  );
+  const pada = Math.min(
+    4,
+    Math.max(1, Math.floor(degreesIntoNakshatra / (nakshatraSpanDegrees / 4)) + 1)
+  ) as 1 | 2 | 3 | 4;
+  const nakshatra = nakshatraCatalog[safeIndex] ?? nakshatraCatalog[0];
+
+  return {
+    name: nakshatra.name as NakshatraName,
+    pada,
+    ruler: nakshatra.ruler,
+    degreesIntoNakshatra,
+  };
+}
+
+function deriveDominantBodies(
+  planets: Array<{ body: PlanetaryBody; house: HouseNumber; retrograde: boolean }>
+) {
+  return planets
+    .map((planet) => {
+      const houseWeight = dominantHouseWeights[planet.house] ?? 1;
+      const retrogradeBonus = planet.retrograde ? 0.25 : 0;
+
+      return {
+        body: planet.body,
+        weight: houseWeight + retrogradeBonus,
+      };
+    })
+    .sort((left, right) => right.weight - left.weight)
+    .slice(0, 3)
+    .map((entry) => entry.body);
+}
+
+function toBirthDetailsFromProfile(
+  profile: BirthProfileForChartAdapter | null,
+  fallback: SiderealBirthChart["birth_context"]
+): BirthDetails {
+  if (!profile) {
+    return {
+      dateLocal: fallback.date_local,
+      timeLocal: fallback.time_local,
+      timezone: fallback.timezone,
+      place: {
+        city: fallback.place.split(",")[0]?.trim() ?? fallback.place,
+        country: fallback.place.split(",").at(-1)?.trim() ?? "Unknown",
+        latitude: fallback.latitude,
+        longitude: fallback.longitude,
+      },
+    };
+  }
+
+  return {
+    dateLocal: profile.birthDate,
+    timeLocal: profile.birthTime ?? "00:00",
+    timezone: profile.timezone,
+    place: {
+      city: profile.city,
+      region: profile.region ?? undefined,
+      country: profile.country,
+      latitude: decimalToNumber(profile.latitude),
+      longitude: decimalToNumber(profile.longitude),
+    },
+  };
+}
+
+function buildNatalCompatibilityChart(input: {
+  siderealChart: SiderealBirthChart;
+  profileBirthData: BirthProfileForChartAdapter | null;
+  generatedAtUtc: string;
+  requestId: string;
+}): NatalChartResponse {
+  const birthDetails = toBirthDetailsFromProfile(
+    input.profileBirthData,
+    input.siderealChart.birth_context
+  );
+  const lagnaSign = toSignEnum(input.siderealChart.lagna.sign);
+  const lagnaPlacement = toNakshatraPlacement(input.siderealChart.lagna.longitude);
+  const houses = input.siderealChart.houses.map((house) => {
+    const sign = toSignEnum(house.sign);
+
+    return {
+      house: toHouseNumber(house.house),
+      sign,
+      ruler: signRulerMap[sign],
+    };
+  });
+  const planets = input.siderealChart.planets.map((planet) => {
+    const body = toPlanetaryBody(planet.name);
+    const sign = toSignEnum(planet.sign);
+    const degrees = toDegreeMinute(planet.longitude);
+    const house = toHouseNumber(planet.house);
+    const nakshatra = toNakshatraPlacement(planet.longitude);
+
+    return {
+      body,
+      sign,
+      longitude: Number(normalizeLongitude(planet.longitude).toFixed(6)),
+      degree: degrees.degree,
+      minute: degrees.minute,
+      house,
+      retrograde: planet.is_retrograde,
+      speed: planet.is_retrograde ? -0.001 : 0.001,
+      nakshatra,
+    };
+  });
+  const dominantBodies = deriveDominantBodies(
+    planets.map((planet) => ({
+      body: planet.body,
+      house: planet.house,
+      retrograde: planet.retrograde,
+    }))
+  );
+  const challengingPlanets = planets
+    .filter((planet) => [6, 8, 12].includes(planet.house))
+    .map((planet) => planet.body);
+  const challengingHouses = houses
+    .map((house) => house.house)
+    .filter((house): house is HouseNumber => [6, 8, 12].includes(house));
+
+  return {
+    kind: "NATAL",
+    metadata: {
+      providerKey: "swisseph-sidereal-saved",
+      fixtureKey: input.siderealChart.verification.verification_status,
+      requestId: input.requestId,
+      generatedAtUtc: input.generatedAtUtc,
+      deterministic: true,
+      disclaimer:
+        "This chart view is generated from the persisted sidereal chart pipeline. Interpretive guidance remains advisory.",
+    },
+    birthDetails,
+    houseSystem: "WHOLE_SIGN",
+    ascendantSign: lagnaSign,
+    lagna: {
+      sign: lagnaSign,
+      longitude: Number(normalizeLongitude(input.siderealChart.lagna.longitude).toFixed(6)),
+      degree: toDegreeMinute(input.siderealChart.lagna.longitude).degree,
+      minute: toDegreeMinute(input.siderealChart.lagna.longitude).minute,
+      nakshatra: lagnaPlacement,
+    },
+    planets,
+    houses,
+    aspects: [],
+    divisionalCharts: [],
+    remedySignals: [],
+    nakshatras: planets.map((planet) => ({
+      body: planet.body,
+      placement: planet.nakshatra!,
+    })),
+    summary: {
+      dominantBodies,
+      narrative:
+        "Saved sidereal chart data is in use. Continue with chart, report, and consultation surfaces for grounded interpretation.",
+      strongestPlanets: dominantBodies,
+      challengingPlanets,
+      challengingHouses,
+    },
+  };
 }
 
 function toPreferredLanguage(
@@ -477,10 +756,13 @@ export async function saveOnboardingAndGenerateChart({
   };
 }
 
-export async function getChartOverview(userId: string): Promise<ChartOverview> {
+export async function getChartOverview(
+  userId: string,
+  options: GetChartOverviewOptions = {}
+): Promise<ChartOverview> {
   const prisma = getPrisma();
   const profile = await ensureUserProfile(userId);
-  const [primaryBirthProfile, latestNatalChart] = await Promise.all([
+  const [primaryBirthProfile, latestNatalChart, savedChartResult] = await Promise.all([
     prisma.birthData.findFirst({
       where: { userId, isPrimary: true },
       orderBy: [{ updatedAt: "desc" }],
@@ -493,7 +775,32 @@ export async function getChartOverview(userId: string): Promise<ChartOverview> {
       },
       orderBy: [{ generatedAt: "desc" }, { updatedAt: "desc" }],
     }),
+    options.preloadedSavedChartResult
+      ? Promise.resolve(options.preloadedSavedChartResult)
+      : retrieveOrRefreshBirthChartForUser(userId),
   ]);
+  const legacyChart = parseStoredNatalChart(latestNatalChart?.chartPayload ?? null);
+  const compatibilityChart =
+    savedChartResult.success && savedChartResult.data.chart
+      ? buildNatalCompatibilityChart({
+          siderealChart: savedChartResult.data.chart,
+          profileBirthData: primaryBirthProfile,
+          generatedAtUtc:
+            savedChartResult.data.persistence.updatedAtUtc ??
+            new Date().toISOString(),
+          requestId:
+            latestNatalChart?.id ??
+            `saved-${savedChartResult.data.persistence.fingerprint.slice(0, 16)}`,
+        })
+      : null;
+  const chart = compatibilityChart ?? legacyChart;
+
+  if (!savedChartResult.success && savedChartResult.error.code !== "SAVED_CHART_NOT_FOUND") {
+    console.warn("[onboarding][chart-overview] saved chart retrieval fallback", {
+      userId,
+      code: savedChartResult.error.code,
+    });
+  }
 
   return {
     preferredLanguage: profile.preferredLanguage,
@@ -513,14 +820,30 @@ export async function getChartOverview(userId: string): Promise<ChartOverview> {
           longitude: decimalToNumber(primaryBirthProfile.longitude),
         }
       : null,
-    chartRecord: latestNatalChart
+    chartRecord: chart
       ? {
-          id: latestNatalChart.id,
-          providerKey: latestNatalChart.providerKey,
-          calculationVersion: latestNatalChart.calculationVersion,
-          generatedAtUtc: latestNatalChart.generatedAt?.toISOString() ?? null,
+          id:
+            latestNatalChart?.id ??
+            (savedChartResult.success
+              ? `saved-${savedChartResult.data.persistence.fingerprint.slice(0, 16)}`
+              : "saved-chart"),
+          providerKey:
+            latestNatalChart?.providerKey ??
+            (savedChartResult.success
+              ? "swisseph-sidereal-saved"
+              : "deterministic-placeholder"),
+          calculationVersion:
+            latestNatalChart?.calculationVersion ??
+            (savedChartResult.success
+              ? savedChartResult.data.persistence.fingerprint
+              : null),
+          generatedAtUtc:
+            latestNatalChart?.generatedAt?.toISOString() ??
+            (savedChartResult.success
+              ? savedChartResult.data.persistence.updatedAtUtc
+              : null),
         }
       : null,
-    chart: parseStoredNatalChart(latestNatalChart?.chartPayload ?? null),
+    chart,
   };
 }

@@ -1,7 +1,6 @@
 import { buildPageMetadata } from "@/lib/metadata";
 import { requireUserSession } from "@/modules/auth/server";
-import { ChartOverviewPanel } from "@/modules/onboarding/components/chart-overview";
-import { getChartOverview } from "@/modules/onboarding/service";
+import { ChartContractPanel } from "@/modules/astrology/components/chart-contract-panel";
 
 export const metadata = buildPageMetadata({
   title: "Chart Overview",
@@ -12,8 +11,7 @@ export const metadata = buildPageMetadata({
 });
 
 export default async function DashboardChartPage() {
-  const session = await requireUserSession();
-  const overview = await getChartOverview(session.user.id);
+  await requireUserSession();
 
-  return <ChartOverviewPanel overview={overview} />;
+  return <ChartContractPanel />;
 }

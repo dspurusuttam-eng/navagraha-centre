@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { assertRateLimit, buildRateLimitKey } from "@/lib/rate-limit";
 import { normalizeBirthContextInput } from "@/lib/astrology/birth-input-normalizer";
 import { resolveAstronomyReadyBirthContext } from "@/lib/astrology/birth-context-engine";
+import { validateBirthContextResolutionResult } from "@/lib/astrology/birth-context-validator";
 import { requireUserSession } from "@/modules/auth/server";
 import type { OnboardingActionState } from "@/modules/onboarding/action-state";
 import {
@@ -53,6 +54,27 @@ function normalizeOptionalText(
   return normalized;
 }
 
+function normalizeCoordinate(
+  value: FormDataEntryValue | null,
+  label: string,
+  min: number,
+  max: number
+) {
+  const normalized = value?.toString().trim() ?? "";
+
+  if (!normalized) {
+    throw new Error(`${label} is required.`);
+  }
+
+  const parsed = Number(normalized);
+
+  if (!Number.isFinite(parsed) || parsed < min || parsed > max) {
+    throw new Error(`${label} is invalid. Please enter a value between ${min} and ${max}.`);
+  }
+
+  return parsed;
+}
+
 function formatValidationError(error: AstrologyValidationError) {
   return (
     error.issues[0]?.message ?? "Please review the birth details and try again."
@@ -78,6 +100,17 @@ function formatBirthContextResolutionError(input: {
   return (
     input.issue.message ??
     "Birth context resolution failed. Please provide a more precise birthplace."
+  );
+}
+
+function formatBirthContextValidationError(input: {
+  errors: {
+    message: string;
+  }[];
+}) {
+  return (
+    input.errors[0]?.message ??
+    "Birth details could not be validated safely for chart generation. Please review and try again."
   );
 }
 
@@ -122,6 +155,23 @@ export async function completeBirthOnboarding(
     const birthCity = normalizeRequiredText(formData.get("city"), "Birth city", 80);
     const birthRegion = normalizeOptionalText(formData.get("region"), 80);
     const birthCountry = normalizeRequiredText(formData.get("country"), "Country", 80);
+    const birthTimezone = normalizeRequiredText(
+      formData.get("timezone"),
+      "Timezone",
+      120
+    );
+    const manualLatitude = normalizeCoordinate(
+      formData.get("latitude"),
+      "Latitude",
+      -90,
+      90
+    );
+    const manualLongitude = normalizeCoordinate(
+      formData.get("longitude"),
+      "Longitude",
+      -180,
+      180
+    );
     const placeTextInput = [birthCity, birthRegion, birthCountry]
       .filter((value) => Boolean(value))
       .join(", ");
@@ -140,28 +190,57 @@ export async function completeBirthOnboarding(
     const resolvedBirthContext = await resolveAstronomyReadyBirthContext(
       normalizedBirthContext.data
     );
+    const birthDetailsResult = resolvedBirthContext.success
+      ? (() => {
+          const birthContextValidation =
+            validateBirthContextResolutionResult(resolvedBirthContext);
 
-    if (!resolvedBirthContext.success) {
-      return {
-        status: "error",
-        message: formatBirthContextResolutionError(resolvedBirthContext),
-      };
-    }
+          if (!birthContextValidation.is_valid_for_chart) {
+            return {
+              success: false as const,
+              issues: [
+                {
+                  field: "birthContext",
+                  code: "CONTEXT_VALIDATION_FAILED",
+                  message: formatBirthContextValidationError(birthContextValidation),
+                },
+              ],
+            };
+          }
 
-    const resolvedPlace = resolvedBirthContext.data.normalized_place;
+          const resolvedPlace = resolvedBirthContext.data.normalized_place;
 
-    const birthDetailsResult = validateBirthDetails({
-      dateLocal: normalizedBirthContext.data.date_local_normalized,
-      timeLocal: normalizedBirthContext.data.time_local_normalized,
-      timezone: resolvedBirthContext.data.timezone.iana,
-      place: {
-        city: resolvedPlace.city ?? birthCity,
-        region: resolvedPlace.region ?? birthRegion ?? undefined,
-        country: resolvedPlace.country_name || birthCountry,
-        latitude: resolvedPlace.latitude,
-        longitude: resolvedPlace.longitude,
-      },
-    });
+          return validateBirthDetails({
+            dateLocal: normalizedBirthContext.data.date_local_normalized,
+            timeLocal: normalizedBirthContext.data.time_local_normalized,
+            timezone: resolvedBirthContext.data.timezone.iana,
+            place: {
+              city: resolvedPlace.city ?? birthCity,
+              region: resolvedPlace.region ?? birthRegion ?? undefined,
+              country: resolvedPlace.country_name || birthCountry,
+              latitude: resolvedPlace.latitude,
+              longitude: resolvedPlace.longitude,
+            },
+          });
+        })()
+      : (() => {
+          console.warn("[onboarding] falling back to manual birth coordinates", {
+            issueCode: resolvedBirthContext.issue.code,
+          });
+
+          return validateBirthDetails({
+            dateLocal: normalizedBirthContext.data.date_local_normalized,
+            timeLocal: normalizedBirthContext.data.time_local_normalized,
+            timezone: birthTimezone,
+            place: {
+              city: birthCity,
+              region: birthRegion ?? undefined,
+              country: birthCountry,
+              latitude: manualLatitude,
+              longitude: manualLongitude,
+            },
+          });
+        })();
 
     if (!birthDetailsResult.success) {
       return {

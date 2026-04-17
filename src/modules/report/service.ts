@@ -8,9 +8,9 @@ import {
   type ReportChartSignal,
 } from "@/modules/remedies";
 import {
-  getChartOverview,
   type ChartOverview,
 } from "@/modules/onboarding/service";
+import { getReportChartContextForUser } from "@/modules/report/chart-context";
 
 export const reportDisclosures = [
   "Interpretation language is reflective and should not be treated as medical, legal, or financial advice.",
@@ -45,7 +45,8 @@ export async function getChartReport(
   userId: string,
   subjectName: string
 ): Promise<ChartReportState> {
-  const overview = await getChartOverview(userId);
+  const chartContext = await getReportChartContextForUser(userId);
+  const overview = chartContext.overview;
 
   if (!overview.chart || !overview.chartRecord || !overview.birthProfile) {
     return {
