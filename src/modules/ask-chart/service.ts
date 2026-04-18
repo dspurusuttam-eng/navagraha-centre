@@ -1,10 +1,19 @@
 import "server-only";
 
-import { generateConsultationReply } from "@/lib/ai/consultation-engine";
+import type { Prisma } from "@prisma/client";
 import { getPrisma } from "@/lib/prisma";
-import { getAiGroundedTextService } from "@/modules/ai/server";
-import { resolvePromptVersionByTemplateKey } from "@/modules/ai/prompt-versioning";
 import type { AiTaskKind } from "@/modules/ai/tasks";
+import {
+  generateAstrologyResponse,
+  type AstrologyAssistantStructuredResponse,
+} from "@/modules/ask-chart/assistant-response-engine";
+import {
+  mapUnifiedChartToAiContext,
+  type ChartAiContext,
+} from "@/modules/ask-chart/chart-context-mapper";
+import {
+  retrieveOrRefreshBirthChartForUser,
+} from "@/modules/astrology/chart-retrieval";
 import { getAstrologyService } from "@/modules/astrology/server";
 import type { BirthDetails, NatalChartResponse, PlanetaryBody } from "@/modules/astrology/types";
 import { getContentAdapter } from "@/modules/content/server";
@@ -29,6 +38,9 @@ const starterPrompts = [
   "How should I understand my current cycle?",
   "What should I focus on over the next month?",
 ] as const;
+
+const unsupportedScopePattern =
+  /\b(diagnose|medical advice|legal advice|financial advice|lottery|gambling|stock tip|sure shot|guaranteed result|guaranteed outcome)\b/i;
 
 const planetaryKeywordMap = [
   { body: "SUN", patterns: [/\bsun\b/i, /\bsolar\b/i] },
@@ -217,12 +229,14 @@ type AskMyChartToolBundle = {
 
 type AskMyChartReplyResult = {
   assistantMessage: string;
+  structuredResponse: AstrologyAssistantStructuredResponse;
   providerKey: string;
   model: string | null;
   taskKind: AiTaskKind;
   promptTemplateKey: string;
   promptVersionLabel: string;
   toolBundle: AskMyChartToolBundle;
+  chartContext: ChartAiContext;
   classification: AskMyChartClassification;
   usedToolNames: string[];
   refused: boolean;
@@ -268,6 +282,16 @@ function formatSignLabel(value: string) {
 
 function classifyQuestion(question: string): AskMyChartClassification {
   const normalized = question.toLowerCase();
+
+  if (unsupportedScopePattern.test(normalized)) {
+    return {
+      intent: "UNSUPPORTED",
+      taskKind: "CHART_EXPLANATION",
+      supported: false,
+      guidance:
+        "Refuse unsupported medical, legal, financial, or certainty-seeking requests and redirect to grounded chart support.",
+    };
+  }
 
   if (/\b(remedy|recommended remedy|gemstone|mantra|rudraksha|yantra|puja|mala)\b/i.test(normalized)) {
     return {
@@ -319,11 +343,11 @@ function classifyQuestion(question: string): AskMyChartClassification {
   }
 
   return {
-    intent: "UNSUPPORTED",
+    intent: "CHART_SUMMARY",
     taskKind: "CHART_EXPLANATION",
-    supported: false,
+    supported: true,
     guidance:
-      "Gracefully refuse questions outside grounded chart interpretation and redirect toward consultation.",
+      "If the question is broad or vague, answer with a calm chart-grounded summary and invite a more specific follow-up.",
   };
 }
 
@@ -679,17 +703,35 @@ async function getConsultationContextTool(
   };
 }
 
-function buildUnsupportedReply() {
+function formatConfidenceLabel(value: AstrologyAssistantStructuredResponse["confidence"]) {
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function formatStructuredReplyForConversation(
+  response: AstrologyAssistantStructuredResponse
+) {
   return [
-    "I can help only with grounded questions about your stored chart, approved remedies, and current chart context inside NAVAGRAHA CENTRE.",
-    "For broader life decisions or advice beyond that scope, please review your chart report or book a consultation with Joy Prakash Sarmah for a more personal reading.",
+    response.answer,
+    `Reasoning: ${response.reasoning}`,
+    `Confidence: ${formatConfidenceLabel(response.confidence)}`,
   ].join("\n\n");
 }
 
-function buildFallbackReply(
+function buildUnsupportedStructuredReply(): AstrologyAssistantStructuredResponse {
+  return {
+    answer:
+      "I can help only with grounded chart questions from your saved NAVAGRAHA CENTRE data.",
+    reasoning:
+      "This request sits outside supported chart interpretation boundaries, so I am avoiding unsupported guidance.",
+    confidence: "low",
+  };
+}
+
+function buildFallbackStructuredReply(
   classification: AskMyChartClassification,
-  tools: AskMyChartToolBundle
-) {
+  tools: AskMyChartToolBundle,
+  chartContext: ChartAiContext
+): AstrologyAssistantStructuredResponse {
   const opening =
     `${tools.chartSnapshot.ascendantSign} rising with ${tools.chartSnapshot.dominantBodies
       .map(formatEnumLabel)
@@ -699,37 +741,40 @@ function buildFallbackReply(
     const firstRemedy = tools.approvedRemedies.remedies[0];
 
     if (!firstRemedy) {
-      return [
-        opening,
-        "No approved remedy records are currently mapped to your stored chart signals, so I would avoid improvising guidance here.",
-        "If you want deeper remedy review, the safest next step is a direct consultation.",
-      ].join("\n\n");
+      return {
+        answer:
+          "No approved remedy record is mapped strongly enough right now for a stronger recommendation.",
+        reasoning:
+          "I am keeping this grounded to approved remedy records and not inventing unsupported remedies.",
+        confidence: "low",
+      };
     }
 
-    return [
-      opening,
-      `${firstRemedy.title} appears because the approved record is linked to chart signals already present in your report. ${firstRemedy.whyThisRemedy.summary}`,
-      firstRemedy.cautionNote ??
-        firstRemedy.productMapping.note,
-    ].join("\n\n");
+    return {
+      answer: `${firstRemedy.title} is currently the clearest approved remedy linked to your stored chart signals.`,
+      reasoning: `${firstRemedy.whyThisRemedy.summary} ${firstRemedy.cautionNote ?? firstRemedy.productMapping.note}`,
+      confidence: chartContext.verification.confidence,
+    };
   }
 
   if (classification.intent === "TRANSIT_EXPLANATION") {
     if (!tools.transitSnapshot?.transits.length) {
-      return [
-        opening,
-        "A grounded transit snapshot is not available right now, so I do not want to improvise a current-cycle reading.",
-        "You can return to the structured chart and report pages for natal context, or take the question into consultation for a live review.",
-      ].join("\n\n");
+      return {
+        answer:
+          "A grounded transit snapshot is not available right now, so I cannot provide a reliable timing reading.",
+        reasoning:
+          "This assistant avoids improvising current-cycle claims when transit context is missing.",
+        confidence: "low",
+      };
     }
 
     const leadTransit = tools.transitSnapshot.transits[0];
 
-    return [
-      opening,
-      `${formatEnumLabel(leadTransit.body)} is currently moving through ${leadTransit.sign} in house ${leadTransit.house}. ${leadTransit.summary}`,
-      "Read this as a reflective timing cue rather than a fixed prediction, and keep the larger chart narrative in view.",
-    ].join("\n\n");
+    return {
+      answer: `${formatEnumLabel(leadTransit.body)} is currently moving through ${leadTransit.sign} in house ${leadTransit.house}.`,
+      reasoning: `${leadTransit.summary} Treat this as timing context, not a fixed prediction.`,
+      confidence: chartContext.verification.confidence,
+    };
   }
 
   const placementLine = tools.chartSummaryFacts.matchingPlacements.length
@@ -750,12 +795,11 @@ function buildFallbackReply(
         .join("; ")}.`
     : "The strongest themes are better understood through the chart summary rather than a single isolated factor.";
 
-  return [
-    opening,
-    placementLine,
-    aspectLine,
-    "I am keeping this answer anchored to stored chart facts only, so for a more personal synthesis the next best step is the full report or consultation.",
-  ].join("\n\n");
+  return {
+    answer: opening,
+    reasoning: `${placementLine} ${aspectLine}`,
+    confidence: chartContext.verification.confidence,
+  };
 }
 
 async function buildToolBundle(
@@ -800,6 +844,7 @@ function getUsedToolNames(
   toolBundle: AskMyChartToolBundle
 ) {
   const names = [
+    "map_saved_chart_context",
     "get_user_chart_snapshot",
     "get_current_chart_summary_facts",
     "get_published_insights",
@@ -824,60 +869,56 @@ async function generateAssistantReply(
   userName: string,
   question: string,
   overview: ChartOverview,
-  toolBundle: AskMyChartToolBundle
+  toolBundle: AskMyChartToolBundle,
+  chartContext: ChartAiContext
 ): Promise<AskMyChartReplyResult> {
   const classification = classifyQuestion(question);
 
   if (!classification.supported) {
+    const structuredResponse = buildUnsupportedStructuredReply();
+
     return {
-      assistantMessage: buildUnsupportedReply(),
+      assistantMessage: formatStructuredReplyForConversation(structuredResponse),
+      structuredResponse,
       providerKey: "policy-refusal",
       model: null,
       taskKind: classification.taskKind,
       promptTemplateKey: "ask-my-chart-copilot",
       promptVersionLabel: "v1",
       toolBundle,
+      chartContext,
       classification,
       usedToolNames: getUsedToolNames(classification, toolBundle),
       refused: true,
     };
   }
 
-  const promptVersion = await resolvePromptVersionByTemplateKey(
-    "ask-my-chart-copilot"
+  const fallbackStructuredResponse = buildFallbackStructuredReply(
+    classification,
+    toolBundle,
+    chartContext
   );
-  const fallbackText = buildFallbackReply(classification, toolBundle);
-  const groundedTextService = getAiGroundedTextService();
-  const response = await groundedTextService.generateReply({
+  const response = await generateAstrologyResponse({
+    question,
+    userName,
+    preferredLanguageLabel: overview.preferredLanguageLabel,
+    groundedScope: classification.guidance,
     taskKind: classification.taskKind,
-    promptTemplateKey: promptVersion.templateKey,
-    promptVersionLabel: promptVersion.label,
-    instructions: promptVersion.systemPrompt,
-    input: [
-      promptVersion.userPrompt,
-      JSON.stringify(
-        {
-          userName,
-          preferredLanguage: overview.preferredLanguageLabel,
-          userQuestion: question,
-          groundedScope: classification.guidance,
-          toolContext: toolBundle,
-        },
-        null,
-        2
-      ),
-    ].join("\n\n"),
-    fallbackText,
+    chartContext,
+    toolContext: toolBundle,
+    fallback: fallbackStructuredResponse,
   });
 
   return {
-    assistantMessage: response.text,
+    assistantMessage: formatStructuredReplyForConversation(response.structured),
+    structuredResponse: response.structured,
     providerKey: response.providerKey,
     model: response.model,
     taskKind: classification.taskKind,
     promptTemplateKey: response.promptTemplateKey,
     promptVersionLabel: response.promptVersionLabel,
     toolBundle,
+    chartContext,
     classification,
     usedToolNames: getUsedToolNames(classification, toolBundle),
     refused: false,
@@ -1060,7 +1101,7 @@ export async function sendAskMyChartMessage(input: {
   }
 
   const prisma = getPrisma();
-  const [sessionRecord, overview] = await Promise.all([
+  const [sessionRecord, savedChartResult] = await Promise.all([
     prisma.aiConversationSession.findFirst({
       where: {
         id: input.sessionId,
@@ -1072,18 +1113,13 @@ export async function sendAskMyChartMessage(input: {
         title: true,
       },
     }),
-    getChartOverview(input.userId),
+    retrieveOrRefreshBirthChartForUser(input.userId),
   ]);
 
   if (!sessionRecord) {
     throw new Error("This Ask My Chart conversation could not be found.");
   }
-
-  if (!overview.chart || !overview.chartRecord) {
-    throw new Error(
-      "Complete your chart onboarding first so the assistant can stay grounded in stored chart data."
-    );
-  }
+  const classification = classifyQuestion(question);
 
   await prisma.aiConversationMessage.create({
     data: {
@@ -1107,55 +1143,181 @@ export async function sendAskMyChartMessage(input: {
   const promptTemplateKey = "ask-my-chart-copilot";
 
   try {
-    const reply = await generateConsultationReply(question, input.userId);
+    let assistantMessage: string;
+    let structuredResponse: AstrologyAssistantStructuredResponse;
+    let providerKey: string;
+    let model: string | null;
+    let promptVersionLabel = "v1";
+    let usedToolNames: string[] = [];
+    let toolPayload: Prisma.InputJsonValue;
+    let policyPassed = true;
+    let policyViolations: Array<{ rule: string; message: string }> = [];
+
+    if (!savedChartResult.success) {
+      structuredResponse = {
+        answer:
+          "I could not load a verified chart context right now, so I am pausing grounded interpretation.",
+        reasoning:
+          "The saved chart pipeline is currently unavailable for this account. Please review onboarding birth details and try again.",
+        confidence: "low",
+      };
+      assistantMessage = formatStructuredReplyForConversation(structuredResponse);
+      providerKey = "chart-context-fallback";
+      model = null;
+      policyPassed = false;
+      policyViolations = [
+        {
+          rule: "MISSING_CHART_CONTEXT",
+          message: savedChartResult.error.message,
+        },
+      ];
+      toolPayload = {
+        source: "fallback",
+        retrievalError: savedChartResult.error,
+        structuredResponse,
+        questionClassification: classification,
+      };
+    } else {
+      const overview = await getChartOverview(input.userId, {
+        preloadedSavedChartResult: savedChartResult,
+      });
+
+      if (!overview.chart || !overview.chartRecord) {
+        structuredResponse = {
+          answer:
+            "Your chart context is not fully ready yet, so I cannot answer safely from chart data.",
+          reasoning:
+            "Complete birth onboarding and chart generation first, then ask again for a grounded interpretation.",
+          confidence: "low",
+        };
+        assistantMessage = formatStructuredReplyForConversation(structuredResponse);
+        providerKey = "chart-context-fallback";
+        model = null;
+        policyPassed = false;
+        policyViolations = [
+          {
+            rule: "MISSING_CHART_CONTEXT",
+            message:
+              "Chart overview is missing ready chartRecord or chart payload.",
+          },
+        ];
+        toolPayload = {
+          source: "fallback",
+          structuredResponse,
+          questionClassification: classification,
+        };
+      } else {
+        const chartContext = mapUnifiedChartToAiContext({
+          chart: savedChartResult.data.chart,
+          natalChart: overview.chart,
+        });
+        const toolBundle = await buildToolBundle(input.userId, question, overview);
+
+        if (!chartContext.verification.isValidForAssistant) {
+          structuredResponse = {
+            answer:
+              "I can see your chart record, but verification confidence is currently too low for a full interpretation.",
+            reasoning:
+              chartContext.warnings[0] ??
+              "The chart verification layer marked this context as low confidence, so I am keeping guidance conservative.",
+            confidence: "low",
+          };
+          assistantMessage = formatStructuredReplyForConversation(structuredResponse);
+          providerKey = "verification-fallback";
+          model = null;
+          policyPassed = false;
+          policyViolations = [
+            {
+              rule: "LOW_CHART_CONFIDENCE",
+              message:
+                "Chart verification does not meet assistant safety threshold.",
+            },
+          ];
+          usedToolNames = getUsedToolNames(classification, toolBundle);
+          toolPayload = {
+            source: "verification-fallback",
+            toolBundle,
+            chartContext,
+            structuredResponse,
+            questionClassification: classification,
+          };
+        } else {
+          const reply = await generateAssistantReply(
+            input.userName,
+            question,
+            overview,
+            toolBundle,
+            chartContext
+          );
+
+          assistantMessage = reply.assistantMessage;
+          structuredResponse = reply.structuredResponse;
+          providerKey = reply.providerKey;
+          model = reply.model;
+          promptVersionLabel = reply.promptVersionLabel;
+          usedToolNames = reply.usedToolNames;
+          policyPassed = !reply.refused;
+          policyViolations = reply.refused
+            ? [
+                {
+                  rule: "OUT_OF_SCOPE",
+                  message:
+                    "Question was outside grounded chart context and handled by policy refusal.",
+                },
+              ]
+            : [];
+          toolPayload = {
+            toolBundle: reply.toolBundle,
+            chartContext: reply.chartContext,
+            questionClassification: reply.classification,
+            usedToolNames: reply.usedToolNames,
+            structuredResponse: reply.structuredResponse,
+            refused: reply.refused,
+            rawAnswer: reply.assistantMessage,
+          };
+        }
+      }
+    }
 
     await Promise.all([
       prisma.aiConversationMessage.create({
         data: {
           sessionId: sessionRecord.id,
           role: "ASSISTANT",
-          content: reply.answer,
-          providerKey: reply.providerKey,
-          model: reply.model,
+          content: assistantMessage,
+          providerKey,
+          model,
           toolName: askMyChartChannelKey,
-          toolPayload: {
-            sourceLabels: reply.sourceLabels,
-            followUpSuggestions: reply.followUpSuggestions,
-            supported: reply.supported,
-          },
+          toolPayload,
         },
       }),
       prisma.aiTaskRun.create({
         data: {
           sessionId: sessionRecord.id,
           userId: input.userId,
-          taskKind: classifyQuestion(question).taskKind,
+          taskKind: classification.taskKind,
           status: "SUCCEEDED",
-          providerKey: reply.providerKey,
-          model: reply.model,
-          promptTemplateKey: "vedic-consultation-engine",
-          promptVersionLabel: "v1",
+          providerKey,
+          model,
+          promptTemplateKey,
+          promptVersionLabel,
           inputHash: createInputHash(question),
           inputPayload: {
             question,
-            sourceLabels: reply.sourceLabels,
+            questionClassification: classification,
+            usedToolNames,
           },
           outputPayload: {
-            answer: reply.answer,
-            followUpSuggestions: reply.followUpSuggestions,
+            structuredResponse,
+            assistantMessage,
           },
           normalizedOutput: {
-            answer: reply.answer,
+            answer: structuredResponse.answer,
+            reasoning: structuredResponse.reasoning,
+            confidence: structuredResponse.confidence,
           },
-          policyPassed: reply.supported,
-          policyViolations: reply.supported
-            ? []
-            : [
-                {
-                  rule: "OUT_OF_SCOPE",
-                  message: "Question was outside grounded chart context.",
-                },
-              ],
+          policyPassed,
+          policyViolations,
           completedAt: new Date(),
         },
       }),
@@ -1167,9 +1329,9 @@ export async function sendAskMyChartMessage(input: {
       data: {
         sessionId: sessionRecord.id,
         userId: input.userId,
-        taskKind: classifyQuestion(question).taskKind,
+        taskKind: classification.taskKind,
         status: "FAILED",
-        providerKey: "vedic-consultation-engine",
+        providerKey: "ask-my-chart-copilot",
         model: null,
         promptTemplateKey,
         promptVersionLabel: "v1",
