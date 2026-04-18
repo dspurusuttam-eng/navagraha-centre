@@ -90,6 +90,14 @@ export function SignInForm() {
             placeholder="Enter your password"
             required
           />
+          <div className="pt-1 text-right">
+            <Link
+              href="/forgot-password"
+              className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-muted)] transition hover:text-[color:var(--color-foreground)]"
+            >
+              Forgot password?
+            </Link>
+          </div>
         </div>
       </div>
 

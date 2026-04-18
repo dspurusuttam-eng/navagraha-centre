@@ -120,6 +120,98 @@ function getTrustedOrigins() {
   return Array.from(trustedOrigins);
 }
 
+type PasswordResetEmailInput = {
+  user: {
+    email: string;
+    name?: string | null;
+  };
+  url: string;
+};
+
+function getPasswordResetSenderAddress() {
+  return process.env.AUTH_RESET_FROM_EMAIL?.trim() ?? "";
+}
+
+function getResendApiKey() {
+  return process.env.RESEND_API_KEY?.trim() ?? "";
+}
+
+function getPasswordResetSubject() {
+  const siteName = siteConfig.name?.trim() || "NAVAGRAHA CENTRE";
+
+  return `${siteName}: Reset your password`;
+}
+
+function buildPasswordResetEmailHtml(url: string) {
+  return [
+    "<p>A password reset request was received for your account.</p>",
+    "<p>Use the secure link below to choose a new password:</p>",
+    `<p><a href="${url}">${url}</a></p>`,
+    "<p>If you did not request this, you can safely ignore this message.</p>",
+  ].join("");
+}
+
+function buildPasswordResetEmailText(url: string) {
+  return [
+    "A password reset request was received for your account.",
+    "Use this secure link to choose a new password:",
+    url,
+    "If you did not request this, you can ignore this message.",
+  ].join("\n\n");
+}
+
+async function sendPasswordResetWithResend(input: PasswordResetEmailInput) {
+  const apiKey = getResendApiKey();
+  const from = getPasswordResetSenderAddress();
+
+  if (!apiKey || !from) {
+    return false;
+  }
+
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from,
+      to: [input.user.email],
+      subject: getPasswordResetSubject(),
+      html: buildPasswordResetEmailHtml(input.url),
+      text: buildPasswordResetEmailText(input.url),
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `Password reset email send failed with status ${response.status}.`
+    );
+  }
+
+  return true;
+}
+
+async function sendPasswordResetEmail(input: PasswordResetEmailInput) {
+  const sentWithResend = await sendPasswordResetWithResend(input);
+
+  if (sentWithResend) {
+    return;
+  }
+
+  if (process.env.NODE_ENV !== "production") {
+    console.info("[auth] password reset link (development)", {
+      email: input.user.email,
+      url: input.url,
+    });
+    return;
+  }
+
+  throw new Error(
+    "Password reset is not configured. Set RESEND_API_KEY and AUTH_RESET_FROM_EMAIL."
+  );
+}
+
 function createAuth() {
   return betterAuth({
     appName: siteConfig.name,
@@ -131,6 +223,15 @@ function createAuth() {
     }),
     emailAndPassword: {
       enabled: true,
+      sendResetPassword: async ({ user, url }) => {
+        await sendPasswordResetEmail({
+          user: {
+            email: user.email,
+            name: user.name,
+          },
+          url,
+        });
+      },
     },
     plugins: [nextCookies()],
   });

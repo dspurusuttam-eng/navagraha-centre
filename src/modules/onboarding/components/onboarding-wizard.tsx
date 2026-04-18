@@ -42,6 +42,19 @@ type OnboardingWizardProps = {
   };
 };
 
+type InputMode = "auto" | "manual";
+type AutofillStatus = "idle" | "resolving" | "resolved" | "error";
+
+type BirthContextAutofillResponse = {
+  resolved: {
+    displayName: string;
+    latitude: number;
+    longitude: number;
+    timezoneIana: string;
+    locationConfidence: "high" | "moderate" | "low";
+  };
+};
+
 const steps = [
   {
     id: "identity",
@@ -69,16 +82,37 @@ const steps = [
   },
 ] as const;
 
+function formatCoordinateInput(value: number) {
+  return value.toFixed(6);
+}
+
 export function OnboardingWizard({
   defaults,
   status,
 }: Readonly<OnboardingWizardProps>) {
   const [stepIndex, setStepIndex] = useState(0);
+  const [birthDate, setBirthDate] = useState(defaults.birthDate);
+  const [birthTime, setBirthTime] = useState(defaults.birthTime);
+  const [city, setCity] = useState(defaults.city);
+  const [region, setRegion] = useState(defaults.region);
+  const [country, setCountry] = useState(defaults.country);
+  const [timezone, setTimezone] = useState(defaults.timezone);
+  const [latitude, setLatitude] = useState(defaults.latitude);
+  const [longitude, setLongitude] = useState(defaults.longitude);
+  const [timezoneMode, setTimezoneMode] = useState<InputMode>("auto");
+  const [coordinatesMode, setCoordinatesMode] = useState<InputMode>("auto");
+  const [autofillStatus, setAutofillStatus] = useState<AutofillStatus>("idle");
+  const [autofillMessage, setAutofillMessage] = useState<string | null>(null);
+  const [resolvedPlaceLabel, setResolvedPlaceLabel] = useState<string | null>(
+    null
+  );
   const [state, formAction, isPending] = useActionState(
     completeBirthOnboarding,
     initialOnboardingActionState
   );
   const formRef = useRef<HTMLFormElement>(null);
+  const autofillAbortControllerRef = useRef<AbortController | null>(null);
+  const lastAutofillKeyRef = useRef<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -88,6 +122,131 @@ export function OnboardingWizard({
       });
     }
   }, [router, state.redirectTo, state.status]);
+
+  useEffect(() => {
+    return () => {
+      autofillAbortControllerRef.current?.abort();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (timezoneMode === "manual" && coordinatesMode === "manual") {
+      if (autofillAbortControllerRef.current) {
+        autofillAbortControllerRef.current.abort();
+      }
+      return;
+    }
+
+    const hasPlace = Boolean(city.trim() && country.trim());
+    const hasBirthMoment = Boolean(birthDate.trim() && birthTime.trim());
+
+    if (!hasPlace || !hasBirthMoment) {
+      return;
+    }
+
+    const requestKey = [
+      birthDate.trim(),
+      birthTime.trim(),
+      city.trim(),
+      region.trim(),
+      country.trim(),
+      timezoneMode,
+      coordinatesMode,
+    ].join("|");
+
+    if (lastAutofillKeyRef.current === requestKey) {
+      return;
+    }
+
+    const timeoutHandle = setTimeout(async () => {
+      autofillAbortControllerRef.current?.abort();
+
+      const abortController = new AbortController();
+      autofillAbortControllerRef.current = abortController;
+
+      setAutofillStatus("resolving");
+      setAutofillMessage("Resolving timezone and coordinates from location...");
+
+      try {
+        const response = await fetch("/api/astrology/birth-context/resolve", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          signal: abortController.signal,
+          body: JSON.stringify({
+            birthDate,
+            birthTime,
+            city,
+            region,
+            country,
+          }),
+        });
+
+        const payload = (await response
+          .json()
+          .catch(() => null)) as
+          | BirthContextAutofillResponse
+          | {
+              error?: {
+                message?: string;
+              };
+            }
+          | null;
+
+        if (!response.ok) {
+          throw new Error(
+            payload &&
+              "error" in payload &&
+              payload.error?.message &&
+              payload.error.message.trim()
+              ? payload.error.message
+              : "Automatic location resolution could not complete. You can continue with manual timezone and coordinates."
+          );
+        }
+
+        if (
+          !payload ||
+          !("resolved" in payload) ||
+          !payload.resolved?.timezoneIana
+        ) {
+          throw new Error(
+            "Automatic location resolution returned an incomplete response."
+          );
+        }
+
+        if (timezoneMode === "auto") {
+          setTimezone(payload.resolved.timezoneIana);
+        }
+
+        if (coordinatesMode === "auto") {
+          setLatitude(formatCoordinateInput(payload.resolved.latitude));
+          setLongitude(formatCoordinateInput(payload.resolved.longitude));
+        }
+
+        setResolvedPlaceLabel(payload.resolved.displayName);
+        setAutofillStatus("resolved");
+        setAutofillMessage("Timezone and coordinates were auto-filled.");
+        lastAutofillKeyRef.current = requestKey;
+      } catch (error) {
+        if (abortController.signal.aborted) {
+          return;
+        }
+
+        setAutofillStatus("error");
+        setAutofillMessage(
+          error instanceof Error
+            ? error.message
+            : "Automatic location resolution is unavailable. You can continue with manual timezone and coordinates."
+        );
+        setResolvedPlaceLabel(null);
+      }
+    }, 450);
+
+    return () => {
+      clearTimeout(timeoutHandle);
+    };
+  }, [birthDate, birthTime, city, region, country, timezoneMode, coordinatesMode]);
 
   function validateCurrentStep() {
     const form = formRef.current;
@@ -122,6 +281,8 @@ export function OnboardingWizard({
   return (
     <div className="grid gap-6 xl:grid-cols-[minmax(0,1.3fr)_minmax(260px,0.7fr)]">
       <form ref={formRef} action={formAction} className="space-y-6">
+        <input type="hidden" name="timezoneMode" value={timezoneMode} />
+        <input type="hidden" name="coordinatesMode" value={coordinatesMode} />
         <Card className="space-y-6">
           <div className="space-y-2">
             <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
@@ -197,7 +358,11 @@ export function OnboardingWizard({
                   id="onboarding-birth-date"
                   name="birthDate"
                   type="date"
-                  defaultValue={defaults.birthDate}
+                  value={birthDate}
+                  onChange={(event) => {
+                    setBirthDate(event.target.value);
+                    lastAutofillKeyRef.current = null;
+                  }}
                   required
                 />
               </div>
@@ -213,25 +378,54 @@ export function OnboardingWizard({
                   id="onboarding-birth-time"
                   name="birthTime"
                   type="time"
-                  defaultValue={defaults.birthTime}
+                  value={birthTime}
+                  onChange={(event) => {
+                    setBirthTime(event.target.value);
+                    lastAutofillKeyRef.current = null;
+                  }}
                   required
                 />
               </div>
 
               <div className="space-y-2 md:col-span-2">
-                <label
-                  htmlFor="onboarding-timezone"
-                  className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]"
-                >
-                  Timezone
-                </label>
+                <div className="flex items-center justify-between gap-3">
+                  <label
+                    htmlFor="onboarding-timezone"
+                    className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]"
+                  >
+                    Timezone
+                  </label>
+                  <button
+                    type="button"
+                    className="text-[0.7rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-muted)] transition [transition-duration:var(--motion-duration-base)] hover:text-[color:var(--color-foreground)]"
+                    onClick={() => {
+                      setTimezoneMode((current) =>
+                        current === "manual" ? "auto" : "manual"
+                      );
+                      lastAutofillKeyRef.current = null;
+                    }}
+                  >
+                    {timezoneMode === "manual"
+                      ? "Use auto timezone"
+                      : "Edit timezone manually"}
+                  </button>
+                </div>
                 <Input
                   id="onboarding-timezone"
                   name="timezone"
-                  defaultValue={defaults.timezone}
+                  value={timezone}
+                  onChange={(event) => {
+                    setTimezone(event.target.value);
+                  }}
                   placeholder="Asia/Kolkata"
-                  required
+                  readOnly={timezoneMode === "auto"}
+                  required={timezoneMode === "manual"}
                 />
+                <p className="text-[0.72rem] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                  {timezoneMode === "auto"
+                    ? "Timezone is auto-derived from the resolved birth location."
+                    : "Manual timezone override is enabled."}
+                </p>
               </div>
             </div>
 
@@ -251,7 +445,11 @@ export function OnboardingWizard({
                 <Input
                   id="onboarding-city"
                   name="city"
-                  defaultValue={defaults.city}
+                  value={city}
+                  onChange={(event) => {
+                    setCity(event.target.value);
+                    lastAutofillKeyRef.current = null;
+                  }}
                   required
                 />
               </div>
@@ -266,7 +464,11 @@ export function OnboardingWizard({
                 <Input
                   id="onboarding-region"
                   name="region"
-                  defaultValue={defaults.region}
+                  value={region}
+                  onChange={(event) => {
+                    setRegion(event.target.value);
+                    lastAutofillKeyRef.current = null;
+                  }}
                   placeholder="State or province"
                 />
               </div>
@@ -281,9 +483,33 @@ export function OnboardingWizard({
                 <Input
                   id="onboarding-country"
                   name="country"
-                  defaultValue={defaults.country}
+                  value={country}
+                  onChange={(event) => {
+                    setCountry(event.target.value);
+                    lastAutofillKeyRef.current = null;
+                  }}
                   required
                 />
+              </div>
+
+              <div className="md:col-span-2 flex items-center justify-between gap-3">
+                <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                  Coordinates
+                </p>
+                <button
+                  type="button"
+                  className="text-[0.7rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-muted)] transition [transition-duration:var(--motion-duration-base)] hover:text-[color:var(--color-foreground)]"
+                  onClick={() => {
+                    setCoordinatesMode((current) =>
+                      current === "manual" ? "auto" : "manual"
+                    );
+                    lastAutofillKeyRef.current = null;
+                  }}
+                >
+                  {coordinatesMode === "manual"
+                    ? "Use auto coordinates"
+                    : "Edit coordinates manually"}
+                </button>
               </div>
 
               <div className="space-y-2">
@@ -300,9 +526,13 @@ export function OnboardingWizard({
                   step="0.000001"
                   min="-90"
                   max="90"
-                  defaultValue={defaults.latitude}
+                  value={latitude}
+                  onChange={(event) => {
+                    setLatitude(event.target.value);
+                  }}
+                  readOnly={coordinatesMode === "auto"}
                   placeholder="26.1445"
-                  required
+                  required={coordinatesMode === "manual"}
                 />
               </div>
 
@@ -320,10 +550,47 @@ export function OnboardingWizard({
                   step="0.000001"
                   min="-180"
                   max="180"
-                  defaultValue={defaults.longitude}
+                  value={longitude}
+                  onChange={(event) => {
+                    setLongitude(event.target.value);
+                  }}
+                  readOnly={coordinatesMode === "auto"}
                   placeholder="91.7362"
-                  required
+                  required={coordinatesMode === "manual"}
                 />
+              </div>
+
+              <div className="md:col-span-2 space-y-2">
+                <p className="text-[0.72rem] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                  {coordinatesMode === "auto"
+                    ? "Latitude and longitude are auto-derived from the resolved birth location."
+                    : "Manual coordinate override is enabled."}
+                </p>
+                {resolvedPlaceLabel ? (
+                  <p className="text-[0.72rem] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                    Resolved place:{" "}
+                    <span className="text-[color:var(--color-foreground)]">
+                      {resolvedPlaceLabel}
+                    </span>
+                  </p>
+                ) : null}
+                {autofillMessage && step.id === "birthplace" ? (
+                  <p
+                    className="rounded-[var(--radius-lg)] border px-4 py-3 text-[length:var(--font-size-body-sm)] text-[color:var(--color-foreground)]"
+                    style={{
+                      borderColor:
+                        autofillStatus === "error"
+                          ? "rgba(205,143,143,0.35)"
+                          : "rgba(215,187,131,0.25)",
+                      background:
+                        autofillStatus === "error"
+                          ? "rgba(90,30,30,0.2)"
+                          : "rgba(215,187,131,0.08)",
+                    }}
+                  >
+                    {autofillMessage}
+                  </p>
+                ) : null}
               </div>
             </div>
           </div>

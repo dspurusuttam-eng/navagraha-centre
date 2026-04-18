@@ -17,6 +17,8 @@ import {
   validateBirthDetails,
 } from "@/modules/astrology/validation";
 
+type InputMode = "auto" | "manual";
+
 function normalizeRequiredText(
   value: FormDataEntryValue | null,
   label: string,
@@ -75,6 +77,46 @@ function normalizeCoordinate(
   return parsed;
 }
 
+function normalizeOptionalCoordinate(
+  value: FormDataEntryValue | null,
+  label: string,
+  min: number,
+  max: number
+) {
+  const normalized = value?.toString().trim() ?? "";
+
+  if (!normalized) {
+    return null;
+  }
+
+  const parsed = Number(normalized);
+
+  if (!Number.isFinite(parsed) || parsed < min || parsed > max) {
+    throw new Error(
+      `${label} is invalid. Please enter a value between ${min} and ${max}.`
+    );
+  }
+
+  return parsed;
+}
+
+function normalizeInputMode(
+  value: FormDataEntryValue | null,
+  fallback: InputMode
+): InputMode {
+  const normalized = value?.toString().trim().toLowerCase();
+
+  if (normalized === "manual") {
+    return "manual";
+  }
+
+  if (normalized === "auto") {
+    return "auto";
+  }
+
+  return fallback;
+}
+
 function formatValidationError(error: AstrologyValidationError) {
   return (
     error.issues[0]?.message ?? "Please review the birth details and try again."
@@ -89,17 +131,6 @@ function formatBirthNormalizationError(input: {
   return (
     input.issues[0]?.message ??
     "Birth input could not be normalized. Please review date, time, and place."
-  );
-}
-
-function formatBirthContextResolutionError(input: {
-  issue: {
-    message: string;
-  };
-}) {
-  return (
-    input.issue.message ??
-    "Birth context resolution failed. Please provide a more precise birthplace."
   );
 }
 
@@ -155,23 +186,28 @@ export async function completeBirthOnboarding(
     const birthCity = normalizeRequiredText(formData.get("city"), "Birth city", 80);
     const birthRegion = normalizeOptionalText(formData.get("region"), 80);
     const birthCountry = normalizeRequiredText(formData.get("country"), "Country", 80);
-    const birthTimezone = normalizeRequiredText(
-      formData.get("timezone"),
-      "Timezone",
-      120
+    const timezoneMode = normalizeInputMode(formData.get("timezoneMode"), "auto");
+    const coordinatesMode = normalizeInputMode(
+      formData.get("coordinatesMode"),
+      "auto"
     );
-    const manualLatitude = normalizeCoordinate(
-      formData.get("latitude"),
-      "Latitude",
-      -90,
-      90
-    );
-    const manualLongitude = normalizeCoordinate(
-      formData.get("longitude"),
-      "Longitude",
-      -180,
-      180
-    );
+    const birthTimezone =
+      timezoneMode === "manual"
+        ? normalizeRequiredText(formData.get("timezone"), "Timezone", 120)
+        : (formData.get("timezone")?.toString().trim() ?? "");
+    const manualLatitude =
+      coordinatesMode === "manual"
+        ? normalizeCoordinate(formData.get("latitude"), "Latitude", -90, 90)
+        : normalizeOptionalCoordinate(formData.get("latitude"), "Latitude", -90, 90);
+    const manualLongitude =
+      coordinatesMode === "manual"
+        ? normalizeCoordinate(formData.get("longitude"), "Longitude", -180, 180)
+        : normalizeOptionalCoordinate(
+            formData.get("longitude"),
+            "Longitude",
+            -180,
+            180
+          );
     const placeTextInput = [birthCity, birthRegion, birthCountry]
       .filter((value) => Boolean(value))
       .join(", ");
@@ -209,24 +245,58 @@ export async function completeBirthOnboarding(
           }
 
           const resolvedPlace = resolvedBirthContext.data.normalized_place;
+          const resolvedTimezone = resolvedBirthContext.data.timezone.iana;
+          const effectiveTimezone =
+            timezoneMode === "manual" ? birthTimezone : resolvedTimezone;
+          const useManualCoordinates =
+            coordinatesMode === "manual" &&
+            manualLatitude !== null &&
+            manualLongitude !== null;
+          const effectivePlace = useManualCoordinates
+            ? {
+                city: birthCity,
+                region: birthRegion ?? undefined,
+                country: birthCountry,
+                latitude: manualLatitude,
+                longitude: manualLongitude,
+              }
+            : {
+                city: resolvedPlace.city ?? birthCity,
+                region: resolvedPlace.region ?? birthRegion ?? undefined,
+                country: resolvedPlace.country_name || birthCountry,
+                latitude: resolvedPlace.latitude,
+                longitude: resolvedPlace.longitude,
+              };
 
           return validateBirthDetails({
             dateLocal: normalizedBirthContext.data.date_local_normalized,
             timeLocal: normalizedBirthContext.data.time_local_normalized,
-            timezone: resolvedBirthContext.data.timezone.iana,
-            place: {
-              city: resolvedPlace.city ?? birthCity,
-              region: resolvedPlace.region ?? birthRegion ?? undefined,
-              country: resolvedPlace.country_name || birthCountry,
-              latitude: resolvedPlace.latitude,
-              longitude: resolvedPlace.longitude,
-            },
+            timezone: effectiveTimezone,
+            place: effectivePlace,
           });
         })()
       : (() => {
           console.warn("[onboarding] falling back to manual birth coordinates", {
             issueCode: resolvedBirthContext.issue.code,
           });
+
+          if (
+            !birthTimezone ||
+            manualLatitude === null ||
+            manualLongitude === null
+          ) {
+            return {
+              success: false as const,
+              issues: [
+                {
+                  field: "birthContext",
+                  code: "MANUAL_BIRTH_DETAILS_REQUIRED",
+                  message:
+                    "Automatic birthplace resolution is unavailable. Enter timezone, latitude, and longitude manually to continue.",
+                },
+              ],
+            };
+          }
 
           return validateBirthDetails({
             dateLocal: normalizedBirthContext.data.date_local_normalized,
@@ -274,6 +344,9 @@ export async function completeBirthOnboarding(
       message:
         error instanceof AstrologyValidationError
           ? formatValidationError(error)
+          : error instanceof Error &&
+              error.message.includes("MISSING_GEOCODING_API_KEY")
+            ? "Automatic birthplace resolution is unavailable. Enter timezone and coordinates manually, then save again."
           : error instanceof Error
             ? error.message
             : "We couldn't complete onboarding. Please try again.",
