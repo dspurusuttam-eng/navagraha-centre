@@ -22,8 +22,12 @@ import {
 import { OfferRecommendationPanel } from "@/modules/offers/components/offer-recommendation-panel";
 import {
   createFallbackSubscriptionRetentionSnapshot,
+  getUpgradeHrefForUserPlan,
+  getUserPlanUsageModel,
   getSubscriptionRetentionIntelligenceSnapshot,
   type SubscriptionRetentionIntelligenceSnapshot,
+  type UserPlanModel,
+  type UserPlanUsageModel,
 } from "@/modules/subscriptions";
 import { SubscriptionValuePanel } from "@/modules/subscriptions/components/subscription-value-panel";
 
@@ -67,7 +71,15 @@ function createFallbackUserReport(): GeneratedUserReport {
 
 export default async function DashboardPage() {
   const session = await requireUserSession();
-  const [overview, chartOverview, insights, report, offers, subscriptionState] =
+  const [
+    overview,
+    chartOverview,
+    insights,
+    report,
+    offers,
+    subscriptionState,
+    userPlanState,
+  ] =
     await Promise.all([
     (async () => {
       try {
@@ -126,6 +138,35 @@ export default async function DashboardPage() {
           console.error("Dashboard subscription state failed", error);
 
           return createFallbackSubscriptionRetentionSnapshot();
+        }
+      })(),
+      (async (): Promise<{
+        plan: UserPlanModel;
+        usage: UserPlanUsageModel;
+      }> => {
+        try {
+          return await getUserPlanUsageModel(session.user.id);
+        } catch (error) {
+          console.error("Dashboard user-plan usage failed", error);
+
+          return {
+            plan: {
+              plan_type: "FREE",
+              plan_expiry: null,
+              usage_limits: {
+                aiQuestionsPerDay: 3,
+                premiumReportsPerMonth: 1,
+                premiumInsightsEnabled: false,
+              },
+              source_subscription_plan_id: null,
+            },
+            usage: {
+              ai_questions_used_today: 0,
+              ai_questions_remaining_today: 3,
+              premium_reports_generated_this_month: 0,
+              premium_reports_remaining_this_month: 1,
+            },
+          };
         }
       })(),
     ]);
@@ -279,6 +320,9 @@ export default async function DashboardPage() {
         <div className="space-y-6">
           <SubscriptionValuePanel
             snapshot={subscriptionState}
+            userPlan={userPlanState.plan}
+            usage={userPlanState.usage}
+            upgradeHref={getUpgradeHrefForUserPlan(userPlanState.plan.plan_type)}
             eyebrow="Member Subscription"
             title="Subscription value in your current workflow."
             description="Your plan status, optional upgrade path, and retention guidance stay visible without pressure."

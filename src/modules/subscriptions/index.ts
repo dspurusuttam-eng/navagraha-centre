@@ -21,6 +21,31 @@ export {
   getSubscriptionRetentionIntelligenceSnapshot,
   toOfferSubscriptionCandidate,
 } from "@/modules/subscriptions/retention-intelligence";
+export {
+  getUpgradeHrefForUserPlan,
+  getUserPlanModel,
+  userPlanTypes,
+  type UserPlanModel,
+  type UserPlanType,
+  type UserPlanUsageLimits,
+} from "@/modules/subscriptions/user-plan";
+export {
+  checkAskMyChartUsageLimit,
+  getUserPlanUsageModel,
+  isPremiumPlan,
+  type AskMyChartUsageCheckResult,
+  type UserPlanUsageModel,
+} from "@/modules/subscriptions/usage-control";
+export {
+  getMonetizationPlan,
+  getMonetizationPlans,
+  initializeSubscriptionCheckout,
+  isPaidMonetizationPlanKey,
+  monetizationPlanCatalog,
+  monetizationPlanKeys,
+  type MonetizationPlanDefinition,
+  type MonetizationPlanKey,
+} from "@/modules/subscriptions/payment-plans";
 export type {
   SubscriptionAccessSnapshot,
   SubscriptionEngagementSignals,

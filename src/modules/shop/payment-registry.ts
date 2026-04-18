@@ -6,6 +6,7 @@ import {
   type ShopPaymentProvider,
 } from "@/modules/shop/payment-boundary";
 import { draftShopCheckoutProvider } from "@/modules/shop/providers/draft-checkout-provider";
+import { razorpayCheckoutProvider } from "@/modules/shop/providers/razorpay-checkout-provider";
 
 const DEFAULT_SHOP_CHECKOUT_PROVIDER_KEY: ShopCheckoutProviderKey =
   "draft-order";
@@ -14,6 +15,7 @@ const registeredProviders: Partial<
   Record<ShopCheckoutProviderKey, ShopPaymentProvider>
 > = {
   "draft-order": draftShopCheckoutProvider,
+  razorpay: razorpayCheckoutProvider,
 };
 
 type ShopRuntimeWarningStore = {
@@ -66,10 +68,32 @@ function warnIfMissingDraftWebhookSecret() {
   }
 }
 
+function warnIfMissingRazorpayConfiguration() {
+  const keyId = process.env.RAZORPAY_KEY_ID?.trim();
+  const keySecret = process.env.RAZORPAY_KEY_SECRET?.trim();
+  const webhookSecret =
+    process.env.RAZORPAY_WEBHOOK_SECRET?.trim() ??
+    process.env.SHOP_WEBHOOK_SECRET?.trim();
+
+  if (!keyId || !keySecret) {
+    warnShopRuntimeOnce(
+      "RAZORPAY_KEY_ID",
+      "Razorpay checkout provider is selected but RAZORPAY_KEY_ID/RAZORPAY_KEY_SECRET are not fully configured."
+    );
+  }
+
+  if (!webhookSecret) {
+    warnShopRuntimeOnce(
+      "RAZORPAY_WEBHOOK_SECRET",
+      "Razorpay webhook verification is not fully configured. Set RAZORPAY_WEBHOOK_SECRET (or SHOP_WEBHOOK_SECRET fallback)."
+    );
+  }
+}
+
 export function isShopCheckoutProviderKey(
   value: string | undefined
 ): value is ShopCheckoutProviderKey {
-  return value === "draft-order" || value === "stripe";
+  return value === "draft-order" || value === "stripe" || value === "razorpay";
 }
 
 export function resolveShopCheckoutProviderKey(
@@ -105,6 +129,9 @@ export function getRegisteredShopCheckoutProvider(
 ): ShopPaymentProvider {
   if (providerKey === "draft-order") {
     warnIfMissingDraftWebhookSecret();
+  }
+  if (providerKey === "razorpay") {
+    warnIfMissingRazorpayConfiguration();
   }
 
   const provider =

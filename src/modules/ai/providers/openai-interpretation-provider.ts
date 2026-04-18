@@ -84,6 +84,7 @@ export class OpenAIInterpretationProvider implements AiInterpretationProvider {
       instructions: request.instructions,
       input: request.input,
       store: false,
+      temperature: request.temperature,
     });
     const outputText = response.output_text?.trim();
 

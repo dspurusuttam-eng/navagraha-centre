@@ -13,6 +13,7 @@ function resolveProviderKey(request: Request) {
 function resolveSignature(request: Request) {
   return (
     request.headers.get("x-shop-signature") ??
+    request.headers.get("x-razorpay-signature") ??
     request.headers.get("stripe-signature")
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { startTransition, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -23,8 +24,19 @@ function formatDateTime(value: string) {
 }
 
 type MessageResponse = {
+  status: "READY";
   conversation: AskMyChartConversation;
   sessions: AskMyChartSessionSummary[];
+};
+
+type LimitReachedResponse = {
+  status: "LIMIT_REACHED";
+  message: string;
+  upgradeHref: string;
+  planType: "FREE" | "PREMIUM" | "PRO";
+  aiQuestionsUsedToday: number;
+  aiQuestionsLimitPerDay: number;
+  aiQuestionsRemainingToday: number;
 };
 
 async function readJsonResponse<T>(response: Response): Promise<T> {
@@ -49,6 +61,7 @@ export function AskMyChartAssistant({
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loadingSessionId, setLoadingSessionId] = useState<string | null>(null);
+  const [paywall, setPaywall] = useState<LimitReachedResponse | null>(null);
 
   async function createSession() {
     const response = await fetch("/api/ai/ask-chart/sessions", {
@@ -69,6 +82,7 @@ export function AskMyChartAssistant({
   async function loadConversation(sessionId: string) {
     setLoadingSessionId(sessionId);
     setError(null);
+    setPaywall(null);
 
     try {
       const response = await fetch(`/api/ai/ask-chart/sessions/${sessionId}`);
@@ -100,6 +114,7 @@ export function AskMyChartAssistant({
 
     setIsPending(true);
     setError(null);
+    setPaywall(null);
 
     try {
       const session = activeConversation?.session ?? (await createSession());
@@ -115,7 +130,14 @@ export function AskMyChartAssistant({
           }),
         }
       );
-      const payload = await readJsonResponse<MessageResponse>(response);
+      const payload = await readJsonResponse<MessageResponse | LimitReachedResponse>(
+        response
+      );
+
+      if (payload.status === "LIMIT_REACHED") {
+        setPaywall(payload);
+        return;
+      }
 
       setActiveConversation(payload.conversation);
       setSessions(payload.sessions);
@@ -234,6 +256,30 @@ export function AskMyChartAssistant({
             <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-foreground)]">
               {error}
             </p>
+          </Card>
+        ) : null}
+
+        {paywall ? (
+          <Card className="border-[rgba(215,187,131,0.28)] bg-[rgba(215,187,131,0.08)]">
+            <div className="space-y-3">
+              <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                Usage Limit Reached
+              </p>
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-foreground)]">
+                {paywall.message}
+              </p>
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                Used today: {paywall.aiQuestionsUsedToday}/{paywall.aiQuestionsLimitPerDay}
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <Link
+                  href={paywall.upgradeHref}
+                  className="inline-flex rounded-full border border-[color:var(--color-border)] px-4 py-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-foreground)] transition [transition-duration:var(--motion-duration-base)] hover:border-[color:var(--color-border-strong)]"
+                >
+                  Upgrade Plan
+                </Link>
+              </div>
+            </div>
           </Card>
         ) : null}
 

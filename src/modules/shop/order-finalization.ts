@@ -53,7 +53,7 @@ export type FinalizePaidOrderFromWebhookResult = {
 };
 
 function toPaymentProvider(providerKey: ShopCheckoutProviderKey) {
-  if (providerKey === "stripe") {
+  if (providerKey === "stripe" || providerKey === "razorpay") {
     return PaymentProvider.STRIPE;
   }
 

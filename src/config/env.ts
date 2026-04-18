@@ -158,6 +158,14 @@ export function validateLaunchEnvironment(
   const geocodingApiKey =
     getStringValue(env, "GEOCODING_API_KEY") ||
     getStringValue(env, "OPENCAGE_API_KEY");
+  const shopCheckoutProvider =
+    getStringValue(env, "SHOP_CHECKOUT_PROVIDER").toLowerCase() ||
+    "draft-order";
+  const razorpayKeyId = getStringValue(env, "RAZORPAY_KEY_ID");
+  const razorpayKeySecret = getStringValue(env, "RAZORPAY_KEY_SECRET");
+  const razorpayWebhookSecret =
+    getStringValue(env, "RAZORPAY_WEBHOOK_SECRET") ||
+    getStringValue(env, "SHOP_WEBHOOK_SECRET");
 
   if (!databaseUrl) {
     pushIssue(
@@ -284,6 +292,26 @@ export function validateLaunchEnvironment(
         "OPS_HEALTHCHECK_TIMEOUT_MS",
         "error",
         "OPS_HEALTHCHECK_TIMEOUT_MS must be a positive number."
+      );
+    }
+  }
+
+  if (shopCheckoutProvider === "razorpay") {
+    if (!razorpayKeyId || !razorpayKeySecret) {
+      pushIssue(
+        issues,
+        "RAZORPAY_KEY_ID",
+        "warning",
+        "Razorpay checkout is selected but RAZORPAY_KEY_ID/RAZORPAY_KEY_SECRET are not fully configured."
+      );
+    }
+
+    if (!razorpayWebhookSecret) {
+      pushIssue(
+        issues,
+        "RAZORPAY_WEBHOOK_SECRET",
+        "warning",
+        "Razorpay webhook verification is not fully configured."
       );
     }
   }

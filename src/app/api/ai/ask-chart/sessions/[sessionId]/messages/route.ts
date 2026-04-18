@@ -29,12 +29,18 @@ export async function POST(
   const { sessionId } = await context.params;
 
   try {
-    const conversation = await sendAskMyChartMessage({
+    const result = await sendAskMyChartMessage({
       userId: session.user.id,
       userName: session.user.name,
       sessionId,
       message,
     });
+
+    if (result.status === "LIMIT_REACHED") {
+      return Response.json(result, { status: 200 });
+    }
+
+    const conversation = result.conversation;
 
     if (!conversation) {
       return Response.json(
@@ -46,6 +52,7 @@ export async function POST(
     const sessions = await listAskMyChartSessions(session.user.id);
 
     return Response.json({
+      status: "READY",
       conversation,
       sessions,
     });

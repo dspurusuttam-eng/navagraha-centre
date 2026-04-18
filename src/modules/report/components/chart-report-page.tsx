@@ -8,6 +8,7 @@ import { Section } from "@/components/ui/section";
 import { OfferRecommendationPanel } from "@/modules/offers/components/offer-recommendation-panel";
 import type { OfferRecommendationResult } from "@/modules/offers/types";
 import { type RemedyRecommendation } from "@/modules/remedies";
+import { PremiumReportGenerator } from "@/modules/report/components/premium-report-generator";
 import { getLabelForRemedyType } from "@/modules/report/components/remedy-presenter";
 import { reportDisclosures, type ChartReportReadyState } from "@/modules/report/service";
 import { SubscriptionValuePanel } from "@/modules/subscriptions/components/subscription-value-panel";
@@ -653,8 +654,8 @@ export function ChartReportPage({
           )}
         </Card>
 
-        {hasDeeperReportLayers ? (
-          <>
+          {hasDeeperReportLayers ? (
+            <>
             <Card className="space-y-5">
               <div className="space-y-2">
                 <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
@@ -730,6 +731,8 @@ export function ChartReportPage({
             </Link>
           </Card>
         )}
+
+        <PremiumReportGenerator />
       </div>
 
       <div className="mt-6 grid gap-6">

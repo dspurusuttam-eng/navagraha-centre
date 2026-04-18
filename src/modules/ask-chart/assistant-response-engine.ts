@@ -18,6 +18,7 @@ export type AstrologyAssistantEngineInput = {
   question: string;
   userName: string;
   preferredLanguageLabel: string;
+  planType: "FREE" | "PREMIUM" | "PRO";
   groundedScope: string;
   taskKind: AiTaskKind;
   chartContext: ChartAiContext;
@@ -101,6 +102,42 @@ function buildStructuredPromptInstructions(baseSystemPrompt: string) {
   ].join("\n");
 }
 
+function buildPlanScopedInstructions(planType: AstrologyAssistantEngineInput["planType"]) {
+  if (planType === "PRO") {
+    return [
+      "Deliver deeper multi-house synthesis when context supports it.",
+      "You may include forward-looking timing framing, but avoid certainty language.",
+      "Include basic grounded remedy direction when approved remedy context exists.",
+    ].join("\n");
+  }
+
+  if (planType === "PREMIUM") {
+    return [
+      "Deliver deeper chart reasoning than free tier with practical context.",
+      "Use multi-house analysis where relevant and available.",
+      "Include basic grounded remedy direction when approved remedy context exists.",
+    ].join("\n");
+  }
+
+  return [
+    "Free-tier response: keep concise and clear.",
+    "Use short grounded answer with compact reasoning.",
+    "Do not include long-range predictive detail in free-tier mode.",
+  ].join("\n");
+}
+
+function getPlanTemperature(planType: AstrologyAssistantEngineInput["planType"]) {
+  if (planType === "PRO") {
+    return 0.1;
+  }
+
+  if (planType === "PREMIUM") {
+    return 0.15;
+  }
+
+  return 0.1;
+}
+
 export async function generateAstrologyResponse(
   input: AstrologyAssistantEngineInput
 ): Promise<AstrologyAssistantEngineResult> {
@@ -114,11 +151,15 @@ export async function generateAstrologyResponse(
     taskKind: input.taskKind,
     promptTemplateKey: promptVersion.templateKey,
     promptVersionLabel: promptVersion.label,
-    instructions: buildStructuredPromptInstructions(promptVersion.systemPrompt),
+    instructions: [
+      buildStructuredPromptInstructions(promptVersion.systemPrompt),
+      buildPlanScopedInstructions(input.planType),
+    ].join("\n"),
     input: JSON.stringify(
       {
         userName: input.userName,
         preferredLanguage: input.preferredLanguageLabel,
+        planType: input.planType,
         userQuestion: input.question,
         groundedScope: input.groundedScope,
         chartContext: input.chartContext,
@@ -128,6 +169,7 @@ export async function generateAstrologyResponse(
       2
     ),
     fallbackText,
+    temperature: getPlanTemperature(input.planType),
   });
 
   const structured = parseStructuredResponse(response.text, input.fallback);

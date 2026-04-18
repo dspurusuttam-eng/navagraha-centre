@@ -1,6 +1,6 @@
 import type { PreparedCheckout, ShopCartLineInput } from "@/modules/shop/types";
 
-export type ShopCheckoutProviderKey = "draft-order" | "stripe";
+export type ShopCheckoutProviderKey = "draft-order" | "stripe" | "razorpay";
 
 export type PrepareShopCheckoutInput = {
   items: ShopCartLineInput[];

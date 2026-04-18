@@ -6,6 +6,7 @@ import {
   getSubscriptionLifecycleLabel,
   type SubscriptionRetentionIntelligenceSnapshot,
 } from "@/modules/subscriptions";
+import type { UserPlanModel, UserPlanUsageModel } from "@/modules/subscriptions";
 
 type SubscriptionValuePanelProps = {
   snapshot: SubscriptionRetentionIntelligenceSnapshot;
@@ -13,6 +14,9 @@ type SubscriptionValuePanelProps = {
   title?: string;
   description?: string;
   className?: string;
+  userPlan?: UserPlanModel;
+  usage?: UserPlanUsageModel;
+  upgradeHref?: string;
 };
 
 export function SubscriptionValuePanel({
@@ -21,6 +25,9 @@ export function SubscriptionValuePanel({
   title = "Your subscription context",
   description = "Keep premium guidance optional, clear, and paced to your real usage rhythm.",
   className,
+  userPlan,
+  usage,
+  upgradeHref,
 }: Readonly<SubscriptionValuePanelProps>) {
   const lifecycleLabel = getSubscriptionLifecycleLabel(snapshot);
   const planTitle = snapshot.access.plan?.title ?? "Free Access";
@@ -52,6 +59,7 @@ export function SubscriptionValuePanel({
             {planTitle}
           </Badge>
           <Badge tone="neutral">{lifecycleLabel}</Badge>
+          {userPlan ? <Badge tone="neutral">{userPlan.plan_type}</Badge> : null}
         </div>
 
         {nextBillingLabel ? (
@@ -80,6 +88,30 @@ export function SubscriptionValuePanel({
             </p>
           ))}
         </div>
+
+        {usage ? (
+          <div className="space-y-2 rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4">
+            <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+              Usage Left
+            </p>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              AI questions today:{" "}
+              <span className="text-[color:var(--color-foreground)]">
+                {usage.ai_questions_remaining_today === null
+                  ? "Unlimited"
+                  : usage.ai_questions_remaining_today}
+              </span>
+            </p>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              Premium report generations this month:{" "}
+              <span className="text-[color:var(--color-foreground)]">
+                {usage.premium_reports_remaining_this_month === null
+                  ? "Unlimited"
+                  : usage.premium_reports_remaining_this_month}
+              </span>
+            </p>
+          </div>
+        ) : null}
       </div>
 
       <div className="space-y-2 rounded-[var(--radius-xl)] border border-[rgba(215,187,131,0.18)] bg-[rgba(215,187,131,0.06)] px-4 py-4">
@@ -113,6 +145,15 @@ export function SubscriptionValuePanel({
             {snapshot.recommendation.ctaLabel}
           </Link>
         </div>
+      ) : null}
+
+      {upgradeHref ? (
+        <Link
+          href={upgradeHref}
+          className={buttonStyles({ size: "sm", tone: "secondary" })}
+        >
+          Upgrade Plan
+        </Link>
       ) : null}
     </Card>
   );

@@ -20,6 +20,10 @@ import { getContentAdapter } from "@/modules/content/server";
 import { getChartOverview, type ChartOverview } from "@/modules/onboarding/service";
 import { getRemedyRecommendationService } from "@/modules/remedies/service";
 import { getRelatedProductsForRemedySlugs } from "@/modules/shop/service";
+import {
+  checkAskMyChartUsageLimit,
+  type UserPlanType,
+} from "@/modules/subscriptions";
 import type {
   AskMyChartConversation,
   AskMyChartMessage,
@@ -241,6 +245,23 @@ type AskMyChartReplyResult = {
   usedToolNames: string[];
   refused: boolean;
 };
+
+export type AskMyChartLimitReachedResult = {
+  status: "LIMIT_REACHED";
+  message: string;
+  upgradeHref: string;
+  planType: UserPlanType;
+  aiQuestionsUsedToday: number;
+  aiQuestionsLimitPerDay: number;
+  aiQuestionsRemainingToday: number;
+};
+
+export type AskMyChartSendMessageResult =
+  | {
+      status: "READY";
+      conversation: AskMyChartConversation | null;
+    }
+  | AskMyChartLimitReachedResult;
 
 function normalizeQuestion(value: string) {
   return value.trim().replace(/\s+/g, " ");
@@ -717,6 +738,29 @@ function formatStructuredReplyForConversation(
   ].join("\n\n");
 }
 
+function applyFreePlanResponseGuardrails(
+  response: AstrologyAssistantStructuredResponse
+): AstrologyAssistantStructuredResponse {
+  const maxAnswerLength = 260;
+  const maxReasoningLength = 340;
+  const normalizedAnswer = response.answer.trim();
+  const normalizedReasoning = response.reasoning.trim();
+
+  return {
+    answer:
+      normalizedAnswer.length > maxAnswerLength
+        ? `${normalizedAnswer.slice(0, maxAnswerLength - 1).trimEnd()}…`
+        : normalizedAnswer,
+    reasoning:
+      normalizedReasoning.length > maxReasoningLength
+        ? `${normalizedReasoning
+            .slice(0, maxReasoningLength - 1)
+            .trimEnd()}…`
+        : normalizedReasoning,
+    confidence: response.confidence === "high" ? "medium" : response.confidence,
+  };
+}
+
 function buildUnsupportedStructuredReply(): AstrologyAssistantStructuredResponse {
   return {
     answer:
@@ -870,7 +914,8 @@ async function generateAssistantReply(
   question: string,
   overview: ChartOverview,
   toolBundle: AskMyChartToolBundle,
-  chartContext: ChartAiContext
+  chartContext: ChartAiContext,
+  planType: UserPlanType
 ): Promise<AskMyChartReplyResult> {
   const classification = classifyQuestion(question);
 
@@ -902,16 +947,21 @@ async function generateAssistantReply(
     question,
     userName,
     preferredLanguageLabel: overview.preferredLanguageLabel,
+    planType,
     groundedScope: classification.guidance,
     taskKind: classification.taskKind,
     chartContext,
     toolContext: toolBundle,
     fallback: fallbackStructuredResponse,
   });
+  const structuredResponse =
+    planType === "FREE"
+      ? applyFreePlanResponseGuardrails(response.structured)
+      : response.structured;
 
   return {
-    assistantMessage: formatStructuredReplyForConversation(response.structured),
-    structuredResponse: response.structured,
+    assistantMessage: formatStructuredReplyForConversation(structuredResponse),
+    structuredResponse,
     providerKey: response.providerKey,
     model: response.model,
     taskKind: classification.taskKind,
@@ -1087,7 +1137,7 @@ export async function sendAskMyChartMessage(input: {
   userName: string;
   sessionId: string;
   message: string;
-}) {
+}): Promise<AskMyChartSendMessageResult> {
   const question = normalizeQuestion(input.message);
 
   if (!question) {
@@ -1101,7 +1151,8 @@ export async function sendAskMyChartMessage(input: {
   }
 
   const prisma = getPrisma();
-  const [sessionRecord, savedChartResult] = await Promise.all([
+  const [usageCheck, sessionRecord, savedChartResult] = await Promise.all([
+    checkAskMyChartUsageLimit(input.userId),
     prisma.aiConversationSession.findFirst({
       where: {
         id: input.sessionId,
@@ -1119,6 +1170,21 @@ export async function sendAskMyChartMessage(input: {
   if (!sessionRecord) {
     throw new Error("This Ask My Chart conversation could not be found.");
   }
+
+  if (!usageCheck.allowed) {
+    return {
+      status: "LIMIT_REACHED",
+      message: usageCheck.message,
+      upgradeHref: usageCheck.upgradeHref,
+      planType: usageCheck.plan.plan_type,
+      aiQuestionsUsedToday: usageCheck.usage.ai_questions_used_today,
+      aiQuestionsLimitPerDay: usageCheck.plan.usage_limits.aiQuestionsPerDay ?? 0,
+      aiQuestionsRemainingToday:
+        usageCheck.usage.ai_questions_remaining_today ?? 0,
+    };
+  }
+
+  const planType = usageCheck.plan.plan_type;
   const classification = classifyQuestion(question);
 
   await prisma.aiConversationMessage.create({
@@ -1247,7 +1313,8 @@ export async function sendAskMyChartMessage(input: {
             question,
             overview,
             toolBundle,
-            chartContext
+            chartContext,
+            planType
           );
 
           assistantMessage = reply.assistantMessage;
@@ -1304,10 +1371,12 @@ export async function sendAskMyChartMessage(input: {
           inputHash: createInputHash(question),
           inputPayload: {
             question,
+            planType,
             questionClassification: classification,
             usedToolNames,
           },
           outputPayload: {
+            planType,
             structuredResponse,
             assistantMessage,
           },
@@ -1323,7 +1392,10 @@ export async function sendAskMyChartMessage(input: {
       }),
     ]);
 
-    return getAskMyChartConversation(input.userId, sessionRecord.id);
+    return {
+      status: "READY",
+      conversation: await getAskMyChartConversation(input.userId, sessionRecord.id),
+    };
   } catch (error) {
     await prisma.aiTaskRun.create({
       data: {
@@ -1338,6 +1410,7 @@ export async function sendAskMyChartMessage(input: {
         inputHash: createInputHash(question),
         inputPayload: {
           question,
+          planType,
         },
         errorMessage:
           error instanceof Error ? error.message : "Unknown Ask My Chart failure.",

@@ -11,6 +11,7 @@ export type AiGroundedTextRequest = {
   instructions: string;
   input: string;
   fallbackText: string;
+  temperature?: number;
 };
 
 export type AiGroundedTextResult = {

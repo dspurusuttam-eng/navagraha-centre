@@ -6,9 +6,12 @@ import { getProfileSettings } from "@/modules/account/service";
 import { requireUserSession } from "@/modules/auth/server";
 import {
   createFallbackSubscriptionRetentionSnapshot,
+  getUpgradeHrefForUserPlan,
+  getUserPlanUsageModel,
   getSubscriptionRetentionIntelligenceSnapshot,
 } from "@/modules/subscriptions";
 import { SubscriptionValuePanel } from "@/modules/subscriptions/components/subscription-value-panel";
+import { SubscriptionUpgradePanel } from "@/modules/subscriptions/components/subscription-upgrade-panel";
 
 export const metadata = buildPageMetadata({
   title: "Account Settings",
@@ -20,7 +23,7 @@ export const metadata = buildPageMetadata({
 
 export default async function SettingsPage() {
   const session = await requireUserSession();
-  const [profile, subscriptionState] = await Promise.all([
+  const [profile, subscriptionState, userPlanState] = await Promise.all([
     getProfileSettings(session.user.id),
     (async () => {
       try {
@@ -29,6 +32,32 @@ export default async function SettingsPage() {
         console.error("Settings subscription state failed", error);
 
         return createFallbackSubscriptionRetentionSnapshot();
+      }
+    })(),
+    (async () => {
+      try {
+        return await getUserPlanUsageModel(session.user.id);
+      } catch (error) {
+        console.error("Settings user-plan usage failed", error);
+
+        return {
+          plan: {
+            plan_type: "FREE" as const,
+            plan_expiry: null,
+            usage_limits: {
+              aiQuestionsPerDay: 3,
+              premiumReportsPerMonth: 1,
+              premiumInsightsEnabled: false,
+            },
+            source_subscription_plan_id: null,
+          },
+          usage: {
+            ai_questions_used_today: 0,
+            ai_questions_remaining_today: 3,
+            premium_reports_generated_this_month: 0,
+            premium_reports_remaining_this_month: 1,
+          },
+        };
       }
     })(),
   ]);
@@ -88,10 +117,15 @@ export default async function SettingsPage() {
 
         <SubscriptionValuePanel
           snapshot={subscriptionState}
+          userPlan={userPlanState.plan}
+          usage={userPlanState.usage}
+          upgradeHref={getUpgradeHrefForUserPlan(userPlanState.plan.plan_type)}
           eyebrow="Subscription"
           title="Membership visibility in account settings."
           description="Review plan status and optional next membership action alongside your profile controls."
         />
+
+        <SubscriptionUpgradePanel />
       </div>
     </Section>
   );
