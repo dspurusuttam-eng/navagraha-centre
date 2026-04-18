@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
+import { TrackedLink } from "@/components/analytics/tracked-link";
 import type { GeneratedUserReport } from "@/lib/ai/types";
 import type { PlanetaryBody } from "@/modules/astrology";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +13,7 @@ import { type RemedyRecommendation } from "@/modules/remedies";
 import { PremiumReportGenerator } from "@/modules/report/components/premium-report-generator";
 import { getLabelForRemedyType } from "@/modules/report/components/remedy-presenter";
 import { reportDisclosures, type ChartReportReadyState } from "@/modules/report/service";
+import { getMonetizationUpgradeCopy } from "@/modules/subscriptions";
 import { SubscriptionValuePanel } from "@/modules/subscriptions/components/subscription-value-panel";
 import type { SubscriptionRetentionIntelligenceSnapshot } from "@/modules/subscriptions/types";
 
@@ -262,6 +265,10 @@ export function ChartReportPage({
 }>) {
   const chartReport = report.chartReport;
   const hasDeeperReportLayers = subscriptionState.featureGates.deeperReportLayers;
+  const reportUpgradeCopy = getMonetizationUpgradeCopy({
+    prompt: "report-preview",
+    surface: "protected",
+  });
 
   if (chartReport.status === "empty") {
     return (
@@ -703,33 +710,53 @@ export function ChartReportPage({
             </Card>
           </>
         ) : (
-          <Card className="space-y-5">
-            <div className="space-y-2">
-              <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-                Premium Report Layers
+          <>
+            <AnalyticsEventTracker
+              event="upgrade_prompt_view"
+              payload={{
+                page: "/dashboard/report",
+                surface: "protected",
+                feature: "report-premium-lock",
+              }}
+            />
+            <Card className="space-y-5">
+              <div className="space-y-2">
+                <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                  Premium Report Layers
+                </p>
+                <h2
+                  className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
+                  style={{ letterSpacing: "var(--tracking-display)" }}
+                >
+                  This deeper report layer is part of premium access.
+                </h2>
+              </div>
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                {reportUpgradeCopy.message}
               </p>
-              <h2
-                className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
-                style={{ letterSpacing: "var(--tracking-display)" }}
-              >
-                This deeper report layer is part of premium access.
-              </h2>
-            </div>
-            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              You can continue with the current structured summary for free, or
-              unlock deeper report interpretation whenever it becomes useful.
-            </p>
-            <Link
-              href={
-                subscriptionState.recommendation?.href ??
-                subscriptionState.nextAction.href
-              }
-              className={buttonStyles({ size: "sm", tone: "secondary" })}
-            >
-              {subscriptionState.recommendation?.ctaLabel ??
-                subscriptionState.nextAction.label}
-            </Link>
-          </Card>
+              <div className="flex flex-wrap gap-3">
+                <TrackedLink
+                  href={reportUpgradeCopy.upgradeHref}
+                  className={buttonStyles({ size: "sm", tone: "secondary" })}
+                  eventName="upgrade_started"
+                  eventPayload={{
+                    page: "/dashboard/report",
+                    surface: "protected",
+                    feature: "report-premium-lock",
+                  }}
+                >
+                  {reportUpgradeCopy.ctaLabel}
+                </TrackedLink>
+                <Link
+                  href={subscriptionState.nextAction.href}
+                  className={buttonStyles({ size: "sm", tone: "ghost" })}
+                >
+                  {subscriptionState.recommendation?.ctaLabel ??
+                    subscriptionState.nextAction.label}
+                </Link>
+              </div>
+            </Card>
+          </>
         )}
 
         <PremiumReportGenerator />

@@ -22,6 +22,17 @@ export {
   toOfferSubscriptionCandidate,
 } from "@/modules/subscriptions/retention-intelligence";
 export {
+  getMonetizationUpgradeCopy,
+  getPlanComparisonRows,
+  getUpgradeHrefForSurface,
+  monetizationPlanTypes,
+  type MonetizationPlanType,
+  type MonetizationPromptKey,
+  type MonetizationSurface,
+  type MonetizationUpgradeCopy,
+  type PlanComparisonRow,
+} from "@/modules/subscriptions/monetization-content";
+export {
   getUpgradeHrefForUserPlan,
   getUserPlanModel,
   userPlanTypes,

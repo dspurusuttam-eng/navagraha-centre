@@ -1,3 +1,5 @@
+import { apiErrorResponse } from "@/lib/api/http";
+import { captureException } from "@/lib/observability";
 import { processShopPaymentWebhook } from "@/modules/shop/webhook-core";
 
 export const dynamic = "force-dynamic";
@@ -28,15 +30,17 @@ export async function POST(request: Request) {
       rawBody,
       signature: resolveSignature(request),
     });
-  } catch {
-    return Response.json(
-      {
-        outcome: "ignored",
-        providerKey: "unknown",
-        message: "Webhook processing failed unexpectedly.",
-      },
-      { status: 500 }
-    );
+  } catch (error) {
+    captureException(error, {
+      route: "api.shop.webhooks.payment",
+      providerKey: resolveProviderKey(request),
+    });
+
+    return apiErrorResponse({
+      statusCode: 500,
+      code: "WEBHOOK_PROCESSING_FAILED",
+      message: "Webhook processing failed unexpectedly.",
+    });
   }
 
   if (result.outcome === "invalid-signature") {

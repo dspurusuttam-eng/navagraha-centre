@@ -1,3 +1,14 @@
+import {
+  apiErrorResponse,
+  readJsonObjectBody,
+} from "@/lib/api/http";
+import {
+  buildRateLimitKey,
+  checkRateLimit,
+  getClientAddress,
+  getRateLimitHeaders,
+} from "@/lib/rate-limit";
+import { captureException, trackServerEvent } from "@/lib/observability";
 import { getSession } from "@/modules/auth/server";
 import { retrieveOrRefreshBirthChartForUser } from "@/modules/astrology/chart-retrieval";
 
@@ -30,66 +41,110 @@ function toErrorStatus(code: string) {
 }
 
 export async function POST(request: Request) {
-  const session = await getSession();
+  const session = await getSession().catch((error) => {
+    captureException(error, {
+      route: "api.astrology.chart",
+      stage: "get-session",
+    });
+
+    return null;
+  });
 
   if (!session) {
-    return Response.json(
-      {
-        error: {
-          code: "UNAUTHORIZED",
-          message: "Sign in is required to access chart data.",
-        },
-      },
-      { status: 401 }
-    );
+    return apiErrorResponse({
+      statusCode: 401,
+      code: "UNAUTHORIZED",
+      message: "Sign in is required to access chart data.",
+    });
   }
 
-  const payload = (await request.json().catch(() => ({}))) as
+  const limit = checkRateLimit({
+    key: buildRateLimitKey([
+      "api-astrology-chart",
+      session.user.id,
+      getClientAddress(request),
+    ]),
+    limit: 18,
+    windowMs: 10 * 60 * 1_000,
+  });
+
+  if (!limit.allowed) {
+    trackServerEvent(
+      "chart-contract.rate-limited",
+      {
+        userId: session.user.id,
+      },
+      "warning"
+    );
+
+    return apiErrorResponse({
+      statusCode: 429,
+      code: "RATE_LIMITED",
+      message: "Too many chart requests. Please wait and retry.",
+      headers: getRateLimitHeaders(limit),
+    });
+  }
+
+  const payload = (await readJsonObjectBody(request)) as
     | ChartContractRequestPayload
     | null;
 
-  if (payload && typeof payload !== "object") {
-    return Response.json(
-      {
-        error: {
-          code: "INVALID_REQUEST",
-          message: "Chart request payload must be a JSON object.",
-        },
-      },
-      { status: 400 }
-    );
+  if (!payload) {
+    return apiErrorResponse({
+      statusCode: 400,
+      code: "INVALID_REQUEST",
+      message: "Chart request payload must be a JSON object.",
+      headers: getRateLimitHeaders(limit),
+    });
   }
 
   if (
-    payload &&
     payload.source !== undefined &&
     payload.source !== "PROFILE"
   ) {
-    return Response.json(
-      {
-        error: {
-          code: "INVALID_SOURCE",
-          message: 'Unsupported chart source. Use "PROFILE" or omit source.',
-        },
-      },
-      { status: 400 }
-    );
+    return apiErrorResponse({
+      statusCode: 400,
+      code: "INVALID_SOURCE",
+      message: 'Unsupported chart source. Use "PROFILE" or omit source.',
+      headers: getRateLimitHeaders(limit),
+    });
   }
 
-  const result = await retrieveOrRefreshBirthChartForUser(session.user.id);
+  let result;
+
+  try {
+    result = await retrieveOrRefreshBirthChartForUser(session.user.id);
+  } catch (error) {
+    captureException(error, {
+      route: "api.astrology.chart",
+      userId: session.user.id,
+    });
+
+    return apiErrorResponse({
+      statusCode: 500,
+      code: "CHART_RETRIEVAL_FAILED",
+      message: "Chart data could not be loaded. Please try again.",
+      headers: getRateLimitHeaders(limit),
+    });
+  }
 
   if (!result.success) {
-    return Response.json(
-      {
-        error: result.error,
-      },
-      { status: toErrorStatus(result.error.code) }
-    );
+    return apiErrorResponse({
+      statusCode: toErrorStatus(result.error.code),
+      code: result.error.code,
+      message: result.error.message,
+      headers: getRateLimitHeaders(limit),
+    });
   }
 
-  return Response.json({
-    chart: result.data.chart,
-    persistence: result.data.persistence,
-    retrieval: result.data.retrieval,
-  });
+  return Response.json(
+    {
+      chart: result.data.chart,
+      persistence: result.data.persistence,
+      retrieval: result.data.retrieval,
+    },
+    {
+      headers: getRateLimitHeaders(limit),
+    }
+  );
 }

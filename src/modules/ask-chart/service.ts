@@ -2,6 +2,7 @@ import "server-only";
 
 import type { Prisma } from "@prisma/client";
 import { getPrisma } from "@/lib/prisma";
+import { trackAssistantUsed } from "@/modules/conversion/events";
 import type { AiTaskKind } from "@/modules/ai/tasks";
 import {
   generateAstrologyResponse,
@@ -22,6 +23,7 @@ import { getRemedyRecommendationService } from "@/modules/remedies/service";
 import { getRelatedProductsForRemedySlugs } from "@/modules/shop/service";
 import {
   checkAskMyChartUsageLimit,
+  getMonetizationUpgradeCopy,
   type UserPlanType,
 } from "@/modules/subscriptions";
 import type {
@@ -256,11 +258,29 @@ export type AskMyChartLimitReachedResult = {
   aiQuestionsRemainingToday: number;
 };
 
+export type AskMyChartPremiumNudge = {
+  title: string;
+  message: string;
+  ctaLabel: string;
+  href: string;
+  reason:
+    | "DEEPER_QUESTION"
+    | "USAGE_MILESTONE"
+    | "FREE_PLAN_SUMMARY";
+};
+
+type AskMyChartReadyResult = {
+  status: "READY";
+  conversation: AskMyChartConversation | null;
+  planType: UserPlanType;
+  aiQuestionsUsedToday: number;
+  aiQuestionsLimitPerDay: number | null;
+  aiQuestionsRemainingToday: number | null;
+  premiumNudge: AskMyChartPremiumNudge | null;
+};
+
 export type AskMyChartSendMessageResult =
-  | {
-      status: "READY";
-      conversation: AskMyChartConversation | null;
-    }
+  | AskMyChartReadyResult
   | AskMyChartLimitReachedResult;
 
 function normalizeQuestion(value: string) {
@@ -761,6 +781,94 @@ function applyFreePlanResponseGuardrails(
   };
 }
 
+function applyFreePlanResponseGuardrailsNormalized(
+  response: AstrologyAssistantStructuredResponse
+): AstrologyAssistantStructuredResponse {
+  const maxAnswerLength = 260;
+  const maxReasoningLength = 340;
+  const normalizedAnswer = response.answer.trim();
+  const normalizedReasoning = response.reasoning.trim();
+
+  return {
+    answer:
+      normalizedAnswer.length > maxAnswerLength
+        ? `${normalizedAnswer.slice(0, maxAnswerLength - 3).trimEnd()}...`
+        : normalizedAnswer,
+    reasoning:
+      normalizedReasoning.length > maxReasoningLength
+        ? `${normalizedReasoning
+            .slice(0, maxReasoningLength - 3)
+            .trimEnd()}...`
+        : normalizedReasoning,
+    confidence: response.confidence === "high" ? "medium" : response.confidence,
+  };
+}
+
+function toPremiumCtaLabel(
+  classification: AskMyChartClassification,
+  question: string
+) {
+  const normalized = question.toLowerCase();
+
+  if (/\bcareer|profession|job|work\b/i.test(normalized)) {
+    return "Get Detailed Career Prediction";
+  }
+
+  if (/\bcompatibility|relationship|marriage|partner\b/i.test(normalized)) {
+    return "View Full Compatibility Analysis";
+  }
+
+  if (classification.intent === "REMEDY_EXPLANATION") {
+    return "Unlock Full Remedy Guidance";
+  }
+
+  if (classification.intent === "TRANSIT_EXPLANATION") {
+    return "Unlock Current Cycle Deep Dive";
+  }
+
+  return "Continue with Premium";
+}
+
+function buildFreePlanPremiumNudge(input: {
+  planType: UserPlanType;
+  classification: AskMyChartClassification;
+  question: string;
+  aiQuestionsUsedToday: number;
+  aiQuestionsLimitPerDay: number | null;
+}): AskMyChartPremiumNudge | null {
+  if (input.planType !== "FREE") {
+    return null;
+  }
+
+  const deepQuestion =
+    input.classification.intent === "REMEDY_EXPLANATION" ||
+    input.classification.intent === "TRANSIT_EXPLANATION" ||
+    input.classification.intent === "HOUSE_OR_ASPECT_EXPLANATION";
+  const usageMilestone = input.aiQuestionsUsedToday >= 2;
+
+  if (!deepQuestion && !usageMilestone) {
+    return null;
+  }
+
+  const reason: AskMyChartPremiumNudge["reason"] = deepQuestion
+    ? "DEEPER_QUESTION"
+    : "USAGE_MILESTONE";
+  const upgradeCopy = getMonetizationUpgradeCopy({
+    prompt: "assistant-nudge",
+    surface: "protected",
+    aiQuestionsUsedToday: input.aiQuestionsUsedToday,
+    aiQuestionsLimitPerDay: input.aiQuestionsLimitPerDay,
+  });
+
+  return {
+    title: upgradeCopy.title,
+    message: upgradeCopy.message,
+    ctaLabel: toPremiumCtaLabel(input.classification, input.question),
+    href: upgradeCopy.upgradeHref,
+    reason,
+  };
+}
+
 function buildUnsupportedStructuredReply(): AstrologyAssistantStructuredResponse {
   return {
     answer:
@@ -956,7 +1064,7 @@ async function generateAssistantReply(
   });
   const structuredResponse =
     planType === "FREE"
-      ? applyFreePlanResponseGuardrails(response.structured)
+      ? applyFreePlanResponseGuardrailsNormalized(response.structured)
       : response.structured;
 
   return {
@@ -1392,9 +1500,40 @@ export async function sendAskMyChartMessage(input: {
       }),
     ]);
 
+    const aiQuestionsUsedToday = usageCheck.usage.ai_questions_used_today + 1;
+    const aiQuestionsLimitPerDay = usageCheck.plan.usage_limits.aiQuestionsPerDay;
+    const aiQuestionsRemainingToday =
+      aiQuestionsLimitPerDay === null
+        ? null
+        : Math.max(0, aiQuestionsLimitPerDay - aiQuestionsUsedToday);
+    const premiumNudge = buildFreePlanPremiumNudge({
+      planType,
+      classification,
+      question,
+      aiQuestionsUsedToday,
+      aiQuestionsLimitPerDay,
+    });
+
+    trackAssistantUsed({
+      userId: input.userId,
+      planType,
+      source: "ask-my-chart",
+      metadata: {
+        intent: classification.intent,
+        aiQuestionsUsedToday,
+        aiQuestionsLimitPerDay,
+        hasPremiumNudge: Boolean(premiumNudge),
+      },
+    });
+
     return {
       status: "READY",
       conversation: await getAskMyChartConversation(input.userId, sessionRecord.id),
+      planType,
+      aiQuestionsUsedToday,
+      aiQuestionsLimitPerDay,
+      aiQuestionsRemainingToday,
+      premiumNudge,
     };
   } catch (error) {
     await prisma.aiTaskRun.create({

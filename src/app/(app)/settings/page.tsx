@@ -11,7 +11,7 @@ import {
   getSubscriptionRetentionIntelligenceSnapshot,
 } from "@/modules/subscriptions";
 import { SubscriptionValuePanel } from "@/modules/subscriptions/components/subscription-value-panel";
-import { SubscriptionUpgradePanel } from "@/modules/subscriptions/components/subscription-upgrade-panel";
+import { SubscriptionPricingPanel } from "@/modules/subscriptions/components/subscription-pricing-panel";
 
 export const metadata = buildPageMetadata({
   title: "Account Settings",
@@ -125,7 +125,7 @@ export default async function SettingsPage() {
           description="Review plan status and optional next membership action alongside your profile controls."
         />
 
-        <SubscriptionUpgradePanel />
+        <SubscriptionPricingPanel />
       </div>
     </Section>
   );

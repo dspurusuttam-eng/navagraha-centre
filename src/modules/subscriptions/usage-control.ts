@@ -1,6 +1,7 @@
 import "server-only";
 
 import { getPrisma } from "@/lib/prisma";
+import { getMonetizationUpgradeCopy } from "@/modules/subscriptions/monetization-content";
 import {
   getUpgradeHrefForUserPlan,
   getUserPlanModel,
@@ -140,12 +141,16 @@ export async function checkAskMyChartUsageLimit(
   const dailyLimit = plan.usage_limits.aiQuestionsPerDay;
 
   if (dailyLimit !== null && usage.ai_questions_used_today >= dailyLimit) {
+    const upgradeCopy = getMonetizationUpgradeCopy({
+      prompt: "assistant-limit",
+      surface: "protected",
+    });
+
     return {
       allowed: false,
       status: "LIMIT_REACHED",
-      message:
-        "Upgrade to unlock unlimited AI astrology insights and deeper chart guidance.",
-      upgradeHref: getUpgradeHrefForUserPlan(plan.plan_type),
+      message: upgradeCopy.message,
+      upgradeHref: getUpgradeHrefForUserPlan(plan.plan_type, "protected"),
       plan,
       usage,
     };

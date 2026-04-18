@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { signUp } from "@/lib/auth-client";
+import { trackEvent } from "@/lib/analytics/track-event";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -33,6 +34,11 @@ export function SignUpForm() {
         );
         return;
       }
+
+      trackEvent("user_signup", {
+        page: "/sign-up",
+        feature: "auth-signup",
+      });
 
       router.push("/dashboard");
       router.refresh();

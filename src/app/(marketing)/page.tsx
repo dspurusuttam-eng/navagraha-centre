@@ -8,6 +8,7 @@ import { Section } from "@/components/ui/section";
 import { buildPageMetadata } from "@/lib/metadata";
 import { recommendConsultationNextAction } from "@/modules/consultations";
 import { homePage } from "@/modules/marketing/content";
+import { listSeoEntryPages } from "@/modules/marketing/seo-entry-pages";
 
 export const metadata = buildPageMetadata({
   ...homePage.metadata,
@@ -17,6 +18,7 @@ export default function HomePage() {
   const conversion = recommendConsultationNextAction({
     surface: "home",
   });
+  const seoEntryPages = listSeoEntryPages();
 
   return (
     <>
@@ -92,6 +94,32 @@ export default function HomePage() {
                   {service.label}
                 </Link>
               ) : null}
+            </Card>
+          ))}
+        </div>
+      </Section>
+
+      <Section
+        description="Search-intent pages connect high-value topics to the same protected chart, report, and assistant journey."
+        eyebrow="Popular Searches"
+        title="Entry pages built for high-intent astrology needs"
+      >
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {seoEntryPages.map((entry) => (
+            <Card key={entry.path} interactive className="space-y-4">
+              <Badge tone="neutral">{entry.hero.eyebrow}</Badge>
+              <h3 className="text-[length:var(--font-size-body-lg)] font-medium text-[color:var(--color-foreground)]">
+                {entry.metadata.title}
+              </h3>
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                {entry.metadata.description}
+              </p>
+              <Link
+                href={entry.path}
+                className={buttonStyles({ size: "sm", tone: "secondary" })}
+              >
+                Explore {entry.hero.eyebrow}
+              </Link>
             </Card>
           ))}
         </div>

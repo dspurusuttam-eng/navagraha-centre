@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { getApiErrorMessage } from "@/lib/api/http";
 
 type CheckoutResponse = {
   status: "ok";
@@ -49,11 +50,11 @@ export function SubscriptionUpgradePanel() {
         }),
       });
       const payload = (await response.json()) as CheckoutResponse & {
-        error?: string;
+        message?: string;
       };
 
       if (!response.ok || payload.status !== "ok") {
-        throw new Error(payload.error ?? "Subscription checkout failed.");
+        throw new Error(getApiErrorMessage(payload, "Subscription checkout failed."));
       }
 
       setResult(payload);

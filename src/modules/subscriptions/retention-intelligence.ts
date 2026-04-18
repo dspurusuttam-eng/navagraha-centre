@@ -253,7 +253,7 @@ export async function getSubscriptionRetentionIntelligenceSnapshot(
       summary:
         "Your previous subscription can be resumed for continued timing and report continuity.",
       ctaLabel: "Renew Membership",
-      href: "/contact",
+      href: "/settings",
       priority: "HIGH",
       reasons: reasons.length ? reasons : ["REPEATED_FREE_USAGE"],
     };
@@ -269,7 +269,7 @@ export async function getSubscriptionRetentionIntelligenceSnapshot(
     nextAction = {
       key: "RENEW",
       label: "Renew Membership",
-      href: "/contact",
+      href: "/settings",
     };
   } else if (access.isSubscribed && access.plan) {
     const canUpgradeFromBasic =
@@ -285,14 +285,14 @@ export async function getSubscriptionRetentionIntelligenceSnapshot(
         summary:
           "Your engagement pattern suggests you would benefit from richer report and timing depth.",
         ctaLabel: "Upgrade Membership",
-        href: "/contact",
+        href: "/settings",
         priority: "MEDIUM",
         reasons: reasons.length ? reasons : ["TIMING_ENGAGEMENT"],
       };
       nextAction = {
         key: "UPGRADE",
         label: "Upgrade Plan",
-        href: "/contact",
+        href: "/settings",
       };
     } else if (canUpgradeFromPremium) {
       recommendation = {
@@ -301,14 +301,14 @@ export async function getSubscriptionRetentionIntelligenceSnapshot(
         summary:
           "Your current usage suggests that priority consultation readiness would be useful next.",
         ctaLabel: "Review Pro Upgrade",
-        href: "/contact",
+        href: "/settings",
         priority: "MEDIUM",
         reasons: reasons.length ? reasons : ["MULTI_REPORT_PURCHASES"],
       };
       nextAction = {
         key: "UPGRADE",
         label: "Upgrade Plan",
-        href: "/contact",
+        href: "/settings",
       };
     } else {
       nextAction = {
@@ -333,7 +333,7 @@ export async function getSubscriptionRetentionIntelligenceSnapshot(
       summary:
         "Your usage pattern indicates recurring need for deeper timing and report guidance.",
       ctaLabel: "Review Membership",
-      href: "/contact",
+      href: "/settings",
       priority: reasons.includes("MULTI_REPORT_PURCHASES") ? "HIGH" : "MEDIUM",
       reasons,
     };
@@ -347,7 +347,7 @@ export async function getSubscriptionRetentionIntelligenceSnapshot(
     nextAction = {
       key: "UPGRADE",
       label: "Review Membership",
-      href: "/contact",
+      href: "/settings",
     };
   }
 

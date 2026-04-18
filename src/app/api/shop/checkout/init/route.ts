@@ -1,3 +1,5 @@
+import { apiErrorResponse, readJsonObjectBody } from "@/lib/api/http";
+import { captureException } from "@/lib/observability";
 import { assertRateLimit, buildRateLimitKey } from "@/lib/rate-limit";
 import { getSession } from "@/modules/auth/server";
 import { initializeShopCheckout } from "@/modules/shop/checkout";
@@ -57,17 +59,16 @@ function readString(value: unknown) {
 }
 
 export async function POST(request: Request) {
-  const payload = (await request.json().catch(() => null)) as
+  const payload = (await readJsonObjectBody(request)) as
     | CheckoutInitPayload
     | null;
 
   if (!payload) {
-    return Response.json(
-      { error: "Invalid checkout payload." },
-      {
-        status: 400,
-      }
-    );
+    return apiErrorResponse({
+      statusCode: 400,
+      code: "INVALID_REQUEST",
+      message: "Invalid checkout payload.",
+    });
   }
 
   const billingName = readString(payload.billingName);
@@ -82,21 +83,19 @@ export async function POST(request: Request) {
   const items = parseCartLines(payload);
 
   if (!billingName) {
-    return Response.json(
-      { error: "Billing name is required." },
-      {
-        status: 400,
-      }
-    );
+    return apiErrorResponse({
+      statusCode: 400,
+      code: "BILLING_NAME_REQUIRED",
+      message: "Billing name is required.",
+    });
   }
 
   if (!customerEmail || !customerEmail.includes("@")) {
-    return Response.json(
-      { error: "A valid customer email is required." },
-      {
-        status: 400,
-      }
-    );
+    return apiErrorResponse({
+      statusCode: 400,
+      code: "INVALID_CUSTOMER_EMAIL",
+      message: "A valid customer email is required.",
+    });
   }
 
   try {
@@ -134,17 +133,20 @@ export async function POST(request: Request) {
     );
   } catch (error) {
     const checkoutError = resolveShopCheckoutErrorState(error);
+    captureException(error, {
+      route: "api.shop.checkout.init",
+      customerEmail,
+      checkoutErrorCode: checkoutError.code,
+    });
 
-    return Response.json(
-      {
-        error: checkoutError.message,
-        code: checkoutError.code,
+    return apiErrorResponse({
+      statusCode: 400,
+      code: checkoutError.code,
+      message: checkoutError.message,
+      details: {
         title: checkoutError.title,
         recoveryActions: checkoutError.recoveryActions,
       },
-      {
-        status: 400,
-      }
-    );
+    });
   }
 }

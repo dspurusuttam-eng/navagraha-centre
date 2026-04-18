@@ -1,6 +1,7 @@
 import { buildPageMetadata } from "@/lib/metadata";
 import { requireUserSession } from "@/modules/auth/server";
 import { ChartContractPanel } from "@/modules/astrology/components/chart-contract-panel";
+import { getUpgradeHrefForUserPlan, getUserPlanUsageModel } from "@/modules/subscriptions";
 
 export const metadata = buildPageMetadata({
   title: "Chart Overview",
@@ -11,7 +12,13 @@ export const metadata = buildPageMetadata({
 });
 
 export default async function DashboardChartPage() {
-  await requireUserSession();
+  const session = await requireUserSession();
+  const { plan } = await getUserPlanUsageModel(session.user.id);
 
-  return <ChartContractPanel />;
+  return (
+    <ChartContractPanel
+      planType={plan.plan_type}
+      upgradeHref={getUpgradeHrefForUserPlan(plan.plan_type)}
+    />
+  );
 }

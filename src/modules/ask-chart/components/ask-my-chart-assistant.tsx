@@ -1,11 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { startTransition, useState } from "react";
+import { startTransition, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { trackEvent } from "@/lib/analytics/track-event";
+import { getApiErrorMessage } from "@/lib/api/http";
+import { getMonetizationUpgradeCopy } from "@/modules/subscriptions/monetization-content";
 import type {
   AskMyChartConversation,
   AskMyChartPageData,
@@ -27,6 +30,17 @@ type MessageResponse = {
   status: "READY";
   conversation: AskMyChartConversation;
   sessions: AskMyChartSessionSummary[];
+  planType: "FREE" | "PREMIUM" | "PRO";
+  aiQuestionsUsedToday: number;
+  aiQuestionsLimitPerDay: number | null;
+  aiQuestionsRemainingToday: number | null;
+  premiumNudge: {
+    title: string;
+    message: string;
+    ctaLabel: string;
+    href: string;
+    reason: "DEEPER_QUESTION" | "USAGE_MILESTONE" | "FREE_PLAN_SUMMARY";
+  } | null;
 };
 
 type LimitReachedResponse = {
@@ -40,13 +54,18 @@ type LimitReachedResponse = {
 };
 
 async function readJsonResponse<T>(response: Response): Promise<T> {
-  const payload = (await response.json()) as T & { error?: string };
+  const payload = (await response.json().catch(() => null)) as unknown;
 
   if (!response.ok) {
-    throw new Error(payload.error ?? "The assistant request could not be completed.");
+    throw new Error(
+      getApiErrorMessage(
+        payload,
+        "The assistant request could not be completed."
+      )
+    );
   }
 
-  return payload;
+  return payload as T;
 }
 
 export function AskMyChartAssistant({
@@ -62,6 +81,49 @@ export function AskMyChartAssistant({
   const [error, setError] = useState<string | null>(null);
   const [loadingSessionId, setLoadingSessionId] = useState<string | null>(null);
   const [paywall, setPaywall] = useState<LimitReachedResponse | null>(null);
+  const [usageState, setUsageState] = useState<{
+    planType: "FREE" | "PREMIUM" | "PRO";
+    aiQuestionsUsedToday: number;
+    aiQuestionsLimitPerDay: number | null;
+    aiQuestionsRemainingToday: number | null;
+  } | null>(null);
+  const [premiumNudge, setPremiumNudge] = useState<MessageResponse["premiumNudge"]>(
+    null
+  );
+  const assistantNudgeCopy = getMonetizationUpgradeCopy({
+    prompt: "assistant-nudge",
+    surface: "protected",
+    aiQuestionsUsedToday: usageState?.aiQuestionsUsedToday,
+    aiQuestionsLimitPerDay: usageState?.aiQuestionsLimitPerDay ?? null,
+  });
+  const assistantLimitCopy = getMonetizationUpgradeCopy({
+    prompt: "assistant-limit",
+    surface: "protected",
+  });
+
+  useEffect(() => {
+    if (!paywall) {
+      return;
+    }
+
+    trackEvent("upgrade_prompt_view", {
+      page: "/dashboard/ask-my-chart",
+      feature: "assistant-limit-upgrade",
+      plan: paywall.planType,
+    });
+  }, [paywall]);
+
+  useEffect(() => {
+    if (!premiumNudge || !usageState) {
+      return;
+    }
+
+    trackEvent("upgrade_prompt_view", {
+      page: "/dashboard/ask-my-chart",
+      feature: `assistant-nudge-${premiumNudge.reason.toLowerCase()}`,
+      plan: usageState.planType,
+    });
+  }, [premiumNudge, usageState]);
 
   async function createSession() {
     const response = await fetch("/api/ai/ask-chart/sessions", {
@@ -83,6 +145,7 @@ export function AskMyChartAssistant({
     setLoadingSessionId(sessionId);
     setError(null);
     setPaywall(null);
+    setPremiumNudge(null);
 
     try {
       const response = await fetch(`/api/ai/ask-chart/sessions/${sessionId}`);
@@ -115,6 +178,7 @@ export function AskMyChartAssistant({
     setIsPending(true);
     setError(null);
     setPaywall(null);
+    setPremiumNudge(null);
 
     try {
       const session = activeConversation?.session ?? (await createSession());
@@ -135,12 +199,39 @@ export function AskMyChartAssistant({
       );
 
       if (payload.status === "LIMIT_REACHED") {
+        trackEvent("assistant_query", {
+          page: "/dashboard/ask-my-chart",
+          feature: "ask-my-chart",
+          plan: payload.planType,
+          result: "limit-reached",
+        });
+
+        setUsageState({
+          planType: payload.planType,
+          aiQuestionsUsedToday: payload.aiQuestionsUsedToday,
+          aiQuestionsLimitPerDay: payload.aiQuestionsLimitPerDay,
+          aiQuestionsRemainingToday: payload.aiQuestionsRemainingToday,
+        });
         setPaywall(payload);
         return;
       }
 
+      trackEvent("assistant_query", {
+        page: "/dashboard/ask-my-chart",
+        feature: "ask-my-chart",
+        plan: payload.planType,
+        result: "ready",
+      });
+
       setActiveConversation(payload.conversation);
       setSessions(payload.sessions);
+      setUsageState({
+        planType: payload.planType,
+        aiQuestionsUsedToday: payload.aiQuestionsUsedToday,
+        aiQuestionsLimitPerDay: payload.aiQuestionsLimitPerDay,
+        aiQuestionsRemainingToday: payload.aiQuestionsRemainingToday,
+      });
+      setPremiumNudge(payload.premiumNudge);
       setDraft("");
       router.replace(
         `/dashboard/ask-my-chart?session=${payload.conversation.session.id}`,
@@ -249,6 +340,36 @@ export function AskMyChartAssistant({
             remedies, and current cycle context only when those facts are available
             through NAVAGRAHA CENTRE&apos;s grounded tool layer.
           </p>
+          <div className="rounded-[var(--radius-xl)] border border-[rgba(215,187,131,0.18)] bg-[rgba(215,187,131,0.06)] px-4 py-4">
+            <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+              Plan Access
+            </p>
+            <p className="hidden">
+              Free includes basic assistant usage. Premium plans from ₹99/month
+              unlock deeper multi-house analysis and extended report depth.
+            </p>
+            <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              Free includes basic assistant usage. Premium plans from INR 99/month
+              unlock deeper multi-house analysis and extended report depth.
+            </p>
+            <Link
+              href="/settings"
+              className="mt-3 inline-flex rounded-full border border-[color:var(--color-border)] px-4 py-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-foreground)] transition [transition-duration:var(--motion-duration-base)] hover:border-[color:var(--color-border-strong)]"
+              onClick={() => {
+                trackEvent("premium_click", {
+                  page: "/dashboard/ask-my-chart",
+                  feature: "assistant-plan-access",
+                });
+                trackEvent("upgrade_started", {
+                  page: "/dashboard/ask-my-chart",
+                  surface: "protected",
+                  feature: "assistant-plan-access",
+                });
+              }}
+            >
+              View Plans
+            </Link>
+          </div>
         </Card>
 
         {error ? (
@@ -263,7 +384,7 @@ export function AskMyChartAssistant({
           <Card className="border-[rgba(215,187,131,0.28)] bg-[rgba(215,187,131,0.08)]">
             <div className="space-y-3">
               <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-                Usage Limit Reached
+                {assistantLimitCopy.title}
               </p>
               <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-foreground)]">
                 {paywall.message}
@@ -275,11 +396,38 @@ export function AskMyChartAssistant({
                 <Link
                   href={paywall.upgradeHref}
                   className="inline-flex rounded-full border border-[color:var(--color-border)] px-4 py-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-foreground)] transition [transition-duration:var(--motion-duration-base)] hover:border-[color:var(--color-border-strong)]"
+                  onClick={() => {
+                    trackEvent("premium_click", {
+                      page: "/dashboard/ask-my-chart",
+                      feature: "assistant-limit-upgrade",
+                    });
+                    trackEvent("upgrade_started", {
+                      page: "/dashboard/ask-my-chart",
+                      feature: "assistant-limit-upgrade",
+                      plan: paywall.planType,
+                    });
+                  }}
                 >
-                  Upgrade Plan
+                  {assistantLimitCopy.ctaLabel}
                 </Link>
               </div>
             </div>
+          </Card>
+        ) : null}
+
+        {usageState ? (
+          <Card className="space-y-3">
+            <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+              Usage Snapshot
+            </p>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              Plan: {usageState.planType}. AI questions today:{" "}
+              {usageState.aiQuestionsUsedToday}/
+              {usageState.aiQuestionsLimitPerDay ?? "Unlimited"}.
+            </p>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              Remaining today: {usageState.aiQuestionsRemainingToday ?? "Unlimited"}.
+            </p>
           </Card>
         ) : null}
 
@@ -358,6 +506,31 @@ export function AskMyChartAssistant({
               </div>
             </div>
           )}
+
+          {premiumNudge ? (
+            <div className="rounded-[var(--radius-2xl)] border border-[rgba(215,187,131,0.24)] bg-[rgba(215,187,131,0.08)] px-5 py-5">
+              <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                {assistantNudgeCopy.title}
+              </p>
+              <p className="mt-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                {assistantNudgeCopy.message}
+              </p>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Link
+                  href={premiumNudge.href}
+                  className="inline-flex rounded-full border border-[color:var(--color-border)] px-4 py-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-foreground)] transition [transition-duration:var(--motion-duration-base)] hover:border-[color:var(--color-border-strong)]"
+                  onClick={() => {
+                    trackEvent("premium_click", {
+                      page: "/dashboard/ask-my-chart",
+                      feature: `assistant-nudge-${premiumNudge.reason.toLowerCase()}`,
+                    });
+                  }}
+                >
+                  {premiumNudge.ctaLabel}
+                </Link>
+              </div>
+            </div>
+          ) : null}
         </Card>
 
         <Card className="space-y-4">

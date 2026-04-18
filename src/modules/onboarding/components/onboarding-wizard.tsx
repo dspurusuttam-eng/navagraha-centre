@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
+import { trackEvent } from "@/lib/analytics/track-event";
 import {
   completeBirthOnboarding,
 } from "@/modules/onboarding/actions";
@@ -113,10 +114,19 @@ export function OnboardingWizard({
   const formRef = useRef<HTMLFormElement>(null);
   const autofillAbortControllerRef = useRef<AbortController | null>(null);
   const lastAutofillKeyRef = useRef<string | null>(null);
+  const chartCreatedTrackedRef = useRef(false);
   const router = useRouter();
 
   useEffect(() => {
     if (state.status === "success" && state.redirectTo) {
+      if (!chartCreatedTrackedRef.current) {
+        chartCreatedTrackedRef.current = true;
+        trackEvent("chart_created", {
+          page: "/dashboard/onboarding",
+          feature: "birth-onboarding",
+        });
+      }
+
       startTransition(() => {
         router.push(state.redirectTo!);
       });
@@ -277,6 +287,7 @@ export function OnboardingWizard({
   }
 
   const step = steps[stepIndex];
+  const progressPercent = ((stepIndex + 1) / steps.length) * 100;
 
   return (
     <div className="grid gap-6 xl:grid-cols-[minmax(0,1.3fr)_minmax(260px,0.7fr)]">
@@ -297,6 +308,23 @@ export function OnboardingWizard({
             <p className="max-w-2xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
               {step.description}
             </p>
+          </div>
+
+          <div className="space-y-3 rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                Progress
+              </p>
+              <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-muted)]">
+                Step {stepIndex + 1} of {steps.length}
+              </p>
+            </div>
+            <div className="h-1.5 w-full rounded-full bg-[rgba(255,255,255,0.08)]">
+              <div
+                className="h-full rounded-full bg-[color:var(--color-accent)] transition-all [transition-duration:var(--motion-duration-base)]"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
           </div>
 
           <div className="space-y-6">
@@ -713,6 +741,17 @@ export function OnboardingWizard({
             <p>
               After save, you will be taken directly to the chart overview page.
             </p>
+          </div>
+        </Card>
+
+        <Card className="space-y-4">
+          <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+            Trust
+          </p>
+          <div className="space-y-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            <p>Birth details are stored on your protected account only.</p>
+            <p>Timezone and coordinates are auto-resolved for calculation accuracy.</p>
+            <p>Manual overrides stay optional for advanced correction needs.</p>
           </div>
         </Card>
       </div>

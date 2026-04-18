@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { trackEvent } from "@/lib/analytics/track-event";
+import { getApiErrorMessage } from "@/lib/api/http";
+import { getMonetizationUpgradeCopy } from "@/modules/subscriptions/monetization-content";
 
 type PremiumReportType = "CAREER" | "MARRIAGE" | "FINANCE" | "HEALTH";
 
@@ -31,11 +34,42 @@ const premiumReportOptions: Array<{
   { key: "HEALTH", title: "Health Report" },
 ];
 
+function getUpgradeCtaLabel(reportType: PremiumReportType) {
+  switch (reportType) {
+    case "CAREER":
+      return "Get Detailed Career Prediction";
+    case "MARRIAGE":
+      return "View Full Compatibility Analysis";
+    default:
+      return "Unlock Full Report";
+  }
+}
+
 export function PremiumReportGenerator() {
   const [activeType, setActiveType] = useState<PremiumReportType>("CAREER");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<PremiumReportOutput | null>(null);
+  const previewUpgradeCopy = getMonetizationUpgradeCopy({
+    prompt: "report-preview",
+    surface: "protected",
+  });
+  const limitUpgradeCopy = getMonetizationUpgradeCopy({
+    prompt: "report-limit",
+    surface: "protected",
+  });
+
+  useEffect(() => {
+    if (!result || result.status === "FULL_ACCESS") {
+      return;
+    }
+
+    trackEvent("upgrade_prompt_view", {
+      page: "/dashboard/report",
+      feature: `premium-report-${result.status.toLowerCase()}`,
+      reportType: result.reportType,
+    });
+  }, [result]);
 
   async function generateReport(reportType: PremiumReportType) {
     if (isLoading) {
@@ -60,11 +94,12 @@ export function PremiumReportGenerator() {
       const payload = (await response.json()) as {
         status?: string;
         premiumReport?: PremiumReportOutput;
-        error?: string;
       };
 
       if (!response.ok || !payload.premiumReport) {
-        throw new Error(payload.error ?? "Premium report request failed.");
+        throw new Error(
+          getApiErrorMessage(payload, "Premium report request failed.")
+        );
       }
 
       setResult(payload.premiumReport);
@@ -134,6 +169,13 @@ export function PremiumReportGenerator() {
           <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
             {result.preview}
           </p>
+          {result.status !== "FULL_ACCESS" ? (
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              {result.status === "LIMIT_REACHED"
+                ? limitUpgradeCopy.message
+                : previewUpgradeCopy.message}
+            </p>
+          ) : null}
           <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-foreground)]">
             {result.message}
           </p>
@@ -160,8 +202,18 @@ export function PremiumReportGenerator() {
             <Link
               href={result.upgradeHref}
               className="inline-flex rounded-full border border-[color:var(--color-border)] px-4 py-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-foreground)] transition [transition-duration:var(--motion-duration-base)] hover:border-[color:var(--color-border-strong)]"
+              onClick={() => {
+                trackEvent("premium_click", {
+                  page: "/dashboard/report",
+                  feature: `premium-report-${result.reportType.toLowerCase()}`,
+                });
+                trackEvent("upgrade_started", {
+                  page: "/dashboard/report",
+                  feature: `premium-report-${result.status.toLowerCase()}`,
+                });
+              }}
             >
-              Upgrade Plan
+              {getUpgradeCtaLabel(result.reportType)}
             </Link>
           ) : null}
         </div>

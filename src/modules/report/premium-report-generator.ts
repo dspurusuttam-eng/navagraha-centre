@@ -5,6 +5,7 @@ import type { CurrentCycleSummary } from "@/lib/astrology/current-cycle";
 import type { ChartInsights } from "@/lib/ai/types";
 import type { ChartReportState } from "@/modules/report/service";
 import {
+  getMonetizationUpgradeCopy,
   getUpgradeHrefForUserPlan,
   getUserPlanUsageModel,
   isPremiumPlan,
@@ -150,19 +151,28 @@ export async function generatePremiumReportForUser(input: {
   });
 
   if (monthlyUsageReached) {
+    const upgradeCopy = getMonetizationUpgradeCopy({
+      prompt: "report-limit",
+      surface: "protected",
+    });
+
     return {
       reportType,
       status: "LIMIT_REACHED",
       title,
       preview,
       fullReportSections: [],
-      message:
-        "Monthly premium report generation limit reached for your current plan. Upgrade for higher limits.",
-      upgradeHref: getUpgradeHrefForUserPlan(plan.plan_type),
+      message: upgradeCopy.message,
+      upgradeHref: getUpgradeHrefForUserPlan(plan.plan_type, "protected"),
     } satisfies PremiumReportOutput;
   }
 
   if (!isPremiumPlan(plan.plan_type)) {
+    const upgradeCopy = getMonetizationUpgradeCopy({
+      prompt: "report-preview",
+      surface: "protected",
+    });
+
     await getPrisma().aiTaskRun.create({
       data: {
         userId: input.userId,
@@ -199,9 +209,8 @@ export async function generatePremiumReportForUser(input: {
       title,
       preview,
       fullReportSections: [],
-      message:
-        "Preview ready. Unlock the full premium report for deeper chart-layer analysis.",
-      upgradeHref: getUpgradeHrefForUserPlan(plan.plan_type),
+      message: upgradeCopy.message,
+      upgradeHref: getUpgradeHrefForUserPlan(plan.plan_type, "protected"),
     } satisfies PremiumReportOutput;
   }
 

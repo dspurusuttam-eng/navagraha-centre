@@ -5,6 +5,11 @@ import { useEffect, useMemo, useState } from "react";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
+import { trackEvent } from "@/lib/analytics/track-event";
+import {
+  getMonetizationUpgradeCopy,
+  type MonetizationPlanType,
+} from "@/modules/subscriptions/monetization-content";
 import type {
   ChartContractErrorResponse,
   ChartContractSuccessResponse,
@@ -88,7 +93,17 @@ function isChartUnavailableErrorCode(code: string) {
   );
 }
 
-export function ChartContractPanel() {
+function isPremiumPlanType(planType: MonetizationPlanType) {
+  return planType === "PREMIUM" || planType === "PRO";
+}
+
+export function ChartContractPanel({
+  planType,
+  upgradeHref,
+}: Readonly<{
+  planType: MonetizationPlanType;
+  upgradeHref: string;
+}>) {
   const [reloadKey, setReloadKey] = useState(0);
   const [state, setState] = useState<ChartPanelState>({
     status: "loading",
@@ -198,6 +213,33 @@ export function ChartContractPanel() {
 
     return [...state.chart.planets].sort((a, b) => a.house - b.house);
   }, [state]);
+  const hasPremiumAccess = isPremiumPlanType(planType);
+  const chartDepthUpgrade = getMonetizationUpgradeCopy({
+    prompt: "chart-depth",
+    surface: "protected",
+  });
+  const visiblePlanets =
+    state.status === "ready"
+      ? hasPremiumAccess
+        ? sortedPlanets
+        : sortedPlanets.slice(0, 4)
+      : [];
+  const hiddenPlanetCount =
+    state.status === "ready" && !hasPremiumAccess
+      ? Math.max(0, sortedPlanets.length - visiblePlanets.length)
+      : 0;
+
+  useEffect(() => {
+    if (state.status !== "ready" || hasPremiumAccess) {
+      return;
+    }
+
+    trackEvent("upgrade_prompt_view", {
+      page: "/dashboard/chart",
+      feature: "chart-depth-lock",
+      plan: planType,
+    });
+  }, [hasPremiumAccess, planType, state.status]);
 
   return (
     <Section
@@ -278,6 +320,18 @@ export function ChartContractPanel() {
 
       {state.status === "ready" ? (
         <div className="space-y-6">
+          <Card tone="accent" className="space-y-4">
+            <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+              Chart Integrity
+            </p>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              Based on Vedic astrology using sidereal Lahiri ayanamsha.
+            </p>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              Accurate planetary calculations are generated server-side and displayed from your stored chart record.
+            </p>
+          </Card>
+
           <div className="grid gap-6 xl:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)]">
             <Card className="space-y-4">
               <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
@@ -326,7 +380,7 @@ export function ChartContractPanel() {
                   Lagna:{" "}
                   <span className="text-[color:var(--color-foreground)]">
                     {formatSign(state.chart.lagna.sign)}{" "}
-                    {state.chart.lagna.degree_in_sign.toFixed(2)}°
+                    {state.chart.lagna.degree_in_sign.toFixed(2)} deg
                   </span>
                 </p>
                 <p>
@@ -339,12 +393,55 @@ export function ChartContractPanel() {
             </Card>
           </div>
 
+          {!hasPremiumAccess ? (
+            <Card className="space-y-4">
+              <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                {chartDepthUpgrade.title}
+              </p>
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                {chartDepthUpgrade.message}
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <Link
+                  href={upgradeHref}
+                  className={buttonStyles({ size: "lg" })}
+                  onClick={() => {
+                    trackEvent("premium_click", {
+                      page: "/dashboard/chart",
+                      feature: "chart-upgrade-primary",
+                    });
+                    trackEvent("upgrade_started", {
+                      page: "/dashboard/chart",
+                      surface: "protected",
+                      feature: "chart-upgrade-primary",
+                      plan: planType,
+                    });
+                  }}
+                >
+                  {chartDepthUpgrade.ctaLabel}
+                </Link>
+                <Link
+                  href="/dashboard/ask-my-chart"
+                  className={buttonStyles({ size: "lg", tone: "secondary" })}
+                  onClick={() => {
+                    trackEvent("premium_click", {
+                      page: "/dashboard/chart",
+                      feature: "chart-upgrade-assistant",
+                    });
+                  }}
+                >
+                  Continue with Premium
+                </Link>
+              </div>
+            </Card>
+          ) : null}
+
           <Card className="space-y-4">
             <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
               Planetary Details
             </p>
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-              {sortedPlanets.map((planet) => (
+              {visiblePlanets.map((planet) => (
                 <div
                   key={planet.name}
                   className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] p-4"
@@ -356,7 +453,7 @@ export function ChartContractPanel() {
                     {formatSign(planet.sign)} | House {planet.house}
                   </p>
                   <p className="mt-1 text-[length:var(--font-size-body-sm)] text-[color:var(--color-muted)]">
-                    {planet.degree_in_sign.toFixed(2)}° | {formatNakshatra(planet.nakshatra)}{" "}
+                    {planet.degree_in_sign.toFixed(2)} deg | {formatNakshatra(planet.nakshatra)}{" "}
                     pada {planet.pada}
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
@@ -370,6 +467,28 @@ export function ChartContractPanel() {
                 </div>
               ))}
             </div>
+            {!hasPremiumAccess && hiddenPlanetCount > 0 ? (
+              <div className="rounded-[var(--radius-xl)] border border-[rgba(215,187,131,0.24)] bg-[rgba(215,187,131,0.08)] px-4 py-4">
+                <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                  Locked Deeper Insights
+                </p>
+                <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                  {hiddenPlanetCount} additional placements and deeper interpretive layers are available in premium mode.
+                </p>
+                <Link
+                  href={upgradeHref}
+                  className={buttonStyles({ size: "sm", tone: "secondary" })}
+                  onClick={() => {
+                    trackEvent("premium_click", {
+                      page: "/dashboard/chart",
+                      feature: "chart-locked-insights",
+                    });
+                  }}
+                >
+                  Get Detailed Career Prediction
+                </Link>
+              </div>
+            ) : null}
           </Card>
 
           {state.chart.verification.warnings.length ||

@@ -28,6 +28,7 @@ import type {
   ZodiacSign,
 } from "@/modules/astrology/types";
 import { getPrisma } from "@/lib/prisma";
+import { trackChartCreated } from "@/modules/conversion/events";
 import {
   defaultPreferredLanguage,
   getPreferredLanguageLabel,
@@ -748,6 +749,16 @@ export async function saveOnboardingAndGenerateChart({
     });
 
     return createdChart;
+  });
+
+  trackChartCreated({
+    userId,
+    source: "onboarding-save",
+    providerKey: chart.metadata.providerKey,
+    metadata: {
+      chartId: chartRecord.id,
+      preferredLanguage,
+    },
   });
 
   return {

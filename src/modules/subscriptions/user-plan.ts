@@ -1,6 +1,10 @@
 import "server-only";
 
 import { getSubscriptionService } from "@/modules/subscriptions/service";
+import {
+  getUpgradeHrefForSurface,
+  type MonetizationSurface,
+} from "@/modules/subscriptions/monetization-content";
 import type { SubscriptionPlanId } from "@/modules/subscriptions/types";
 
 export const userPlanTypes = ["FREE", "PREMIUM", "PRO"] as const;
@@ -79,12 +83,11 @@ function getLimitsForPlan(planType: UserPlanType): UserPlanUsageLimits {
   return freePlanLimits;
 }
 
-export function getUpgradeHrefForUserPlan(planType: UserPlanType) {
-  if (planType === "PRO") {
-    return "/settings";
-  }
-
-  return "/settings";
+export function getUpgradeHrefForUserPlan(
+  _planType: UserPlanType,
+  surface: MonetizationSurface = "protected"
+) {
+  return getUpgradeHrefForSurface(surface);
 }
 
 export async function getUserPlanModel(userId: string): Promise<UserPlanModel> {

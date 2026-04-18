@@ -8,12 +8,14 @@ import {
   Prisma,
 } from "@prisma/client";
 import { getPrisma } from "@/lib/prisma";
+import { recordAnalyticsEventSafely } from "@/lib/analytics/event-store";
 import { applyPaidInventoryDeduction } from "@/modules/shop/inventory";
 import { emitCommerceAnalyticsEventSafely } from "@/modules/shop/analytics-audit";
 import { emitShopNotificationEventSafely } from "@/modules/shop/notification-hooks";
 import type { ShopCheckoutProviderKey } from "@/modules/shop/payment-boundary";
 import { buildShopReceiptData, type ShopReceiptData } from "@/modules/shop/receipt";
 import { syncSubscriptionFromPaidOrder } from "@/modules/subscriptions";
+import { isSubscriptionPlanId } from "@/modules/subscriptions/plans";
 
 export type OrderConfirmationTarget = {
   orderNumber: string;
@@ -138,6 +140,32 @@ function readConfirmationTarget(
       lookupKey: value.lookupKey,
       lookupPath: value.lookupPath,
     };
+  }
+
+  return null;
+}
+
+function readCompletedUpgradePlanId(
+  metadata: Prisma.JsonValue | Prisma.InputJsonValue | null
+): "PREMIUM" | "PRO" | null {
+  if (!metadata || typeof metadata !== "object" || Array.isArray(metadata)) {
+    return null;
+  }
+
+  const planId = (metadata as Prisma.JsonObject).subscriptionPlanId;
+
+  if (typeof planId !== "string") {
+    return null;
+  }
+
+  const normalized = planId.trim().toUpperCase();
+
+  if (!isSubscriptionPlanId(normalized)) {
+    return null;
+  }
+
+  if (normalized === "PREMIUM" || normalized === "PRO") {
+    return normalized;
   }
 
   return null;
@@ -287,6 +315,7 @@ export async function finalizePaidOrderFromWebhook(
     input.paymentReference || `${input.providerKey}:${input.eventId}`;
   const finalizationMarkerId = buildFinalizationMarkerId(matchedOrder.id);
   const finalizedAtUtc = new Date().toISOString();
+  let completedUpgradePlanId: "PREMIUM" | "PRO" | null = null;
   const receipt = buildShopReceiptData({
     orderId: matchedOrder.id,
     orderNumber: matchedOrder.orderNumber,
@@ -427,6 +456,7 @@ export async function finalizePaidOrderFromWebhook(
           finalizedAtUtc,
           providerKey: input.providerKey,
         });
+        completedUpgradePlanId = readCompletedUpgradePlanId(mergedPaymentMetadata);
       } else {
         await tx.paymentRecord.create({
           data: {
@@ -448,6 +478,7 @@ export async function finalizePaidOrderFromWebhook(
           finalizedAtUtc,
           providerKey: input.providerKey,
         });
+        completedUpgradePlanId = readCompletedUpgradePlanId(finalizationMetadataPatch);
       }
     }, {
       isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
@@ -525,6 +556,32 @@ export async function finalizePaidOrderFromWebhook(
       eventType: input.eventType,
     },
   });
+
+  recordAnalyticsEventSafely({
+    event: "payment_success",
+    userId: matchedOrder.userId,
+    payload: {
+      page: "/shop/checkout",
+      feature: "checkout-finalized",
+      orderNumber: matchedOrder.orderNumber,
+      amount: resolvedAmount,
+      currencyCode: resolvedCurrencyCode,
+    },
+  });
+
+  if (completedUpgradePlanId) {
+    recordAnalyticsEventSafely({
+      event: "upgrade_completed",
+      userId: matchedOrder.userId,
+      payload: {
+        page: "/settings",
+        surface: "protected",
+        plan: completedUpgradePlanId,
+        feature: "subscription-upgrade-completed",
+        orderNumber: matchedOrder.orderNumber,
+      },
+    });
+  }
 
   return {
     outcome: "finalized",

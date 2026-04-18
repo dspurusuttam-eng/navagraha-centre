@@ -28,6 +28,16 @@ const productionPublicEnvironment = {
   siteUrl: "https://www.navagrahacentre.com",
 } as const;
 
+const allowedPublicEnvironmentKeys = new Set([
+  "NEXT_PUBLIC_SITE_URL",
+  "NEXT_PUBLIC_SITE_NAME",
+  "NEXT_PUBLIC_ANALYTICS_ENABLED",
+  "NEXT_PUBLIC_OBSERVABILITY_ENDPOINT",
+]);
+
+const sensitivePublicEnvPattern =
+  /(SECRET|TOKEN|PASSWORD|PRIVATE|WEBHOOK|API_KEY)/i;
+
 function toHttpsUrl(host: string) {
   const normalizedHost = host.replace(/^https?:\/\//, "").replace(/\/+$/, "");
 
@@ -81,6 +91,36 @@ function validateTrustedOrigins(
         "BETTER_AUTH_TRUSTED_ORIGINS",
         "error",
         `Trusted origin "${normalizedOrigin}" is not a valid URL.`
+      );
+    }
+  }
+}
+
+function validatePublicEnvironmentExposure(
+  env: RawEnvironment,
+  issues: EnvironmentValidationIssue[]
+) {
+  for (const [key, rawValue] of Object.entries(env)) {
+    if (!key.startsWith("NEXT_PUBLIC_")) {
+      continue;
+    }
+
+    if (allowedPublicEnvironmentKeys.has(key)) {
+      continue;
+    }
+
+    const value = typeof rawValue === "string" ? rawValue.trim() : "";
+
+    if (!value) {
+      continue;
+    }
+
+    if (sensitivePublicEnvPattern.test(key)) {
+      pushIssue(
+        issues,
+        key,
+        "error",
+        "Sensitive server secret appears to be exposed with a NEXT_PUBLIC_ prefix."
       );
     }
   }
@@ -217,6 +257,7 @@ export function validateLaunchEnvironment(
   }
 
   validateTrustedOrigins(env, issues);
+  validatePublicEnvironmentExposure(env, issues);
 
   if (geocodingProvider !== "opencage") {
     pushIssue(

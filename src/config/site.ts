@@ -22,6 +22,7 @@ const marketingNav = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
   { href: "/services", label: "Services" },
+  { href: "/pricing", label: "Pricing" },
   { href: "/insights", label: "Insights" },
   { href: "/shop", label: "Shop" },
   { href: "/joy-prakash-sarmah", label: "Astrologer" },
@@ -47,6 +48,7 @@ const foundationNav = [
 
 const offeringsNav = [
   { href: "/consultation", label: "Consultation" },
+  { href: "/pricing", label: "Pricing" },
   { href: "/shop", label: "Shop" },
 ] satisfies SiteNavItem[];
 
