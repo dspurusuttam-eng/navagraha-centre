@@ -38,23 +38,23 @@ export default function HomePage() {
       href: "/kundli-ai",
       label: "Explore NAVAGRAHA AI",
     },
-    tertiary: {
-      href: "/consultation?intent=consultation-ready",
-      label: "Book Consultation Instead",
-    },
   } as const;
   const trustStripItems = [
     {
-      title: "Real Sidereal Math",
-      description: "Lahiri-based chart calculations with deterministic engine outputs.",
+      title: "Vedic Precision",
+      description: "Lahiri sidereal calculations for accurate Kundli outputs.",
+    },
+    {
+      title: "AI Chart Insights",
+      description: "Assistant responses grounded in your verified chart context.",
     },
     {
       title: "Private by Design",
-      description: "Birth details and chart context remain protected in member flows.",
+      description: "Birth details and chart records stay in protected account flows.",
     },
     {
-      title: "Calm Guidance Tone",
-      description: "No fear-based language, no guaranteed outcomes, clear boundaries.",
+      title: "Reliable Guidance",
+      description: "Calm interpretation with clear boundaries and no fear-based framing.",
     },
   ] as const;
   const aiFlagshipTools = [
@@ -149,9 +149,10 @@ export default function HomePage() {
   return (
     <>
       <section className="relative overflow-hidden border-b border-[color:var(--color-border)]">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_8%,rgba(215,187,131,0.26),transparent_34%),radial-gradient(circle_at_88%_12%,rgba(215,187,131,0.12),transparent_28%),radial-gradient(circle_at_56%_100%,rgba(215,187,131,0.08),transparent_38%),linear-gradient(180deg,rgba(255,255,255,0.016)_0%,rgba(255,255,255,0)_100%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_10%_6%,rgba(215,187,131,0.24),transparent_34%),radial-gradient(circle_at_88%_10%,rgba(102,78,167,0.22),transparent_30%),radial-gradient(circle_at_58%_96%,rgba(33,50,97,0.22),transparent_42%),linear-gradient(180deg,rgba(255,255,255,0.02)_0%,rgba(255,255,255,0)_100%)]" />
         <div className="pointer-events-none absolute -left-10 top-8 h-44 w-44 rounded-full bg-[rgba(215,187,131,0.14)] blur-[72px] transition-opacity duration-700 sm:h-56 sm:w-56" />
-        <Container className="relative grid gap-8 py-[var(--space-12)] sm:py-[var(--space-14)] lg:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)] lg:items-start">
+        <div className="pointer-events-none absolute -right-10 top-10 h-40 w-40 rounded-full bg-[rgba(101,85,170,0.2)] blur-[74px] transition-opacity duration-700 sm:h-52 sm:w-52" />
+        <Container className="relative grid gap-8 py-[var(--space-10)] sm:py-[var(--space-12)] lg:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)] lg:items-start">
           <div className="home-reveal home-reveal-delay-1 space-y-6">
             <Badge tone="accent">NAVAGRAHA CENTRE</Badge>
             <div className="space-y-4">
@@ -162,12 +163,10 @@ export default function HomePage() {
                   lineHeight: "var(--line-height-tight)",
                 }}
               >
-                Premium cosmic clarity, beginning with your exact Kundli.
+                Unlock Your Destiny with AI-Powered Astrology
               </h1>
               <p className="max-w-[42rem] text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                Start with a precise birth chart foundation, then move into AI
-                guidance, consultation, and report layers through one calm,
-                trusted journey.
+                Accurate Kundli, Deep Insights, Personalized Guidance.
               </p>
             </div>
 
@@ -197,13 +196,6 @@ export default function HomePage() {
                 {ctaHierarchy.secondary.label}
               </TrackedLink>
             </div>
-
-            <Link
-              href={ctaHierarchy.tertiary.href}
-              className={`inline-flex text-[0.76rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)] ${inlineFocusLinkClass}`}
-            >
-              {ctaHierarchy.tertiary.label}
-            </Link>
           </div>
 
           <Card tone="accent" className="home-reveal home-reveal-delay-2 home-polish-surface flex flex-col gap-5 p-6 sm:p-7">
@@ -224,8 +216,8 @@ export default function HomePage() {
           </Card>
         </Container>
 
-        <Container className="relative pb-6 sm:pb-8">
-          <div className="home-reveal home-reveal-delay-3 grid gap-3 rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] p-3 sm:grid-cols-3">
+        <Container className="relative pb-8 sm:pb-10">
+          <div className="home-reveal home-reveal-delay-3 grid gap-3 rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] p-3 sm:grid-cols-2 lg:grid-cols-4">
             {trustStripItems.map((item) => (
               <div
                 key={item.title}
