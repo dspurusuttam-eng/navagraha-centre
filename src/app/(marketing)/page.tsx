@@ -148,16 +148,18 @@ export default function HomePage() {
 
   return (
     <>
-      <section className="relative overflow-hidden border-b border-[color:var(--color-border)]">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_10%_6%,rgba(215,187,131,0.24),transparent_34%),radial-gradient(circle_at_88%_10%,rgba(102,78,167,0.22),transparent_30%),radial-gradient(circle_at_58%_96%,rgba(33,50,97,0.22),transparent_42%),linear-gradient(180deg,rgba(255,255,255,0.02)_0%,rgba(255,255,255,0)_100%)]" />
-        <div className="pointer-events-none absolute -left-10 top-8 h-44 w-44 rounded-full bg-[rgba(215,187,131,0.14)] blur-[72px] transition-opacity duration-700 sm:h-56 sm:w-56" />
-        <div className="pointer-events-none absolute -right-10 top-10 h-40 w-40 rounded-full bg-[rgba(101,85,170,0.2)] blur-[74px] transition-opacity duration-700 sm:h-52 sm:w-52" />
-        <Container className="relative grid gap-8 py-[var(--space-10)] sm:py-[var(--space-12)] lg:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)] lg:items-start">
+      <section className="relative overflow-hidden border-b border-[rgba(19,22,38,0.12)] bg-[linear-gradient(180deg,#f9f7f2_0%,#f6f4ef_62%,#f2efe8_100%)]">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_14%,rgba(215,187,131,0.24),transparent_38%),radial-gradient(circle_at_88%_12%,rgba(103,84,170,0.16),transparent_34%),radial-gradient(circle_at_70%_94%,rgba(39,66,126,0.14),transparent_42%)]" />
+        <div className="pointer-events-none absolute -left-12 top-8 h-40 w-40 rounded-full bg-[rgba(215,187,131,0.2)] blur-[70px] sm:h-52 sm:w-52" />
+        <div className="pointer-events-none absolute -right-10 top-12 h-36 w-36 rounded-full bg-[rgba(103,84,170,0.18)] blur-[76px] sm:h-48 sm:w-48" />
+        <Container className="relative grid gap-7 py-10 sm:py-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)] lg:items-center">
           <div className="home-reveal home-reveal-delay-1 space-y-6">
-            <Badge tone="accent">NAVAGRAHA CENTRE</Badge>
+            <span className="inline-flex rounded-[var(--radius-pill)] border border-[rgba(79,58,134,0.2)] bg-[rgba(79,58,134,0.07)] px-3 py-1 text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[#4f3a86]">
+              NAVAGRAHA CENTRE
+            </span>
             <div className="space-y-4">
               <h1
-                className="max-w-4xl font-[family-name:var(--font-display)] text-[length:var(--font-size-display-lg)] text-[color:var(--color-foreground)] sm:text-[length:var(--font-size-display-xl)]"
+                className="max-w-4xl font-[family-name:var(--font-display)] text-[length:var(--font-size-display-lg)] text-[#181727] sm:text-[length:var(--font-size-display-xl)]"
                 style={{
                   letterSpacing: "var(--tracking-display)",
                   lineHeight: "var(--line-height-tight)",
@@ -165,12 +167,12 @@ export default function HomePage() {
               >
                 Unlock Your Destiny with AI-Powered Astrology
               </h1>
-              <p className="max-w-[42rem] text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              <p className="max-w-[42rem] text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[#4f4d60]">
                 Accurate Kundli, Deep Insights, Personalized Guidance.
               </p>
             </div>
 
-            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
               <TrackedLink
                 href={ctaHierarchy.primary.href}
                 eventName="cta_click"
@@ -178,7 +180,7 @@ export default function HomePage() {
                 className={buttonStyles({
                   tone: "accent",
                   size: "lg",
-                  className: stackedCtaClass,
+                  className: "w-full justify-center sm:w-auto",
                 })}
               >
                 {ctaHierarchy.primary.label}
@@ -190,7 +192,7 @@ export default function HomePage() {
                 className={buttonStyles({
                   tone: "secondary",
                   size: "lg",
-                  className: stackedCtaClass,
+                  className: "w-full justify-center sm:w-auto",
                 })}
               >
                 {ctaHierarchy.secondary.label}
@@ -198,35 +200,52 @@ export default function HomePage() {
             </div>
           </div>
 
-          <Card tone="accent" className="home-reveal home-reveal-delay-2 home-polish-surface flex flex-col gap-5 p-6 sm:p-7">
-            <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-              Conversion Path Foundation
-            </p>
-            <ul className="space-y-4">
-              <li className="border-b border-[color:var(--color-border)] pb-4 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                1. Generate the chart baseline with birth context validation.
-              </li>
-              <li className="border-b border-[color:var(--color-border)] pb-4 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                2. Explore NAVAGRAHA AI with chart-grounded assistant responses.
-              </li>
-              <li className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                3. Continue into consultation and premium reports when needed.
-              </li>
-            </ul>
-          </Card>
+          <div className="home-reveal home-reveal-delay-2">
+            <div className="home-polish-surface relative overflow-hidden rounded-[var(--radius-xl)] border border-[rgba(21,26,46,0.16)] bg-[linear-gradient(160deg,rgba(255,255,255,0.95)_0%,rgba(244,240,234,0.92)_62%,rgba(236,230,246,0.9)_100%)] p-6 shadow-[0_22px_55px_rgba(31,33,56,0.12)] sm:p-7">
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_10%,rgba(103,84,170,0.22),transparent_40%),radial-gradient(circle_at_15%_88%,rgba(215,187,131,0.25),transparent_38%)]" />
+              <div className="relative space-y-5">
+                <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[#4f3a86]">
+                  Premium Chart + AI Layer
+                </p>
+                <h2
+                  className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-md)] text-[#191827]"
+                  style={{
+                    letterSpacing: "var(--tracking-display)",
+                    lineHeight: "var(--line-height-tight)",
+                  }}
+                >
+                  Vedic chart precision with structured AI guidance.
+                </h2>
+                <ul className="space-y-3">
+                  <li className="flex items-start gap-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[#4f4d60]">
+                    <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[#6a4faa]" />
+                    Accurate birth context, timezone, and sidereal chart generation.
+                  </li>
+                  <li className="flex items-start gap-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[#4f4d60]">
+                    <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[#6a4faa]" />
+                    Chart-aware AI responses grounded in your personal placements.
+                  </li>
+                  <li className="flex items-start gap-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[#4f4d60]">
+                    <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[#6a4faa]" />
+                    Clear continuation to consultation when deeper interpretation is needed.
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </Container>
 
         <Container className="relative pb-8 sm:pb-10">
-          <div className="home-reveal home-reveal-delay-3 grid gap-3 rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] p-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="home-reveal home-reveal-delay-3 grid gap-3 rounded-[var(--radius-xl)] border border-[rgba(20,22,38,0.12)] bg-[rgba(255,255,255,0.66)] p-3 sm:grid-cols-2 lg:grid-cols-4">
             {trustStripItems.map((item) => (
               <div
                 key={item.title}
-                className="rounded-[var(--radius-lg)] border border-[color:var(--color-border)] bg-[rgba(14,12,10,0.65)] px-4 py-3 transition [transition-duration:var(--motion-duration-base)] hover:border-[color:var(--color-border-strong)] hover:bg-[rgba(22,19,16,0.78)]"
+                className="rounded-[var(--radius-lg)] border border-[rgba(20,22,38,0.12)] bg-[rgba(255,255,255,0.86)] px-4 py-3 transition [transition-duration:var(--motion-duration-base)] hover:border-[rgba(20,22,38,0.2)] hover:bg-[rgba(255,255,255,0.94)]"
               >
-                <p className="text-[0.7rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                <p className="text-[0.7rem] uppercase tracking-[var(--tracking-label)] text-[#4f3a86]">
                   {item.title}
                 </p>
-                <p className="mt-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                <p className="mt-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[#58566a]">
                   {item.description}
                 </p>
               </div>
