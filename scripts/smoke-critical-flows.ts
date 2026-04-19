@@ -27,7 +27,7 @@ function getBaseUrl() {
   return normalizeBaseUrl(
     process.env.SMOKE_BASE_URL?.trim() ||
       process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
-      "http://127.0.0.1:3000"
+      "http://localhost:3000"
   );
 }
 

@@ -10,7 +10,37 @@ export const metadata = buildPageMetadata({
   keywords: ["NAVAGRAHA CENTRE create account", "astrology member signup"],
 });
 
-export default function SignUpPage() {
+type SearchParams = Promise<{
+  next?: string | string[];
+  intent?: string | string[];
+}>;
+
+function readSingleValue(value?: string | string[]) {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+function sanitizeNextPath(value?: string | string[]) {
+  const nextPath = readSingleValue(value);
+
+  if (!nextPath || !nextPath.startsWith("/") || nextPath.startsWith("//")) {
+    return "/dashboard";
+  }
+
+  return nextPath;
+}
+
+export default async function SignUpPage({
+  searchParams,
+}: {
+  searchParams?: SearchParams;
+}) {
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const callbackUrl = sanitizeNextPath(resolvedSearchParams?.next);
+  const intent = readSingleValue(resolvedSearchParams?.intent) ?? null;
+  const signInHref = intent
+    ? `/sign-in?intent=${encodeURIComponent(intent)}&next=${encodeURIComponent(callbackUrl)}`
+    : `/sign-in?next=${encodeURIComponent(callbackUrl)}`;
+
   return (
     <AuthFormShell
       eyebrow="Member Foundation"
@@ -21,10 +51,14 @@ export default function SignUpPage() {
         "A seed-ready user profile prepared for later astrology and commerce modules.",
         "A private dashboard shell designed for future premium member journeys.",
       ]}
-      alternateHref="/sign-in"
+      alternateHref={signInHref}
       alternateLabel="Sign in instead"
     >
-      <SignUpForm />
+      <SignUpForm
+        callbackUrl={callbackUrl}
+        intent={intent}
+        signInHref={signInHref}
+      />
     </AuthFormShell>
   );
 }

@@ -3,6 +3,9 @@ import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
+  getMonetizationUpgradeCopy,
+  getPlanComparisonRows,
+  getPostUpgradeNextAction,
   getSubscriptionLifecycleLabel,
   type SubscriptionRetentionIntelligenceSnapshot,
 } from "@/modules/subscriptions";
@@ -31,10 +34,23 @@ export function SubscriptionValuePanel({
 }: Readonly<SubscriptionValuePanelProps>) {
   const lifecycleLabel = getSubscriptionLifecycleLabel(snapshot);
   const planTitle = snapshot.access.plan?.title ?? "Free Access";
+  const activePlanType = userPlan?.plan_type ?? "FREE";
   const nextBillingLabel =
     snapshot.access.subscription?.nextBillingDateUtc ??
     snapshot.latestSubscription?.nextBillingDateUtc ??
     null;
+  const planRow =
+    getPlanComparisonRows().find((row) => row.planType === activePlanType) ??
+    getPlanComparisonRows()[0];
+  const contextualUpgradeCopy = getMonetizationUpgradeCopy({
+    prompt: "return-usage",
+    surface: "protected",
+    planType: activePlanType,
+  });
+  const postUpgradeAction =
+    activePlanType === "PREMIUM" || activePlanType === "PRO"
+      ? getPostUpgradeNextAction(activePlanType)
+      : null;
 
   return (
     <Card className={className ? `${className} space-y-5` : "space-y-5"}>
@@ -77,6 +93,36 @@ export function SubscriptionValuePanel({
             choose premium only when you need deeper continuity.
           </p>
         )}
+
+        <div className="space-y-2">
+          <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+            Plan Value
+          </p>
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            {planRow.shortDescription}
+          </p>
+        </div>
+
+        <div className="space-y-2 rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4">
+          <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+            Included Depth
+          </p>
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            {planRow.aiQuestions}
+          </p>
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            {planRow.reports}
+          </p>
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            {planRow.assistantDepth}
+          </p>
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            {planRow.advancedInsights}
+          </p>
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            {planRow.continuity}
+          </p>
+        </div>
 
         <div className="space-y-2">
           {snapshot.benefitsSummary.slice(0, 3).map((line) => (
@@ -123,6 +169,34 @@ export function SubscriptionValuePanel({
         </p>
       </div>
 
+      {postUpgradeAction ? (
+        <div className="space-y-4 rounded-[var(--radius-xl)] border border-[rgba(215,187,131,0.18)] bg-[rgba(215,187,131,0.06)] px-4 py-4">
+          <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+            Premium Confirmation
+          </p>
+          <p className="text-[length:var(--font-size-body-md)] text-[color:var(--color-foreground)]">
+            {postUpgradeAction.title}
+          </p>
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            {postUpgradeAction.message}
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href={postUpgradeAction.href}
+              className={buttonStyles({ size: "sm", tone: "secondary" })}
+            >
+              {postUpgradeAction.ctaLabel}
+            </Link>
+            <Link
+              href={postUpgradeAction.secondaryHref}
+              className={buttonStyles({ size: "sm", tone: "ghost" })}
+            >
+              {postUpgradeAction.secondaryCtaLabel}
+            </Link>
+          </div>
+        </div>
+      ) : null}
+
       {snapshot.recommendation ? (
         <div className="space-y-4 rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4">
           <div className="flex flex-wrap items-center gap-3">
@@ -136,7 +210,7 @@ export function SubscriptionValuePanel({
             {snapshot.recommendation.summary}
           </p>
           <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-            This recommendation is contextual and optional, with no urgency.
+            {contextualUpgradeCopy.message}
           </p>
           <Link
             href={snapshot.recommendation.href}

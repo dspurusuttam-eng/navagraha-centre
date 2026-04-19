@@ -1,60 +1,149 @@
-# NAVAGRAHA CENTRE Launch Checklist
+# NAVAGRAHA CENTRE Launch Checklist (Phase 16.0A)
 
-## Environment
+This checklist is the final execution runbook for production launch readiness.
 
-- Run `npm run env:check`
-- Run `npm run env:audit`
-- Confirm production values exist for `DATABASE_URL`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `NEXT_PUBLIC_SITE_URL`, and `NEXT_PUBLIC_SITE_NAME`
-- If using live AI, confirm `AI_PROVIDER=openai-responses`, `OPENAI_API_KEY`, and `OPENAI_MODEL`
-- If using live auth behind multiple origins, set `BETTER_AUTH_TRUSTED_ORIGINS`
-- Freeze the env contract before launch (no undocumented keys, no placeholder secrets)
+## 1) Production Environment Contract (names only)
 
-## Database
+### Core Required
+- `DATABASE_URL`
+- `BETTER_AUTH_SECRET`
+- `BETTER_AUTH_URL`
+- `BETTER_AUTH_TRUSTED_ORIGINS`
+- `NEXT_PUBLIC_SITE_URL`
+- `NEXT_PUBLIC_SITE_NAME`
 
-- Take a production backup before migrations (`pg_dump`)
-- Run `npm run db:generate`
-- Apply schema with `npm run db:migrate -- --name launch-readiness` or `npm run db:push`
-- Seed launch data with `npm run db:seed:launch`
-- Verify admin roles, remedies, products, consultation packages, slots, and AI prompt templates exist
-- Follow [database-backup-restore.md](./database-backup-restore.md) for restore drill and incident recovery steps
+### Geocoding / Birth Context
+- `GEOCODING_PROVIDER`
+- `GEOCODING_API_KEY`
+- `OPENCAGE_API_KEY` (legacy fallback only)
 
-## Quality Gates
+### Password Reset Email
+- `RESEND_API_KEY`
+- `AUTH_RESET_FROM_EMAIL`
 
-- Run `npm run check:images`
-- Run `npm run test:smoke`
-- Run `npm run test:smoke:critical` (with `SMOKE_BASE_URL` set or local server running)
-- Run `npm run lint`
-- Run `npm run typecheck`
-- Run `npm run build`
+### Commerce / Payments
+- `SHOP_CHECKOUT_PROVIDER`
+- `SHOP_DRAFT_WEBHOOK_SECRET`
+- `SHOP_WEBHOOK_SECRET` (optional fallback)
+- `RAZORPAY_KEY_ID` (required only if `SHOP_CHECKOUT_PROVIDER=razorpay`)
+- `RAZORPAY_KEY_SECRET` (required only if `SHOP_CHECKOUT_PROVIDER=razorpay`)
+- `RAZORPAY_WEBHOOK_SECRET` (required only if `SHOP_CHECKOUT_PROVIDER=razorpay`)
 
-## Security And Platform
+### AI / Assistant
+- `AI_PROVIDER`
+- `AI_USAGE_LOGGING`
+- `OPENAI_API_KEY` (required only if `AI_PROVIDER=openai-responses`)
+- `OPENAI_MODEL` (required only if `AI_PROVIDER=openai-responses`)
 
-- Confirm production HTTPS termination is active before relying on HSTS
-- Verify response headers include `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, and `Permissions-Policy`
-- Confirm auth, onboarding, booking, profile update, checkout, and observability endpoints are rate limited
-- Verify `/api/health` returns `200` in the configured production environment
-- Configure uptime monitor to poll `/api/health` every minute
-- Configure ops alert webhook via `OPS_ALERTS_ENABLED=true` + `OPS_ALERT_WEBHOOK_URL`
-- Verify `npm run ops:health-monitor` succeeds in deployment environment
+### Observability / Smoke
+- `NEXT_PUBLIC_ANALYTICS_ENABLED`
+- `NEXT_PUBLIC_OBSERVABILITY_ENDPOINT`
+- `OPS_ALERTS_ENABLED`
+- `OPS_ALERT_WEBHOOK_URL`
+- `OPS_ALERT_ON_WARNINGS`
+- `OPS_HEALTHCHECK_URL`
+- `OPS_HEALTHCHECK_TIMEOUT_MS`
+- `SMOKE_BASE_URL`
 
-## Product Readiness
+## 2) Pre-Deploy Verification
 
-- Confirm public metadata, sitemap, and robots outputs match the intended launch domain
-- Review consultation slots and packages for Joy Prakash Sarmah
-- Review approved remedy records and product relationships
-- Confirm the active AI prompt version is correct
-- Confirm admin users and role assignments are correct
+1. Run env checks locally:
+   - `npm run env:check`
+   - `npm run env:audit`
+2. For production strict audit:
+   - `ENV_AUDIT_MODE=production npm run env:audit`
+3. Run quality gates:
+   - `npm run check:images`
+   - `npm run test:smoke`
+   - `npm run test:smoke:critical`
+   - `npm run test:smoke:launch`
+   - `npm run lint`
+   - `npm run typecheck`
+   - `npm run build`
 
-## Post-Deploy Checks
+## 3) Deploy Order
 
-- Visit `/`
-- Visit `/services`
-- Visit `/insights`
-- Visit `/shop`
-- Sign in and load `/dashboard`
-- Complete onboarding and confirm `/dashboard/chart`
-- Open `/dashboard/report`
-- Open `/dashboard/consultations`
-- Open `/admin`
-- Check `/api/health`
-- Run `npm run test:smoke:critical` against production (`SMOKE_BASE_URL=https://www.navagrahacentre.com`)
+1. Confirm all production env variables in Vercel.
+2. Take DB backup (`pg_dump`) before schema changes.
+3. Push release commit to `main`.
+4. Wait for Vercel production deployment to become `Ready`.
+5. Apply DB migrations:
+   - `npm run db:migrate:deploy`
+6. Seed launch data if needed:
+   - `npm run db:seed:launch`
+7. Verify production health:
+   - `GET /api/health` must return `200`.
+
+## 4) Post-Deploy Smoke Tests
+
+Use `SMOKE_BASE_URL=https://www.navagrahacentre.com`.
+
+### Public + Auth Surfaces
+- `/`
+- `/kundli-ai`
+- `/pricing`
+- `/sign-up`
+- `/sign-in`
+- `/forgot-password`
+
+### Protected / Fallback Safety
+- `/dashboard` (redirect to sign-in if anonymous)
+- `/dashboard/ask-my-chart`
+- `/dashboard/chart`
+- `/dashboard/report`
+
+### API Safety (no raw crashes)
+- `/api/astrology/chart` anonymous -> structured `401`
+- `/api/ai/ask-chart/sessions` anonymous -> structured `401`
+- `/api/subscriptions/checkout` anonymous -> structured `401`
+- `/api/report/premium/generate` anonymous -> structured `401`
+- `/api/shop/webhooks/payment` invalid signature -> `401 invalid-signature`
+
+## 5) Payment Verification
+
+1. Create checkout via `/api/shop/checkout/init`.
+2. Send signed webhook (`payment.paid`) to `/api/shop/webhooks/payment`.
+3. Confirm order/payment state transition in:
+   - `/dashboard/orders`
+   - `/dashboard/orders/[orderNumber]`
+   - `/admin/orders`
+4. Send invalid signature webhook and confirm safe `401`.
+5. Send duplicate webhook and confirm replay-safe behavior (no double finalize).
+
+Reference: [COMMERCE_SETUP.md](./COMMERCE_SETUP.md)
+
+## 6) Email Verification
+
+1. Open `/forgot-password`.
+2. Request reset for known account.
+3. Confirm:
+   - API responds safely (no stack traces),
+   - reset email is delivered from configured sender,
+   - reset link opens `/reset-password` and can update password.
+4. Confirm behavior for unknown email remains non-enumerating.
+
+## 7) Fallback/Degrade Safety Verification
+
+Validate graceful behavior in each dependency failure path:
+- Geocoding unavailable -> onboarding allows manual timezone/coordinates path.
+- Email provider unavailable -> forgot-password failure is safe and non-technical.
+- Assistant provider unavailable -> assistant route returns safe retry guidance.
+- Payment callback mismatch -> webhook path returns safe handled outcome.
+
+## 8) Rollback Notes
+
+1. Promote previous healthy Vercel deployment.
+2. If payment webhooks misbehave, rotate webhook secret and redeploy.
+3. If auth origin issues appear, restore previous `BETTER_AUTH_URL` / `BETTER_AUTH_TRUSTED_ORIGINS` values.
+4. If DB migration causes breakage, restore from backup using:
+   - [database-backup-restore.md](./database-backup-restore.md)
+
+## 9) Known External Dependencies
+
+- Vercel (hosting/runtime/deploy)
+- Neon/PostgreSQL (database)
+- Better Auth (auth runtime)
+- OpenCage (geocoding)
+- Resend (password reset email delivery)
+- OpenAI (only when live AI provider is enabled)
+- Payment provider boundary (`draft-order` default; Razorpay optional)

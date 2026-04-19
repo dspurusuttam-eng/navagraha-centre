@@ -268,7 +268,16 @@ export function ChartReportPage({
   const reportUpgradeCopy = getMonetizationUpgradeCopy({
     prompt: "report-preview",
     surface: "protected",
+    planType: subscriptionState.access.plan?.id === "PRO" ? "PRO" : "FREE",
   });
+  const reportProCopy =
+    subscriptionState.recommendation?.planId === "PRO"
+      ? getMonetizationUpgradeCopy({
+          prompt: "report-pro",
+          surface: "protected",
+          planType: "PREMIUM",
+        })
+      : null;
 
   if (chartReport.status === "empty") {
     return (
@@ -760,6 +769,49 @@ export function ChartReportPage({
         )}
 
         <PremiumReportGenerator />
+
+        {reportProCopy ? (
+          <>
+            <AnalyticsEventTracker
+              event="upgrade_prompt_view"
+              payload={{
+                page: "/dashboard/report",
+                surface: "protected",
+                feature: "report-pro-continuity",
+                plan: "PREMIUM",
+              }}
+            />
+            <Card className="space-y-5">
+              <div className="space-y-2">
+                <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                  Pro Continuity
+                </p>
+                <h2
+                  className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
+                  style={{ letterSpacing: "var(--tracking-display)" }}
+                >
+                  {reportProCopy.title}
+                </h2>
+              </div>
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                {reportProCopy.message}
+              </p>
+              <TrackedLink
+                href={reportProCopy.upgradeHref}
+                className={buttonStyles({ size: "sm", tone: "secondary" })}
+                eventName="upgrade_started"
+                eventPayload={{
+                  page: "/dashboard/report",
+                  surface: "protected",
+                  feature: "report-pro-continuity",
+                  plan: "PREMIUM",
+                }}
+              >
+                {reportProCopy.ctaLabel}
+              </TrackedLink>
+            </Card>
+          </>
+        ) : null}
       </div>
 
       <div className="mt-6 grid gap-6">

@@ -180,9 +180,11 @@ export function validateLaunchEnvironment(
 ): LaunchEnvironmentValidation {
   const issues: EnvironmentValidationIssue[] = [];
   const publicEnvironment = getPublicEnvironment(env);
+  const productionRuntime = isVercelProduction(env);
   const databaseUrl = getStringValue(env, "DATABASE_URL");
   const authSecret = getStringValue(env, "BETTER_AUTH_SECRET");
   const authUrl = getResolvedAuthUrl(env, publicEnvironment);
+  const trustedOrigins = getStringValue(env, "BETTER_AUTH_TRUSTED_ORIGINS");
   const aiProvider = getStringValue(env, "AI_PROVIDER") || "mock-curated";
   const astrologyProvider =
     getStringValue(env, "ASTROLOGY_PROVIDER") || "mock-deterministic";
@@ -201,11 +203,18 @@ export function validateLaunchEnvironment(
   const shopCheckoutProvider =
     getStringValue(env, "SHOP_CHECKOUT_PROVIDER").toLowerCase() ||
     "draft-order";
+  const shopDraftWebhookSecret = getStringValue(
+    env,
+    "SHOP_DRAFT_WEBHOOK_SECRET"
+  );
+  const shopWebhookSecret = getStringValue(env, "SHOP_WEBHOOK_SECRET");
   const razorpayKeyId = getStringValue(env, "RAZORPAY_KEY_ID");
   const razorpayKeySecret = getStringValue(env, "RAZORPAY_KEY_SECRET");
   const razorpayWebhookSecret =
     getStringValue(env, "RAZORPAY_WEBHOOK_SECRET") ||
-    getStringValue(env, "SHOP_WEBHOOK_SECRET");
+    shopWebhookSecret;
+  const resendApiKey = getStringValue(env, "RESEND_API_KEY");
+  const authResetFromEmail = getStringValue(env, "AUTH_RESET_FROM_EMAIL");
 
   if (!databaseUrl) {
     pushIssue(
@@ -231,6 +240,15 @@ export function validateLaunchEnvironment(
       "BETTER_AUTH_URL",
       "error",
       "Authentication base URL must be a valid absolute URL."
+    );
+  }
+
+  if (productionRuntime && !trustedOrigins) {
+    pushIssue(
+      issues,
+      "BETTER_AUTH_TRUSTED_ORIGINS",
+      "error",
+      "Trusted origins are required in production to avoid auth-origin failures."
     );
   }
 
@@ -272,8 +290,10 @@ export function validateLaunchEnvironment(
     pushIssue(
       issues,
       "GEOCODING_API_KEY",
-      "warning",
-      "Birthplace geocoding/timezone resolution will be unavailable without GEOCODING_API_KEY."
+      productionRuntime ? "error" : "warning",
+      productionRuntime
+        ? "GEOCODING_API_KEY is required in production for birth place resolution."
+        : "Birthplace geocoding/timezone resolution will be unavailable without GEOCODING_API_KEY."
     );
   }
 
@@ -337,12 +357,36 @@ export function validateLaunchEnvironment(
     }
   }
 
+  if (
+    shopCheckoutProvider !== "draft-order" &&
+    shopCheckoutProvider !== "razorpay" &&
+    shopCheckoutProvider !== "stripe"
+  ) {
+    pushIssue(
+      issues,
+      "SHOP_CHECKOUT_PROVIDER",
+      "error",
+      `Unsupported SHOP_CHECKOUT_PROVIDER value "${shopCheckoutProvider}".`
+    );
+  }
+
+  if (shopCheckoutProvider === "draft-order" && !shopDraftWebhookSecret) {
+    pushIssue(
+      issues,
+      "SHOP_DRAFT_WEBHOOK_SECRET",
+      productionRuntime ? "error" : "warning",
+      productionRuntime
+        ? "SHOP_DRAFT_WEBHOOK_SECRET is required in production for webhook verification."
+        : "Draft webhook verification is not configured."
+    );
+  }
+
   if (shopCheckoutProvider === "razorpay") {
     if (!razorpayKeyId || !razorpayKeySecret) {
       pushIssue(
         issues,
         "RAZORPAY_KEY_ID",
-        "warning",
+        productionRuntime ? "error" : "warning",
         "Razorpay checkout is selected but RAZORPAY_KEY_ID/RAZORPAY_KEY_SECRET are not fully configured."
       );
     }
@@ -351,10 +395,19 @@ export function validateLaunchEnvironment(
       pushIssue(
         issues,
         "RAZORPAY_WEBHOOK_SECRET",
-        "warning",
+        productionRuntime ? "error" : "warning",
         "Razorpay webhook verification is not fully configured."
       );
     }
+  }
+
+  if (productionRuntime && (!resendApiKey || !authResetFromEmail)) {
+    pushIssue(
+      issues,
+      "RESEND_API_KEY",
+      "error",
+      "Password reset email delivery is not fully configured (RESEND_API_KEY and AUTH_RESET_FROM_EMAIL are required)."
+    );
   }
 
   return {

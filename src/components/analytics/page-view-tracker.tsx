@@ -10,10 +10,13 @@ type PageViewTrackerProps = {
 
 export function PageViewTracker({ page, feature }: Readonly<PageViewTrackerProps>) {
   useEffect(() => {
-    trackEvent("page_view", {
+    const payload = {
       page,
       feature: feature ?? "page",
-    });
+    };
+
+    trackEvent("page_view", payload);
+    trackEvent("page_visit", payload);
   }, [feature, page]);
 
   return null;

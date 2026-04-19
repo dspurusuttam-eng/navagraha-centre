@@ -7,7 +7,15 @@ import { signIn } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-export function SignInForm() {
+type SignInFormProps = {
+  callbackUrl?: string;
+  signUpHref?: string;
+};
+
+export function SignInForm({
+  callbackUrl = "/dashboard",
+  signUpHref = "/sign-up",
+}: Readonly<SignInFormProps>) {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
@@ -23,7 +31,7 @@ export function SignInForm() {
       const result = await signIn.email({
         email: formData.get("email")?.toString() ?? "",
         password: formData.get("password")?.toString() ?? "",
-        callbackURL: "/dashboard",
+        callbackURL: callbackUrl,
       });
 
       if (result.error) {
@@ -31,7 +39,7 @@ export function SignInForm() {
         return;
       }
 
-      router.push("/dashboard");
+      router.push(callbackUrl);
       router.refresh();
     } catch (error) {
       setErrorMessage(
@@ -117,7 +125,7 @@ export function SignInForm() {
       <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
         New here?{" "}
         <Link
-          href="/sign-up"
+          href={signUpHref}
           className="text-[color:var(--color-accent)] transition hover:text-[color:var(--color-foreground)]"
         >
           Create your account

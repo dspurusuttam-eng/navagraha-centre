@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { startTransition, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { Button, buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { trackEvent } from "@/lib/analytics/track-event";
@@ -93,13 +93,36 @@ export function AskMyChartAssistant({
   const assistantNudgeCopy = getMonetizationUpgradeCopy({
     prompt: "assistant-nudge",
     surface: "protected",
+    planType: usageState?.planType,
     aiQuestionsUsedToday: usageState?.aiQuestionsUsedToday,
     aiQuestionsLimitPerDay: usageState?.aiQuestionsLimitPerDay ?? null,
   });
   const assistantLimitCopy = getMonetizationUpgradeCopy({
     prompt: "assistant-limit",
     surface: "protected",
+    planType: usageState?.planType,
   });
+  const assistantNearLimitCopy = getMonetizationUpgradeCopy({
+    prompt: "assistant-near-limit",
+    surface: "protected",
+    planType: usageState?.planType,
+    aiQuestionsUsedToday: usageState?.aiQuestionsUsedToday,
+    aiQuestionsLimitPerDay: usageState?.aiQuestionsLimitPerDay ?? null,
+  });
+  const showNearLimitPrompt = Boolean(
+    usageState &&
+      !paywall &&
+      usageState.planType === "FREE" &&
+      typeof usageState.aiQuestionsRemainingToday === "number" &&
+      usageState.aiQuestionsRemainingToday <= 1 &&
+      usageState.aiQuestionsRemainingToday >= 0
+  );
+  const showProContinuityPrompt = Boolean(
+    usageState &&
+      !paywall &&
+      usageState.planType === "PREMIUM" &&
+      usageState.aiQuestionsUsedToday >= 30
+  );
 
   useEffect(() => {
     if (!paywall) {
@@ -124,6 +147,30 @@ export function AskMyChartAssistant({
       plan: usageState.planType,
     });
   }, [premiumNudge, usageState]);
+
+  useEffect(() => {
+    if (!showNearLimitPrompt || !usageState) {
+      return;
+    }
+
+    trackEvent("upgrade_prompt_view", {
+      page: "/dashboard/ask-my-chart",
+      feature: "assistant-near-limit",
+      plan: usageState.planType,
+    });
+  }, [showNearLimitPrompt, usageState]);
+
+  useEffect(() => {
+    if (!showProContinuityPrompt || !usageState) {
+      return;
+    }
+
+    trackEvent("upgrade_prompt_view", {
+      page: "/dashboard/ask-my-chart",
+      feature: "assistant-pro-continuity",
+      plan: usageState.planType,
+    });
+  }, [showProContinuityPrompt, usageState]);
 
   async function createSession() {
     const response = await fetch("/api/ai/ask-chart/sessions", {
@@ -222,6 +269,13 @@ export function AskMyChartAssistant({
         plan: payload.planType,
         result: "ready",
       });
+      if (payload.planType !== "FREE") {
+        trackEvent("premium_feature_unlock", {
+          page: "/dashboard/ask-my-chart",
+          feature: "assistant-response-depth",
+          plan: payload.planType,
+        });
+      }
 
       setActiveConversation(payload.conversation);
       setSessions(payload.sessions);
@@ -344,31 +398,41 @@ export function AskMyChartAssistant({
             <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
               Plan Access
             </p>
-            <p className="hidden">
-              Free includes basic assistant usage. Premium plans from ₹99/month
-              unlock deeper multi-house analysis and extended report depth.
-            </p>
             <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              Free includes basic assistant usage. Premium plans from INR 99/month
-              unlock deeper multi-house analysis and extended report depth.
+              Free keeps the assistant useful for focused chart questions. Premium adds deeper reasoning and report continuity, while Pro is a cleaner fit when premium usage becomes a daily rhythm.
             </p>
-            <Link
-              href="/settings"
-              className="mt-3 inline-flex rounded-full border border-[color:var(--color-border)] px-4 py-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-foreground)] transition [transition-duration:var(--motion-duration-base)] hover:border-[color:var(--color-border-strong)]"
-              onClick={() => {
-                trackEvent("premium_click", {
-                  page: "/dashboard/ask-my-chart",
-                  feature: "assistant-plan-access",
-                });
-                trackEvent("upgrade_started", {
-                  page: "/dashboard/ask-my-chart",
-                  surface: "protected",
-                  feature: "assistant-plan-access",
-                });
-              }}
-            >
-              View Plans
-            </Link>
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="#ask-my-chart-question"
+                className={buttonStyles({
+                  size: "sm",
+                  className: "w-full justify-center sm:w-auto",
+                })}
+              >
+                Ask Your Question
+              </Link>
+              <Link
+                href="/settings"
+                className={buttonStyles({
+                  size: "sm",
+                  tone: "secondary",
+                  className: "w-full justify-center sm:w-auto",
+                })}
+                onClick={() => {
+                  trackEvent("premium_click", {
+                    page: "/dashboard/ask-my-chart",
+                    feature: "assistant-plan-access",
+                  });
+                  trackEvent("upgrade_started", {
+                    page: "/dashboard/ask-my-chart",
+                    surface: "protected",
+                    feature: "assistant-plan-access",
+                  });
+                }}
+              >
+                View Plans
+              </Link>
+            </div>
           </div>
         </Card>
 
@@ -409,6 +473,70 @@ export function AskMyChartAssistant({
                   }}
                 >
                   {assistantLimitCopy.ctaLabel}
+                </Link>
+              </div>
+            </div>
+          </Card>
+        ) : null}
+
+        {showNearLimitPrompt ? (
+          <Card className="border-[rgba(215,187,131,0.28)] bg-[rgba(215,187,131,0.08)]">
+            <div className="space-y-3">
+              <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                {assistantNearLimitCopy.title}
+              </p>
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                {assistantNearLimitCopy.message}
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <Link
+                  href={assistantNearLimitCopy.upgradeHref}
+                  className="inline-flex rounded-full border border-[color:var(--color-border)] px-4 py-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-foreground)] transition [transition-duration:var(--motion-duration-base)] hover:border-[color:var(--color-border-strong)]"
+                  onClick={() => {
+                    trackEvent("premium_click", {
+                      page: "/dashboard/ask-my-chart",
+                      feature: "assistant-near-limit",
+                    });
+                    trackEvent("upgrade_started", {
+                      page: "/dashboard/ask-my-chart",
+                      feature: "assistant-near-limit",
+                      plan: usageState?.planType,
+                    });
+                  }}
+                >
+                  {assistantNearLimitCopy.ctaLabel}
+                </Link>
+              </div>
+            </div>
+          </Card>
+        ) : null}
+
+        {showProContinuityPrompt ? (
+          <Card className="border-[rgba(215,187,131,0.28)] bg-[rgba(215,187,131,0.08)]">
+            <div className="space-y-3">
+              <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                {assistantNudgeCopy.title}
+              </p>
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                {assistantNudgeCopy.message}
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <Link
+                  href={assistantNudgeCopy.upgradeHref}
+                  className="inline-flex rounded-full border border-[color:var(--color-border)] px-4 py-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-foreground)] transition [transition-duration:var(--motion-duration-base)] hover:border-[color:var(--color-border-strong)]"
+                  onClick={() => {
+                    trackEvent("premium_click", {
+                      page: "/dashboard/ask-my-chart",
+                      feature: "assistant-pro-continuity",
+                    });
+                    trackEvent("upgrade_started", {
+                      page: "/dashboard/ask-my-chart",
+                      feature: "assistant-pro-continuity",
+                      plan: usageState?.planType,
+                    });
+                  }}
+                >
+                  {assistantNudgeCopy.ctaLabel}
                 </Link>
               </div>
             </div>
@@ -524,6 +652,11 @@ export function AskMyChartAssistant({
                       page: "/dashboard/ask-my-chart",
                       feature: `assistant-nudge-${premiumNudge.reason.toLowerCase()}`,
                     });
+                    trackEvent("upgrade_started", {
+                      page: "/dashboard/ask-my-chart",
+                      feature: `assistant-nudge-${premiumNudge.reason.toLowerCase()}`,
+                      plan: usageState?.planType,
+                    });
                   }}
                 >
                   {premiumNudge.ctaLabel}
@@ -533,7 +666,7 @@ export function AskMyChartAssistant({
           ) : null}
         </Card>
 
-        <Card className="space-y-4">
+        <Card id="ask-my-chart-question" className="space-y-4 scroll-mt-24">
           <label className="block space-y-3">
             <span className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
               Your question

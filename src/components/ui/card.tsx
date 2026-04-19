@@ -5,10 +5,11 @@ export type CardTone = "default" | "muted" | "accent";
 
 const toneStyles: Record<CardTone, string> = {
   default:
-    "border-[color:var(--color-border)] bg-[linear-gradient(180deg,rgba(26,23,20,0.94)_0%,rgba(16,14,12,0.94)_100%)]",
-  muted: "border-[color:var(--color-border)] bg-[rgba(255,255,255,0.025)]",
+    "border-[color:var(--color-border)] bg-[linear-gradient(180deg,rgba(27,24,20,0.96)_0%,rgba(14,12,10,0.96)_100%)] backdrop-blur-sm",
+  muted:
+    "border-[color:var(--color-border)] bg-[linear-gradient(180deg,rgba(24,21,18,0.86)_0%,rgba(13,11,10,0.88)_100%)] backdrop-blur-sm",
   accent:
-    "border-[rgba(215,187,131,0.28)] bg-[linear-gradient(180deg,rgba(46,35,21,0.86)_0%,rgba(19,15,11,0.95)_100%)]",
+    "border-[rgba(215,187,131,0.32)] bg-[linear-gradient(180deg,rgba(52,40,24,0.9)_0%,rgba(20,16,12,0.96)_100%)] backdrop-blur-sm",
 };
 
 export type CardProps = HTMLAttributes<HTMLDivElement> & {

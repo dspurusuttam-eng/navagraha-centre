@@ -217,6 +217,7 @@ export function ChartContractPanel({
   const chartDepthUpgrade = getMonetizationUpgradeCopy({
     prompt: "chart-depth",
     surface: "protected",
+    planType,
   });
   const visiblePlanets =
     state.status === "ready"
@@ -237,6 +238,18 @@ export function ChartContractPanel({
     trackEvent("upgrade_prompt_view", {
       page: "/dashboard/chart",
       feature: "chart-depth-lock",
+      plan: planType,
+    });
+  }, [hasPremiumAccess, planType, state.status]);
+
+  useEffect(() => {
+    if (state.status !== "ready" || !hasPremiumAccess) {
+      return;
+    }
+
+    trackEvent("premium_feature_unlock", {
+      page: "/dashboard/chart",
+      feature: "chart-full-depth",
       plan: planType,
     });
   }, [hasPremiumAccess, planType, state.status]);
@@ -332,6 +345,54 @@ export function ChartContractPanel({
             </p>
           </Card>
 
+          <Card className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+            <div className="space-y-3">
+              <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                Next Action
+              </p>
+              <p className="text-[length:var(--font-size-body-md)] text-[color:var(--color-foreground)]">
+                {hasPremiumAccess
+                  ? "Your full chart depth is available."
+                  : "Your chart foundation is ready. The next useful move is usually a deeper report or assistant follow-up."}
+              </p>
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                {hasPremiumAccess
+                  ? "Move straight into report or assistant work while the chart context is fresh."
+                  : chartDepthUpgrade.message}
+              </p>
+            </div>
+            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+              <Link
+                href="/dashboard/report"
+                className={buttonStyles({ size: "lg", className: "w-full justify-center sm:w-auto" })}
+                onClick={() => {
+                  trackEvent("premium_click", {
+                    page: "/dashboard/chart",
+                    feature: hasPremiumAccess ? "chart-report-primary" : "chart-report-preview-primary",
+                  });
+                }}
+              >
+                {hasPremiumAccess ? "Open Premium Report" : "View Detailed Career Report"}
+              </Link>
+              <Link
+                href={hasPremiumAccess ? "/dashboard/ask-my-chart" : upgradeHref}
+                className={buttonStyles({
+                  size: "lg",
+                  tone: "secondary",
+                  className: "w-full justify-center sm:w-auto",
+                })}
+                onClick={() => {
+                  trackEvent("premium_click", {
+                    page: "/dashboard/chart",
+                    feature: hasPremiumAccess ? "chart-assistant-secondary" : "chart-upgrade-secondary",
+                  });
+                }}
+              >
+                {hasPremiumAccess ? "Ask My Chart" : chartDepthUpgrade.ctaLabel}
+              </Link>
+            </div>
+          </Card>
+
           <div className="grid gap-6 xl:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)]">
             <Card className="space-y-4">
               <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
@@ -403,6 +464,18 @@ export function ChartContractPanel({
               </p>
               <div className="flex flex-wrap gap-3">
                 <Link
+                  href="/dashboard/report"
+                  className={buttonStyles({ size: "lg", tone: "secondary" })}
+                  onClick={() => {
+                    trackEvent("premium_click", {
+                      page: "/dashboard/chart",
+                      feature: "chart-to-report-preview",
+                    });
+                  }}
+                >
+                  View Detailed Career Report
+                </Link>
+                <Link
                   href={upgradeHref}
                   className={buttonStyles({ size: "lg" })}
                   onClick={() => {
@@ -419,18 +492,6 @@ export function ChartContractPanel({
                   }}
                 >
                   {chartDepthUpgrade.ctaLabel}
-                </Link>
-                <Link
-                  href="/dashboard/ask-my-chart"
-                  className={buttonStyles({ size: "lg", tone: "secondary" })}
-                  onClick={() => {
-                    trackEvent("premium_click", {
-                      page: "/dashboard/chart",
-                      feature: "chart-upgrade-assistant",
-                    });
-                  }}
-                >
-                  Continue with Premium
                 </Link>
               </div>
             </Card>
@@ -476,16 +537,16 @@ export function ChartContractPanel({
                   {hiddenPlanetCount} additional placements and deeper interpretive layers are available in premium mode.
                 </p>
                 <Link
-                  href={upgradeHref}
+                  href="/dashboard/report"
                   className={buttonStyles({ size: "sm", tone: "secondary" })}
                   onClick={() => {
                     trackEvent("premium_click", {
                       page: "/dashboard/chart",
-                      feature: "chart-locked-insights",
+                      feature: "chart-locked-insights-preview",
                     });
                   }}
                 >
-                  Get Detailed Career Prediction
+                  View Detailed Career Report
                 </Link>
               </div>
             ) : null}

@@ -23,10 +23,12 @@ export {
 } from "@/modules/subscriptions/retention-intelligence";
 export {
   getMonetizationUpgradeCopy,
+  getPostUpgradeNextAction,
   getPlanComparisonRows,
   getUpgradeHrefForSurface,
   monetizationPlanTypes,
   type MonetizationPlanType,
+  type MonetizationNextAction,
   type MonetizationPromptKey,
   type MonetizationSurface,
   type MonetizationUpgradeCopy,

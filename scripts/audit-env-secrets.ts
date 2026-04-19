@@ -12,11 +12,22 @@ const approvedKeys = [
   "BETTER_AUTH_SECRET",
   "BETTER_AUTH_URL",
   "BETTER_AUTH_TRUSTED_ORIGINS",
+  "RESEND_API_KEY",
+  "AUTH_RESET_FROM_EMAIL",
   "ASTROLOGY_PROVIDER",
+  "GEOCODING_PROVIDER",
+  "GEOCODING_API_KEY",
+  "OPENCAGE_API_KEY",
   "AI_PROVIDER",
   "AI_USAGE_LOGGING",
   "OPENAI_API_KEY",
   "OPENAI_MODEL",
+  "SHOP_CHECKOUT_PROVIDER",
+  "SHOP_DRAFT_WEBHOOK_SECRET",
+  "SHOP_WEBHOOK_SECRET",
+  "RAZORPAY_KEY_ID",
+  "RAZORPAY_KEY_SECRET",
+  "RAZORPAY_WEBHOOK_SECRET",
   "NEXT_PUBLIC_SITE_URL",
   "NEXT_PUBLIC_SITE_NAME",
   "NEXT_PUBLIC_ANALYTICS_ENABLED",
@@ -36,6 +47,13 @@ const requiredKeys = [
   "BETTER_AUTH_TRUSTED_ORIGINS",
   "NEXT_PUBLIC_SITE_URL",
   "NEXT_PUBLIC_SITE_NAME",
+] as const;
+
+const productionRequiredKeys = [
+  "RESEND_API_KEY",
+  "AUTH_RESET_FROM_EMAIL",
+  "GEOCODING_PROVIDER",
+  "SHOP_CHECKOUT_PROVIDER",
 ] as const;
 
 function parseEnvFile(envFilePath: string) {
@@ -90,6 +108,9 @@ function isAbsoluteUrl(value: string) {
 }
 
 function runAudit() {
+  const strictProductionAudit =
+    process.env.ENV_AUDIT_MODE === "production" ||
+    process.env.VERCEL_ENV === "production";
   const envPath = path.join(process.cwd(), ".env");
   const source = existsSync(envPath)
     ? parseEnvFile(envPath)
@@ -116,6 +137,19 @@ function runAudit() {
         level: "error",
         message: `${key} is required but missing.`,
       });
+    }
+  }
+
+  if (strictProductionAudit) {
+    for (const key of productionRequiredKeys) {
+      const value = source.get(key)?.trim() ?? "";
+
+      if (!value) {
+        issues.push({
+          level: "error",
+          message: `${key} is required for production launch audit mode.`,
+        });
+      }
     }
   }
 
@@ -176,11 +210,96 @@ function runAudit() {
         });
       }
     }
+
+    if (
+      strictProductionAudit &&
+      (!trustedOrigins.includes("https://www.navagrahacentre.com") ||
+        !trustedOrigins.includes("https://navagrahacentre.com"))
+    ) {
+      issues.push({
+        level: "warning",
+        message:
+          "BETTER_AUTH_TRUSTED_ORIGINS should include both https://www.navagrahacentre.com and https://navagrahacentre.com for production.",
+      });
+    }
+  }
+
+  const geocodingProvider =
+    source.get("GEOCODING_PROVIDER")?.trim().toLowerCase() ?? "";
+  const geocodingApiKey =
+    source.get("GEOCODING_API_KEY")?.trim() ??
+    source.get("OPENCAGE_API_KEY")?.trim() ??
+    "";
+
+  if (geocodingProvider && geocodingProvider !== "opencage") {
+    issues.push({
+      level: strictProductionAudit ? "error" : "warning",
+      message: `GEOCODING_PROVIDER is set to "${geocodingProvider}". Recommended/validated provider is "opencage".`,
+    });
+  }
+
+  if (!geocodingApiKey) {
+    issues.push({
+      level: strictProductionAudit ? "error" : "warning",
+      message:
+        "GEOCODING_API_KEY (or OPENCAGE_API_KEY fallback) is missing; automatic birth place resolution will fail.",
+    });
+  }
+
+  const checkoutProvider =
+    source.get("SHOP_CHECKOUT_PROVIDER")?.trim().toLowerCase() || "draft-order";
+
+  if (
+    checkoutProvider !== "draft-order" &&
+    checkoutProvider !== "razorpay" &&
+    checkoutProvider !== "stripe"
+  ) {
+    issues.push({
+      level: "error",
+      message: `SHOP_CHECKOUT_PROVIDER has unsupported value "${checkoutProvider}".`,
+    });
+  }
+
+  if (
+    checkoutProvider === "draft-order" &&
+    !(source.get("SHOP_DRAFT_WEBHOOK_SECRET")?.trim() ?? "")
+  ) {
+    issues.push({
+      level: strictProductionAudit ? "error" : "warning",
+      message:
+        "SHOP_DRAFT_WEBHOOK_SECRET is missing; draft-order webhook signature verification will fail.",
+    });
+  }
+
+  if (checkoutProvider === "razorpay") {
+    const razorpayId = source.get("RAZORPAY_KEY_ID")?.trim() ?? "";
+    const razorpaySecret = source.get("RAZORPAY_KEY_SECRET")?.trim() ?? "";
+    const razorpayWebhook =
+      source.get("RAZORPAY_WEBHOOK_SECRET")?.trim() ??
+      source.get("SHOP_WEBHOOK_SECRET")?.trim() ??
+      "";
+
+    if (!razorpayId || !razorpaySecret) {
+      issues.push({
+        level: strictProductionAudit ? "error" : "warning",
+        message:
+          "RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET are required when SHOP_CHECKOUT_PROVIDER=razorpay.",
+      });
+    }
+
+    if (!razorpayWebhook) {
+      issues.push({
+        level: strictProductionAudit ? "error" : "warning",
+        message:
+          "RAZORPAY_WEBHOOK_SECRET (or SHOP_WEBHOOK_SECRET fallback) is required when SHOP_CHECKOUT_PROVIDER=razorpay.",
+      });
+    }
   }
 
   const errors = issues.filter((issue) => issue.level === "error");
 
   console.log(`Env audit source: ${existsSync(envPath) ? ".env file" : "process.env"}`);
+  console.log(`Audit mode: ${strictProductionAudit ? "production-strict" : "standard"}`);
   console.log(`Approved contract keys: ${approvedKeys.length}`);
   console.log(`Detected keys: ${source.size}`);
 

@@ -41,9 +41,10 @@
     "check:images": "tsx scripts/check-optimized-images.ts",
     "test:smoke": "tsx scripts/smoke-tests.ts",
     "test:smoke:critical": "tsx scripts/smoke-critical-flows.ts",
+    "test:smoke:launch": "tsx scripts/smoke-launch-readiness.ts",
     "ops:health-monitor": "tsx scripts/health-monitor.ts",
     "ops:follow-up-automation": "tsx scripts/run-follow-up-automation.ts",
-    "launch:check": "npm run env:check && npm run check:images && npm run test:smoke",
+    "launch:check": "npm run env:check && npm run check:images && npm run test:smoke && npm run test:smoke:critical && npm run test:smoke:launch",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

@@ -1,4 +1,9 @@
 import { siteConfig } from "@/config/site";
+import {
+  buildAcquisitionOnboardingPath,
+  buildAcquisitionSignInPath,
+  buildAcquisitionSignUpPath,
+} from "@/modules/acquisition/intents";
 
 type SeoEntryMetadata = {
   title: string;
@@ -41,10 +46,15 @@ type SeoEntryPremiumTeaser = {
 
 export type SeoEntryPageKey =
   | "kundli-ai"
+  | "free-kundli-online"
+  | "kundli-by-date-of-birth"
   | "marriage-compatibility"
   | "daily-horoscope"
+  | "daily-rashifal"
   | "rashifal"
+  | "love-horoscope"
   | "career-report"
+  | "career-prediction"
   | "finance-report"
   | "health-report";
 
@@ -155,6 +165,202 @@ const seoEntryPages: Record<SeoEntryPageKey, SeoEntryPage> = {
       label: "View Plan Options",
     },
   },
+  "free-kundli-online": {
+    key: "free-kundli-online",
+    path: "/free-kundli-online",
+    metadata: {
+      title: "Free Kundli Online",
+      description:
+        "Generate your kundli online with a validated birth-data flow that leads directly into chart, assistant, and premium astrology surfaces.",
+      keywords: [
+        "free kundli online",
+        "online kundli generator",
+        "vedic kundli online",
+        "birth chart online free",
+      ],
+    },
+    hero: {
+      eyebrow: "Free Kundli Online",
+      title: "Start your kundli online with a real chart foundation.",
+      description:
+        "Enter through a search-friendly page, create your protected member account, and complete one onboarding flow that builds your sidereal chart correctly.",
+      highlights: [
+        "Chart generation starts from validated birth date, time, and place",
+        "Saved chart continuity across dashboard, report, and assistant surfaces",
+        "Free entry with premium depth available only when needed later",
+      ],
+      note: "The free flow helps you build your chart foundation first. Deeper interpretation remains optional and plan-aware.",
+      primaryAction: {
+        href: buildAcquisitionSignUpPath("free-kundli-online"),
+        label: "Generate Your Kundli",
+      },
+      secondaryAction: {
+        href: buildAcquisitionSignInPath("free-kundli-online"),
+        label: "Continue To Onboarding",
+      },
+    },
+    valueCards: [
+      {
+        title: "Validated birth input",
+        description:
+          "The onboarding flow normalizes date, time, place, timezone, and coordinates before chart generation runs.",
+      },
+      {
+        title: "One saved chart record",
+        description:
+          "Your chart is stored once and reused across protected surfaces instead of being rebuilt unnecessarily.",
+      },
+      {
+        title: "Clean free-to-premium path",
+        description:
+          "You can start free, review chart basics, and unlock deeper layers only if you need more interpretation.",
+      },
+    ],
+    flowCards: [
+      {
+        title: "Intro",
+        description:
+          "Use this page to enter the kundli flow from search without landing on generic filler content.",
+      },
+      {
+        title: "Benefits",
+        description:
+          "The chart stays tied to your protected account, so assistant answers and report context remain consistent later.",
+      },
+      {
+        title: "How it works",
+        description:
+          "Create your account, complete onboarding, and let the saved chart pipeline generate your verified kundli foundation.",
+      },
+    ],
+    faqItems: [
+      {
+        question: "Is the free kundli flow public or account-based?",
+        answer:
+          "The page is public, but chart generation happens inside your protected account so the saved chart can power later features.",
+      },
+      {
+        question: "Do I need to pay before creating my kundli?",
+        answer:
+          "No. You can start from the free flow and move into premium only when you want deeper chart interpretation.",
+      },
+      {
+        question: "What happens after onboarding?",
+        answer:
+          "You are taken into the protected chart surface, where the same saved chart can power reports and Ask My Chart.",
+      },
+    ],
+    relatedPages: [
+      "kundli-by-date-of-birth",
+      "daily-rashifal",
+      "marriage-compatibility",
+    ],
+    premiumTeaser: {
+      title: "Build the chart first, then unlock deeper interpretation if needed",
+      description:
+        "Premium layers only appear after your chart foundation is complete, keeping the acquisition path clear and low-friction.",
+      href: buildAcquisitionSignUpPath("free-kundli-online"),
+      label: "Start Free Kundli Flow",
+    },
+  },
+  "kundli-by-date-of-birth": {
+    key: "kundli-by-date-of-birth",
+    path: "/kundli-by-date-of-birth",
+    metadata: {
+      title: "Kundli By Date Of Birth",
+      description:
+        "Create your kundli by date of birth, time, and place through a validated onboarding flow designed for accurate chart setup.",
+      keywords: [
+        "kundli by date of birth",
+        "birth date kundli",
+        "date of birth astrology chart",
+        "kundli from birth details",
+      ],
+    },
+    hero: {
+      eyebrow: "Kundli by Date of Birth",
+      title: "Use your birth details to build a reliable chart record.",
+      description:
+        "This route is focused on chart setup from date of birth, time, and place so later chart analysis stays grounded in a reusable saved chart.",
+      highlights: [
+        "Automatic place, timezone, and coordinate support during onboarding",
+        "Optional manual overrides only when advanced correction is needed",
+        "A single saved chart reused across dashboard, reports, and assistant flows",
+      ],
+      note: "Accurate birth inputs improve chart quality. The system keeps the setup flow explicit rather than silently guessing.",
+      primaryAction: {
+        href: buildAcquisitionSignUpPath("kundli-by-date-of-birth"),
+        label: "Build My Birth Chart",
+      },
+      secondaryAction: {
+        href: buildAcquisitionSignInPath("kundli-by-date-of-birth"),
+        label: "Open Onboarding",
+      },
+    },
+    valueCards: [
+      {
+        title: "Date-first chart setup",
+        description:
+          "The page is optimized for users searching specifically by date of birth, not generic horoscope browsing.",
+      },
+      {
+        title: "Conversion into real flow",
+        description:
+          "Every main CTA routes into the protected onboarding path where chart generation actually happens.",
+      },
+      {
+        title: "SEO-safe useful content",
+        description:
+          "Visitors get a concise explanation of the process, benefits, and next steps without filler content.",
+      },
+    ],
+    flowCards: [
+      {
+        title: "Intro",
+        description:
+          "Provide your date of birth, birth time, and place once in the member onboarding flow.",
+      },
+      {
+        title: "Benefits",
+        description:
+          "Resolved place and timezone data improve the reliability of the chart object reused throughout the app.",
+      },
+      {
+        title: "How it works",
+        description:
+          "Sign up or sign in, complete onboarding, then continue directly into your chart overview and protected guidance surfaces.",
+      },
+    ],
+    faqItems: [
+      {
+        question: "Can I create a kundli with only my date of birth?",
+        answer:
+          "Birth time and place still matter for the full chart. The flow collects all three inputs so later chart use stays consistent.",
+      },
+      {
+        question: "Does the system keep reusing the same chart later?",
+        answer:
+          "Yes. Once saved, the chart becomes the default source for chart-aware app flows until birth data changes.",
+      },
+      {
+        question: "Will this also help with reports and Ask My Chart?",
+        answer:
+          "Yes. The same saved chart context powers the protected report and assistant experiences after onboarding.",
+      },
+    ],
+    relatedPages: [
+      "free-kundli-online",
+      "career-prediction",
+      "daily-rashifal",
+    ],
+    premiumTeaser: {
+      title: "Finish chart setup before exploring deeper astrology layers",
+      description:
+        "The chart foundation comes first. Premium report and assistant depth appear later in the protected member flow.",
+      href: buildAcquisitionSignUpPath("kundli-by-date-of-birth"),
+      label: "Start Birth Chart Setup",
+    },
+  },
   "marriage-compatibility": {
     key: "marriage-compatibility",
     path: "/marriage-compatibility",
@@ -181,12 +387,12 @@ const seoEntryPages: Record<SeoEntryPageKey, SeoEntryPage> = {
       ],
       note: "Compatibility interpretation supports thoughtful decisions. It does not replace personal judgment.",
       primaryAction: {
-        href: "/consultation?intent=compatibility-focused",
-        label: "Book Compatibility Consultation",
+        href: buildAcquisitionSignUpPath("marriage-compatibility"),
+        label: "Check Compatibility",
       },
       secondaryAction: {
-        href: "/sign-up",
-        label: "Start With My Chart",
+        href: buildAcquisitionSignInPath("marriage-compatibility"),
+        label: "Continue To Onboarding",
       },
     },
     valueCards: [
@@ -240,13 +446,13 @@ const seoEntryPages: Record<SeoEntryPageKey, SeoEntryPage> = {
           "Premium depth appears in protected report and assistant surfaces, based on your plan and chart context.",
       },
     ],
-    relatedPages: ["kundli-ai", "rashifal", "health-report"],
+    relatedPages: ["love-horoscope", "free-kundli-online", "daily-rashifal"],
     premiumTeaser: {
-      title: "Add compatibility depth only when useful",
+      title: "Start with chart setup before deeper compatibility guidance",
       description:
-        "Premium report and assistant layers can support deeper analysis without pressure or urgency tactics.",
-      href: "/pricing",
-      label: "Explore Premium Reports",
+        "The acquisition path begins with your saved chart foundation. Premium compatibility depth appears later inside protected flows.",
+      href: buildAcquisitionSignUpPath("marriage-compatibility"),
+      label: "Begin Compatibility Flow",
     },
   },
   "daily-horoscope": {
@@ -343,6 +549,104 @@ const seoEntryPages: Record<SeoEntryPageKey, SeoEntryPage> = {
       label: "See Premium Access",
     },
   },
+  "daily-rashifal": {
+    key: "daily-rashifal",
+    path: "/daily-rashifal",
+    metadata: {
+      title: "Daily Rashifal",
+      description:
+        "Start from daily rashifal search intent and move into a saved-chart flow for more personal astrology guidance.",
+      keywords: [
+        "daily rashifal",
+        "today rashifal",
+        "personalized rashifal",
+        "daily vedic guidance",
+      ],
+    },
+    hero: {
+      eyebrow: "Daily Rashifal",
+      title: "Use daily interest as an entry into your own chart context.",
+      description:
+        "This page is built for daily rashifal intent and routes visitors into a chart-backed onboarding path instead of a generic horoscope dead end.",
+      highlights: [
+        "Clean public entry page for daily rashifal and horoscope search traffic",
+        "Onboarding route that leads into chart, report, and assistant continuity",
+        "Structured content that explains benefits without relying on filler copy",
+      ],
+      note: "Daily guidance remains reflective. Personal depth comes after your birth chart has been created and saved.",
+      primaryAction: {
+        href: buildAcquisitionSignUpPath("daily-rashifal"),
+        label: "Get Daily Rashifal",
+      },
+      secondaryAction: {
+        href: buildAcquisitionSignInPath("daily-rashifal"),
+        label: "Start With My Chart",
+      },
+    },
+    valueCards: [
+      {
+        title: "From daily browsing to saved chart context",
+        description:
+          "The page bridges daily-interest traffic into the protected onboarding flow where a real chart can be generated.",
+      },
+      {
+        title: "Faster path to assistant use",
+        description:
+          "Once chart setup is complete, Ask My Chart and report surfaces can answer timing questions with better context.",
+      },
+      {
+        title: "Internal linking that stays relevant",
+        description:
+          "Daily rashifal visitors can move naturally into kundli, compatibility, or love-horoscope entry pages.",
+      },
+    ],
+    flowCards: [
+      {
+        title: "Intro",
+        description:
+          "Start here if you are looking for daily rashifal guidance but want something more personal than a static zodiac feed.",
+      },
+      {
+        title: "Benefits",
+        description:
+          "Your chart can anchor later timing questions, assistant follow-ups, and premium depth without re-entering everything.",
+      },
+      {
+        title: "How it works",
+        description:
+          "Choose the onboarding CTA, complete the birth-profile flow, and continue into your protected chart and guidance surfaces.",
+      },
+    ],
+    faqItems: [
+      {
+        question: "Is this just a generic daily horoscope page?",
+        answer:
+          "No. The page is designed to move you into a chart-based member journey so later guidance can become more personal.",
+      },
+      {
+        question: "Can I start with a free account?",
+        answer:
+          "Yes. The acquisition path begins with signup and onboarding; premium depth is optional later.",
+      },
+      {
+        question: "Where do I ask follow-up questions after chart creation?",
+        answer:
+          "Use the protected Ask My Chart and report surfaces once your saved chart is ready.",
+      },
+    ],
+    relatedPages: [
+      "free-kundli-online",
+      "love-horoscope",
+      "marriage-compatibility",
+    ],
+    premiumTeaser: {
+      title: "Daily curiosity converts better when the chart comes first",
+      description:
+        "Start with onboarding, generate your chart foundation, and then continue into deeper timing and assistant layers if needed.",
+      href: buildAcquisitionSignUpPath("daily-rashifal"),
+      label: "Start Daily Guidance Flow",
+    },
+  },
   rashifal: {
     key: "rashifal",
     path: "/rashifal",
@@ -437,6 +741,104 @@ const seoEntryPages: Record<SeoEntryPageKey, SeoEntryPage> = {
       label: "Open Report Surface",
     },
   },
+  "love-horoscope": {
+    key: "love-horoscope",
+    path: "/love-horoscope",
+    metadata: {
+      title: "Love Horoscope",
+      description:
+        "Explore a love-horoscope entry page that routes into chart setup, relationship-focused guidance, and compatibility follow-up.",
+      keywords: [
+        "love horoscope",
+        "relationship horoscope",
+        "love astrology reading",
+        "compatibility horoscope",
+      ],
+    },
+    hero: {
+      eyebrow: "Love Horoscope",
+      title: "Start with relationship interest, continue with chart-backed context.",
+      description:
+        "This page is for visitors looking for love-horoscope guidance and routes them into an onboarding flow that prepares compatibility and relationship interpretation later.",
+      highlights: [
+        "Love-intent acquisition page connected to the protected chart setup flow",
+        "Natural bridge into compatibility, chart review, and assistant follow-up",
+        "Calm copy that avoids certainty, fear framing, or manipulative urgency",
+      ],
+      note: "Relationship guidance is interpretive support. It does not replace communication, judgment, or lived context.",
+      primaryAction: {
+        href: buildAcquisitionSignUpPath("love-horoscope"),
+        label: "See Love Insights",
+      },
+      secondaryAction: {
+        href: buildAcquisitionSignInPath("love-horoscope"),
+        label: "Continue To Onboarding",
+      },
+    },
+    valueCards: [
+      {
+        title: "Relationship-first acquisition route",
+        description:
+          "This page gives love-horoscope visitors a clean path into the same chart pipeline used by the rest of the product.",
+      },
+      {
+        title: "Compatibility-ready continuation",
+        description:
+          "After onboarding, users can continue into compatibility-oriented chart, report, and consultation flows without losing context.",
+      },
+      {
+        title: "Premium depth after real intent",
+        description:
+          "Premium layers are shown later, after the user has already completed a meaningful chart setup step.",
+      },
+    ],
+    flowCards: [
+      {
+        title: "Intro",
+        description:
+          "Use this page for love and relationship search intent without dropping users into generic, disconnected horoscope text.",
+      },
+      {
+        title: "Benefits",
+        description:
+          "A saved chart foundation makes later relationship questions more specific and easier to continue inside protected flows.",
+      },
+      {
+        title: "How it works",
+        description:
+          "Start onboarding, create your chart, then continue into compatibility and Ask My Chart surfaces for deeper follow-up.",
+      },
+    ],
+    faqItems: [
+      {
+        question: "Will this page tell me a guaranteed relationship outcome?",
+        answer:
+          "No. It is designed to route you into a chart-backed, interpretive flow without deterministic claims.",
+      },
+      {
+        question: "Can I use this before a compatibility consultation?",
+        answer:
+          "Yes. It helps you create the chart foundation first so later compatibility guidance has a stronger base.",
+      },
+      {
+        question: "Does this connect with the compatibility flow?",
+        answer:
+          "Yes. Internal linking and onboarding intent keep love-horoscope traffic close to the compatibility path.",
+      },
+    ],
+    relatedPages: [
+      "marriage-compatibility",
+      "daily-rashifal",
+      "free-kundli-online",
+    ],
+    premiumTeaser: {
+      title: "Start the relationship journey with chart setup, not guesswork",
+      description:
+        "The onboarding flow prepares the chart context first. Deeper premium compatibility and relationship layers remain optional later.",
+      href: buildAcquisitionSignUpPath("love-horoscope"),
+      label: "Start Love Flow",
+    },
+  },
   "career-report": {
     key: "career-report",
     path: "/career-report",
@@ -529,6 +931,104 @@ const seoEntryPages: Record<SeoEntryPageKey, SeoEntryPage> = {
         "Premium report layers unlock deeper structure without changing the calm, trust-safe guidance style.",
       href: "/pricing",
       label: "Upgrade For Full Access",
+    },
+  },
+  "career-prediction": {
+    key: "career-prediction",
+    path: "/career-prediction",
+    metadata: {
+      title: "Career Prediction",
+      description:
+        "Use a career-prediction entry page that routes directly into onboarding, chart setup, and protected career-focused astrology flows.",
+      keywords: [
+        "career prediction",
+        "career astrology",
+        "career kundli reading",
+        "professional astrology guidance",
+      ],
+    },
+    hero: {
+      eyebrow: "Career Prediction",
+      title: "Start with chart-backed career direction, not generic advice.",
+      description:
+        "This page captures career-prediction intent and routes it into the existing onboarding and chart pipeline so later report and assistant guidance can stay consistent.",
+      highlights: [
+        "Career-intent acquisition page tied to the saved chart pipeline",
+        "Direct handoff into onboarding, chart view, and protected report surfaces",
+        "Clear premium path only after free chart setup and initial value delivery",
+      ],
+      note: "Career interpretation can support reflection and planning. It does not replace judgment, skill-building, or professional decision-making.",
+      primaryAction: {
+        href: buildAcquisitionSignUpPath("career-prediction"),
+        label: "Start Career Reading",
+      },
+      secondaryAction: {
+        href: buildAcquisitionSignInPath("career-prediction"),
+        label: "Continue To Onboarding",
+      },
+    },
+    valueCards: [
+      {
+        title: "Career-focused entry surface",
+        description:
+          "Visitors land on a page aligned to career intent instead of being forced to translate from a generic chart page.",
+      },
+      {
+        title: "Built on saved chart context",
+        description:
+          "The same chart created during onboarding can be reused by reports, assistant answers, and premium interpretation later.",
+      },
+      {
+        title: "Clear next step design",
+        description:
+          "Every major CTA routes toward onboarding so traffic can move into the real product flow quickly.",
+      },
+    ],
+    flowCards: [
+      {
+        title: "Intro",
+        description:
+          "Use this route when you want career-oriented astrology entry copy that still routes into the existing member system.",
+      },
+      {
+        title: "Benefits",
+        description:
+          "Career questions become easier to explore once the same saved chart is available across dashboard, report, and assistant surfaces.",
+      },
+      {
+        title: "How it works",
+        description:
+          "Create your account, finish onboarding, then continue into chart and report flows designed for career-focused follow-up.",
+      },
+    ],
+    faqItems: [
+      {
+        question: "Does this page provide instant career answers without my chart?",
+        answer:
+          "No. The page is an acquisition entry point. The real career-oriented experience begins after your chart is created through onboarding.",
+      },
+      {
+        question: "Can I start this flow for free?",
+        answer:
+          "Yes. The free path begins with account creation and chart setup. Premium depth is optional after that.",
+      },
+      {
+        question: "What happens after I complete onboarding?",
+        answer:
+          "You continue into your protected chart and report surfaces, where career questions can use your saved chart context.",
+      },
+    ],
+    relatedPages: [
+      "free-kundli-online",
+      "kundli-by-date-of-birth",
+      "daily-rashifal",
+    ],
+    premiumTeaser: {
+      title: "Chart setup comes first, deeper career interpretation comes after",
+      description:
+        "Start with onboarding and chart generation, then unlock deeper report or assistant depth later if you need it.",
+      href: buildAcquisitionSignUpPath("career-prediction"),
+      label: "Begin Career Flow",
     },
   },
   "finance-report": {

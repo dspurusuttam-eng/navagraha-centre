@@ -1,13 +1,15 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { trackEvent } from "@/lib/analytics/track-event";
 import { getApiErrorMessage } from "@/lib/api/http";
 import {
   getPlanComparisonRows,
+  getPostUpgradeNextAction,
   type MonetizationPlanType,
 } from "@/modules/subscriptions/monetization-content";
 
@@ -144,6 +146,7 @@ export function SubscriptionPricingPanel() {
               <p>{row.reports}</p>
               <p>{row.assistantDepth}</p>
               <p>{row.advancedInsights}</p>
+              <p>{row.continuity}</p>
             </div>
             <p className="text-[0.7rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
               Best for: {row.bestFor}
@@ -157,7 +160,7 @@ export function SubscriptionPricingPanel() {
                   handlePaidPlanCheckout(row.planType);
                 }}
               >
-                Choose {row.title}
+                {row.ctaLabel}
               </Button>
             ) : (
               <Badge tone="outline">Current free baseline</Badge>
@@ -194,6 +197,25 @@ export function SubscriptionPricingPanel() {
             </span>
             .
           </p>
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            Complete payment first. After payment is confirmed, the membership surface will guide you directly into the first premium action instead of leaving you at a dead end.
+          </p>
+          <div className="flex flex-wrap gap-3">
+            {result.checkout.session.redirectUrl ? (
+              <a
+                href={result.checkout.session.redirectUrl}
+                className={buttonStyles({ size: "sm", tone: "accent" })}
+              >
+                Continue to Payment
+              </a>
+            ) : null}
+            <Link
+              href={getPostUpgradeNextAction(result.plan.key).secondaryHref}
+              className={buttonStyles({ size: "sm", tone: "secondary" })}
+            >
+              Review Premium Surfaces
+            </Link>
+          </div>
         </div>
       ) : null}
     </Card>

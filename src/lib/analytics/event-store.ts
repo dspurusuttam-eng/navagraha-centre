@@ -136,19 +136,32 @@ export function getAnalyticsSummarySnapshot() {
     generatedAtUtc: new Date().toISOString(),
     counts,
     funnel: {
-      visitor: counts.page_view,
+      visitor: counts.page_visit,
       signup: counts.user_signup,
       chart: counts.chart_created,
       assistant: counts.assistant_query,
       premium: counts.premium_click,
       payment: counts.payment_success,
     },
+    acquisition: {
+      pageVisit: counts.page_visit,
+      ctaClick: counts.cta_click,
+      onboardingStart: counts.onboarding_start,
+    },
+    retention: {
+      dailyInsightView: counts.daily_insight_view,
+      returnPromptShown: counts.return_prompt_shown,
+      chartIncompleteNudge: counts.chart_incomplete_nudge,
+      premiumFollowupNudge: counts.premium_followup_nudge,
+    },
     monetization: {
       pricingView: counts.pricing_view,
       promptView: counts.upgrade_prompt_view,
       planSelected: counts.plan_selected,
       upgradeStarted: counts.upgrade_started,
+      checkoutStarted: counts.checkout_started,
       upgradeCompleted: counts.upgrade_completed,
+      premiumFeatureUnlock: counts.premium_feature_unlock,
     },
     recentEvents: state.recentEvents.slice(0, 25),
   };

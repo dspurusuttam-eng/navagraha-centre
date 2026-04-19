@@ -27,7 +27,7 @@ function getHealthUrl() {
   const base =
     process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
     process.env.BETTER_AUTH_URL?.trim() ||
-    "http://127.0.0.1:3000";
+    "http://localhost:3000";
 
   return `${normalizeBaseUrl(base)}/api/health`;
 }

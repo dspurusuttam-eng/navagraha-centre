@@ -9,7 +9,7 @@ type SectionAlign = "left" | "center";
 const toneStyles: Record<SectionTone, string> = {
   default: "py-[var(--space-12)] sm:py-[var(--space-14)]",
   muted:
-    "py-[var(--space-12)] sm:py-[var(--space-14)] bg-[rgba(255,255,255,0.02)]",
+    "py-[var(--space-12)] sm:py-[var(--space-14)] bg-[linear-gradient(180deg,rgba(255,255,255,0.025)_0%,rgba(255,255,255,0.012)_100%)]",
   transparent: "py-[var(--space-12)] sm:py-[var(--space-14)]",
 };
 
@@ -57,7 +57,7 @@ export function Section({
               </h2>
             ) : null}
             {description ? (
-              <p className="text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              <p className="max-w-2xl text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
                 {description}
               </p>
             ) : null}

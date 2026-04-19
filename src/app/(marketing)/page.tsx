@@ -242,16 +242,20 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-3">
+          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap">
             <Link
               href={conversion.bestNextAction.href}
-              className={buttonStyles({ size: "lg" })}
+              className={buttonStyles({ size: "lg", className: "w-full justify-center sm:w-auto" })}
             >
               {conversion.bestNextAction.label}
             </Link>
             <Link
               href={conversion.alternateAction.href}
-              className={buttonStyles({ size: "lg", tone: "secondary" })}
+              className={buttonStyles({
+                size: "lg",
+                tone: "secondary",
+                className: "w-full justify-center sm:w-auto",
+              })}
             >
               {conversion.alternateAction.label}
             </Link>

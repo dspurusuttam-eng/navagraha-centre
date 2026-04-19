@@ -136,6 +136,18 @@ export async function POST(request: Request) {
       billingTimezone: "Asia/Kolkata",
     });
 
+    recordAnalyticsEventSafely({
+      event: "checkout_started",
+      userId: session.user.id,
+      payload: {
+        page: "/settings",
+        surface: "protected",
+        plan: planType,
+        feature: "subscription-checkout-init",
+        orderNumber: checkout.checkout.orderNumber,
+      },
+    });
+
     return Response.json(
       {
         status: "ok",

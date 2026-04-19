@@ -8,7 +8,17 @@ import { trackEvent } from "@/lib/analytics/track-event";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-export function SignUpForm() {
+type SignUpFormProps = {
+  callbackUrl?: string;
+  intent?: string | null;
+  signInHref?: string;
+};
+
+export function SignUpForm({
+  callbackUrl = "/dashboard",
+  intent = null,
+  signInHref = "/sign-in",
+}: Readonly<SignUpFormProps>) {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
@@ -25,7 +35,7 @@ export function SignUpForm() {
         name: formData.get("name")?.toString() ?? "",
         email: formData.get("email")?.toString() ?? "",
         password: formData.get("password")?.toString() ?? "",
-        callbackURL: "/dashboard",
+        callbackURL: callbackUrl,
       });
 
       if (result.error) {
@@ -38,9 +48,10 @@ export function SignUpForm() {
       trackEvent("user_signup", {
         page: "/sign-up",
         feature: "auth-signup",
+        intent: intent ?? "general",
       });
 
-      router.push("/dashboard");
+      router.push(callbackUrl);
       router.refresh();
     } catch (error) {
       setErrorMessage(
@@ -137,7 +148,7 @@ export function SignUpForm() {
       <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
         Already have access?{" "}
         <Link
-          href="/sign-in"
+          href={signInHref}
           className="text-[color:var(--color-accent)] transition hover:text-[color:var(--color-foreground)]"
         >
           Sign in

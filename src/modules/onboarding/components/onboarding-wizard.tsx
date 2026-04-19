@@ -15,6 +15,10 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { trackEvent } from "@/lib/analytics/track-event";
 import {
+  getAcquisitionIntentConfig,
+  type AcquisitionIntent,
+} from "@/modules/acquisition/intents";
+import {
   completeBirthOnboarding,
 } from "@/modules/onboarding/actions";
 import { initialOnboardingActionState } from "@/modules/onboarding/action-state";
@@ -41,6 +45,7 @@ type OnboardingWizardProps = {
     providerKey: string | null;
     preferredLanguageLabel: string;
   };
+  intent?: AcquisitionIntent | null;
 };
 
 type InputMode = "auto" | "manual";
@@ -90,6 +95,7 @@ function formatCoordinateInput(value: number) {
 export function OnboardingWizard({
   defaults,
   status,
+  intent = null,
 }: Readonly<OnboardingWizardProps>) {
   const [stepIndex, setStepIndex] = useState(0);
   const [birthDate, setBirthDate] = useState(defaults.birthDate);
@@ -115,7 +121,22 @@ export function OnboardingWizard({
   const autofillAbortControllerRef = useRef<AbortController | null>(null);
   const lastAutofillKeyRef = useRef<string | null>(null);
   const chartCreatedTrackedRef = useRef(false);
+  const onboardingStartTrackedRef = useRef(false);
   const router = useRouter();
+  const intentConfig = intent ? getAcquisitionIntentConfig(intent) : null;
+
+  useEffect(() => {
+    if (onboardingStartTrackedRef.current) {
+      return;
+    }
+
+    onboardingStartTrackedRef.current = true;
+    trackEvent("onboarding_start", {
+      page: "/dashboard/onboarding",
+      feature: intent ? `acquisition-${intent}` : "member-onboarding",
+      intent: intent ?? "general",
+    });
+  }, [intent]);
 
   useEffect(() => {
     if (state.status === "success" && state.redirectTo) {
@@ -124,6 +145,7 @@ export function OnboardingWizard({
         trackEvent("chart_created", {
           page: "/dashboard/onboarding",
           feature: "birth-onboarding",
+          intent: intent ?? "general",
         });
       }
 
@@ -308,6 +330,14 @@ export function OnboardingWizard({
             <p className="max-w-2xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
               {step.description}
             </p>
+            {intentConfig ? (
+              <p className="max-w-2xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                <span className="text-[color:var(--color-foreground)]">
+                  {intentConfig.label}:
+                </span>{" "}
+                {intentConfig.onboardingDescription}
+              </p>
+            ) : null}
           </div>
 
           <div className="space-y-3 rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4">
@@ -698,6 +728,14 @@ export function OnboardingWizard({
           </div>
 
           <div className="space-y-4 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            {intentConfig ? (
+              <p>
+                Current intent:{" "}
+                <span className="text-[color:var(--color-foreground)]">
+                  {intentConfig.label}
+                </span>
+              </p>
+            ) : null}
             <p>
               Preferred language:{" "}
               <span className="text-[color:var(--color-foreground)]">
@@ -730,6 +768,9 @@ export function OnboardingWizard({
             What happens next
           </p>
           <div className="space-y-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            {intentConfig ? (
+              <p>{intentConfig.onboardingTitle}</p>
+            ) : null}
             <p>
               The wizard stores a primary birth profile on your protected
               account.

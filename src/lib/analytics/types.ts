@@ -2,8 +2,15 @@
 // Keep payloads behavioral only (never include secrets, passwords, tokens, or raw birth data).
 export const trackedEventNames = [
   "page_view",
+  "page_visit",
+  "cta_click",
+  "onboarding_start",
   "user_signup",
   "chart_created",
+  "daily_insight_view",
+  "return_prompt_shown",
+  "chart_incomplete_nudge",
+  "premium_followup_nudge",
   "assistant_query",
   "premium_click",
   "payment_success",
@@ -11,7 +18,9 @@ export const trackedEventNames = [
   "upgrade_prompt_view",
   "plan_selected",
   "upgrade_started",
+  "checkout_started",
   "upgrade_completed",
+  "premium_feature_unlock",
 ] as const;
 
 export type TrackedEventName = (typeof trackedEventNames)[number];

@@ -13,6 +13,7 @@ type PremiumReportType = "CAREER" | "MARRIAGE" | "FINANCE" | "HEALTH";
 
 type PremiumReportOutput = {
   reportType: PremiumReportType;
+  planType: "FREE" | "PREMIUM" | "PRO";
   status: "PREVIEW_LOCKED" | "FULL_ACCESS" | "LIMIT_REACHED";
   title: string;
   preview: string;
@@ -53,14 +54,23 @@ export function PremiumReportGenerator() {
   const previewUpgradeCopy = getMonetizationUpgradeCopy({
     prompt: "report-preview",
     surface: "protected",
-  });
-  const limitUpgradeCopy = getMonetizationUpgradeCopy({
-    prompt: "report-limit",
-    surface: "protected",
+    reportType: activeType,
   });
 
   useEffect(() => {
-    if (!result || result.status === "FULL_ACCESS") {
+    if (!result) {
+      return;
+    }
+
+    if (result.status === "FULL_ACCESS") {
+      if (result.planType === "PREMIUM") {
+        trackEvent("upgrade_prompt_view", {
+          page: "/dashboard/report",
+          feature: "premium-report-pro-journey",
+          plan: result.planType,
+        });
+      }
+
       return;
     }
 
@@ -68,6 +78,18 @@ export function PremiumReportGenerator() {
       page: "/dashboard/report",
       feature: `premium-report-${result.status.toLowerCase()}`,
       reportType: result.reportType,
+    });
+  }, [result]);
+
+  useEffect(() => {
+    if (!result || result.status !== "FULL_ACCESS") {
+      return;
+    }
+
+    trackEvent("premium_feature_unlock", {
+      page: "/dashboard/report",
+      feature: `premium-report-${result.reportType.toLowerCase()}`,
+      plan: result.planType,
     });
   }, [result]);
 
@@ -172,7 +194,11 @@ export function PremiumReportGenerator() {
           {result.status !== "FULL_ACCESS" ? (
             <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
               {result.status === "LIMIT_REACHED"
-                ? limitUpgradeCopy.message
+                ? getMonetizationUpgradeCopy({
+                    prompt: "report-limit",
+                    surface: "protected",
+                    planType: result.planType,
+                  }).message
                 : previewUpgradeCopy.message}
             </p>
           ) : null}
@@ -181,20 +207,84 @@ export function PremiumReportGenerator() {
           </p>
 
           {result.status === "FULL_ACCESS" ? (
-            <div className="space-y-3">
-              {result.fullReportSections.map((section) => (
-                <div
-                  key={section.title}
-                  className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4"
+            <div className="space-y-4">
+              <div className="space-y-3">
+                {result.fullReportSections.map((section) => (
+                  <div
+                    key={section.title}
+                    className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4"
+                  >
+                    <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                      {section.title}
+                    </p>
+                    <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                      {section.content}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                <Link
+                  href="/dashboard/ask-my-chart"
+                  className="inline-flex rounded-full border border-[color:var(--color-border)] px-4 py-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-foreground)] transition [transition-duration:var(--motion-duration-base)] hover:border-[color:var(--color-border-strong)]"
+                  onClick={() => {
+                    trackEvent("premium_click", {
+                      page: "/dashboard/report",
+                      feature: `premium-report-followup-${result.reportType.toLowerCase()}`,
+                    });
+                  }}
                 >
+                  Ask My Chart About This Report
+                </Link>
+              </div>
+
+              {result.planType === "PREMIUM" ? (
+                <div className="rounded-[var(--radius-xl)] border border-[rgba(215,187,131,0.24)] bg-[rgba(215,187,131,0.08)] px-4 py-4">
                   <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-                    {section.title}
+                    {
+                      getMonetizationUpgradeCopy({
+                        prompt: "report-pro",
+                        surface: "protected",
+                        planType: result.planType,
+                      }).title
+                    }
                   </p>
                   <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                    {section.content}
+                    {
+                      getMonetizationUpgradeCopy({
+                        prompt: "report-pro",
+                        surface: "protected",
+                        planType: result.planType,
+                      }).message
+                    }
                   </p>
+                  <Link
+                    href="/settings"
+                    className="mt-4 inline-flex rounded-full border border-[color:var(--color-border)] px-4 py-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-foreground)] transition [transition-duration:var(--motion-duration-base)] hover:border-[color:var(--color-border-strong)]"
+                    onClick={() => {
+                      trackEvent("upgrade_prompt_view", {
+                        page: "/dashboard/report",
+                        feature: "premium-report-pro-journey",
+                        plan: result.planType,
+                      });
+                      trackEvent("upgrade_started", {
+                        page: "/dashboard/report",
+                        feature: "premium-report-pro-journey",
+                        plan: result.planType,
+                      });
+                    }}
+                  >
+                    {
+                      getMonetizationUpgradeCopy({
+                        prompt: "report-pro",
+                        surface: "protected",
+                        planType: result.planType,
+                      }).ctaLabel
+                    }
+                  </Link>
                 </div>
-              ))}
+              ) : null}
             </div>
           ) : null}
 

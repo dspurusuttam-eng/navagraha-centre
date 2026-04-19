@@ -90,6 +90,13 @@ npm run env:audit
 npm run check:images
 npm run test:smoke
 npm run test:smoke:critical
+npm run test:smoke:launch
+```
+
+For a production-strict env contract audit:
+
+```bash
+ENV_AUDIT_MODE=production npm run env:audit
 ```
 
 The project also exposes a lightweight health endpoint at `/api/health` and a client web-vitals intake endpoint at `/api/observability/web-vitals`.
@@ -118,9 +125,10 @@ The project also exposes a lightweight health endpoint at `/api/health` and a cl
 - `npm run check:images` - fail if raw `<img>` tags are found in `src/`
 - `npm run test:smoke` - run smoke checks for launch-critical utilities
 - `npm run test:smoke:critical` - run 5 route-level critical flow checks (`/`, `/sign-in`, `/dashboard`, `/dashboard/report`, `/dashboard/ask-my-chart`)
+- `npm run test:smoke:launch` - run launch-readiness smoke checks for public/auth routes, protected API safety, forgot-password flow, assistant/chart/paywall unauthorized behavior, and webhook invalid-signature handling
 - `npm run ops:health-monitor` - poll `/api/health` and fail fast on unhealthy status (optionally sends webhook alert)
 - `npm run ops:follow-up-automation` - run consultation follow-up lifecycle automation (`--dry-run` for preview, `--record-audit` to persist run metadata in admin audit history)
-- `npm run launch:check` - run environment, image, and smoke launch checks
+- `npm run launch:check` - run environment, image, and all smoke launch checks
 - `npm run format` - format the codebase with Prettier
 - `npm run format:check` - verify Prettier formatting
 

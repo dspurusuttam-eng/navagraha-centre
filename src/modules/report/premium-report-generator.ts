@@ -9,6 +9,7 @@ import {
   getUpgradeHrefForUserPlan,
   getUserPlanUsageModel,
   isPremiumPlan,
+  type MonetizationPlanType,
 } from "@/modules/subscriptions";
 
 const premiumReportPromptTemplateKey = "premium-report-generator";
@@ -24,6 +25,7 @@ export type PremiumReportType = (typeof premiumReportTypes)[number];
 
 export type PremiumReportOutput = {
   reportType: PremiumReportType;
+  planType: MonetizationPlanType;
   status: "PREVIEW_LOCKED" | "FULL_ACCESS" | "LIMIT_REACHED";
   title: string;
   preview: string;
@@ -158,6 +160,7 @@ export async function generatePremiumReportForUser(input: {
 
     return {
       reportType,
+      planType: plan.plan_type,
       status: "LIMIT_REACHED",
       title,
       preview,
@@ -205,6 +208,7 @@ export async function generatePremiumReportForUser(input: {
 
     return {
       reportType,
+      planType: plan.plan_type,
       status: "PREVIEW_LOCKED",
       title,
       preview,
@@ -252,6 +256,7 @@ export async function generatePremiumReportForUser(input: {
 
   return {
     reportType,
+    planType: plan.plan_type,
     status: "FULL_ACCESS",
     title,
     preview,

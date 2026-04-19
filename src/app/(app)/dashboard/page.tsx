@@ -30,6 +30,12 @@ import {
   type UserPlanUsageModel,
 } from "@/modules/subscriptions";
 import { SubscriptionValuePanel } from "@/modules/subscriptions/components/subscription-value-panel";
+import { RetentionEventTracker } from "@/modules/retention/components/retention-event-tracker";
+import { RetentionSurfacePanel } from "@/modules/retention/components/retention-surface-panel";
+import {
+  getRetentionDashboardSnapshot,
+  type RetentionDashboardSnapshot,
+} from "@/modules/retention";
 
 export const metadata = buildPageMetadata({
   title: "Dashboard",
@@ -65,6 +71,49 @@ function createFallbackUserReport(): GeneratedUserReport {
       headline: "Your private workspace is available.",
       overview:
         "No chart or consultation data is available yet, so the dashboard is showing a safe fallback state.",
+    },
+  };
+}
+
+function createFallbackRetentionDashboardState(): RetentionDashboardSnapshot {
+  return {
+    generatedAtUtc: new Date().toISOString(),
+    lifecycleStage: "SIGNED_UP_NO_CHART",
+    lifecycleLabel: "Chart Setup Pending",
+    dailyInsight: {
+      title: "Today's Insight",
+      summary:
+        "Your chart foundation is still incomplete, so the dashboard is holding back deeper interpretation intentionally.",
+      supportingLine:
+        "Complete onboarding to unlock chart-backed return surfaces.",
+    },
+    currentEnergy: {
+      title: "Current Energy",
+      summary:
+        "A clearer energy snapshot appears after the chart has been generated and saved.",
+      supportingLine:
+        "Finish chart setup to move from account shell to active astrology context.",
+    },
+    recommendedNextStep: {
+      title: "Complete your chart to unlock insights.",
+      summary:
+        "The protected chart, report, and assistant surfaces all become more useful after the first chart is saved.",
+      href: "/dashboard/onboarding",
+      ctaLabel: "Complete Chart Setup",
+      emphasis: "FREE",
+    },
+    activity: {
+      hasChart: false,
+      hasAssistantUsage: false,
+      assistantSessionCount: 0,
+      lastAssistantActivityUtc: null,
+      daysSinceAssistantActivity: null,
+      isSubscribed: false,
+      subscriptionLifecycle: "NO_SUBSCRIPTION",
+    },
+    analytics: {
+      showChartIncompleteNudge: true,
+      showPremiumFollowupNudge: false,
     },
   };
 }
@@ -170,6 +219,22 @@ export default async function DashboardPage() {
         }
       })(),
     ]);
+  const retentionState = await (async (): Promise<RetentionDashboardSnapshot> => {
+    try {
+      return await getRetentionDashboardSnapshot({
+        userId: session.user.id,
+        chartOverview,
+        insights,
+        report,
+        subscriptionState,
+        userPlan: userPlanState.plan,
+      });
+    } catch (error) {
+      console.error("Dashboard retention state failed", error);
+
+      return createFallbackRetentionDashboardState();
+    }
+  })();
   const hasBirthProfile = Boolean(chartOverview.birthProfile);
   const hasChart = Boolean(chartOverview.chartRecord && chartOverview.chart);
   const leadConsultationNote = report.consultationNotes[0]?.note ?? null;
@@ -185,6 +250,8 @@ export default async function DashboardPage() {
       tone="transparent"
       className="pt-0"
     >
+      <RetentionEventTracker snapshot={retentionState} userPlan={userPlanState.plan} />
+
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <Card className="space-y-3">
           <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
@@ -239,6 +306,10 @@ export default async function DashboardPage() {
             shell with explicit timezone handling.
           </p>
         </Card>
+      </div>
+
+      <div className="mt-6">
+        <RetentionSurfacePanel snapshot={retentionState} />
       </div>
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)]">

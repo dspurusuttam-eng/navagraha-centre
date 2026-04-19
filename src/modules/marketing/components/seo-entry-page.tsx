@@ -12,46 +12,71 @@ import {
   type SeoEntryPage,
   type SeoEntryPageKey,
 } from "@/modules/marketing/seo-entry-pages";
-
-const memberFlowLinks = [
-  {
-    href: "/sign-up",
-    label: "Create account",
-    description: "Create your member profile and unlock chart setup.",
-  },
-  {
-    href: "/dashboard/onboarding",
-    label: "Complete onboarding",
-    description:
-      "Add birth details and generate your validated chart foundation.",
-  },
-  {
-    href: "/dashboard/ask-my-chart",
-    label: "Use Ask My Chart",
-    description:
-      "Ask chart-aware questions in the protected assistant workflow.",
-  },
-  {
-    href: "/dashboard/report",
-    label: "Open report surface",
-    description:
-      "Review report context and premium depth options in one place.",
-  },
-  {
-    href: "/pricing",
-    label: "View plans",
-    description:
-      "Compare Free, Premium, and Pro plans starting from INR 99/month.",
-  },
-] as const;
+import {
+  buildAcquisitionOnboardingPath,
+  buildAcquisitionSignInPath,
+  buildAcquisitionSignUpPath,
+  getAcquisitionIntentConfig,
+  isAcquisitionIntent,
+} from "@/modules/acquisition/intents";
 
 function getRelatedPages(relatedPages: readonly SeoEntryPageKey[]) {
   return relatedPages.map((key) => getSeoEntryPage(key));
 }
 
+function getMemberFlowLinks(entry: SeoEntryPage) {
+  if (!isAcquisitionIntent(entry.key)) {
+    return [
+      {
+        href: "/sign-up",
+        label: "Create account",
+        description: "Create your member profile and unlock chart setup.",
+      },
+      {
+        href: "/dashboard/onboarding",
+        label: "Complete onboarding",
+        description:
+          "Add birth details and generate your validated chart foundation.",
+      },
+      {
+        href: "/dashboard/ask-my-chart",
+        label: "Use Ask My Chart",
+        description:
+          "Ask chart-aware questions in the protected assistant workflow.",
+      },
+    ] as const;
+  }
+
+  const intentConfig = getAcquisitionIntentConfig(entry.key);
+
+  return [
+    {
+      href: buildAcquisitionSignUpPath(entry.key),
+      label: intentConfig.ctaLabel,
+      description:
+        "Start the protected onboarding flow from this public page and build the chart foundation first.",
+    },
+    {
+      href: buildAcquisitionSignInPath(entry.key),
+      label: "Continue to onboarding",
+      description:
+        "Existing members can sign in and continue directly to the onboarding route tied to this intent.",
+    },
+    {
+      href: buildAcquisitionOnboardingPath(entry.key),
+      label: "Open onboarding",
+      description:
+        "If you are already signed in, go straight to the onboarding surface with this acquisition intent preserved.",
+    },
+  ] as const;
+}
+
 export function SeoEntryPageView({ entry }: Readonly<{ entry: SeoEntryPage }>) {
+  const acquisitionIntent = isAcquisitionIntent(entry.key) ? entry.key : null;
+  const isAcquisitionPage = acquisitionIntent !== null;
   const relatedPages = getRelatedPages(entry.relatedPages);
   const structuredData = getSeoEntryStructuredData(entry);
+  const memberFlowLinks = getMemberFlowLinks(entry);
 
   return (
     <>
@@ -71,8 +96,30 @@ export function SeoEntryPageView({ entry }: Readonly<{ entry: SeoEntryPage }>) {
         description={entry.hero.description}
         highlights={entry.hero.highlights}
         note={entry.hero.note}
-        primaryAction={entry.hero.primaryAction}
-        secondaryAction={entry.hero.secondaryAction}
+        primaryAction={
+          entry.hero.primaryAction
+            ? {
+                ...entry.hero.primaryAction,
+                eventName: "cta_click",
+                eventPayload: {
+                  page: entry.path,
+                  feature: `seo-hero-primary-${entry.key}`,
+                },
+              }
+            : undefined
+        }
+        secondaryAction={
+          entry.hero.secondaryAction
+            ? {
+                ...entry.hero.secondaryAction,
+                eventName: "cta_click",
+                eventPayload: {
+                  page: entry.path,
+                  feature: `seo-hero-secondary-${entry.key}`,
+                },
+              }
+            : undefined
+        }
         supportTitle="Entry Page Focus"
       />
 
@@ -102,6 +149,26 @@ export function SeoEntryPageView({ entry }: Readonly<{ entry: SeoEntryPage }>) {
         title="How this intent flows into your protected astrology surfaces."
         description="The route is simple: enter from search, create your chart foundation, then continue with assistant and report context."
       >
+        <Card tone="accent" className="mb-6 grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+          <div className="space-y-3">
+            <Badge tone="accent">Primary next step</Badge>
+            <p className="max-w-2xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              {memberFlowLinks[0]?.description}
+            </p>
+          </div>
+          <TrackedLink
+            href={memberFlowLinks[0]?.href ?? "/sign-up"}
+            eventName="cta_click"
+            eventPayload={{
+              page: entry.path,
+              feature: `seo-primary-member-journey-${entry.key}`,
+            }}
+            className={buttonStyles({ size: "lg", className: "w-full justify-center sm:w-auto" })}
+          >
+            {memberFlowLinks[0]?.label ?? "Create account"}
+          </TrackedLink>
+        </Card>
+
         <div className="grid gap-5 md:grid-cols-3">
           {entry.flowCards.map((card) => (
             <Card key={card.title} className="space-y-3">
@@ -123,12 +190,21 @@ export function SeoEntryPageView({ entry }: Readonly<{ entry: SeoEntryPage }>) {
               <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
                 {link.description}
               </p>
-              <Link
+              <TrackedLink
                 href={link.href}
-                className={buttonStyles({ tone: "secondary", size: "sm" })}
+                eventName="cta_click"
+                eventPayload={{
+                  page: entry.path,
+                  feature: `seo-member-flow-${entry.key}`,
+                }}
+                className={buttonStyles({
+                  tone: link.href === memberFlowLinks[0]?.href ? "accent" : "secondary",
+                  size: "sm",
+                  className: "w-full justify-center",
+                })}
               >
                 Go to {link.label}
-              </Link>
+              </TrackedLink>
             </Card>
           ))}
         </div>
@@ -204,10 +280,11 @@ export function SeoEntryPageView({ entry }: Readonly<{ entry: SeoEntryPage }>) {
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-3">
+          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap">
             <TrackedLink
               href={entry.premiumTeaser.href}
-              className={buttonStyles({ size: "lg" })}
+              eventName="cta_click"
+              className={buttonStyles({ size: "lg", className: "w-full justify-center sm:w-auto" })}
               eventPayload={{
                 page: entry.path,
                 feature: `seo-premium-${entry.key}`,
@@ -215,12 +292,34 @@ export function SeoEntryPageView({ entry }: Readonly<{ entry: SeoEntryPage }>) {
             >
               {entry.premiumTeaser.label}
             </TrackedLink>
-            <Link
-              href="/consultation"
-              className={buttonStyles({ size: "lg", tone: "secondary" })}
-            >
-              Book Consultation
-            </Link>
+            {isAcquisitionPage ? (
+              <TrackedLink
+                href={buildAcquisitionSignInPath(acquisitionIntent)}
+                eventName="cta_click"
+                eventPayload={{
+                  page: entry.path,
+                  feature: `seo-secondary-acquisition-${entry.key}`,
+                }}
+                className={buttonStyles({
+                  size: "lg",
+                  tone: "secondary",
+                  className: "w-full justify-center sm:w-auto",
+                })}
+              >
+                Already a member?
+              </TrackedLink>
+            ) : (
+              <Link
+                href="/consultation"
+                className={buttonStyles({
+                  size: "lg",
+                  tone: "secondary",
+                  className: "w-full justify-center sm:w-auto",
+                })}
+              >
+                Book Consultation
+              </Link>
+            )}
           </div>
         </Card>
       </Section>

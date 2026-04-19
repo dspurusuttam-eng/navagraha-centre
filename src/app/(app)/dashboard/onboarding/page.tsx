@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
 import { buildPageMetadata } from "@/lib/metadata";
+import { getAcquisitionIntent } from "@/modules/acquisition/intents";
 import { requireUserSession } from "@/modules/auth/server";
 import { OnboardingWizard } from "@/modules/onboarding/components/onboarding-wizard";
 import {
@@ -21,8 +22,22 @@ export const metadata = buildPageMetadata({
   ],
 });
 
-export default async function DashboardOnboardingPage() {
+type SearchParams = Promise<{
+  intent?: string | string[];
+}>;
+
+function readSingleValue(value?: string | string[]) {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+export default async function DashboardOnboardingPage({
+  searchParams,
+}: {
+  searchParams?: SearchParams;
+}) {
   const session = await requireUserSession();
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const intent = getAcquisitionIntent(readSingleValue(resolvedSearchParams?.intent));
   let snapshot: OnboardingSnapshot = {
     defaults: {
       name: session.user.name ?? "Member",
@@ -115,7 +130,11 @@ export default async function DashboardOnboardingPage() {
         </Card>
       ) : null}
 
-      <OnboardingWizard defaults={snapshot.defaults} status={snapshot.status} />
+      <OnboardingWizard
+        defaults={snapshot.defaults}
+        status={snapshot.status}
+        intent={intent}
+      />
     </Section>
   );
 }
