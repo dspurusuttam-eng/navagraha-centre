@@ -70,7 +70,87 @@ select {
   color: var(--color-foreground);
 }
 
+@keyframes home-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.home-reveal {
+  opacity: 0;
+  animation: home-fade-up 620ms var(--ease-emphasized) both;
+}
+
+.home-reveal-delay-1 {
+  animation-delay: 40ms;
+}
+
+.home-reveal-delay-2 {
+  animation-delay: 80ms;
+}
+
+.home-reveal-delay-3 {
+  animation-delay: 120ms;
+}
+
+.home-reveal-delay-4 {
+  animation-delay: 160ms;
+}
+
+.home-reveal-delay-5 {
+  animation-delay: 190ms;
+}
+
+.home-reveal-delay-6 {
+  animation-delay: 210ms;
+}
+
+.home-reveal-delay-7 {
+  animation-delay: 230ms;
+}
+
+.home-reveal-delay-8 {
+  animation-delay: 250ms;
+}
+
+.home-polish-surface {
+  position: relative;
+  overflow: hidden;
+}
+
+.home-polish-surface::after {
+  content: "";
+  position: absolute;
+  inset: auto -30% -60% -30%;
+  height: 120%;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    circle at top,
+    rgba(215, 187, 131, 0.16) 0%,
+    rgba(215, 187, 131, 0) 60%
+  );
+  transition: opacity var(--motion-duration-base) var(--ease-standard);
+}
+
+.home-polish-surface:hover::after,
+.home-polish-surface:focus-within::after {
+  opacity: 1;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .home-reveal {
+    opacity: 1;
+    animation: none !important;
+    transform: none !important;
+  }
+
   *,
   *::before,
   *::after {
