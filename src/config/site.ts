@@ -22,6 +22,8 @@ const marketingNav = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
   { href: "/services", label: "Services" },
+  { href: "/consultation", label: "Consultation" },
+  { href: "/kundli-ai", label: "NAVAGRAHA AI" },
   { href: "/pricing", label: "Pricing" },
   { href: "/insights", label: "Insights" },
   { href: "/shop", label: "Shop" },
@@ -47,9 +49,12 @@ const foundationNav = [
 ] satisfies SiteNavItem[];
 
 const offeringsNav = [
+  { href: "/sign-up", label: "Generate Kundli" },
   { href: "/consultation", label: "Consultation" },
+  { href: "/kundli-ai", label: "AI Tools" },
   { href: "/pricing", label: "Pricing" },
   { href: "/shop", label: "Shop" },
+  { href: "/insights", label: "Insights" },
 ] satisfies SiteNavItem[];
 
 const profileNav = [
