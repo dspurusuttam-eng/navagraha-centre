@@ -131,7 +131,7 @@ export function Navbar({ section }: Readonly<NavbarProps>) {
                   href={item.href}
                   className={
                     isMarketing
-                      ? "rounded-[var(--radius-pill)] border border-transparent px-3 py-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[#5b5a68] transition [transition-duration:var(--motion-duration-base)] [transition-timing-function:var(--ease-standard)] hover:border-[rgba(20,22,38,0.2)] hover:bg-[rgba(79,58,134,0.07)] hover:text-[#1a1928]"
+                      ? "rounded-[var(--radius-pill)] border border-transparent px-3 py-2 text-[0.66rem] uppercase tracking-[0.14em] text-[#5b5a68] transition [transition-duration:var(--motion-duration-base)] [transition-timing-function:var(--ease-standard)] hover:border-[rgba(20,22,38,0.2)] hover:bg-[rgba(79,58,134,0.07)] hover:text-[#1a1928] sm:text-[0.72rem] sm:tracking-[var(--tracking-label)]"
                       : "rounded-[var(--radius-pill)] border border-transparent px-3 py-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-muted)] transition [transition-duration:var(--motion-duration-base)] [transition-timing-function:var(--ease-standard)] hover:border-[color:var(--color-border)] hover:bg-[rgba(255,255,255,0.03)] hover:text-[color:var(--color-foreground)]"
                   }
                 >
