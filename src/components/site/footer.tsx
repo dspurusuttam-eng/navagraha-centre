@@ -104,6 +104,12 @@ export function Footer() {
             <Link href="/contact" className="hover:text-[color:var(--color-foreground)]">
               Contact
             </Link>
+            <Link href="/privacy" className="hover:text-[color:var(--color-foreground)]">
+              Privacy
+            </Link>
+            <Link href="/terms" className="hover:text-[color:var(--color-foreground)]">
+              Terms
+            </Link>
             <Link href="/pricing" className="hover:text-[color:var(--color-foreground)]">
               Plans
             </Link>

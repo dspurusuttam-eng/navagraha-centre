@@ -5,15 +5,15 @@ export type CardTone = "default" | "muted" | "accent" | "light" | "contrast";
 
 const toneStyles: Record<CardTone, string> = {
   default:
-    "border-[color:var(--color-border)] bg-[linear-gradient(180deg,rgba(27,24,20,0.96)_0%,rgba(14,12,10,0.96)_100%)] backdrop-blur-sm",
+    "border-[color:var(--card-default-border)] bg-[image:var(--card-default-bg)] backdrop-blur-sm",
   muted:
-    "border-[color:var(--color-border)] bg-[linear-gradient(180deg,rgba(24,21,18,0.86)_0%,rgba(13,11,10,0.88)_100%)] backdrop-blur-sm",
+    "border-[color:var(--card-muted-border)] bg-[image:var(--card-muted-bg)] backdrop-blur-sm",
   accent:
-    "border-[rgba(215,187,131,0.32)] bg-[linear-gradient(180deg,rgba(52,40,24,0.9)_0%,rgba(20,16,12,0.96)_100%)] backdrop-blur-sm",
+    "border-[color:var(--card-accent-border)] bg-[image:var(--card-accent-bg)] backdrop-blur-sm",
   light:
-    "border-[rgba(29,34,53,0.12)] bg-[linear-gradient(180deg,rgba(255,255,255,0.95)_0%,rgba(245,241,232,0.9)_100%)] text-[var(--color-ink-body)] shadow-[0_14px_32px_rgba(20,26,44,0.1)]",
+    "border-[color:var(--card-light-border)] bg-[image:var(--card-light-bg)] text-[color:var(--card-light-text)] shadow-[var(--card-light-shadow)]",
   contrast:
-    "border-[var(--color-section-contrast-edge)] bg-[linear-gradient(180deg,var(--color-section-contrast-elevated)_0%,var(--color-section-contrast)_100%)] text-[color:var(--color-foreground)]",
+    "border-[color:var(--card-contrast-border)] bg-[image:var(--card-contrast-bg)] text-[color:var(--color-foreground)]",
 };
 
 export type CardProps = HTMLAttributes<HTMLDivElement> & {

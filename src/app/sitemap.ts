@@ -26,6 +26,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/navagraha-ai-explainer",
     "/joy-prakash-sarmah",
     "/contact",
+    "/privacy",
+    "/terms",
     "/shop",
     "/shop/cart",
     "/insights",

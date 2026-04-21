@@ -97,9 +97,27 @@ select {
   );
 }
 
+.type-display {
+  font-family: var(--font-display), serif;
+  letter-spacing: var(--tracking-display);
+  line-height: var(--line-height-tight);
+  color: var(--color-ink-black);
+}
+
+.type-heading {
+  font-family: var(--font-display), serif;
+  letter-spacing: var(--tracking-heading);
+  line-height: var(--line-height-heading);
+}
+
+.type-body {
+  font-family: var(--font-sans), sans-serif;
+  line-height: var(--line-height-copy);
+}
+
 .trust-badge {
   border-color: var(--color-trust-border);
-  background: var(--color-trust-bg);
+  background: var(--color-trust-bg-soft);
   color: var(--color-trust-text);
 }
 

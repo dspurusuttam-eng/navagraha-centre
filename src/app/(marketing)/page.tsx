@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { TrackedLink } from "@/components/analytics/tracked-link";
+import { AdReadyZone } from "@/components/site/ad-ready-zone";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -8,6 +9,7 @@ import { Section } from "@/components/ui/section";
 import { buildPageMetadata } from "@/lib/metadata";
 import { curatedContentEntries } from "@/modules/content/catalog";
 import { contentHubs } from "@/modules/content/hubs";
+import { contentTypeLabels } from "@/modules/content";
 import { recommendConsultationNextAction } from "@/modules/consultations";
 import { globalCtaCopy } from "@/modules/localization/copy";
 import { AiProductFamilySection } from "@/modules/marketing/components/ai-product-family-section";
@@ -17,6 +19,12 @@ import { listFeaturedShopProducts } from "@/modules/shop";
 export const metadata = buildPageMetadata({
   ...homePage.metadata,
 });
+
+function formatPublishedDate(value: string) {
+  return new Date(value).toLocaleDateString("en-US", {
+    dateStyle: "medium",
+  });
+}
 
 export default function HomePage() {
   const conversion = recommendConsultationNextAction({
@@ -30,7 +38,7 @@ export default function HomePage() {
       (a, b) =>
         new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
     )
-    .slice(0, 3);
+    .slice(0, 4);
   const featuredKnowledgeHubs = contentHubs.slice(0, 4);
 
   const heroCta = {
@@ -521,9 +529,9 @@ export default function HomePage() {
       <Section
         className="home-reveal home-reveal-delay-8"
         tone="light"
-        eyebrow="Insights"
-        title="Editorial insights for continuous learning."
-        description="Explore forecasts and practical astrology articles without interrupting your main conversion path."
+        eyebrow="Latest Insights"
+        title="Fresh editorial insights from NAVAGRAHA CENTRE."
+        description="Read the latest astrology articles, forecasts, and guidance notes in one clean publishing surface."
       >
         <Card
           tone="light"
@@ -532,7 +540,7 @@ export default function HomePage() {
           <div className="space-y-3">
             <Badge tone="trust">Insights Library</Badge>
             <p className="max-w-2xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-              Browse curated articles, monthly forecasts, and practical guidance notes from the NAVAGRAHA editorial surface.
+              Browse recent posts and then open the full insights library for deeper reading.
             </p>
           </div>
           <TrackedLink
@@ -545,24 +553,9 @@ export default function HomePage() {
               className: stackedCtaClass,
             })}
           >
-            Explore Insights
+            View All Insights
           </TrackedLink>
         </Card>
-
-        <div className="mb-6 grid gap-3 sm:grid-cols-2">
-          {featuredKnowledgeHubs.map((hub) => (
-            <TrackedLink
-              key={hub.slug}
-              href={hub.path}
-              eventName="cta_click"
-              eventPayload={{ page: "/", feature: `knowledge-hub-${hub.slug}` }}
-              className="home-polish-surface flex min-h-20 items-center justify-between gap-3 rounded-[var(--radius-lg)] border border-[rgba(29,34,53,0.12)] bg-[rgba(255,255,255,0.92)] px-4 py-3 text-[0.74rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-ink-body)] transition [transition-duration:var(--motion-duration-base)] motion-safe:hover:-translate-y-0.5 motion-safe:hover:border-[rgba(117,96,181,0.34)]"
-            >
-              <span>{hub.title}</span>
-              <span className="text-[var(--color-trust-text)]">Hub</span>
-            </TrackedLink>
-          ))}
-        </div>
 
         <div className="grid gap-4 md:grid-cols-3">
           {insightPreviewEntries.map((entry) => (
@@ -573,11 +566,14 @@ export default function HomePage() {
               className="flex h-full flex-col gap-4"
             >
               <div className="flex items-center justify-between gap-2">
-                <Badge tone="trust">{entry.type.replaceAll("_", " ")}</Badge>
+                <Badge tone="trust">{contentTypeLabels[entry.type]}</Badge>
                 <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
                   {entry.readingTimeMinutes} min
                 </p>
               </div>
+              <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
+                Published {formatPublishedDate(entry.publishedAt)}
+              </p>
               <h3
                 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[var(--color-ink-strong)]"
                 style={{ letterSpacing: "var(--tracking-display)" }}
@@ -597,9 +593,26 @@ export default function HomePage() {
                   className: "w-full justify-center",
                 })}
               >
-                Read Insight
+                Read Article
               </TrackedLink>
             </Card>
+          ))}
+        </div>
+
+        <AdReadyZone className="mt-6" />
+
+        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+          {featuredKnowledgeHubs.map((hub) => (
+            <TrackedLink
+              key={hub.slug}
+              href={hub.path}
+              eventName="cta_click"
+              eventPayload={{ page: "/", feature: `knowledge-hub-${hub.slug}` }}
+              className="home-polish-surface flex min-h-20 items-center justify-between gap-3 rounded-[var(--radius-lg)] border border-[rgba(29,34,53,0.12)] bg-[rgba(255,255,255,0.92)] px-4 py-3 text-[0.74rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-ink-body)] transition [transition-duration:var(--motion-duration-base)] motion-safe:hover:-translate-y-0.5 motion-safe:hover:border-[rgba(117,96,181,0.34)]"
+            >
+              <span>{hub.title}</span>
+              <span className="text-[var(--color-trust-text)]">Hub</span>
+            </TrackedLink>
           ))}
         </div>
       </Section>

@@ -3,6 +3,8 @@
   --color-base-0: #fbf8f2;
   --color-base-1: #f5f1e8;
   --color-base-2: #ece6da;
+  --color-base-3: #e3dbcc;
+  --color-ink-black: #0f1422;
   --color-ink-strong: #1d2235;
   --color-ink-body: #343a4f;
   --color-ink-muted: #626a82;
@@ -19,6 +21,7 @@
   --color-trust-bg: rgba(95, 75, 160, 0.1);
   --color-trust-border: rgba(95, 75, 160, 0.25);
   --color-trust-text: #4a3a83;
+  --color-trust-bg-soft: rgba(95, 75, 160, 0.08);
 
   /* Shared semantic aliases used across the existing UI */
   --color-surface: var(--color-navy-900);
@@ -39,7 +42,7 @@
   --color-accent-contrast: #1d2235;
   --color-overlay: rgba(8, 12, 23, 0.58);
 
-  /* Dedicated light + contrast section tokens for future section upgrades */
+  /* Section surface system */
   --color-section-light: var(--color-base-0);
   --color-section-light-muted: var(--color-base-1);
   --color-section-light-strong: var(--color-base-2);
@@ -47,6 +50,7 @@
   --color-section-contrast-elevated: var(--color-navy-850);
   --color-section-contrast-edge: rgba(226, 194, 124, 0.34);
 
+  /* Typography foundation */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -83,10 +87,13 @@
   --font-size-body-md: 1rem;
   --font-size-body-sm: 0.92rem;
   --font-size-label: 0.72rem;
+  --font-size-caption: 0.68rem;
   --line-height-tight: 1.02;
+  --line-height-heading: 1.2;
   --line-height-copy: 1.75;
   --tracking-display: -0.045em;
   --tracking-label: 0.24em;
+  --tracking-heading: -0.02em;
 
   --motion-duration-fast: 180ms;
   --motion-duration-base: 280ms;
@@ -95,4 +102,75 @@
   --ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
 
   --container-max: 78rem;
+
+  /* CTA hierarchy tokens */
+  --button-primary-border: rgba(240, 217, 164, 0.8);
+  --button-primary-bg: linear-gradient(
+    135deg,
+    var(--color-accent) 0%,
+    var(--color-accent-strong) 100%
+  );
+  --button-primary-text: var(--color-accent-contrast);
+  --button-primary-hover-border: var(--color-accent-strong);
+
+  --button-secondary-border: var(--color-border-strong);
+  --button-secondary-bg: linear-gradient(
+    180deg,
+    var(--color-section-contrast-elevated) 0%,
+    var(--color-section-contrast) 100%
+  );
+  --button-secondary-text: var(--color-foreground);
+
+  --button-tertiary-border: rgba(29, 34, 53, 0.16);
+  --button-tertiary-bg: rgba(255, 255, 255, 0.76);
+  --button-tertiary-bg-hover: rgba(255, 255, 255, 0.94);
+  --button-tertiary-text: var(--color-ink-body);
+  --button-tertiary-text-hover: var(--color-ink-strong);
+  --button-tertiary-shadow: 0 8px 18px rgba(19, 25, 43, 0.08);
+
+  /* Card system tokens */
+  --card-default-border: var(--color-border);
+  --card-default-bg: linear-gradient(
+    180deg,
+    rgba(27, 24, 20, 0.96) 0%,
+    rgba(14, 12, 10, 0.96) 100%
+  );
+  --card-muted-border: var(--color-border);
+  --card-muted-bg: linear-gradient(
+    180deg,
+    rgba(24, 21, 18, 0.86) 0%,
+    rgba(13, 11, 10, 0.88) 100%
+  );
+  --card-accent-border: rgba(215, 187, 131, 0.32);
+  --card-accent-bg: linear-gradient(
+    180deg,
+    rgba(52, 40, 24, 0.9) 0%,
+    rgba(20, 16, 12, 0.96) 100%
+  );
+  --card-light-border: rgba(29, 34, 53, 0.12);
+  --card-light-bg: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(245, 241, 232, 0.9) 100%
+  );
+  --card-light-text: var(--color-ink-body);
+  --card-light-shadow: 0 14px 32px rgba(20, 26, 44, 0.1);
+  --card-contrast-border: var(--color-section-contrast-edge);
+  --card-contrast-bg: linear-gradient(
+    180deg,
+    var(--color-section-contrast-elevated) 0%,
+    var(--color-section-contrast) 100%
+  );
+
+  /* Form field system tokens */
+  --field-border: var(--color-border-strong);
+  --field-border-focus: rgba(240, 217, 164, 0.74);
+  --field-bg: linear-gradient(
+    180deg,
+    rgba(18, 25, 43, 0.96) 0%,
+    rgba(10, 15, 28, 0.95) 100%
+  );
+  --field-text: var(--color-foreground);
+  --field-placeholder: var(--color-muted-soft);
+  --field-shadow: 0 10px 24px rgba(9, 14, 28, 0.2);
 }

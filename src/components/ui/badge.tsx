@@ -11,7 +11,7 @@ const toneStyles: Record<BadgeTone, string> = {
   outline:
     "border-[color:var(--color-border-strong)] bg-transparent text-[color:var(--color-foreground)]",
   trust:
-    "border-[var(--color-trust-border)] bg-[var(--color-trust-bg)] text-[var(--color-trust-text)]",
+    "border-[color:var(--color-trust-border)] bg-[color:var(--color-trust-bg-soft)] text-[color:var(--color-trust-text)]",
 };
 
 export type BadgeProps = HTMLAttributes<HTMLSpanElement> & {

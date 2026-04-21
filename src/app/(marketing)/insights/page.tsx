@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdReadyZone } from "@/components/site/ad-ready-zone";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
@@ -136,6 +137,8 @@ export default async function InsightsPage() {
         title="Human-reviewed publishing, with clear editorial boundaries."
         description="The content system is designed for disciplined writing, careful review, and high-signal publishing without filler output."
       >
+        <AdReadyZone className="mb-6" />
+
         <Card tone="accent" className="space-y-5">
           <p className="text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
             That boundary matters for quality. The long-term goal is stronger

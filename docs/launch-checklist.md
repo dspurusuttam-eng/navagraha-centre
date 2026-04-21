@@ -147,3 +147,12 @@ Validate graceful behavior in each dependency failure path:
 - Resend (password reset email delivery)
 - OpenAI (only when live AI provider is enabled)
 - Payment provider boundary (`draft-order` default; Razorpay optional)
+
+## 10) AdSense Readiness (Optional Launch Track)
+
+1. Confirm `ads.txt` is reachable at `/ads.txt`.
+2. Replace placeholder publisher ID in `public/ads.txt` with real AdSense publisher ID.
+3. Use prepared ad-safe placeholder zones in public content surfaces only.
+4. Keep ad density restrained on homepage and insights pages.
+
+Reference: [adsense-launch-setup.md](./adsense-launch-setup.md)

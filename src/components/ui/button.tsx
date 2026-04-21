@@ -16,11 +16,11 @@ const baseStyles =
 
 const toneStyles: Record<ButtonTone, string> = {
   accent:
-    "border-[rgba(240,217,164,0.8)] bg-[linear-gradient(135deg,var(--color-accent)_0%,var(--color-accent-strong)_100%)] text-[color:var(--color-accent-contrast)] shadow-[var(--shadow-glow)] hover:-translate-y-0.5 hover:border-[color:var(--color-accent-strong)] hover:brightness-[1.03] hover:shadow-[var(--shadow-lg)]",
+    "border-[color:var(--button-primary-border)] bg-[image:var(--button-primary-bg)] text-[color:var(--button-primary-text)] shadow-[var(--shadow-glow)] hover:-translate-y-0.5 hover:border-[color:var(--button-primary-hover-border)] hover:brightness-[1.03] hover:shadow-[var(--shadow-lg)]",
   secondary:
-    "border-[color:var(--color-border-strong)] bg-[linear-gradient(180deg,var(--color-section-contrast-elevated)_0%,var(--color-section-contrast)_100%)] text-[color:var(--color-foreground)] shadow-[var(--shadow-sm)] hover:-translate-y-0.5 hover:border-[rgba(240,217,164,0.72)] hover:text-[color:var(--color-accent-strong)]",
+    "border-[color:var(--button-secondary-border)] bg-[image:var(--button-secondary-bg)] text-[color:var(--button-secondary-text)] shadow-[var(--shadow-sm)] hover:-translate-y-0.5 hover:border-[rgba(240,217,164,0.72)] hover:text-[color:var(--color-accent-strong)]",
   tertiary:
-    "border-[rgba(29,34,53,0.16)] bg-[rgba(255,255,255,0.76)] text-[var(--color-ink-body)] shadow-[0_8px_18px_rgba(19,25,43,0.08)] hover:-translate-y-0.5 hover:border-[rgba(95,75,160,0.32)] hover:bg-[rgba(255,255,255,0.94)] hover:text-[var(--color-ink-strong)]",
+    "border-[color:var(--button-tertiary-border)] bg-[color:var(--button-tertiary-bg)] text-[color:var(--button-tertiary-text)] shadow-[var(--button-tertiary-shadow)] hover:-translate-y-0.5 hover:border-[rgba(95,75,160,0.32)] hover:bg-[color:var(--button-tertiary-bg-hover)] hover:text-[color:var(--button-tertiary-text-hover)]",
   ghost:
     "border-transparent bg-transparent text-[color:var(--color-muted)] hover:bg-[color:var(--color-accent-soft)] hover:text-[color:var(--color-foreground)]",
 };

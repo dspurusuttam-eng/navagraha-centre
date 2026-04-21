@@ -61,7 +61,7 @@ export function Section({
                 )}
                 style={{
                   letterSpacing: "var(--tracking-display)",
-                  lineHeight: "var(--line-height-tight)",
+                  lineHeight: "var(--line-height-heading)",
                 }}
               >
                 {title}

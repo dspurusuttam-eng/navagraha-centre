@@ -5,6 +5,7 @@ import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
 import { PageHero } from "@/components/site/page-hero";
+import { AdReadyZone } from "@/components/site/ad-ready-zone";
 import {
   buildContentMetadata,
   contentTypeLabels,
@@ -227,6 +228,8 @@ export default async function InsightDetailPage({
               author={entry.author}
               reviewer={entry.reviewer}
             />
+
+            <AdReadyZone />
           </div>
         </div>
       </Section>
