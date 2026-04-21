@@ -3,14 +3,18 @@ import { Badge } from "@/components/ui/badge";
 import { Container } from "@/components/ui/container";
 import { cn } from "@/lib/cn";
 
-type SectionTone = "default" | "muted" | "transparent";
+type SectionTone = "default" | "muted" | "transparent" | "light" | "contrast";
 type SectionAlign = "left" | "center";
 
 const toneStyles: Record<SectionTone, string> = {
-  default: "py-[var(--space-12)] sm:py-[var(--space-14)]",
+  default: "py-[var(--space-10)] sm:py-[var(--space-12)] lg:py-[var(--space-14)]",
   muted:
-    "py-[var(--space-12)] sm:py-[var(--space-14)] bg-[linear-gradient(180deg,rgba(255,255,255,0.025)_0%,rgba(255,255,255,0.012)_100%)]",
-  transparent: "py-[var(--space-12)] sm:py-[var(--space-14)]",
+    "py-[var(--space-10)] sm:py-[var(--space-12)] lg:py-[var(--space-14)] bg-[linear-gradient(180deg,rgba(255,255,255,0.025)_0%,rgba(255,255,255,0.012)_100%)]",
+  transparent: "py-[var(--space-10)] sm:py-[var(--space-12)] lg:py-[var(--space-14)]",
+  light:
+    "py-[var(--space-10)] sm:py-[var(--space-12)] lg:py-[var(--space-14)] bg-[linear-gradient(180deg,var(--color-section-light)_0%,var(--color-section-light-muted)_100%)]",
+  contrast:
+    "py-[var(--space-10)] sm:py-[var(--space-12)] lg:py-[var(--space-14)] bg-[linear-gradient(180deg,var(--color-section-contrast-elevated)_0%,var(--color-section-contrast)_100%)]",
 };
 
 export type SectionProps = HTMLAttributes<HTMLElement> & {
@@ -34,6 +38,8 @@ export function Section({
   children,
   ...props
 }: Readonly<SectionProps>) {
+  const isLightTone = tone === "light";
+
   return (
     <section className={cn(toneStyles[tone], className)} {...props}>
       <Container className={contentClassName}>
@@ -47,7 +53,12 @@ export function Section({
             {eyebrow ? <Badge tone="accent">{eyebrow}</Badge> : null}
             {title ? (
               <h2
-                className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-lg)] text-[color:var(--color-foreground)]"
+                className={cn(
+                  "font-[family-name:var(--font-display)] text-[length:var(--font-size-title-lg)]",
+                  isLightTone
+                    ? "text-[var(--color-ink-strong)]"
+                    : "text-[color:var(--color-foreground)]"
+                )}
                 style={{
                   letterSpacing: "var(--tracking-display)",
                   lineHeight: "var(--line-height-tight)",
@@ -57,7 +68,14 @@ export function Section({
               </h2>
             ) : null}
             {description ? (
-              <p className="max-w-2xl text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              <p
+                className={cn(
+                  "max-w-2xl text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)]",
+                  isLightTone
+                    ? "text-[var(--color-ink-muted)]"
+                    : "text-[color:var(--color-muted)]"
+                )}
+              >
                 {description}
               </p>
             ) : null}

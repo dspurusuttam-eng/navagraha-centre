@@ -1,7 +1,7 @@
 import type { HTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
 
-export type BadgeTone = "accent" | "neutral" | "outline";
+export type BadgeTone = "accent" | "neutral" | "outline" | "trust";
 
 const toneStyles: Record<BadgeTone, string> = {
   accent:
@@ -10,6 +10,8 @@ const toneStyles: Record<BadgeTone, string> = {
     "border-[color:var(--color-border)] bg-[rgba(255,255,255,0.03)] text-[color:var(--color-muted)]",
   outline:
     "border-[color:var(--color-border-strong)] bg-transparent text-[color:var(--color-foreground)]",
+  trust:
+    "border-[var(--color-trust-border)] bg-[var(--color-trust-bg)] text-[var(--color-trust-text)]",
 };
 
 export type BadgeProps = HTMLAttributes<HTMLSpanElement> & {
@@ -24,7 +26,7 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-2 rounded-[var(--radius-pill)] border px-3 py-1 text-[0.68rem] font-medium uppercase tracking-[var(--tracking-label)] transition [transition-duration:var(--motion-duration-fast)]",
+        "inline-flex items-center gap-2 rounded-[var(--radius-pill)] border px-3 py-1 text-[var(--font-size-label)] font-medium uppercase tracking-[var(--tracking-label)] transition [transition-duration:var(--motion-duration-fast)]",
         toneStyles[tone],
         className
       )}

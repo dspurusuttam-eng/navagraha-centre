@@ -1,21 +1,51 @@
 :root {
-  --color-surface: #080706;
-  --color-surface-elevated: #110f0d;
-  --color-surface-floating: rgba(13, 11, 10, 0.86);
-  --color-panel: rgba(19, 16, 14, 0.9);
-  --color-panel-strong: rgba(31, 26, 21, 0.98);
-  --color-field: rgba(16, 13, 11, 0.94);
-  --color-border: rgba(215, 187, 131, 0.16);
-  --color-border-strong: rgba(215, 187, 131, 0.32);
-  --color-foreground: #f7efe4;
-  --color-muted: #c0b098;
-  --color-muted-soft: #94836d;
-  --color-accent: #d7bb83;
-  --color-accent-strong: #f3daaa;
-  --color-accent-soft: rgba(215, 187, 131, 0.13);
-  --color-accent-ring: rgba(242, 214, 160, 0.34);
-  --color-accent-contrast: #171109;
-  --color-overlay: rgba(5, 4, 3, 0.56);
+  /* Premium hybrid palette */
+  --color-base-0: #fbf8f2;
+  --color-base-1: #f5f1e8;
+  --color-base-2: #ece6da;
+  --color-ink-strong: #1d2235;
+  --color-ink-body: #343a4f;
+  --color-ink-muted: #626a82;
+
+  --color-navy-900: #0e1426;
+  --color-navy-850: #141c31;
+  --color-navy-800: #1b2440;
+  --color-violet-700: #5f4ba0;
+  --color-violet-600: #7560b5;
+  --color-gold-500: #c9a35c;
+  --color-gold-400: #e2c27c;
+  --color-gold-300: #f0d9a4;
+
+  --color-trust-bg: rgba(95, 75, 160, 0.1);
+  --color-trust-border: rgba(95, 75, 160, 0.25);
+  --color-trust-text: #4a3a83;
+
+  /* Shared semantic aliases used across the existing UI */
+  --color-surface: var(--color-navy-900);
+  --color-surface-elevated: var(--color-navy-850);
+  --color-surface-floating: rgba(17, 24, 43, 0.9);
+  --color-panel: rgba(24, 30, 51, 0.9);
+  --color-panel-strong: rgba(16, 21, 39, 0.98);
+  --color-field: rgba(12, 17, 31, 0.94);
+  --color-border: rgba(201, 163, 92, 0.2);
+  --color-border-strong: rgba(226, 194, 124, 0.4);
+  --color-foreground: #f7f3ec;
+  --color-muted: #c8bfd0;
+  --color-muted-soft: #978da7;
+  --color-accent: var(--color-gold-500);
+  --color-accent-strong: var(--color-gold-300);
+  --color-accent-soft: rgba(201, 163, 92, 0.14);
+  --color-accent-ring: rgba(117, 96, 181, 0.3);
+  --color-accent-contrast: #1d2235;
+  --color-overlay: rgba(8, 12, 23, 0.58);
+
+  /* Dedicated light + contrast section tokens for future section upgrades */
+  --color-section-light: var(--color-base-0);
+  --color-section-light-muted: var(--color-base-1);
+  --color-section-light-strong: var(--color-base-2);
+  --color-section-contrast: var(--color-navy-900);
+  --color-section-contrast-elevated: var(--color-navy-850);
+  --color-section-contrast-edge: rgba(226, 194, 124, 0.34);
 
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -45,11 +75,14 @@
 
   --font-size-display-xl: clamp(3.5rem, 8vw, 6.75rem);
   --font-size-display-lg: clamp(2.85rem, 6vw, 5rem);
+  --font-size-display-md: clamp(2.2rem, 4.2vw, 3.6rem);
   --font-size-title-lg: clamp(1.8rem, 3vw, 2.7rem);
   --font-size-title-md: clamp(1.4rem, 2.5vw, 1.9rem);
+  --font-size-title-sm: clamp(1.16rem, 2vw, 1.4rem);
   --font-size-body-lg: 1.125rem;
   --font-size-body-md: 1rem;
   --font-size-body-sm: 0.92rem;
+  --font-size-label: 0.72rem;
   --line-height-tight: 1.02;
   --line-height-copy: 1.75;
   --tracking-display: -0.045em;

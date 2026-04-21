@@ -27,17 +27,17 @@ body {
   background:
     radial-gradient(
       circle at 10% 0%,
-      rgba(215, 187, 131, 0.2),
+      rgba(201, 163, 92, 0.18),
       transparent 30%
     ),
     radial-gradient(
       circle at 88% 10%,
-      rgba(215, 187, 131, 0.1),
+      rgba(117, 96, 181, 0.1),
       transparent 24%
     ),
     radial-gradient(
       circle at 50% 100%,
-      rgba(215, 187, 131, 0.05),
+      rgba(201, 163, 92, 0.07),
       transparent 34%
     ),
     linear-gradient(
@@ -69,8 +69,38 @@ select {
 }
 
 ::selection {
-  background: rgba(215, 187, 131, 0.28);
+  background: rgba(117, 96, 181, 0.26);
   color: var(--color-foreground);
+}
+
+.surface-light {
+  background: linear-gradient(
+    180deg,
+    var(--color-section-light) 0%,
+    var(--color-section-light-muted) 100%
+  );
+}
+
+.surface-light-muted {
+  background: linear-gradient(
+    180deg,
+    var(--color-section-light-muted) 0%,
+    var(--color-section-light-strong) 100%
+  );
+}
+
+.surface-contrast {
+  background: linear-gradient(
+    180deg,
+    var(--color-section-contrast-elevated) 0%,
+    var(--color-section-contrast) 100%
+  );
+}
+
+.trust-badge {
+  border-color: var(--color-trust-border);
+  background: var(--color-trust-bg);
+  color: var(--color-trust-text);
 }
 
 @keyframes home-fade-up {

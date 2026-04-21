@@ -101,6 +101,34 @@ export default async function JoyPrakashSarmahPage({
         </div>
       </Section>
 
+      <Section
+        tone="transparent"
+        eyebrow="Methodology"
+        title="How the guidance system is positioned"
+        description="Authority comes from a clear methodology, transparent boundaries, and consistent consultation handling rather than exaggerated claims."
+      >
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <Card className="space-y-3">
+            <Badge tone="outline">Vedic Foundation</Badge>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              Chart context is built from Vedic sidereal structure with Lahiri ayanamsha alignment.
+            </p>
+          </Card>
+          <Card className="space-y-3">
+            <Badge tone="outline">Interpretation Model</Badge>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              NAVAGRAHA AI supports structured interpretation, while Joy Prakash Sarmah leads high-context human consultation.
+            </p>
+          </Card>
+          <Card className="space-y-3">
+            <Badge tone="outline">Trust Boundaries</Badge>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              Guidance remains calm and non-deterministic, with remedies presented as optional support rather than pressure.
+            </p>
+          </Card>
+        </div>
+      </Section>
+
       <Section className="pt-0" tone="transparent">
         <Card
           tone="accent"

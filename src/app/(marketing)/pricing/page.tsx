@@ -7,6 +7,8 @@ import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
 import { buildPageMetadata } from "@/lib/metadata";
+import { PremiumProductCatalogSection } from "@/modules/report/components/premium-product-catalog-section";
+import { globalLabelCopy } from "@/modules/localization/copy";
 import { getPlanComparisonRows } from "@/modules/subscriptions/monetization-content";
 
 export const metadata = buildPageMetadata({
@@ -36,6 +38,9 @@ export default function PricingPage() {
         title="Choose the plan depth that matches your guidance rhythm."
         description="Free remains available for foundational use. Premium and Pro unlock deeper assistant and report continuity when you need it."
       >
+        <p className="mb-4 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-muted)]">
+          {globalLabelCopy.currencyNote}
+        </p>
         <Card tone="accent" className="mb-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
           <div className="space-y-3">
             <Badge tone="accent">Best starting action</Badge>
@@ -138,6 +143,60 @@ export default function PricingPage() {
           >
             Open Member Settings
           </Link>
+        </Card>
+
+        <PremiumProductCatalogSection
+          surface="public"
+          pagePath="/pricing"
+          planType="FREE"
+          includeKeys={[
+            "career-report",
+            "marriage-report",
+            "finance-report",
+            "health-report",
+            "deep-ai-reading",
+            "consultation-guidance",
+          ]}
+          upgradeHref="/pricing"
+          tone="transparent"
+          eyebrow="Premium Products"
+          title="What each premium product helps with"
+          description="This catalog keeps report, AI depth, and consultation relationships clear before plan selection."
+        />
+
+        <Card className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="space-y-2">
+            <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+              Method
+            </p>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              Premium outputs build on Vedic sidereal chart foundations with Lahiri-aligned context.
+            </p>
+          </div>
+          <div className="space-y-2">
+            <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+              Authority
+            </p>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              Consultation-led interpretation remains available under Joy Prakash Sarmah for deeper support.
+            </p>
+          </div>
+          <div className="space-y-2">
+            <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+              Privacy
+            </p>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              Birth details and account data stay inside protected member flows; guidance depth is plan-aware and optional.
+            </p>
+          </div>
+          <div className="space-y-2">
+            <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+              Payments
+            </p>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              Checkout and subscription state are verified server-side before plan upgrades are finalized.
+            </p>
+          </div>
         </Card>
       </Section>
     </>

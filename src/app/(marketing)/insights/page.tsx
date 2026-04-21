@@ -7,6 +7,7 @@ import { PageHero } from "@/components/site/page-hero";
 import { buildPageMetadata } from "@/lib/metadata";
 import { ContentCard } from "@/modules/content/components/content-card";
 import {
+  contentHubs,
   getContentAdapter,
   getInsightsCollectionStructuredData,
 } from "@/modules/content";
@@ -100,6 +101,35 @@ export default async function InsightsPage() {
           </div>
         </Section>
       ))}
+
+      <Section
+        eyebrow="Knowledge Hubs"
+        title="Authority hubs that connect content, tools, and conversion."
+        description="Use structured hubs to navigate major astrology themes without fragmentation across the public website."
+      >
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {contentHubs.map((hub) => (
+            <Card key={hub.slug} interactive className="flex h-full flex-col gap-4">
+              <h3 className="text-[length:var(--font-size-body-lg)] text-[color:var(--color-foreground)]">
+                {hub.title}
+              </h3>
+              <p className="flex-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                {hub.description}
+              </p>
+              <Link
+                href={hub.path}
+                className={buttonStyles({
+                  size: "sm",
+                  tone: "secondary",
+                  className: "w-full justify-center",
+                })}
+              >
+                Open Hub
+              </Link>
+            </Card>
+          ))}
+        </div>
+      </Section>
 
       <Section
         eyebrow="Publishing Boundary"

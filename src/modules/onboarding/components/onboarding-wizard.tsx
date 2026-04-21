@@ -24,6 +24,7 @@ import {
 import { initialOnboardingActionState } from "@/modules/onboarding/action-state";
 import { preferredLanguageOptions } from "@/modules/onboarding/constants";
 import { cn } from "@/lib/cn";
+import { globalLabelCopy } from "@/modules/localization/copy";
 
 type OnboardingWizardProps = {
   defaults: {
@@ -73,7 +74,7 @@ const steps = [
   {
     id: "birth-moment",
     eyebrow: "Step 2",
-    title: "Birth date, time, and timezone",
+    title: "Birth date, local time, and timezone",
     description:
       "Capture the core birth moment with clean, deterministic inputs for the initial chart.",
     fields: ["birthDate", "birthTime", "timezone"],
@@ -423,6 +424,9 @@ export function OnboardingWizard({
                   }}
                   required
                 />
+                <p className="text-[0.72rem] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                  {globalLabelCopy.dateHint}
+                </p>
               </div>
 
               <div className="space-y-2">
@@ -443,6 +447,9 @@ export function OnboardingWizard({
                   }}
                   required
                 />
+                <p className="text-[0.72rem] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                  {globalLabelCopy.timeHint}
+                </p>
               </div>
 
               <div className="space-y-2 md:col-span-2">
@@ -484,6 +491,9 @@ export function OnboardingWizard({
                     ? "Timezone is auto-derived from the resolved birth location."
                     : "Manual timezone override is enabled."}
                 </p>
+                <p className="text-[0.72rem] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                  {globalLabelCopy.timezoneHint}
+                </p>
               </div>
             </div>
 
@@ -498,7 +508,7 @@ export function OnboardingWizard({
                   htmlFor="onboarding-city"
                   className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]"
                 >
-                  Birth City
+                  Birth City or Town
                 </label>
                 <Input
                   id="onboarding-city"
@@ -517,7 +527,7 @@ export function OnboardingWizard({
                   htmlFor="onboarding-region"
                   className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]"
                 >
-                  Region
+                  Region / State / Province
                 </label>
                 <Input
                   id="onboarding-region"
@@ -536,7 +546,7 @@ export function OnboardingWizard({
                   htmlFor="onboarding-country"
                   className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]"
                 >
-                  Country
+                  Country / Nation
                 </label>
                 <Input
                   id="onboarding-country"

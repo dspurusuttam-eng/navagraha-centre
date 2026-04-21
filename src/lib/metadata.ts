@@ -19,6 +19,7 @@ export function buildPageMetadata({
     "NAVAGRAHA CENTRE",
     "Joy Prakash Sarmah",
     "luxury astrology",
+    "vedic astrology platform",
     "premium astrology consultation",
     "remedy guidance",
   ];

@@ -1,4 +1,5 @@
 import { getPublicEnvironment } from "@/config/env";
+import { globalCtaCopy } from "@/modules/localization/copy";
 
 export type SiteNavItem = {
   href: string;
@@ -20,15 +21,14 @@ const siteName = publicEnvironment.siteName;
 
 const marketingNav = [
   { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/services", label: "Services" },
-  { href: "/consultation", label: "Consultation" },
+  { href: "/sign-up", label: "Kundli Chart" },
+  { href: "/marriage-compatibility", label: "Compatibility" },
+  { href: "/daily-rashifal", label: "Daily Rashifal" },
   { href: "/kundli-ai", label: "NAVAGRAHA AI" },
-  { href: "/pricing", label: "Pricing" },
-  { href: "/insights", label: "Insights" },
+  { href: "/career-report", label: "Reports" },
+  { href: "/consultation", label: "Consultation" },
   { href: "/shop", label: "Shop" },
-  { href: "/joy-prakash-sarmah", label: "Astrologer" },
-  { href: "/contact", label: "Contact" },
+  { href: "/insights", label: "Insights" },
 ] satisfies SiteNavItem[];
 
 const appNav = [
@@ -49,16 +49,31 @@ const foundationNav = [
 ] satisfies SiteNavItem[];
 
 const offeringsNav = [
-  { href: "/sign-up", label: "Generate Kundli" },
+  { href: "/sign-up", label: globalCtaCopy.generateKundli },
+  { href: "/marriage-compatibility", label: "Compatibility" },
+  { href: "/daily-rashifal", label: "Daily Rashifal" },
+  { href: "/career-report", label: "Reports" },
   { href: "/consultation", label: "Consultation" },
-  { href: "/kundli-ai", label: "AI Tools" },
-  { href: "/pricing", label: "Pricing" },
+  { href: "/kundli-ai", label: "NAVAGRAHA AI" },
+  { href: "/sign-in", label: "Login" },
+  { href: "/dashboard", label: "Account" },
+  { href: "/contact", label: "Contact" },
+  { href: "/about", label: "About" },
+  { href: "/services", label: "Services" },
+  { href: "/pricing", label: "Plans" },
   { href: "/shop", label: "Shop" },
   { href: "/insights", label: "Insights" },
 ] satisfies SiteNavItem[];
 
 const profileNav = [
   { href: "/joy-prakash-sarmah", label: "Joy Prakash Sarmah" },
+] satisfies SiteNavItem[];
+
+const supportNav = [
+  { href: "/sign-in", label: "Login" },
+  { href: "/dashboard", label: "Account" },
+  { href: "/contact", label: "Contact" },
+  { href: "/forgot-password", label: "Password Reset" },
 ] satisfies SiteNavItem[];
 
 export const siteConfig = {
@@ -71,8 +86,9 @@ export const siteConfig = {
   adminNav,
   foundationNav,
   footerGroups: [
-    { title: "Explore", links: marketingNav },
-    { title: "Offerings", links: offeringsNav },
+    { title: "Navigation", links: marketingNav },
+    { title: "Guidance", links: offeringsNav },
+    { title: "Support", links: supportNav },
     { title: "Astrologer", links: profileNav },
   ] satisfies SiteLinkGroup[],
 } as const;

@@ -120,6 +120,33 @@ export default async function DashboardOnboardingPage({
         </Card>
       </div>
 
+      <div className="mb-6 grid gap-4 md:grid-cols-3">
+        <Card className="space-y-2">
+          <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+            Calculation Method
+          </p>
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            Birth intake is prepared for Vedic sidereal chart generation with Lahiri ayanamsha alignment.
+          </p>
+        </Card>
+        <Card className="space-y-2">
+          <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+            Data Privacy
+          </p>
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            Birth details are stored in your protected account path and used only for chart and guidance flows.
+          </p>
+        </Card>
+        <Card className="space-y-2">
+          <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+            Guidance Model
+          </p>
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            AI explanations remain chart-aware. Consultation-led interpretation is available for deeper context.
+          </p>
+        </Card>
+      </div>
+
       {hasSnapshotFallback ? (
         <Card className="mb-6">
           <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">

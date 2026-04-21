@@ -11,6 +11,7 @@ import {
   consultationProcess,
   recommendConsultationNextAction,
 } from "@/modules/consultations";
+import { globalLabelCopy } from "@/modules/localization/copy";
 
 export const metadata = buildPageMetadata({
   title: "Consultations With Joy Prakash Sarmah",
@@ -28,6 +29,7 @@ function formatCurrencyFromMinor(amount: number) {
   return new Intl.NumberFormat("en-IN", {
     style: "currency",
     currency: "INR",
+    currencyDisplay: "narrowSymbol",
     maximumFractionDigits: 0,
   }).format(amount / 100);
 }
@@ -75,6 +77,9 @@ export default async function ConsultationPage({
         title="Packages built for different kinds of consultation depth."
         description={conversion.guidanceLine}
       >
+        <p className="mb-4 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-muted)]">
+          {globalLabelCopy.currencyNote}
+        </p>
         <Card className="mb-5 flex flex-col gap-3" tone="accent">
           <div className="flex flex-wrap gap-2">
             <Badge tone="accent">{conversion.intentLabel}</Badge>
@@ -109,7 +114,8 @@ export default async function ConsultationPage({
                   {item.durationMinutes} min
                 </Badge>
                 <Badge tone="outline">
-                  From {formatCurrencyFromMinor(item.priceFromMinor)}
+                  From {formatCurrencyFromMinor(item.priceFromMinor)}{" "}
+                  ({globalLabelCopy.currencyCode})
                 </Badge>
               </div>
 
@@ -181,6 +187,9 @@ export default async function ConsultationPage({
               . Clients confirm their own timezone during booking so both views
               remain visible in the confirmation experience.
             </p>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              {globalLabelCopy.timezoneHint}
+            </p>
           </div>
           <div className="flex flex-wrap gap-3">
             <Link
@@ -191,6 +200,40 @@ export default async function ConsultationPage({
             </Link>
           </div>
         </Card>
+      </Section>
+
+      <Section
+        eyebrow="Methodology + Trust"
+        title="A clear approach before booking improves confidence."
+        description="Consultation guidance is framed through Vedic sidereal chart context, then interpreted with AI support and human review where needed."
+        tone="muted"
+      >
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <Card className="space-y-3">
+            <Badge tone="neutral">Calculation Base</Badge>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              Chart foundations are aligned to Vedic sidereal methodology with Lahiri ayanamsha context.
+            </p>
+          </Card>
+          <Card className="space-y-3">
+            <Badge tone="neutral">AI + Jyotish</Badge>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              AI helps organize and explain chart context, while consultation preserves nuanced human interpretation.
+            </p>
+          </Card>
+          <Card className="space-y-3">
+            <Badge tone="neutral">Authority</Badge>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              Joy Prakash Sarmah leads the consultation experience and remains the visible authority behind guidance quality.
+            </p>
+          </Card>
+          <Card className="space-y-3">
+            <Badge tone="neutral">Data Safety</Badge>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              Birth details, booking intake, and consultation records remain in protected account surfaces with explicit user flow.
+            </p>
+          </Card>
+        </div>
       </Section>
     </>
   );

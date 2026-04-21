@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { trackEvent } from "@/lib/analytics/track-event";
 import { getApiErrorMessage } from "@/lib/api/http";
+import { listPremiumProductCatalog, type PremiumProductKey } from "@/modules/report/premium-product-catalog";
 import { getMonetizationUpgradeCopy } from "@/modules/subscriptions/monetization-content";
 
 type PremiumReportType = "CAREER" | "MARRIAGE" | "FINANCE" | "HEALTH";
@@ -46,6 +47,23 @@ function getUpgradeCtaLabel(reportType: PremiumReportType) {
   }
 }
 
+function mapReportTypeToCatalogKey(
+  reportType: PremiumReportType
+): PremiumProductKey {
+  switch (reportType) {
+    case "CAREER":
+      return "career-report";
+    case "MARRIAGE":
+      return "marriage-report";
+    case "FINANCE":
+      return "finance-report";
+    case "HEALTH":
+      return "health-report";
+    default:
+      return "career-report";
+  }
+}
+
 export function PremiumReportGenerator() {
   const [activeType, setActiveType] = useState<PremiumReportType>("CAREER");
   const [isLoading, setIsLoading] = useState(false);
@@ -56,6 +74,9 @@ export function PremiumReportGenerator() {
     surface: "protected",
     reportType: activeType,
   });
+  const activeCatalogItem = listPremiumProductCatalog([
+    mapReportTypeToCatalogKey(activeType),
+  ])[0];
 
   useEffect(() => {
     if (!result) {
@@ -148,6 +169,9 @@ export function PremiumReportGenerator() {
         >
           Generate focused report previews with premium unlock.
         </h2>
+        <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+          Each report keeps the same product shape: useful free preview, richer premium depth, and clear follow-up into assistant or consultation.
+        </p>
       </div>
 
       <div className="flex flex-wrap gap-3">
@@ -206,6 +230,25 @@ export function PremiumReportGenerator() {
             {result.message}
           </p>
 
+          {activeCatalogItem ? (
+            <div className="space-y-3 rounded-[var(--radius-xl)] border border-[rgba(215,187,131,0.18)] bg-[rgba(215,187,131,0.06)] px-4 py-4">
+              <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                Product framing
+              </p>
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                Helps with: {activeCatalogItem.helpsWith}
+              </p>
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                Best for: {activeCatalogItem.bestFor}
+              </p>
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                {result.status === "FULL_ACCESS"
+                  ? activeCatalogItem.premiumValue
+                  : activeCatalogItem.previewValue}
+              </p>
+            </div>
+          ) : null}
+
           {result.status === "FULL_ACCESS" ? (
             <div className="space-y-4">
               <div className="space-y-3">
@@ -236,6 +279,12 @@ export function PremiumReportGenerator() {
                   }}
                 >
                   Ask My Chart About This Report
+                </Link>
+                <Link
+                  href="/dashboard/consultations"
+                  className="inline-flex rounded-full border border-[color:var(--color-border)] px-4 py-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-foreground)] transition [transition-duration:var(--motion-duration-base)] hover:border-[color:var(--color-border-strong)]"
+                >
+                  Continue To Consultation
                 </Link>
               </div>
 

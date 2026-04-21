@@ -1,7 +1,13 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useMemo, useState } from "react";
 import { buttonStyles } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
+import { cn } from "@/lib/cn";
 import { siteConfig, type SiteNavItem } from "@/config/site";
+import { globalCtaCopy } from "@/modules/localization/copy";
 import { ShopCartLink } from "@/modules/shop/components/shop-cart-link";
 
 type SiteSection = "marketing" | "app" | "admin";
@@ -21,17 +27,17 @@ const sectionConfig: Record<
   marketing: {
     label: "Marketing",
     description:
-      "Public pages shaped for calm authority, premium trust, and a polished first impression.",
+      "Premium astrology surfaces for chart, AI, consultation, and trust-led exploration.",
     navigation: siteConfig.marketingNav,
     action: {
-      href: "/consultation",
-      label: "Book Consultation",
+      href: "/sign-up",
+      label: globalCtaCopy.generateKundli,
     },
   },
   app: {
     label: "App",
     description:
-      "Protected member surfaces for onboarding, consultation booking, chart review, account identity, and future private journeys.",
+      "Protected member surfaces for onboarding, consultation booking, chart review, and account continuity.",
     navigation: siteConfig.appNav,
     action: {
       href: "/dashboard/consultations/book",
@@ -41,7 +47,7 @@ const sectionConfig: Record<
   admin: {
     label: "Admin",
     description:
-      "Internal control panel for member access, consultation operations, catalog governance, editorial review, and AI template stewardship.",
+      "Internal operations surface for orders, consultations, and catalog governance.",
     navigation: siteConfig.adminNav,
     action: {
       href: "/dashboard",
@@ -54,72 +60,102 @@ export type NavbarProps = {
   section: SiteSection;
 };
 
+function isActiveRoute(pathname: string, href: string) {
+  if (href === "/") {
+    return pathname === "/";
+  }
+
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 export function Navbar({ section }: Readonly<NavbarProps>) {
+  const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
   const currentSection = sectionConfig[section];
   const isMarketing = section === "marketing";
 
+  const primaryCta = currentSection.action;
+  const secondaryCta = useMemo(
+    () =>
+      isMarketing
+        ? { href: "/kundli-ai", label: globalCtaCopy.exploreAi }
+        : { href: "/consultation", label: globalCtaCopy.bookConsultation },
+    [isMarketing]
+  );
+
   return (
     <header
-      className={
+      className={cn(
+        "sticky top-0 z-40 border-b backdrop-blur-xl",
         isMarketing
-          ? "sticky top-0 z-40 border-b border-[rgba(20,22,38,0.14)] bg-[rgba(250,249,246,0.94)] backdrop-blur-xl"
-          : "sticky top-0 z-40 border-b border-[color:var(--color-border)] bg-[rgba(8,7,6,0.8)] backdrop-blur-xl"
-      }
+          ? "border-[rgba(29,34,53,0.14)] bg-[rgba(251,248,242,0.95)]"
+          : "border-[color:var(--color-border)] bg-[rgba(10,15,28,0.9)]"
+      )}
     >
       <Container className="py-3 sm:py-4">
-        <div className="space-y-4">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-            <div className="space-y-2">
+        <div className="space-y-3 sm:space-y-4">
+          <div className="flex items-center justify-between gap-3">
+            <div className="space-y-1">
               <div className="flex flex-wrap items-center gap-3">
                 <Link
                   href="/"
-                  className={
+                  className={cn(
+                    "font-[family-name:var(--font-display)] text-2xl transition [transition-duration:var(--motion-duration-base)] sm:text-3xl",
                     isMarketing
-                      ? "font-[family-name:var(--font-display)] text-[1.75rem] text-[#191826] transition [transition-duration:var(--motion-duration-base)] hover:text-[#4f3a86] sm:text-3xl"
-                      : "font-[family-name:var(--font-display)] text-[1.75rem] text-[color:var(--color-foreground)] transition [transition-duration:var(--motion-duration-base)] hover:text-[color:var(--color-accent)] sm:text-3xl"
-                  }
+                      ? "text-[var(--color-ink-strong)] hover:text-[var(--color-violet-700)]"
+                      : "text-[color:var(--color-foreground)] hover:text-[color:var(--color-accent)]"
+                  )}
                   style={{ letterSpacing: "0.14em" }}
                 >
                   {siteConfig.name}
                 </Link>
                 <span
-                  className={
+                  className={cn(
+                    "inline-flex rounded-[var(--radius-pill)] border px-3 py-1 text-[var(--font-size-label)] uppercase tracking-[var(--tracking-label)]",
                     isMarketing
-                      ? "inline-flex rounded-[var(--radius-pill)] border border-[rgba(79,58,134,0.26)] bg-[rgba(79,58,134,0.08)] px-3 py-1 text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[#4f3a86]"
-                      : "inline-flex rounded-[var(--radius-pill)] border border-[color:var(--color-border-strong)] bg-[color:var(--color-accent-soft)] px-3 py-1 text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]"
-                  }
+                      ? "border-[var(--color-trust-border)] bg-[var(--color-trust-bg)] text-[var(--color-trust-text)]"
+                      : "border-[color:var(--color-border-strong)] bg-[color:var(--color-accent-soft)] text-[color:var(--color-accent)]"
+                  )}
                 >
                   {currentSection.label}
                 </span>
               </div>
               <p
-                className={
+                className={cn(
+                  "max-w-2xl text-[0.74rem] leading-[var(--line-height-copy)] sm:text-[length:var(--font-size-body-sm)]",
                   isMarketing
-                    ? "max-w-3xl text-[0.78rem] leading-[var(--line-height-copy)] text-[#59586a] sm:text-[length:var(--font-size-body-sm)]"
-                    : "max-w-3xl text-[0.78rem] leading-[var(--line-height-copy)] text-[color:var(--color-muted)] sm:text-[length:var(--font-size-body-sm)]"
-                }
+                    ? "text-[var(--color-ink-muted)]"
+                    : "text-[color:var(--color-muted)]"
+                )}
               >
                 {currentSection.description}
               </p>
             </div>
 
-            <Link
-              href={currentSection.action.href}
-              className={buttonStyles({
-                size: "sm",
-                tone: isMarketing ? "accent" : "secondary",
-              })}
+            <button
+              type="button"
+              className={cn(
+                buttonStyles({
+                  size: "sm",
+                  tone: isMarketing ? "tertiary" : "secondary",
+                }),
+                "min-h-11 px-4 lg:hidden"
+              )}
+              aria-expanded={mobileOpen}
+              aria-controls="global-mobile-nav"
+              onClick={() => setMobileOpen((value) => !value)}
             >
-              {currentSection.action.label}
-            </Link>
+              {mobileOpen ? "Close" : "Menu"}
+            </button>
           </div>
 
           <div
-            className={
+            className={cn(
+              "hidden items-center justify-between gap-3 rounded-[var(--radius-lg)] border p-2 lg:flex",
               isMarketing
-                ? "rounded-[var(--radius-lg)] border border-[rgba(20,22,38,0.14)] bg-[rgba(255,255,255,0.8)] p-2"
-                : "rounded-[var(--radius-lg)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] p-2"
-            }
+                ? "border-[rgba(29,34,53,0.14)] bg-[rgba(255,255,255,0.84)]"
+                : "border-[color:var(--color-border)] bg-[rgba(255,255,255,0.03)]"
+            )}
           >
             <nav
               aria-label={`${currentSection.label} navigation`}
@@ -129,16 +165,121 @@ export function Navbar({ section }: Readonly<NavbarProps>) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={
+                  className={cn(
+                    "rounded-[var(--radius-pill)] border px-3 py-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] transition [transition-duration:var(--motion-duration-base)] [transition-timing-function:var(--ease-standard)]",
                     isMarketing
-                      ? "rounded-[var(--radius-pill)] border border-transparent px-3 py-2 text-[0.66rem] uppercase tracking-[0.14em] text-[#5b5a68] transition [transition-duration:var(--motion-duration-base)] [transition-timing-function:var(--ease-standard)] hover:border-[rgba(20,22,38,0.2)] hover:bg-[rgba(79,58,134,0.07)] hover:text-[#1a1928] sm:text-[0.72rem] sm:tracking-[var(--tracking-label)]"
-                      : "rounded-[var(--radius-pill)] border border-transparent px-3 py-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-muted)] transition [transition-duration:var(--motion-duration-base)] [transition-timing-function:var(--ease-standard)] hover:border-[color:var(--color-border)] hover:bg-[rgba(255,255,255,0.03)] hover:text-[color:var(--color-foreground)]"
-                  }
+                      ? "border-transparent text-[var(--color-ink-muted)] hover:border-[rgba(29,34,53,0.2)] hover:bg-[var(--color-trust-bg)] hover:text-[var(--color-ink-strong)]"
+                      : "border-transparent text-[color:var(--color-muted)] hover:border-[color:var(--color-border)] hover:bg-[rgba(255,255,255,0.03)] hover:text-[color:var(--color-foreground)]",
+                    isActiveRoute(pathname, item.href) &&
+                      (isMarketing
+                        ? "border-[rgba(95,75,160,0.3)] bg-[var(--color-trust-bg)] text-[var(--color-ink-strong)]"
+                        : "border-[color:var(--color-border-strong)] bg-[rgba(255,255,255,0.05)] text-[color:var(--color-foreground)]"),
+                    item.label === "NAVAGRAHA AI" &&
+                      isMarketing &&
+                      "border-[rgba(95,75,160,0.28)] bg-[rgba(95,75,160,0.1)] text-[var(--color-violet-700)]"
+                  )}
                 >
                   {item.label}
                 </Link>
               ))}
-              {section === "marketing" ? <ShopCartLink /> : null}
+              {isMarketing ? <ShopCartLink /> : null}
+            </nav>
+
+            <div className="flex flex-wrap items-center justify-end gap-2">
+              <Link
+                href={primaryCta.href}
+                className={buttonStyles({ size: "sm", tone: "accent" })}
+              >
+                {primaryCta.label}
+              </Link>
+              <Link
+                href={secondaryCta.href}
+                className={buttonStyles({
+                  size: "sm",
+                  tone: isMarketing ? "secondary" : "tertiary",
+                })}
+              >
+                {secondaryCta.label}
+              </Link>
+              <Link
+                href={isMarketing ? "/sign-in" : "/dashboard"}
+                className={buttonStyles({
+                  size: "sm",
+                  tone: "tertiary",
+                })}
+              >
+                {isMarketing ? globalCtaCopy.signInAccount : "Account"}
+              </Link>
+            </div>
+          </div>
+
+          <div
+            id="global-mobile-nav"
+            className={cn(
+              "rounded-[var(--radius-lg)] border p-3 lg:hidden",
+              isMarketing
+                ? "border-[rgba(29,34,53,0.14)] bg-[rgba(255,255,255,0.88)]"
+                : "border-[color:var(--color-border)] bg-[rgba(255,255,255,0.03)]",
+              mobileOpen ? "block" : "hidden"
+            )}
+          >
+            <nav
+              aria-label={`${currentSection.label} mobile navigation`}
+              className="grid gap-2"
+            >
+              {currentSection.navigation.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={cn(
+                    "rounded-[var(--radius-md)] border px-3 py-3 text-[0.74rem] uppercase tracking-[0.16em] transition [transition-duration:var(--motion-duration-base)]",
+                    isMarketing
+                      ? "border-[rgba(29,34,53,0.14)] text-[var(--color-ink-body)]"
+                      : "border-[color:var(--color-border)] text-[color:var(--color-foreground)]",
+                    isActiveRoute(pathname, item.href) &&
+                      (isMarketing
+                        ? "bg-[var(--color-trust-bg)] text-[var(--color-ink-strong)]"
+                        : "bg-[rgba(255,255,255,0.06)]")
+                  )}
+                >
+                  {item.label}
+                </Link>
+              ))}
+              <Link
+                href={primaryCta.href}
+                onClick={() => setMobileOpen(false)}
+                className={buttonStyles({
+                  size: "sm",
+                  tone: "accent",
+                  className: "mt-1 w-full justify-center",
+                })}
+              >
+                {primaryCta.label}
+              </Link>
+              <Link
+                href={secondaryCta.href}
+                onClick={() => setMobileOpen(false)}
+                className={buttonStyles({
+                  size: "sm",
+                  tone: isMarketing ? "secondary" : "tertiary",
+                  className: "w-full justify-center",
+                })}
+              >
+                {secondaryCta.label}
+              </Link>
+              <Link
+                href={isMarketing ? "/sign-in" : "/dashboard"}
+                onClick={() => setMobileOpen(false)}
+                className={buttonStyles({
+                  size: "sm",
+                  tone: "tertiary",
+                  className: "w-full justify-center",
+                })}
+              >
+                {isMarketing ? globalCtaCopy.signInAccount : "Account"}
+              </Link>
+              {isMarketing ? <ShopCartLink /> : null}
             </nav>
           </div>
         </div>

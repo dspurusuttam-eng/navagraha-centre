@@ -1,11 +1,7 @@
-import Link from "next/link";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
-import { TrackedLink } from "@/components/analytics/tracked-link";
-import { PageHero } from "@/components/site/page-hero";
-import { Badge } from "@/components/ui/badge";
-import { buttonStyles } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Section } from "@/components/ui/section";
+import { AiProductFamilySection } from "@/modules/marketing/components/ai-product-family-section";
+import { PremiumProductCatalogSection } from "@/modules/report/components/premium-product-catalog-section";
+import { ToolPageTemplate } from "@/modules/marketing/components/tool-page-template";
 import {
   getSeoEntryPage,
   getSeoEntryStructuredData,
@@ -89,240 +85,45 @@ export function SeoEntryPageView({ entry }: Readonly<{ entry: SeoEntryPage }>) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(item) }}
         />
       ))}
-
-      <PageHero
-        eyebrow={entry.hero.eyebrow}
-        title={entry.hero.title}
-        description={entry.hero.description}
-        highlights={entry.hero.highlights}
-        note={entry.hero.note}
-        primaryAction={
-          entry.hero.primaryAction
-            ? {
-                ...entry.hero.primaryAction,
-                eventName: "cta_click",
-                eventPayload: {
-                  page: entry.path,
-                  feature: `seo-hero-primary-${entry.key}`,
-                },
-              }
-            : undefined
-        }
-        secondaryAction={
-          entry.hero.secondaryAction
-            ? {
-                ...entry.hero.secondaryAction,
-                eventName: "cta_click",
-                eventPayload: {
-                  page: entry.path,
-                  feature: `seo-hero-secondary-${entry.key}`,
-                },
-              }
-            : undefined
-        }
-        supportTitle="Entry Page Focus"
+      {entry.key === "kundli-ai" ? (
+        <AiProductFamilySection
+          surface="public"
+          pagePath={entry.path}
+          tone="contrast"
+          eyebrow="NAVAGRAHA AI Hub"
+          title="Explore the NAVAGRAHA AI product family from one flagship surface."
+          description="Use this hub to move between AI Kundli Reading, Compatibility, Career Insights, Remedies Guidance, and Ask My Chart with one coherent path."
+        />
+      ) : null}
+      {entry.key === "career-report" ||
+      entry.key === "finance-report" ||
+      entry.key === "health-report" ||
+      entry.key === "marriage-compatibility" ? (
+        <PremiumProductCatalogSection
+          surface="public"
+          pagePath={entry.path}
+          planType="FREE"
+          includeKeys={[
+            "career-report",
+            "marriage-report",
+            "finance-report",
+            "health-report",
+            "deep-ai-reading",
+            "consultation-guidance",
+          ]}
+          upgradeHref="/pricing"
+          tone="muted"
+          eyebrow="Premium Reports Catalog"
+          title="One premium catalog for reports, AI depth, and guided follow-up"
+          description="Start with useful previews, then unlock deeper product layers only when you need richer report continuity."
+        />
+      ) : null}
+      <ToolPageTemplate
+        entry={entry}
+        relatedPages={relatedPages}
+        memberFlowLinks={memberFlowLinks}
+        acquisitionIntent={isAcquisitionPage ? acquisitionIntent : null}
       />
-
-      <Section
-        eyebrow="Why This Page"
-        title="A high-intent route that connects search to real product value."
-        description="Each section below is designed to route visitors into the existing member flows: chart, report, assistant, and consultation."
-      >
-        <div className="grid gap-5 md:grid-cols-3">
-          {entry.valueCards.map((card) => (
-            <Card key={card.title} className="space-y-3">
-              <Badge tone="neutral">Value</Badge>
-              <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[color:var(--color-foreground)]">
-                {card.title}
-              </h2>
-              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                {card.description}
-              </p>
-            </Card>
-          ))}
-        </div>
-      </Section>
-
-      <Section
-        tone="muted"
-        eyebrow="Member Journey"
-        title="How this intent flows into your protected astrology surfaces."
-        description="The route is simple: enter from search, create your chart foundation, then continue with assistant and report context."
-      >
-        <Card tone="accent" className="mb-6 grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
-          <div className="space-y-3">
-            <Badge tone="accent">Primary next step</Badge>
-            <p className="max-w-2xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              {memberFlowLinks[0]?.description}
-            </p>
-          </div>
-          <TrackedLink
-            href={memberFlowLinks[0]?.href ?? "/sign-up"}
-            eventName="cta_click"
-            eventPayload={{
-              page: entry.path,
-              feature: `seo-primary-member-journey-${entry.key}`,
-            }}
-            className={buttonStyles({ size: "lg", className: "w-full justify-center sm:w-auto" })}
-          >
-            {memberFlowLinks[0]?.label ?? "Create account"}
-          </TrackedLink>
-        </Card>
-
-        <div className="grid gap-5 md:grid-cols-3">
-          {entry.flowCards.map((card) => (
-            <Card key={card.title} className="space-y-3">
-              <Badge tone="outline">Flow</Badge>
-              <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[color:var(--color-foreground)]">
-                {card.title}
-              </h2>
-              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                {card.description}
-              </p>
-            </Card>
-          ))}
-        </div>
-
-        <div className="mt-6 grid gap-4 md:grid-cols-2">
-          {memberFlowLinks.map((link) => (
-            <Card key={link.href} interactive className="space-y-3">
-              <Badge tone="accent">{link.label}</Badge>
-              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                {link.description}
-              </p>
-              <TrackedLink
-                href={link.href}
-                eventName="cta_click"
-                eventPayload={{
-                  page: entry.path,
-                  feature: `seo-member-flow-${entry.key}`,
-                }}
-                className={buttonStyles({
-                  tone: link.href === memberFlowLinks[0]?.href ? "accent" : "secondary",
-                  size: "sm",
-                  className: "w-full justify-center",
-                })}
-              >
-                Go to {link.label}
-              </TrackedLink>
-            </Card>
-          ))}
-        </div>
-      </Section>
-
-      <Section
-        eyebrow="Related Intents"
-        title="Explore related entry pages"
-        description="Internal linking helps visitors move to the closest next intent without navigation friction."
-      >
-        <div className="grid gap-5 md:grid-cols-3">
-          {relatedPages.map((page) => (
-            <Card key={page.key} interactive className="space-y-3">
-              <Badge tone="neutral">{page.hero.eyebrow}</Badge>
-              <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[color:var(--color-foreground)]">
-                {page.hero.title}
-              </h2>
-              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                {page.metadata.description}
-              </p>
-              <Link
-                href={page.path}
-                className={buttonStyles({ tone: "secondary", size: "sm" })}
-              >
-                View {page.hero.eyebrow}
-              </Link>
-            </Card>
-          ))}
-        </div>
-      </Section>
-
-      <Section
-        tone="muted"
-        eyebrow="FAQ"
-        title="Common questions for this entry path"
-        description="These answers keep the page useful for both visitors and search while preserving trust-safe boundaries."
-      >
-        <div className="grid gap-4 md:grid-cols-3">
-          {entry.faqItems.map((item) => (
-            <Card key={item.question} className="space-y-3">
-              <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[color:var(--color-foreground)]">
-                {item.question}
-              </h2>
-              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                {item.answer}
-              </p>
-            </Card>
-          ))}
-        </div>
-      </Section>
-
-      <Section className="pt-0" tone="transparent">
-        <Card
-          tone="accent"
-          className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
-        >
-          <div className="space-y-4">
-            <Badge tone="accent">Premium Teaser</Badge>
-            <h2
-              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-md)] text-[color:var(--color-foreground)]"
-              style={{
-                letterSpacing: "var(--tracking-display)",
-                lineHeight: "var(--line-height-tight)",
-              }}
-            >
-              {entry.premiumTeaser.title}
-            </h2>
-            <p className="text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              {entry.premiumTeaser.description}
-            </p>
-            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              Plans are visible on the pricing page and inside member settings, starting from INR 99/month.
-            </p>
-          </div>
-
-          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap">
-            <TrackedLink
-              href={entry.premiumTeaser.href}
-              eventName="cta_click"
-              className={buttonStyles({ size: "lg", className: "w-full justify-center sm:w-auto" })}
-              eventPayload={{
-                page: entry.path,
-                feature: `seo-premium-${entry.key}`,
-              }}
-            >
-              {entry.premiumTeaser.label}
-            </TrackedLink>
-            {isAcquisitionPage ? (
-              <TrackedLink
-                href={buildAcquisitionSignInPath(acquisitionIntent)}
-                eventName="cta_click"
-                eventPayload={{
-                  page: entry.path,
-                  feature: `seo-secondary-acquisition-${entry.key}`,
-                }}
-                className={buttonStyles({
-                  size: "lg",
-                  tone: "secondary",
-                  className: "w-full justify-center sm:w-auto",
-                })}
-              >
-                Already a member?
-              </TrackedLink>
-            ) : (
-              <Link
-                href="/consultation"
-                className={buttonStyles({
-                  size: "lg",
-                  tone: "secondary",
-                  className: "w-full justify-center sm:w-auto",
-                })}
-              >
-                Book Consultation
-              </Link>
-            )}
-          </div>
-        </Card>
-      </Section>
     </>
   );
 }

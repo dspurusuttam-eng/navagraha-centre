@@ -5,6 +5,12 @@ export {
   getContentStructuredData,
   getInsightsCollectionStructuredData,
 } from "@/modules/content/seo";
+export {
+  contentHubs,
+  getContentHubBySlug,
+  getRequiredContentHubBySlug,
+  getRelatedContentHubs,
+} from "@/modules/content/hubs";
 export type {
   ContentEntry,
   ContentFaqItem,
@@ -14,3 +20,4 @@ export type {
   ContentStatus,
   ContentType,
 } from "@/modules/content/types";
+export type { ContentHub, ContentHubCallToAction, ContentHubSubtopic } from "@/modules/content/hubs";

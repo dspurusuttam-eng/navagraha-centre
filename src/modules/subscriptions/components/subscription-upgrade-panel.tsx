@@ -78,6 +78,9 @@ export function SubscriptionUpgradePanel() {
         <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
           Start a monthly membership checkout when you want deeper AI and report access.
         </p>
+        <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+          Payment status is verified server-side before any premium entitlement is applied.
+        </p>
       </div>
 
       <div className="flex flex-wrap gap-3">

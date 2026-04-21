@@ -10,6 +10,7 @@ import { Section } from "@/components/ui/section";
 import { OfferRecommendationPanel } from "@/modules/offers/components/offer-recommendation-panel";
 import type { OfferRecommendationResult } from "@/modules/offers/types";
 import { type RemedyRecommendation } from "@/modules/remedies";
+import { PremiumProductCatalogSection } from "@/modules/report/components/premium-product-catalog-section";
 import { PremiumReportGenerator } from "@/modules/report/components/premium-report-generator";
 import { getLabelForRemedyType } from "@/modules/report/components/remedy-presenter";
 import { reportDisclosures, type ChartReportReadyState } from "@/modules/report/service";
@@ -265,10 +266,16 @@ export function ChartReportPage({
 }>) {
   const chartReport = report.chartReport;
   const hasDeeperReportLayers = subscriptionState.featureGates.deeperReportLayers;
+  const reportPlanType =
+    subscriptionState.access.plan?.id === "PRO"
+      ? "PRO"
+      : subscriptionState.access.plan?.id === "PREMIUM"
+        ? "PREMIUM"
+        : "FREE";
   const reportUpgradeCopy = getMonetizationUpgradeCopy({
     prompt: "report-preview",
     surface: "protected",
-    planType: subscriptionState.access.plan?.id === "PRO" ? "PRO" : "FREE",
+    planType: reportPlanType,
   });
   const reportProCopy =
     subscriptionState.recommendation?.planId === "PRO"
@@ -472,6 +479,36 @@ export function ChartReportPage({
           description="Your current plan status and optional upgrade pathway stay visible while keeping this report calm and non-intrusive."
         />
       </div>
+
+      <PremiumProductCatalogSection
+        surface="protected"
+        pagePath="/dashboard/report"
+        planType={reportPlanType}
+        includeKeys={[
+          "career-report",
+          "marriage-report",
+          "finance-report",
+          "health-report",
+          "deep-ai-reading",
+          "consultation-guidance",
+        ]}
+        unlockedKeys={
+          hasDeeperReportLayers
+            ? [
+                "career-report",
+                "marriage-report",
+                "finance-report",
+                "health-report",
+                "deep-ai-reading",
+              ]
+            : undefined
+        }
+        upgradeHref={reportUpgradeCopy.upgradeHref}
+        tone="muted"
+        eyebrow="Premium Product Catalog"
+        title="Reports and premium guidance in one structured catalog"
+        description="Move from chart context into report depth, AI continuation, and consultation follow-up without fragmented upsell surfaces."
+      />
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <Card className="space-y-5">

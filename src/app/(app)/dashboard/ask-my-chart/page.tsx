@@ -5,6 +5,7 @@ import { Section } from "@/components/ui/section";
 import { buildPageMetadata } from "@/lib/metadata";
 import { requireUserSession } from "@/modules/auth/server";
 import { AskMyChartAssistant } from "@/modules/ask-chart/components/ask-my-chart-assistant";
+import { AiProductFamilySection } from "@/modules/marketing/components/ai-product-family-section";
 import { getAskMyChartPageData } from "@/modules/ask-chart/service";
 
 export const metadata = buildPageMetadata({
@@ -101,14 +102,24 @@ export default async function AskMyChartPage({
   }
 
   return (
-    <Section
-      eyebrow="Ask My Chart"
-      title="A private copilot for grounded chart questions."
-      description="This assistant stays inside your stored chart context, approved remedies, and available transit or consultation context. It does not improvise chart math or unsupported advice."
-      tone="transparent"
-      className="pt-0"
-    >
-      <AskMyChartAssistant initialData={pageData} />
-    </Section>
+    <>
+      <Section
+        eyebrow="Ask My Chart"
+        title="A private copilot for grounded chart questions."
+        description="This assistant stays inside your stored chart context, approved remedies, and available transit or consultation context. It does not improvise chart math or unsupported advice."
+        tone="transparent"
+        className="pt-0"
+      >
+        <AskMyChartAssistant initialData={pageData} />
+      </Section>
+      <AiProductFamilySection
+        surface="protected"
+        pagePath="/dashboard/ask-my-chart"
+        tone="muted"
+        eyebrow="NAVAGRAHA AI Ecosystem"
+        title="Continue within the AI family based on your current question."
+        description="Move from Ask My Chart into compatibility, report depth, remedy guidance, or consultation without losing chart context."
+      />
+    </>
   );
 }

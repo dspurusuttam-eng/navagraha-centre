@@ -50,7 +50,7 @@ const planRows: readonly PlanComparisonRow[] = [
   {
     planType: "FREE",
     title: "Free",
-    priceLabel: "INR 0/month",
+    priceLabel: "₹0 / month (INR)",
     shortDescription:
       "Foundational chart access with light assistant usage and premium previews kept optional.",
     aiQuestions: "3 chart-aware questions per day",
@@ -65,7 +65,7 @@ const planRows: readonly PlanComparisonRow[] = [
   {
     planType: "PREMIUM",
     title: "Premium",
-    priceLabel: "INR 99/month",
+    priceLabel: "₹99 / month (INR)",
     shortDescription:
       "Deeper assistant reasoning, richer report layers, and a smoother premium rhythm.",
     aiQuestions: "60 chart-aware questions per day",
@@ -80,7 +80,7 @@ const planRows: readonly PlanComparisonRow[] = [
   {
     planType: "PRO",
     title: "Pro",
-    priceLabel: "INR 299/month",
+    priceLabel: "₹299 / month (INR)",
     shortDescription:
       "Highest continuity tier for members who want no cap on premium report and assistant use.",
     aiQuestions: "Unlimited chart-aware questions",
