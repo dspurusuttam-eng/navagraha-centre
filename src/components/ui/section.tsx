@@ -9,7 +9,7 @@ type SectionAlign = "left" | "center";
 const toneStyles: Record<SectionTone, string> = {
   default: "py-[var(--space-10)] sm:py-[var(--space-12)] lg:py-[var(--space-14)]",
   muted:
-    "py-[var(--space-10)] sm:py-[var(--space-12)] lg:py-[var(--space-14)] bg-[linear-gradient(180deg,rgba(255,255,255,0.025)_0%,rgba(255,255,255,0.012)_100%)]",
+    "py-[var(--space-10)] sm:py-[var(--space-12)] lg:py-[var(--space-14)] bg-[linear-gradient(180deg,rgba(250,244,235,0.88)_0%,rgba(245,236,222,0.84)_100%)]",
   transparent: "py-[var(--space-10)] sm:py-[var(--space-12)] lg:py-[var(--space-14)]",
   light:
     "py-[var(--space-10)] sm:py-[var(--space-12)] lg:py-[var(--space-14)] bg-[linear-gradient(180deg,var(--color-section-light)_0%,var(--color-section-light-muted)_100%)]",
@@ -38,7 +38,7 @@ export function Section({
   children,
   ...props
 }: Readonly<SectionProps>) {
-  const isLightTone = tone === "light";
+  const usesInkPalette = tone === "light" || tone === "default" || tone === "muted" || tone === "transparent" || tone === "contrast";
 
   return (
     <section className={cn(toneStyles[tone], className)} {...props}>
@@ -52,10 +52,10 @@ export function Section({
           >
             {eyebrow ? <Badge tone="accent">{eyebrow}</Badge> : null}
             {title ? (
-              <h2
+                <h2
                 className={cn(
                   "font-[family-name:var(--font-display)] text-[length:var(--font-size-title-lg)]",
-                  isLightTone
+                  usesInkPalette
                     ? "text-[var(--color-ink-strong)]"
                     : "text-[color:var(--color-foreground)]"
                 )}
@@ -68,10 +68,10 @@ export function Section({
               </h2>
             ) : null}
             {description ? (
-              <p
+                <p
                 className={cn(
                   "max-w-2xl text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)]",
-                  isLightTone
+                  usesInkPalette
                     ? "text-[var(--color-ink-muted)]"
                     : "text-[color:var(--color-muted)]"
                 )}

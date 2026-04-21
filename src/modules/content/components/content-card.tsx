@@ -25,7 +25,7 @@ export function ContentCard({
 
       <div className="space-y-3">
         <h3
-          className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
+          className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[var(--color-ink-strong)]"
           style={{ letterSpacing: "var(--tracking-display)" }}
         >
           {entry.title}

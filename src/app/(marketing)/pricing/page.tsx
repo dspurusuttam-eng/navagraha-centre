@@ -84,7 +84,7 @@ export default function PricingPage() {
                 </Badge>
                 {row.featuredLabel ? <Badge tone="outline">Most Popular</Badge> : null}
               </div>
-              <p className="text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]">
+              <p className="text-[length:var(--font-size-title-sm)] text-[var(--color-ink-strong)]">
                 {row.priceLabel}
               </p>
               <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">

@@ -66,7 +66,7 @@ export default function PrivacyPolicyPage() {
         <div className="grid gap-4 md:grid-cols-3">
           {policySections.map((section) => (
             <Card key={section.title} className="space-y-4">
-              <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[color:var(--color-foreground)]">
+              <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
                 {section.title}
               </h2>
               <ul className="space-y-2">

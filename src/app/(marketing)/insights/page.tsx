@@ -111,7 +111,7 @@ export default async function InsightsPage() {
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {contentHubs.map((hub) => (
             <Card key={hub.slug} interactive className="flex h-full flex-col gap-4">
-              <h3 className="text-[length:var(--font-size-body-lg)] text-[color:var(--color-foreground)]">
+              <h3 className="text-[length:var(--font-size-body-lg)] text-[var(--color-ink-strong)]">
                 {hub.title}
               </h3>
               <p className="flex-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">

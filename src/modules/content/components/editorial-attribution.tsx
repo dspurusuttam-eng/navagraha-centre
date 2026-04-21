@@ -13,7 +13,7 @@ function PersonaBlock({
     <Card className="space-y-4">
       <Badge tone="neutral">{eyebrow}</Badge>
       <div className="space-y-2">
-        <p className="text-[length:var(--font-size-body-lg)] text-[color:var(--color-foreground)]">
+        <p className="text-[length:var(--font-size-body-lg)] text-[var(--color-ink-strong)]">
           {person.name}
         </p>
         <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">

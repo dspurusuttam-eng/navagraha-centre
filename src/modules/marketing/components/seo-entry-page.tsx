@@ -89,7 +89,7 @@ export function SeoEntryPageView({ entry }: Readonly<{ entry: SeoEntryPage }>) {
         <AiProductFamilySection
           surface="public"
           pagePath={entry.path}
-          tone="contrast"
+          tone="light"
           eyebrow="NAVAGRAHA AI Hub"
           title="Explore the NAVAGRAHA AI product family from one flagship surface."
           description="Use this hub to move between AI Kundli Reading, Compatibility, Career Insights, Remedies Guidance, and Ask My Chart with one coherent path."

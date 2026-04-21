@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { TrackedLink } from "@/components/analytics/tracked-link";
 import { AdReadyZone } from "@/components/site/ad-ready-zone";
 import { Badge } from "@/components/ui/badge";
@@ -170,9 +169,9 @@ export default function HomePage() {
   return (
     <>
       <section className="relative overflow-hidden border-b border-[rgba(29,34,53,0.12)] bg-[linear-gradient(180deg,var(--color-section-light)_0%,var(--color-section-light-muted)_60%,var(--color-section-light-strong)_100%)]">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_14%,rgba(226,194,124,0.2),transparent_36%),radial-gradient(circle_at_86%_12%,rgba(117,96,181,0.14),transparent_34%),radial-gradient(circle_at_72%_88%,rgba(40,66,125,0.12),transparent_38%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_14%,rgba(226,194,124,0.2),transparent_36%),radial-gradient(circle_at_86%_12%,rgba(210,165,135,0.16),transparent_34%),radial-gradient(circle_at_72%_88%,rgba(204,170,112,0.12),transparent_38%)]" />
         <div className="pointer-events-none absolute -left-16 top-10 h-44 w-44 rounded-full bg-[rgba(226,194,124,0.16)] blur-[72px] sm:h-56 sm:w-56" />
-        <div className="pointer-events-none absolute -right-14 top-14 h-40 w-40 rounded-full bg-[rgba(117,96,181,0.14)] blur-[72px] sm:h-52 sm:w-52" />
+        <div className="pointer-events-none absolute -right-14 top-14 h-40 w-40 rounded-full bg-[rgba(210,165,135,0.14)] blur-[72px] sm:h-52 sm:w-52" />
 
         <Container className="relative grid gap-8 py-12 sm:py-14 lg:grid-cols-[minmax(0,1.14fr)_minmax(340px,0.86fr)] lg:items-center">
           <div className="home-reveal home-reveal-delay-1 space-y-6">
@@ -242,15 +241,15 @@ export default function HomePage() {
               </h2>
               <ul className="space-y-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
                 <li className="flex items-start gap-2">
-                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[var(--color-violet-700)]" />
+                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
                   Deterministic Vedic chart foundation with validated birth context.
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[var(--color-violet-700)]" />
+                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
                   NAVAGRAHA AI responses grounded in actual chart structure.
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[var(--color-violet-700)]" />
+                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
                   Direct continuation to reports and consultation when depth is needed.
                 </li>
               </ul>
@@ -266,7 +265,7 @@ export default function HomePage() {
                 href={tool.href}
                 eventName="cta_click"
                 eventPayload={{ page: "/", feature: tool.feature }}
-                className="home-polish-surface group flex min-h-20 items-center gap-3 rounded-[var(--radius-lg)] border border-[rgba(29,34,53,0.12)] bg-[rgba(255,255,255,0.92)] px-4 py-3 shadow-[0_12px_24px_rgba(24,31,53,0.08)] transition [transition-duration:var(--motion-duration-base)] [transition-timing-function:var(--ease-standard)] motion-safe:hover:-translate-y-0.5 motion-safe:hover:border-[rgba(117,96,181,0.34)] motion-safe:hover:bg-[rgba(255,255,255,0.98)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#f8f5ee]"
+                className="home-polish-surface group flex min-h-20 items-center gap-3 rounded-[var(--radius-lg)] border border-[rgba(29,34,53,0.12)] bg-[rgba(255,255,255,0.92)] px-4 py-3 shadow-[0_12px_24px_rgba(24,31,53,0.08)] transition [transition-duration:var(--motion-duration-base)] [transition-timing-function:var(--ease-standard)] motion-safe:hover:-translate-y-0.5 motion-safe:hover:border-[rgba(184,137,67,0.34)] motion-safe:hover:bg-[rgba(255,255,255,0.98)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#f8f5ee]"
               >
                 <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--color-trust-border)] bg-[var(--color-trust-bg)] text-[0.66rem] font-semibold uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
                   {tool.icon}
@@ -297,7 +296,7 @@ export default function HomePage() {
         <AiProductFamilySection
           surface="public"
           pagePath="/"
-          tone="contrast"
+          tone="light"
           eyebrow="NAVAGRAHA AI Flagship"
           title="A chart-first AI product family, not a single generic chatbot."
           description="NAVAGRAHA AI unifies Kundli reading, compatibility, career, remedies, and Ask My Chart with clear progression from free value to premium depth."
@@ -332,14 +331,14 @@ export default function HomePage() {
 
       <Section
         className="home-reveal home-reveal-delay-7"
-        tone="contrast"
+        tone="light"
         eyebrow="Consultation + Authority"
         title="When nuance matters, move into astrologer-led consultation."
         description="NAVAGRAHA CENTRE pairs AI utility with visible human authority so high-stakes questions can be handled with depth and care."
       >
         <Card
           tone="accent"
-          className="mb-6 border-[var(--color-section-contrast-edge)] bg-[linear-gradient(160deg,rgba(45,34,68,0.9)_0%,rgba(16,21,39,0.96)_100%)] shadow-[0_20px_52px_rgba(8,11,21,0.44)] lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-6"
+          className="mb-6 border-[var(--color-section-contrast-edge)] bg-[linear-gradient(160deg,rgba(255,251,244,0.97)_0%,rgba(244,231,205,0.9)_100%)] shadow-[var(--shadow-md)] lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-6"
         >
           <div className="space-y-3">
             <Badge tone="accent">Expert Consultation</Badge>
@@ -369,10 +368,10 @@ export default function HomePage() {
             <Card
               key={item.title}
               interactive
-              className="flex h-full flex-col gap-4 border-[rgba(226,194,124,0.24)] bg-[linear-gradient(165deg,rgba(29,36,60,0.88)_0%,rgba(14,19,35,0.94)_100%)]"
+              className="flex h-full flex-col gap-4 border-[rgba(184,137,67,0.24)] bg-[linear-gradient(165deg,rgba(255,255,255,0.96)_0%,rgba(246,236,218,0.92)_100%)]"
             >
               <Badge tone="neutral">Consultation Format</Badge>
-              <h3 className="text-[length:var(--font-size-body-lg)] font-medium text-[color:var(--color-foreground)]">
+              <h3 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
                 {item.title}
               </h3>
               <p className="flex-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
@@ -394,7 +393,7 @@ export default function HomePage() {
           ))}
         </div>
 
-        <Card className="mt-6 border-[rgba(226,194,124,0.22)] bg-[rgba(255,255,255,0.04)]">
+        <Card className="mt-6 border-[rgba(184,137,67,0.24)] bg-[rgba(255,255,255,0.8)]">
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
             <div className="space-y-3">
               <Badge tone="neutral">Astrologer Authority</Badge>
@@ -608,7 +607,7 @@ export default function HomePage() {
               href={hub.path}
               eventName="cta_click"
               eventPayload={{ page: "/", feature: `knowledge-hub-${hub.slug}` }}
-              className="home-polish-surface flex min-h-20 items-center justify-between gap-3 rounded-[var(--radius-lg)] border border-[rgba(29,34,53,0.12)] bg-[rgba(255,255,255,0.92)] px-4 py-3 text-[0.74rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-ink-body)] transition [transition-duration:var(--motion-duration-base)] motion-safe:hover:-translate-y-0.5 motion-safe:hover:border-[rgba(117,96,181,0.34)]"
+              className="home-polish-surface flex min-h-20 items-center justify-between gap-3 rounded-[var(--radius-lg)] border border-[rgba(29,34,53,0.12)] bg-[rgba(255,255,255,0.92)] px-4 py-3 text-[0.74rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-ink-body)] transition [transition-duration:var(--motion-duration-base)] motion-safe:hover:-translate-y-0.5 motion-safe:hover:border-[rgba(184,137,67,0.34)]"
             >
               <span>{hub.title}</span>
               <span className="text-[var(--color-trust-text)]">Hub</span>
@@ -649,12 +648,12 @@ export default function HomePage() {
       >
         <Card
           tone="accent"
-          className="home-polish-surface border-[var(--color-section-contrast-edge)] bg-[linear-gradient(165deg,rgba(46,35,70,0.92)_0%,rgba(17,22,40,0.97)_58%,rgba(11,16,30,0.99)_100%)] shadow-[0_24px_58px_rgba(8,11,21,0.46)] lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8"
+          className="home-polish-surface border-[var(--color-section-contrast-edge)] bg-[linear-gradient(165deg,rgba(255,252,246,0.98)_0%,rgba(244,231,205,0.94)_58%,rgba(239,224,197,0.96)_100%)] shadow-[var(--shadow-md)] lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8"
         >
           <div className="space-y-4">
             <Badge tone="accent">Final CTA</Badge>
             <h2
-              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-lg)] text-[color:var(--color-foreground)]"
+              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-lg)] text-[var(--color-ink-strong)]"
               style={{
                 letterSpacing: "var(--tracking-display)",
                 lineHeight: "var(--line-height-tight)",

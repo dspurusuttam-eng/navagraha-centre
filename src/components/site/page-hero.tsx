@@ -39,15 +39,15 @@ export function PageHero({
   supportTitle = "Foundation Snapshot",
 }: Readonly<PageHeroProps>) {
   return (
-    <section className="relative overflow-hidden border-b border-[color:var(--color-border)]">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(205,176,124,0.2),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(205,176,124,0.08),transparent_24%),linear-gradient(180deg,rgba(255,255,255,0.015)_0%,rgba(255,255,255,0)_100%)]" />
+    <section className="relative overflow-hidden border-b border-[color:var(--color-border)] bg-[linear-gradient(180deg,var(--color-base-0)_0%,var(--color-base-1)_100%)]">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(205,176,124,0.16),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(192,145,114,0.1),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.45)_0%,rgba(255,255,255,0)_100%)]" />
       <Container className="relative grid gap-10 py-[var(--space-14)] sm:py-[var(--space-16)] lg:grid-cols-[minmax(0,1.28fr)_minmax(320px,0.72fr)] lg:items-start">
         <div className="space-y-7">
           <Badge tone="accent">{eyebrow}</Badge>
 
           <div className="space-y-5">
             <h1
-              className="max-w-4xl font-[family-name:var(--font-display)] text-[length:var(--font-size-display-lg)] text-[color:var(--color-foreground)] sm:text-[length:var(--font-size-display-xl)]"
+              className="max-w-4xl font-[family-name:var(--font-display)] text-[length:var(--font-size-display-lg)] text-[var(--color-ink-strong)] sm:text-[length:var(--font-size-display-xl)]"
               style={{
                 letterSpacing: "var(--tracking-display)",
                 lineHeight: "var(--line-height-tight)",
@@ -55,7 +55,7 @@ export function PageHero({
             >
               {title}
             </h1>
-            <p className="max-w-[42rem] text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            <p className="max-w-[42rem] text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
               {description}
             </p>
           </div>
@@ -121,7 +121,7 @@ export function PageHero({
           ) : null}
 
           {note ? (
-            <p className="max-w-2xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            <p className="max-w-2xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-muted)]">
               {note}
             </p>
           ) : null}

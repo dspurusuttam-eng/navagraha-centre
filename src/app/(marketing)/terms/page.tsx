@@ -62,7 +62,7 @@ export default function TermsPage() {
         <div className="grid gap-4 md:grid-cols-2">
           {termsSections.map((section) => (
             <Card key={section.title} className="space-y-3">
-              <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[color:var(--color-foreground)]">
+              <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
                 {section.title}
               </h2>
               <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">

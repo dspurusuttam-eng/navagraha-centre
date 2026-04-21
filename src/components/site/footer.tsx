@@ -7,13 +7,13 @@ import { globalCtaCopy } from "@/modules/localization/copy";
 
 export function Footer() {
   return (
-    <footer className="border-t border-[color:var(--color-border)] bg-[linear-gradient(180deg,var(--color-section-contrast-elevated)_0%,var(--color-section-contrast)_100%)]">
+    <footer className="border-t border-[color:var(--color-border)] bg-[linear-gradient(180deg,var(--color-base-0)_0%,var(--color-base-1)_100%)]">
       <Container className="space-y-10 py-[var(--space-12)]">
-        <div className="grid gap-6 rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.03)] p-6 lg:grid-cols-[minmax(0,1.15fr)_auto] lg:items-center">
+        <div className="grid gap-6 rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.9)] p-6 shadow-[var(--shadow-sm)] lg:grid-cols-[minmax(0,1.15fr)_auto] lg:items-center">
           <div className="space-y-3">
             <Badge tone="trust">NAVAGRAHA CENTRE</Badge>
             <h2
-              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-md)] text-[color:var(--color-foreground)]"
+              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-md)] text-[var(--color-ink-strong)]"
               style={{
                 letterSpacing: "var(--tracking-display)",
                 lineHeight: "var(--line-height-tight)",
@@ -21,7 +21,7 @@ export function Footer() {
             >
               Structured Vedic guidance with chart precision, NAVAGRAHA AI, and expert consultation.
             </h2>
-            <p className="max-w-2xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            <p className="max-w-2xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
               Begin with Kundli generation, continue into compatibility, Rashifal, reports, or astrologer-led consultation.
             </p>
           </div>
@@ -48,7 +48,7 @@ export function Footer() {
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1.9fr)]">
           <div className="space-y-5">
             <h3
-              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-md)] text-[color:var(--color-foreground)]"
+              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-md)] text-[var(--color-ink-strong)]"
               style={{
                 letterSpacing: "var(--tracking-display)",
                 lineHeight: "var(--line-height-tight)",
@@ -56,13 +56,13 @@ export function Footer() {
             >
               {siteConfig.name}
             </h3>
-            <p className="max-w-md text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            <p className="max-w-md text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
               {siteConfig.description}
             </p>
             <p className="text-[0.78rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent-strong)]">
               Joy Prakash Sarmah authority remains visible where relevant.
             </p>
-            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
               Methodology baseline: Vedic sidereal chart context (Lahiri aligned), chart-aware AI interpretation, and optional consultation-led depth.
             </p>
           </div>
@@ -78,7 +78,7 @@ export function Footer() {
                     <li key={link.href}>
                       <Link
                         href={link.href}
-                        className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-muted)] transition [transition-duration:var(--motion-duration-base)] hover:text-[color:var(--color-foreground)]"
+                        className="text-[length:var(--font-size-body-sm)] text-[var(--color-ink-muted)] transition [transition-duration:var(--motion-duration-base)] hover:text-[var(--color-ink-strong)]"
                       >
                         {link.label}
                       </Link>
@@ -90,27 +90,27 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3 border-t border-[color:var(--color-border)] pt-5 text-[0.74rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-muted)] sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 border-t border-[color:var(--color-border)] pt-5 text-[0.74rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-ink-muted)] sm:flex-row sm:items-center sm:justify-between">
           <p>
             {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
           </p>
           <div className="flex flex-wrap items-center gap-3">
-            <Link href="/sign-in" className="hover:text-[color:var(--color-foreground)]">
+            <Link href="/sign-in" className="hover:text-[var(--color-ink-strong)]">
               Login
             </Link>
-            <Link href="/dashboard" className="hover:text-[color:var(--color-foreground)]">
+            <Link href="/dashboard" className="hover:text-[var(--color-ink-strong)]">
               Account
             </Link>
-            <Link href="/contact" className="hover:text-[color:var(--color-foreground)]">
+            <Link href="/contact" className="hover:text-[var(--color-ink-strong)]">
               Contact
             </Link>
-            <Link href="/privacy" className="hover:text-[color:var(--color-foreground)]">
+            <Link href="/privacy" className="hover:text-[var(--color-ink-strong)]">
               Privacy
             </Link>
-            <Link href="/terms" className="hover:text-[color:var(--color-foreground)]">
+            <Link href="/terms" className="hover:text-[var(--color-ink-strong)]">
               Terms
             </Link>
-            <Link href="/pricing" className="hover:text-[color:var(--color-foreground)]">
+            <Link href="/pricing" className="hover:text-[var(--color-ink-strong)]">
               Plans
             </Link>
           </div>

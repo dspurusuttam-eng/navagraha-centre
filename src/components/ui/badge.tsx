@@ -7,9 +7,9 @@ const toneStyles: Record<BadgeTone, string> = {
   accent:
     "border-[color:var(--color-border-strong)] bg-[color:var(--color-accent-soft)] text-[color:var(--color-accent)]",
   neutral:
-    "border-[color:var(--color-border)] bg-[rgba(255,255,255,0.03)] text-[color:var(--color-muted)]",
+    "border-[color:var(--color-border)] bg-[rgba(255,255,255,0.74)] text-[color:var(--color-ink-body)]",
   outline:
-    "border-[color:var(--color-border-strong)] bg-transparent text-[color:var(--color-foreground)]",
+    "border-[color:var(--color-border-strong)] bg-transparent text-[color:var(--color-ink-strong)]",
   trust:
     "border-[color:var(--color-trust-border)] bg-[color:var(--color-trust-bg-soft)] text-[color:var(--color-trust-text)]",
 };

@@ -5,15 +5,15 @@ export type CardTone = "default" | "muted" | "accent" | "light" | "contrast";
 
 const toneStyles: Record<CardTone, string> = {
   default:
-    "border-[color:var(--card-default-border)] bg-[image:var(--card-default-bg)] backdrop-blur-sm",
+    "border-[color:var(--card-default-border)] bg-[image:var(--card-default-bg)] text-[color:var(--color-ink-body)] backdrop-blur-sm",
   muted:
-    "border-[color:var(--card-muted-border)] bg-[image:var(--card-muted-bg)] backdrop-blur-sm",
+    "border-[color:var(--card-muted-border)] bg-[image:var(--card-muted-bg)] text-[color:var(--color-ink-body)] backdrop-blur-sm",
   accent:
-    "border-[color:var(--card-accent-border)] bg-[image:var(--card-accent-bg)] backdrop-blur-sm",
+    "border-[color:var(--card-accent-border)] bg-[image:var(--card-accent-bg)] text-[color:var(--color-ink-body)] backdrop-blur-sm",
   light:
     "border-[color:var(--card-light-border)] bg-[image:var(--card-light-bg)] text-[color:var(--card-light-text)] shadow-[var(--card-light-shadow)]",
   contrast:
-    "border-[color:var(--card-contrast-border)] bg-[image:var(--card-contrast-bg)] text-[color:var(--color-foreground)]",
+    "border-[color:var(--card-contrast-border)] bg-[image:var(--card-contrast-bg)] text-[color:var(--color-ink-body)]",
 };
 
 export type CardProps = HTMLAttributes<HTMLDivElement> & {

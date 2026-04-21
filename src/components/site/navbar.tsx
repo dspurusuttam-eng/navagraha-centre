@@ -102,7 +102,7 @@ export function Navbar({ section }: Readonly<NavbarProps>) {
                   className={cn(
                     "font-[family-name:var(--font-display)] text-2xl transition [transition-duration:var(--motion-duration-base)] sm:text-3xl",
                     isMarketing
-                      ? "text-[var(--color-ink-strong)] hover:text-[var(--color-violet-700)]"
+                      ? "text-[var(--color-ink-strong)] hover:text-[var(--color-accent)]"
                       : "text-[color:var(--color-foreground)] hover:text-[color:var(--color-accent)]"
                   )}
                   style={{ letterSpacing: "0.14em" }}
@@ -176,7 +176,7 @@ export function Navbar({ section }: Readonly<NavbarProps>) {
                         : "border-[color:var(--color-border-strong)] bg-[rgba(255,255,255,0.05)] text-[color:var(--color-foreground)]"),
                     item.label === "NAVAGRAHA AI" &&
                       isMarketing &&
-                      "border-[rgba(95,75,160,0.28)] bg-[rgba(95,75,160,0.1)] text-[var(--color-violet-700)]"
+                      "border-[rgba(184,137,67,0.3)] bg-[rgba(184,137,67,0.12)] text-[var(--color-accent)]"
                   )}
                 >
                   {item.label}

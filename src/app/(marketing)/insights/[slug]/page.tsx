@@ -127,7 +127,7 @@ export default async function InsightDetailPage({
                     Section
                   </p>
                   <h2
-                    className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
+                    className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[var(--color-ink-strong)]"
                     style={{ letterSpacing: "var(--tracking-display)" }}
                   >
                     {section.title}
@@ -154,7 +154,7 @@ export default async function InsightDetailPage({
                     Frequently Asked Questions
                   </p>
                   <h2
-                    className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
+                    className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[var(--color-ink-strong)]"
                     style={{ letterSpacing: "var(--tracking-display)" }}
                   >
                     Structured for clarity and rich-result readiness.
@@ -165,9 +165,9 @@ export default async function InsightDetailPage({
                   {entry.faqItems.map((item) => (
                     <div
                       key={item.question}
-                      className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4"
+                      className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.74)] px-4 py-4"
                     >
-                      <p className="text-[length:var(--font-size-body-md)] text-[color:var(--color-foreground)]">
+                      <p className="text-[length:var(--font-size-body-md)] text-[var(--color-ink-strong)]">
                         {item.question}
                       </p>
                       <p className="mt-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
@@ -192,19 +192,19 @@ export default async function InsightDetailPage({
               <div className="space-y-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
                 <p>
                   Published:{" "}
-                  <span className="text-[color:var(--color-foreground)]">
+                  <span className="text-[var(--color-ink-strong)]">
                     {formatPublishedDate(entry.publishedAt)}
                   </span>
                 </p>
                 <p>
                   Updated:{" "}
-                  <span className="text-[color:var(--color-foreground)]">
+                  <span className="text-[var(--color-ink-strong)]">
                     {formatPublishedDate(entry.updatedAt)}
                   </span>
                 </p>
                 <p>
                   Editorial standard:{" "}
-                  <span className="text-[color:var(--color-foreground)]">
+                  <span className="text-[var(--color-ink-strong)]">
                     Every article is reviewed for tone, safety, and factual
                     clarity before publication.
                   </span>

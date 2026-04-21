@@ -95,7 +95,7 @@ export function ToolPageTemplate({
           {entry.flowCards.map((card) => (
             <Card key={card.title} className="space-y-3">
               <Badge tone="outline">Step</Badge>
-              <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[color:var(--color-foreground)]">
+              <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
                 {card.title}
               </h2>
               <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
@@ -116,7 +116,7 @@ export function ToolPageTemplate({
           {entry.valueCards.map((card) => (
             <Card key={card.title} className="space-y-3">
               <Badge tone="neutral">Outcome</Badge>
-              <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[color:var(--color-foreground)]">
+              <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
                 {card.title}
               </h2>
               <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
@@ -161,7 +161,7 @@ export function ToolPageTemplate({
           <div className="space-y-4">
             <Badge tone="accent">Premium Layer</Badge>
             <h2
-              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-md)] text-[color:var(--color-foreground)]"
+              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-md)] text-[var(--color-ink-strong)]"
               style={{
                 letterSpacing: "var(--tracking-display)",
                 lineHeight: "var(--line-height-tight)",
@@ -229,7 +229,7 @@ export function ToolPageTemplate({
         <div className="grid gap-4 md:grid-cols-3">
           {entry.faqItems.map((item) => (
             <Card key={item.question} className="space-y-3">
-              <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[color:var(--color-foreground)]">
+              <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
                 {item.question}
               </h2>
               <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
@@ -243,7 +243,7 @@ export function ToolPageTemplate({
           {relatedPages.map((page) => (
             <Card key={page.key} interactive className="space-y-3">
               <Badge tone="neutral">{page.hero.eyebrow}</Badge>
-              <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[color:var(--color-foreground)]">
+              <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
                 {page.hero.title}
               </h2>
               <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
