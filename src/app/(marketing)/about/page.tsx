@@ -46,7 +46,7 @@ export default function AboutPage() {
           <EditorialPlaceholder
             annotations={[
               "Editorial pacing over website clutter",
-              "Dark premium palette with warmth",
+              "Light premium palette with gold accents",
               "Public trust shaped by clarity",
             ]}
             description="A restrained visual composition preserves the editorial rhythm of the page while keeping the brand language warm and composed."

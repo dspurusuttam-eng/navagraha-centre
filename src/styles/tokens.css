@@ -147,7 +147,7 @@
     rgba(255, 250, 241, 0.98) 0%,
     rgba(243, 229, 201, 0.92) 100%
   );
-  --card-light-border: rgba(29, 34, 53, 0.12);
+  --card-light-border: rgba(154, 122, 73, 0.2);
   --card-light-bg: linear-gradient(
     180deg,
     rgba(255, 255, 255, 0.95) 0%,

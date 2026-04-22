@@ -100,7 +100,7 @@ export default function StyleGuidePage() {
   return (
     <>
       <PageHero
-        description="This page previews the visual contract for marketing, client, and admin surfaces: dark editorial planes, controlled gold accents, quiet motion, and reusable accessible primitives."
+        description="This page previews the visual contract for marketing, client, and admin surfaces: light editorial planes, controlled gold accents, quiet motion, and reusable accessible primitives."
         eyebrow="Premium UI Foundation"
         highlights={[
           "Design tokens cover color, spacing, radius, shadow, typography, and motion",

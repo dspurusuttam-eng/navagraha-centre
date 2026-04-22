@@ -133,7 +133,7 @@ export function ShopCartPage() {
             {items.map((item) => (
               <div
                 key={item.slug}
-                className="rounded-[var(--radius-2xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-5 py-5"
+                className="rounded-[var(--radius-2xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.86)] px-5 py-5"
               >
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div className="space-y-2">
@@ -381,7 +381,7 @@ export function ShopCartPage() {
               const recoveryState = getPreparedOrderRecoveryState(state.checkout);
 
               return (
-                <div className="space-y-3 rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4">
+                <div className="space-y-3 rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.86)] px-4 py-4">
                   <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
                     Checkout Recovery
                   </p>
@@ -441,7 +441,7 @@ export function ShopCartPage() {
                 <Link
                   key={`${item.slug}-${item.quantity}`}
                   href={item.href}
-                  className="block rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4 text-[length:var(--font-size-body-sm)] text-[color:var(--color-muted)] transition hover:border-[color:var(--color-border-strong)] hover:text-[color:var(--color-foreground)]"
+                  className="block rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.86)] px-4 py-4 text-[length:var(--font-size-body-sm)] text-[color:var(--color-muted)] transition hover:border-[color:var(--color-border-strong)] hover:text-[color:var(--color-foreground)]"
                 >
                   {item.titleSnapshot} x {item.quantity} - {item.lineTotalLabel}
                 </Link>

@@ -161,7 +161,7 @@ export function MemberOrderDetailView({
                 {order.items.map((item) => (
                   <div
                     key={`${item.titleSnapshot}-${item.quantity}`}
-                    className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4"
+                    className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.86)] px-4 py-4"
                   >
                     <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-foreground)]">
                       {item.titleSnapshot}

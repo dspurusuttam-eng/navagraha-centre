@@ -61,7 +61,7 @@ export default function ShopPage() {
             <Link
               key={category.key}
               href={`#${category.anchorId}`}
-              className="rounded-[var(--radius-2xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-5 py-5 transition [transition-duration:var(--motion-duration-base)] hover:border-[color:var(--color-border-strong)] hover:bg-[rgba(255,255,255,0.04)]"
+              className="rounded-[var(--radius-2xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.86)] px-5 py-5 transition [transition-duration:var(--motion-duration-base)] hover:border-[color:var(--color-border-strong)] hover:bg-[rgba(255,255,255,0.96)]"
             >
               <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
                 {category.label}
@@ -85,7 +85,7 @@ export default function ShopPage() {
           <EditorialPlaceholder
             eyebrow="Merchandising View"
             title="Thoughtful product framing matters as much as the catalog itself."
-            description="The visual system keeps the shop premium and grounded: dark surfaces, refined material language, and a visible refusal to turn spiritual products into fear-based conversion devices."
+            description="The visual system keeps the shop premium and grounded: light editorial surfaces, refined material language, and a visible refusal to turn spiritual products into fear-based conversion devices."
             annotations={[
               "Clear category structure",
               "Elegant merchandising art with restrained warmth",

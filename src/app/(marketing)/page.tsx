@@ -168,7 +168,7 @@ export default function HomePage() {
 
   return (
     <>
-      <section className="relative overflow-hidden border-b border-[rgba(29,34,53,0.12)] bg-[linear-gradient(180deg,var(--color-section-light)_0%,var(--color-section-light-muted)_60%,var(--color-section-light-strong)_100%)]">
+      <section className="relative overflow-hidden border-b border-[color:var(--color-border)] bg-[linear-gradient(180deg,var(--color-section-light)_0%,var(--color-section-light-muted)_60%,var(--color-section-light-strong)_100%)]">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_14%,rgba(226,194,124,0.2),transparent_36%),radial-gradient(circle_at_86%_12%,rgba(210,165,135,0.16),transparent_34%),radial-gradient(circle_at_72%_88%,rgba(204,170,112,0.12),transparent_38%)]" />
         <div className="pointer-events-none absolute -left-16 top-10 h-44 w-44 rounded-full bg-[rgba(226,194,124,0.16)] blur-[72px] sm:h-56 sm:w-56" />
         <div className="pointer-events-none absolute -right-14 top-14 h-40 w-40 rounded-full bg-[rgba(210,165,135,0.14)] blur-[72px] sm:h-52 sm:w-52" />
@@ -228,7 +228,7 @@ export default function HomePage() {
           </div>
 
           <div className="home-reveal home-reveal-delay-2">
-            <Card className="home-polish-surface space-y-5 border-[rgba(29,34,53,0.12)] bg-[linear-gradient(160deg,rgba(255,255,255,0.95)_0%,rgba(246,241,232,0.9)_56%,rgba(239,233,247,0.9)_100%)] p-6 shadow-[0_22px_56px_rgba(24,31,53,0.14)] sm:p-7">
+            <Card className="home-polish-surface space-y-5 border-[color:var(--color-border)] bg-[linear-gradient(160deg,rgba(255,255,255,0.96)_0%,rgba(248,241,229,0.92)_56%,rgba(246,236,221,0.92)_100%)] p-6 shadow-[0_22px_56px_rgba(86,67,43,0.14)] sm:p-7">
               <Badge tone="trust">Premium Chart Intelligence</Badge>
               <h2
                 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-md)] text-[var(--color-ink-strong)]"
@@ -258,14 +258,14 @@ export default function HomePage() {
         </Container>
 
         <Container className="relative pb-5 sm:pb-6">
-          <div className="home-reveal home-reveal-delay-3 grid gap-3 rounded-[var(--radius-xl)] border border-[rgba(29,34,53,0.12)] bg-[rgba(255,255,255,0.78)] p-3 sm:grid-cols-2 sm:p-4 lg:grid-cols-3">
+          <div className="home-reveal home-reveal-delay-3 grid gap-3 rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.78)] p-3 sm:grid-cols-2 sm:p-4 lg:grid-cols-3">
             {quickTools.map((tool) => (
               <TrackedLink
                 key={tool.title}
                 href={tool.href}
                 eventName="cta_click"
                 eventPayload={{ page: "/", feature: tool.feature }}
-                className="home-polish-surface group flex min-h-20 items-center gap-3 rounded-[var(--radius-lg)] border border-[rgba(29,34,53,0.12)] bg-[rgba(255,255,255,0.92)] px-4 py-3 shadow-[0_12px_24px_rgba(24,31,53,0.08)] transition [transition-duration:var(--motion-duration-base)] [transition-timing-function:var(--ease-standard)] motion-safe:hover:-translate-y-0.5 motion-safe:hover:border-[rgba(184,137,67,0.34)] motion-safe:hover:bg-[rgba(255,255,255,0.98)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#f8f5ee]"
+                className="home-polish-surface group flex min-h-20 items-center gap-3 rounded-[var(--radius-lg)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.92)] px-4 py-3 shadow-[0_12px_24px_rgba(86,67,43,0.08)] transition [transition-duration:var(--motion-duration-base)] [transition-timing-function:var(--ease-standard)] motion-safe:hover:-translate-y-0.5 motion-safe:hover:border-[rgba(184,137,67,0.34)] motion-safe:hover:bg-[rgba(255,255,255,0.98)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#f8f5ee]"
               >
                 <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--color-trust-border)] bg-[var(--color-trust-bg)] text-[0.66rem] font-semibold uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
                   {tool.icon}
@@ -279,11 +279,11 @@ export default function HomePage() {
         </Container>
 
         <Container className="relative pb-9 sm:pb-11">
-          <div className="home-reveal home-reveal-delay-4 grid gap-3 rounded-[var(--radius-xl)] border border-[rgba(29,34,53,0.12)] bg-[rgba(255,255,255,0.72)] p-3 sm:grid-cols-2 sm:p-4 lg:grid-cols-4">
+          <div className="home-reveal home-reveal-delay-4 grid gap-3 rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.72)] p-3 sm:grid-cols-2 sm:p-4 lg:grid-cols-4">
             {trustStripItems.map((item) => (
               <div
                 key={item}
-                className="rounded-[var(--radius-lg)] border border-[rgba(29,34,53,0.12)] bg-[rgba(255,255,255,0.9)] px-4 py-3 text-[0.7rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]"
+                className="rounded-[var(--radius-lg)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.9)] px-4 py-3 text-[0.7rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]"
               >
                 {item}
               </div>
@@ -607,7 +607,7 @@ export default function HomePage() {
               href={hub.path}
               eventName="cta_click"
               eventPayload={{ page: "/", feature: `knowledge-hub-${hub.slug}` }}
-              className="home-polish-surface flex min-h-20 items-center justify-between gap-3 rounded-[var(--radius-lg)] border border-[rgba(29,34,53,0.12)] bg-[rgba(255,255,255,0.92)] px-4 py-3 text-[0.74rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-ink-body)] transition [transition-duration:var(--motion-duration-base)] motion-safe:hover:-translate-y-0.5 motion-safe:hover:border-[rgba(184,137,67,0.34)]"
+              className="home-polish-surface flex min-h-20 items-center justify-between gap-3 rounded-[var(--radius-lg)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.92)] px-4 py-3 text-[0.74rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-ink-body)] transition [transition-duration:var(--motion-duration-base)] motion-safe:hover:-translate-y-0.5 motion-safe:hover:border-[rgba(184,137,67,0.34)]"
             >
               <span>{hub.title}</span>
               <span className="text-[var(--color-trust-text)]">Hub</span>
