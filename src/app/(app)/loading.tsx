@@ -1,11 +1,5 @@
-import { LoadingPanel } from "@/components/feedback/loading-panel";
+import { RouteSkeleton } from "@/components/feedback/route-skeleton";
 
 export default function AppLoading() {
-  return (
-    <LoadingPanel
-      eyebrow="Member Area"
-      title="Preparing the protected dashboard experience."
-      description="Private account surfaces are loading with a graceful fallback in place."
-    />
-  );
+  return <RouteSkeleton compact cardCount={4} />;
 }

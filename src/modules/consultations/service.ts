@@ -25,6 +25,7 @@ import type {
 } from "@/modules/consultations/view";
 
 type ConsultationTransaction = Prisma.TransactionClient | PrismaClient;
+const limitedFreeAccessLabel = "🔥 Currently Free (Limited Time)";
 
 export type ConsultationBookingInput = {
   userId: string;
@@ -79,21 +80,13 @@ export type ConsultationAdminBoard = {
   }[];
 };
 
-function formatCurrencyFromMinor(amount: number, currency = "INR") {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency,
-    maximumFractionDigits: 0,
-  }).format(amount / 100);
-}
-
 function buildPackageCard(
   item: ConsultationPackageDefinition
 ): ConsultationPackageCard {
   return {
     ...item,
     durationLabel: `${item.durationMinutes} min`,
-    priceLabel: `From ${formatCurrencyFromMinor(item.priceFromMinor)}`,
+    priceLabel: limitedFreeAccessLabel,
   };
 }
 

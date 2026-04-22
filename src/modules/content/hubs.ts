@@ -135,7 +135,7 @@ export const contentHubs: readonly ContentHub[] = [
     ],
     conversionCtas: [
       { label: "Explore NAVAGRAHA AI", href: "/kundli-ai" },
-      { label: "Book Consultation", href: "/consultation" },
+      { label: "Book Free Consultation", href: "/consultation" },
     ],
     relatedHubSlugs: ["graha", "navagraha-ai", "consultation"],
     metadata: {
@@ -314,7 +314,7 @@ export const contentHubs: readonly ContentHub[] = [
       },
     ],
     conversionCtas: [
-      { label: "Book Consultation", href: "/consultation" },
+      { label: "Book Free Consultation", href: "/consultation" },
       { label: "View Services", href: "/services" },
     ],
     relatedHubSlugs: ["compatibility", "navagraha-ai", "graha"],

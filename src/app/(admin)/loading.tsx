@@ -1,11 +1,5 @@
-import { LoadingPanel } from "@/components/feedback/loading-panel";
+import { RouteSkeleton } from "@/components/feedback/route-skeleton";
 
 export default function AdminLoading() {
-  return (
-    <LoadingPanel
-      eyebrow="Admin"
-      title="Preparing the control panel."
-      description="Internal operations routes are loading with a calm fallback state ready if needed."
-    />
-  );
+  return <RouteSkeleton compact cardCount={3} />;
 }

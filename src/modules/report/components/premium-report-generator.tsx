@@ -39,11 +39,11 @@ const premiumReportOptions: Array<{
 function getUpgradeCtaLabel(reportType: PremiumReportType) {
   switch (reportType) {
     case "CAREER":
-      return "Get Detailed Career Prediction";
+      return "Get Free Report";
     case "MARRIAGE":
-      return "View Full Compatibility Analysis";
+      return "Get Free Report";
     default:
-      return "Unlock Full Report";
+      return "Get Free Report";
   }
 }
 
@@ -161,16 +161,16 @@ export function PremiumReportGenerator() {
     <Card className="space-y-5">
       <div className="space-y-2">
         <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-          Premium Report Generator
+          Report Generator
         </p>
         <h2
           className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
           style={{ letterSpacing: "var(--tracking-display)" }}
         >
-          Generate focused report previews with premium unlock.
+          Generate focused report previews with free launch access.
         </h2>
         <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-          Each report keeps the same product shape: useful free preview, richer premium depth, and clear follow-up into assistant or consultation.
+          Each report keeps the same product shape: useful preview, deeper interpretation, and clear follow-up into assistant or consultation.
         </p>
       </div>
 
@@ -309,7 +309,7 @@ export function PremiumReportGenerator() {
                     }
                   </p>
                   <Link
-                    href="/settings"
+                    href="/dashboard/consultations"
                     className="mt-4 inline-flex rounded-full border border-[color:var(--color-border)] px-4 py-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-foreground)] transition [transition-duration:var(--motion-duration-base)] hover:border-[color:var(--color-border-strong)]"
                     onClick={() => {
                       trackEvent("upgrade_prompt_view", {

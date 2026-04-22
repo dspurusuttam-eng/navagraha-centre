@@ -26,6 +26,7 @@ export const metadata = buildPageMetadata({
     "astrology faq",
   ],
 });
+export const revalidate = 3600;
 
 export default async function InsightsPage() {
   const contentAdapter = getContentAdapter();
@@ -54,7 +55,7 @@ export default async function InsightsPage() {
           "Structured metadata and human-reviewed publishing posture from the start",
         ]}
         note="Publication remains human-reviewed and deliberate so the editorial tone stays measured and trustworthy."
-        primaryAction={{ href: "/consultation", label: "Book Consultation" }}
+        primaryAction={{ href: "/consultation", label: "Book Free Consultation" }}
         secondaryAction={{ href: "/services", label: "View Services" }}
         supportTitle="Editorial Foundation"
       />

@@ -200,23 +200,23 @@ export function SubscriptionValuePanel({
       {snapshot.recommendation ? (
         <div className="space-y-4 rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4">
           <div className="flex flex-wrap items-center gap-3">
-            <Badge tone="accent">{snapshot.recommendation.planId}</Badge>
+            <Badge tone="accent">FREE LAUNCH ACCESS</Badge>
             <Badge tone="neutral">{snapshot.recommendation.priority}</Badge>
           </div>
           <p className="text-[length:var(--font-size-body-md)] text-[color:var(--color-foreground)]">
-            {snapshot.recommendation.title}
+            🔥 Currently Free (Limited Time)
           </p>
           <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-            {snapshot.recommendation.summary}
+            Continue using report, assistant, and consultation services under limited launch free access.
           </p>
           <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
             {contextualUpgradeCopy.message}
           </p>
           <Link
-            href={snapshot.recommendation.href}
+            href={contextualUpgradeCopy.upgradeHref}
             className={buttonStyles({ size: "sm", tone: "secondary" })}
           >
-            {snapshot.recommendation.ctaLabel}
+            {contextualUpgradeCopy.ctaLabel}
           </Link>
         </div>
       ) : null}
@@ -226,7 +226,7 @@ export function SubscriptionValuePanel({
           href={upgradeHref}
           className={buttonStyles({ size: "sm", tone: "secondary" })}
         >
-          Upgrade Plan
+          Start Free Analysis
         </Link>
       ) : null}
     </Card>

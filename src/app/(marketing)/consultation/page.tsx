@@ -25,15 +25,6 @@ export const metadata = buildPageMetadata({
   ],
 });
 
-function formatCurrencyFromMinor(amount: number) {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    currencyDisplay: "narrowSymbol",
-    maximumFractionDigits: 0,
-  }).format(amount / 100);
-}
-
 export default async function ConsultationPage({
   searchParams,
 }: Readonly<{
@@ -74,11 +65,11 @@ export default async function ConsultationPage({
 
       <Section
         eyebrow="Service Packages"
-        title="Packages built for different kinds of consultation depth."
+        title="Session formats currently open under limited launch free access."
         description={conversion.guidanceLine}
       >
-        <p className="mb-4 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-muted)]">
-          {globalLabelCopy.currencyNote}
+        <p className="mb-4 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+          This consultation is currently free under limited launch access.
         </p>
         <Card className="mb-5 flex flex-col gap-3" tone="accent">
           <div className="flex flex-wrap gap-2">
@@ -113,10 +104,7 @@ export default async function ConsultationPage({
                 <Badge tone={item.isFeatured ? "accent" : "neutral"}>
                   {item.durationMinutes} min
                 </Badge>
-                <Badge tone="outline">
-                  From {formatCurrencyFromMinor(item.priceFromMinor)}{" "}
-                  ({globalLabelCopy.currencyCode})
-                </Badge>
+                <Badge tone="outline">{globalLabelCopy.limitedFreeAccessLabel}</Badge>
               </div>
 
               <div className="space-y-3">
@@ -139,7 +127,7 @@ export default async function ConsultationPage({
                   href={`/dashboard/consultations/book?package=${item.slug}`}
                   className={buttonStyles({ tone: "secondary", size: "sm" })}
                 >
-                  Reserve This Format
+                  Book Free Consultation
                 </Link>
               </div>
             </Card>

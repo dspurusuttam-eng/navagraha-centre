@@ -12,9 +12,9 @@ import { globalLabelCopy } from "@/modules/localization/copy";
 import { getPlanComparisonRows } from "@/modules/subscriptions/monetization-content";
 
 export const metadata = buildPageMetadata({
-  title: "Pricing",
+  title: "Limited-Time Free Access",
   description:
-    "Compare Free, Premium, and Pro plans for NAVAGRAHA AI chart guidance, assistant depth, and report access.",
+    "All NAVAGRAHA CENTRE astrology services are currently free for a limited launch period.",
   path: "/pricing",
   keywords: [
     "astrology pricing",
@@ -34,18 +34,15 @@ export default function PricingPage() {
         payload={{ page: "/pricing", surface: "public", feature: "pricing-page" }}
       />
       <Section
-        eyebrow="Pricing"
-        title="Choose the plan depth that matches your guidance rhythm."
-        description="Free remains available for foundational use. Premium and Pro unlock deeper assistant and report continuity when you need it."
+        eyebrow="Free Access"
+        title="All astrology services are currently free for a limited launch window."
+        description="Use reports, assistant guidance, and consultation flows without paid access during this launch period."
       >
-        <p className="mb-4 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-muted)]">
-          {globalLabelCopy.currencyNote}
-        </p>
         <Card tone="accent" className="mb-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
           <div className="space-y-3">
-            <Badge tone="accent">Best starting action</Badge>
+            <Badge tone="accent">{globalLabelCopy.limitedFreeAccessLabel}</Badge>
             <p className="max-w-2xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              Start free if you want the chart foundation first. Move to Premium when you want deeper assistant reasoning and complete report layers.
+              Start now with full-value astrology access while limited launch availability is active.
             </p>
           </div>
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
@@ -53,10 +50,10 @@ export default function PricingPage() {
               href="/sign-up"
               className={buttonStyles({ size: "lg", className: "w-full justify-center sm:w-auto" })}
             >
-              Start Free
+              Start Free Analysis
             </Link>
             <TrackedLink
-              href="/sign-up"
+              href="/kundli-ai"
               className={buttonStyles({
                 size: "lg",
                 tone: "secondary",
@@ -66,11 +63,11 @@ export default function PricingPage() {
               eventPayload={{
                 page: "/pricing",
                 surface: "public",
-                plan: "PREMIUM",
-                feature: "pricing-top-cta",
+                plan: "FREE",
+                feature: "pricing-free-ai-cta",
               }}
             >
-              Unlock Premium
+              Try NAVAGRAHA AI
             </TrackedLink>
           </div>
         </Card>
@@ -100,32 +97,26 @@ export default function PricingPage() {
               <p className="text-[0.7rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
                 Best for: {row.bestFor}
               </p>
-              {row.planType === "FREE" ? (
-                <Link
-                  href="/sign-up"
-                  className={buttonStyles({ size: "sm", tone: "secondary", className: "w-full justify-center" })}
-                >
-                  {row.ctaLabel}
-                </Link>
-              ) : (
-                <TrackedLink
-                  href="/sign-up"
-                  className={buttonStyles({
-                    size: "sm",
-                    tone: row.planType === "PREMIUM" ? "accent" : "secondary",
-                    className: "w-full justify-center",
-                  })}
-                  eventName="plan_selected"
-                  eventPayload={{
-                    page: "/pricing",
-                    surface: "public",
-                    plan: row.planType,
-                    feature: "pricing-plan-selection",
-                  }}
-                >
-                  {row.ctaLabel}
-                </TrackedLink>
-              )}
+              <Link
+                href={
+                  row.planType === "PRO"
+                    ? "/consultation"
+                    : row.planType === "PREMIUM"
+                      ? "/kundli-ai"
+                      : "/career-report"
+                }
+                className={buttonStyles({
+                  size: "sm",
+                  tone: row.planType === "PREMIUM" ? "accent" : "secondary",
+                  className: "w-full justify-center",
+                })}
+              >
+                {row.planType === "PRO"
+                  ? "Book Free Consultation"
+                  : row.planType === "PREMIUM"
+                    ? "Try NAVAGRAHA AI"
+                    : "Get Free Report"}
+              </Link>
             </Card>
           ))}
         </div>
@@ -135,7 +126,7 @@ export default function PricingPage() {
             Existing member
           </p>
           <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-            If you already have an account, open settings to start or manage plan checkout.
+            If you already have an account, open settings to continue your free launch access.
           </p>
           <Link
             href="/settings"
@@ -157,11 +148,11 @@ export default function PricingPage() {
             "deep-ai-reading",
             "consultation-guidance",
           ]}
-          upgradeHref="/pricing"
+          upgradeHref="/sign-up"
           tone="transparent"
-          eyebrow="Premium Products"
-          title="What each premium product helps with"
-          description="This catalog keeps report, AI depth, and consultation relationships clear before plan selection."
+          eyebrow="Astrology Products"
+          title="What each report and AI product helps with"
+          description="This catalog keeps report, AI depth, and consultation relationships clear during free launch access."
         />
 
         <Card className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">

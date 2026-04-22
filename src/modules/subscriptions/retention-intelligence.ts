@@ -281,34 +281,34 @@ export async function getSubscriptionRetentionIntelligenceSnapshot(
     if (canUpgradeFromBasic) {
       recommendation = {
         planId: "PREMIUM",
-        title: "Move to Premium Member for deeper report layers.",
+        title: "Continue with deeper report layers under launch free access.",
         summary:
-          "Your engagement pattern suggests you would benefit from richer report and timing depth.",
-        ctaLabel: "Upgrade Membership",
-        href: "/settings",
+          "Your engagement pattern suggests you would benefit from richer report and timing depth right now.",
+        ctaLabel: "Get Free Report",
+        href: "/dashboard/report",
         priority: "MEDIUM",
         reasons: reasons.length ? reasons : ["TIMING_ENGAGEMENT"],
       };
       nextAction = {
         key: "UPGRADE",
-        label: "Upgrade Plan",
-        href: "/settings",
+        label: "Start Free Analysis",
+        href: "/dashboard/chart",
       };
     } else if (canUpgradeFromPremium) {
       recommendation = {
         planId: "PRO",
-        title: "Upgrade to Pro Member for priority continuity.",
+        title: "Continue with priority continuity under launch free access.",
         summary:
-          "Your current usage suggests that priority consultation readiness would be useful next.",
-        ctaLabel: "Review Pro Upgrade",
-        href: "/settings",
+          "Your current usage suggests that consultation readiness would be useful next.",
+        ctaLabel: "Book Free Consultation",
+        href: "/dashboard/consultations",
         priority: "MEDIUM",
         reasons: reasons.length ? reasons : ["MULTI_REPORT_PURCHASES"],
       };
       nextAction = {
         key: "UPGRADE",
-        label: "Upgrade Plan",
-        href: "/settings",
+        label: "Book Free Consultation",
+        href: "/dashboard/consultations",
       };
     } else {
       nextAction = {

@@ -68,7 +68,7 @@ export default async function ShopProductPage({
         primaryAction={{ href: "/shop/cart", label: "Review Cart" }}
         secondaryAction={{
           href: "/consultation",
-          label: "Book Consultation",
+          label: "Book Free Consultation",
         }}
         supportTitle="Product Positioning"
       />

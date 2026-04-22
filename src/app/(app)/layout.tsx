@@ -1,5 +1,4 @@
 import { AppShell } from "@/components/app/app-shell";
-import { SiteChrome } from "@/components/layout/site-chrome";
 import { requireUserSession } from "@/modules/auth/server";
 
 export const dynamic = "force-dynamic";
@@ -12,10 +11,8 @@ export default async function AppLayout({
   const session = await requireUserSession();
 
   return (
-    <SiteChrome section="app">
-      <AppShell userName={session.user.name} userEmail={session.user.email}>
-        {children}
-      </AppShell>
-    </SiteChrome>
+    <AppShell userName={session.user.name} userEmail={session.user.email}>
+      {children}
+    </AppShell>
   );
 }

@@ -25,15 +25,15 @@ type AiProductFamilySectionProps = {
 export function AiProductFamilySection({
   surface,
   pagePath,
-  eyebrow = "NAVAGRAHA AI Product Family",
+  eyebrow = "NAVAGRAHA AI (Free Access)",
   title = "One intelligence ecosystem across Kundli, compatibility, reports, remedies, and assistant guidance.",
-  description = "Each tool keeps a distinct job while sharing the same chart-grounded foundation and premium progression.",
+  description = "Each tool keeps a distinct job while sharing the same chart-grounded foundation and limited-time free launch access.",
   tone = "contrast",
 }: Readonly<AiProductFamilySectionProps>) {
   const items = listAiProductFamilyItems();
   const upgradeHref = getAiFamilyUpgradeHref(surface);
   const upgradeLabel =
-    surface === "protected" ? "Manage Premium Access" : "View Premium Plans";
+    surface === "protected" ? "Try NAVAGRAHA AI" : "Start Free Analysis";
 
   return (
     <Section eyebrow={eyebrow} title={title} description={description} tone={tone}>
@@ -51,9 +51,9 @@ export function AiProductFamilySection({
         className="mb-6 grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
       >
         <div className="space-y-3">
-          <Badge tone="accent">Premium AI Progression</Badge>
+          <Badge tone="accent">NAVAGRAHA AI (Free Access)</Badge>
           <p className="max-w-2xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-            Free access starts with practical chart value. Premium and Pro add deeper reasoning, wider continuity, and richer tool depth.
+            All AI astrology services are currently free for limited launch access.
           </p>
         </div>
         <TrackedLink
@@ -62,7 +62,7 @@ export function AiProductFamilySection({
           eventPayload={{
             page: pagePath,
             surface,
-            feature: "ai-product-family-upgrade",
+            feature: "ai-product-family-free-access",
           }}
           className={buttonStyles({
             size: "lg",
@@ -162,7 +162,7 @@ export function AiProductFamilySection({
             Privacy
           </p>
           <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-            Birth details and account records are handled inside protected member flows. Premium guidance remains optional and non-pressure.
+            Birth details and account records are handled inside protected member flows. Guidance remains optional and non-pressure.
           </p>
         </div>
       </Card>

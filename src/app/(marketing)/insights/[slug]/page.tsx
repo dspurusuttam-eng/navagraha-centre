@@ -108,7 +108,7 @@ export default async function InsightDetailPage({
         description={entry.excerpt}
         highlights={entry.heroHighlights}
         note={entry.heroNote}
-        primaryAction={{ href: "/consultation", label: "Book Consultation" }}
+        primaryAction={{ href: "/consultation", label: "Book Free Consultation" }}
         secondaryAction={{ href: "/insights", label: "Back To Insights" }}
         supportTitle="Content Snapshot"
       />
@@ -219,7 +219,7 @@ export default async function InsightDetailPage({
                   href="/consultation"
                   className={buttonStyles({ tone: "secondary", size: "sm" })}
                 >
-                  Book Consultation
+                  Book Free Consultation
                 </Link>
               </div>
             </Card>

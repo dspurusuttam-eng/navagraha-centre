@@ -18,6 +18,7 @@ import { listFeaturedShopProducts } from "@/modules/shop";
 export const metadata = buildPageMetadata({
   ...homePage.metadata,
 });
+export const revalidate = 3600;
 
 function formatPublishedDate(value: string) {
   return new Date(value).toLocaleDateString("en-US", {
@@ -146,21 +147,21 @@ export default function HomePage() {
       description:
         "Structured direction for professional timing, strengths, and practical focus areas.",
       href: "/career-report",
-      ctaLabel: "View Career Report",
+      ctaLabel: "Get Free Report",
     },
     {
       title: "Finance Report",
       description:
         "Chart-aware financial insight themes for risk awareness and long-term planning rhythm.",
       href: "/finance-report",
-      ctaLabel: "View Finance Report",
+      ctaLabel: "Get Free Report",
     },
     {
       title: "Health Report",
       description:
         "Wellness-oriented interpretation framed responsibly and designed for reflective action.",
       href: "/health-report",
-      ctaLabel: "View Health Report",
+      ctaLabel: "Get Free Report",
     },
   ] as const;
 
@@ -359,7 +360,7 @@ export default function HomePage() {
               className: stackedCtaClass,
             })}
           >
-            Book Consultation
+            Book Free Consultation
           </TrackedLink>
         </Card>
 
@@ -387,7 +388,7 @@ export default function HomePage() {
                   className: "w-full justify-center",
                 })}
               >
-                Open Session
+                Book Free Consultation
               </TrackedLink>
             </Card>
           ))}
@@ -420,9 +421,9 @@ export default function HomePage() {
       <Section
         className="home-reveal home-reveal-delay-8"
         tone="light"
-        eyebrow="Premium Reports"
+        eyebrow="Reports (Free Access)"
         title="Go deeper with focused report layers."
-        description="Premium reports convert chart complexity into structured guidance that remains clear, calm, and action-oriented."
+        description="Reports convert chart complexity into structured guidance that remains clear, calm, and action-oriented."
       >
         <div className="grid gap-4 md:grid-cols-3">
           {reportHighlights.map((report) => (
@@ -688,7 +689,7 @@ export default function HomePage() {
                 className: stackedCtaClass,
               })}
             >
-              Book Consultation
+              Book Free Consultation
             </TrackedLink>
           </div>
         </Card>

@@ -52,7 +52,7 @@ export function ConsultationDashboardList({
             href="/dashboard/consultations/book"
             className={buttonStyles({ size: "lg" })}
           >
-            Book Consultation
+            Book Free Consultation
           </Link>
         </Card>
       </Section>

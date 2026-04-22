@@ -1,11 +1,5 @@
-import { LoadingPanel } from "@/components/feedback/loading-panel";
+import { RouteSkeleton } from "@/components/feedback/route-skeleton";
 
 export default function MarketingLoading() {
-  return (
-    <LoadingPanel
-      eyebrow="NAVAGRAHA CENTRE"
-      title="Opening this page."
-      description="One moment while the content is rendered."
-    />
-  );
+  return <RouteSkeleton cardCount={4} />;
 }

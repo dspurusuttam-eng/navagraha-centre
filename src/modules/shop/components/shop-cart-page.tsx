@@ -71,13 +71,10 @@ export function ShopCartPage() {
 
   if (!isHydrated) {
     return (
-      <Card className="space-y-4">
-        <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-          Cart
-        </p>
-        <p className="text-[length:var(--font-size-body-md)] text-[color:var(--color-muted)]">
-          Opening your saved cart...
-        </p>
+      <Card className="route-loader-fade space-y-4">
+        <div className="skeleton-block h-3 w-20 rounded-full" />
+        <div className="skeleton-block h-6 w-2/3 rounded-[var(--radius-md)]" />
+        <div className="skeleton-block h-20 w-full rounded-[var(--radius-lg)]" />
       </Card>
     );
   }
@@ -103,7 +100,7 @@ export function ShopCartPage() {
             href="/consultation"
             className={buttonStyles({ tone: "secondary", size: "lg" })}
           >
-            Book Consultation
+            Book Free Consultation
           </Link>
         </div>
       </Card>

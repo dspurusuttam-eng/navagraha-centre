@@ -30,10 +30,10 @@ const aiProductFamilyItems: readonly AiProductFamilyItem[] = [
       "A chart-first AI layer that explains your core placements using verified chart context.",
     helpsWith: [
       "Lagna and house context clarity",
-      "First reading summary before deeper premium layers",
+      "First reading summary before deeper interpretation layers",
     ],
     premiumDepth:
-      "Premium and Pro unlock deeper multi-layer interpretation and continuity across reports.",
+      "Currently free under limited launch access with deeper interpretation continuity.",
     trustNote:
       "Interpretation is chart-grounded guidance, not guaranteed life outcomes.",
     publicHref: "/kundli-ai",
@@ -55,7 +55,7 @@ const aiProductFamilyItems: readonly AiProductFamilyItem[] = [
       "Pathway into consultation for nuanced review",
     ],
     premiumDepth:
-      "Premium depth supports richer compatibility interpretation and follow-up continuity.",
+      "Currently free under limited launch access with richer compatibility continuity.",
     trustNote:
       "Compatibility guidance supports reflection and communication, not certainty claims.",
     publicHref: "/marriage-compatibility",
@@ -63,7 +63,7 @@ const aiProductFamilyItems: readonly AiProductFamilyItem[] = [
     ctaLabelPublic: "Explore Compatibility",
     ctaLabelProtected: "Open Compatibility Flow",
     relatedTools: [
-      { label: "Book Consultation", href: "/consultation" },
+      { label: "Book Free Consultation", href: "/consultation" },
       { label: "Ask My Chart", href: "/dashboard/ask-my-chart" },
     ],
   },
@@ -77,7 +77,7 @@ const aiProductFamilyItems: readonly AiProductFamilyItem[] = [
       "Clear handoff into premium report depth",
     ],
     premiumDepth:
-      "Premium and Pro provide deeper structured report context and extended AI reasoning.",
+      "Currently free under limited launch access with deeper report context and reasoning.",
     trustNote:
       "Career guidance is reflective support and should be paired with practical planning.",
     publicHref: "/career-prediction",
@@ -99,7 +99,7 @@ const aiProductFamilyItems: readonly AiProductFamilyItem[] = [
       "Follow-up path to consultation or curated shop records",
     ],
     premiumDepth:
-      "Premium layers provide deeper rationale and continuity with report and assistant context.",
+      "Currently free under limited launch access with deeper rationale and continuity.",
     trustNote:
       "Remedies are optional supports and do not guarantee specific outcomes.",
     publicHref: "/health-report",
@@ -107,7 +107,7 @@ const aiProductFamilyItems: readonly AiProductFamilyItem[] = [
     ctaLabelPublic: "View Remedies Guidance",
     ctaLabelProtected: "Open Remedy Layer",
     relatedTools: [
-      { label: "Book Consultation", href: "/consultation" },
+      { label: "Book Free Consultation", href: "/consultation" },
       { label: "Shop Records", href: "/shop" },
     ],
   },
@@ -121,12 +121,12 @@ const aiProductFamilyItems: readonly AiProductFamilyItem[] = [
       "Deeper follow-up into reports and consultation when needed",
     ],
     premiumDepth:
-      "Free usage is limited. Premium and Pro unlock deeper and higher-volume assistant guidance.",
+      "Assistant depth is currently open under limited launch free access.",
     trustNote:
       "Assistant responses remain chart-grounded and do not invent unsupported calculations.",
     publicHref: "/sign-up",
     protectedHref: "/dashboard/ask-my-chart",
-    ctaLabelPublic: "Unlock Ask My Chart",
+    ctaLabelPublic: "Try NAVAGRAHA AI",
     ctaLabelProtected: "Open Ask My Chart",
     relatedTools: [
       { label: "Kundli Reading", href: "/kundli-ai" },
@@ -154,5 +154,5 @@ export function resolveAiProductCtaLabel(
 }
 
 export function getAiFamilyUpgradeHref(surface: AiProductFamilySurface) {
-  return surface === "protected" ? "/settings" : "/pricing";
+  return surface === "protected" ? "/dashboard/ask-my-chart" : "/kundli-ai";
 }

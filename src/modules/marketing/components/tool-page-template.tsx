@@ -214,7 +214,7 @@ export function ToolPageTemplate({
                   className: "w-full justify-center sm:w-auto",
                 })}
               >
-                Book Consultation
+                Book Free Consultation
               </Link>
             )}
           </div>

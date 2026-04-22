@@ -1155,7 +1155,7 @@ const seoEntryPages: Record<SeoEntryPageKey, SeoEntryPage> = {
       },
       secondaryAction: {
         href: "/consultation?intent=consultation-ready",
-        label: "Book Consultation",
+        label: "Book Free Consultation",
       },
     },
     valueCards: [

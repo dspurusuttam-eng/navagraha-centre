@@ -7,6 +7,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const contentEntries = await getContentAdapter().listSitemapEntries();
   const staticRoutes = [
     "/",
+    "/kundli",
+    "/compatibility",
+    "/ai",
+    "/reports",
     "/about",
     "/services",
     "/pricing",

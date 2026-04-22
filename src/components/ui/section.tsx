@@ -41,7 +41,14 @@ export function Section({
   const usesInkPalette = tone === "light" || tone === "default" || tone === "muted" || tone === "transparent" || tone === "contrast";
 
   return (
-    <section className={cn(toneStyles[tone], className)} {...props}>
+    <section
+      className={cn(
+        toneStyles[tone],
+        "supports-[content-visibility:auto]:[content-visibility:auto] supports-[content-visibility:auto]:[contain-intrinsic-size:1px_900px]",
+        className
+      )}
+      {...props}
+    >
       <Container className={contentClassName}>
         {eyebrow || title || description ? (
           <div

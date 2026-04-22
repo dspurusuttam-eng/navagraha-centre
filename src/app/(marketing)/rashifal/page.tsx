@@ -10,8 +10,8 @@ export const metadata = buildPageMetadata({
   path: entry.path,
   keywords: entry.metadata.keywords,
 });
+export const revalidate = 3600;
 
 export default function RashifalPage() {
   return <SeoEntryPageView entry={entry} />;
 }
-

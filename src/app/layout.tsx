@@ -1,8 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Manrope } from "next/font/google";
 import { WebVitalsReporter } from "@/components/analytics/web-vitals-reporter";
+import { Footer } from "@/components/site/footer";
+import { Header } from "@/components/site/header";
 import { siteConfig } from "@/config/site";
-import { ShopCartProvider } from "@/modules/shop/components/shop-cart-provider";
 import "./globals.css";
 
 const displayFont = Cormorant_Garamond({
@@ -52,8 +53,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${displayFont.variable} ${sansFont.variable}`}>
-      <body className="antialiased">
-        <ShopCartProvider>{children}</ShopCartProvider>
+      <body className="flex min-h-screen flex-col antialiased">
+        <Header />
+        <main className="content-fade-in flex-1">{children}</main>
+        <Footer />
         <WebVitalsReporter />
       </body>
     </html>

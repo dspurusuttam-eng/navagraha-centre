@@ -1,11 +1,5 @@
-import { LoadingPanel } from "@/components/feedback/loading-panel";
+import { RouteSkeleton } from "@/components/feedback/route-skeleton";
 
 export default function RootLoading() {
-  return (
-    <LoadingPanel
-      eyebrow="NAVAGRAHA CENTRE"
-      title="Opening your experience."
-      description="Please wait a moment while this page finishes rendering."
-    />
-  );
+  return <RouteSkeleton cardCount={3} />;
 }

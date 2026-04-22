@@ -35,9 +35,9 @@ export function PremiumProductCatalogSection({
   includeKeys,
   unlockedKeys,
   upgradeHref,
-  eyebrow = "Premium Product Layer",
+  eyebrow = "Product Layer",
   title = "Reports, AI depth, and consultation pathways in one coherent catalog.",
-  description = "Start with useful previews, unlock deeper layers when needed, and continue across connected products without friction.",
+  description = "Use previews and deeper layers through limited-time free launch access.",
   tone = "muted",
 }: Readonly<PremiumProductCatalogSectionProps>) {
   const catalogItems = listPremiumProductCatalog(includeKeys);
@@ -57,7 +57,7 @@ export function PremiumProductCatalogSection({
               <div className="flex flex-wrap items-center gap-2">
                 <Badge tone="neutral">{item.categoryLabel}</Badge>
                 <Badge tone={unlocked ? "accent" : "outline"}>
-                  {unlocked ? "Unlocked" : "Preview + Upgrade"}
+                  {unlocked ? "Unlocked" : "🔥 Currently Free (Limited Time)"}
                 </Badge>
               </div>
 

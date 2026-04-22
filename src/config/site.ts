@@ -21,11 +21,11 @@ const siteName = publicEnvironment.siteName;
 
 const marketingNav = [
   { href: "/", label: "Home" },
-  { href: "/sign-up", label: "Kundli Chart" },
-  { href: "/marriage-compatibility", label: "Compatibility" },
-  { href: "/daily-rashifal", label: "Daily Rashifal" },
-  { href: "/kundli-ai", label: "NAVAGRAHA AI" },
-  { href: "/career-report", label: "Reports" },
+  { href: "/kundli", label: "Kundli" },
+  { href: "/compatibility", label: "Compatibility" },
+  { href: "/rashifal", label: "Rashifal" },
+  { href: "/ai", label: "NAVAGRAHA AI" },
+  { href: "/reports", label: "Reports" },
   { href: "/consultation", label: "Consultation" },
   { href: "/shop", label: "Shop" },
   { href: "/insights", label: "Insights" },

@@ -1,4 +1,3 @@
-import { SiteChrome } from "@/components/layout/site-chrome";
 import { AdminShell } from "@/modules/admin/components/admin-shell";
 import { requireAdminSession } from "@/modules/auth/server";
 
@@ -20,14 +19,12 @@ async function AdminLayoutInner({
   const session = await requireAdminSession();
 
   return (
-    <SiteChrome section="admin">
-      <AdminShell
-        userName={session.user.name}
-        userEmail={session.user.email}
-        adminRoles={session.adminRoles}
-      >
-        {children}
-      </AdminShell>
-    </SiteChrome>
+    <AdminShell
+      userName={session.user.name}
+      userEmail={session.user.email}
+      adminRoles={session.adminRoles}
+    >
+      {children}
+    </AdminShell>
   );
 }

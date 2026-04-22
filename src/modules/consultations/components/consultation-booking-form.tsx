@@ -347,7 +347,7 @@ export function ConsultationBookingForm({
               Prakash Sarmah&apos;s calendar timezone.
             </p>
             <Button type="submit" size="lg" disabled={isPending || !hasSlots}>
-              {isPending ? "Reserving Slot..." : "Confirm Consultation"}
+              {isPending ? "Reserving Slot..." : "Confirm Free Consultation"}
             </Button>
           </div>
         </Card>

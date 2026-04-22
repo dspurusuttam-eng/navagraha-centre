@@ -22,7 +22,6 @@ import {
 import { OfferRecommendationPanel } from "@/modules/offers/components/offer-recommendation-panel";
 import {
   createFallbackSubscriptionRetentionSnapshot,
-  getUpgradeHrefForUserPlan,
   getUserPlanUsageModel,
   getSubscriptionRetentionIntelligenceSnapshot,
   type SubscriptionRetentionIntelligenceSnapshot,
@@ -393,10 +392,10 @@ export default async function DashboardPage() {
             snapshot={subscriptionState}
             userPlan={userPlanState.plan}
             usage={userPlanState.usage}
-            upgradeHref={getUpgradeHrefForUserPlan(userPlanState.plan.plan_type)}
-            eyebrow="Member Subscription"
-            title="Subscription value in your current workflow."
-            description="Your plan status, optional upgrade path, and retention guidance stay visible without pressure."
+            upgradeHref="/dashboard/chart"
+            eyebrow="Service Access"
+            title="Access status in your current workflow."
+            description="Current access and retention guidance stay visible without pressure."
           />
 
           <Card tone="accent" className="space-y-5">
@@ -563,19 +562,13 @@ export default async function DashboardPage() {
                     Advanced Timing
                   </p>
                   <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                    This deeper timing layer is part of premium access. You can
-                    continue with free timing summaries or upgrade whenever it
-                    becomes useful.
+                    This deeper timing layer is currently free under limited launch access. Continue with timing summaries and deeper analysis while access is open.
                   </p>
                   <Link
-                    href={
-                      subscriptionState.recommendation?.href ??
-                      subscriptionState.nextAction.href
-                    }
+                    href="/dashboard/chart"
                     className={buttonStyles({ size: "sm", tone: "secondary", className: "mt-4" })}
                   >
-                    {subscriptionState.recommendation?.ctaLabel ??
-                      subscriptionState.nextAction.label}
+                    Start Free Analysis
                   </Link>
                 </div>
               )}
@@ -640,12 +633,10 @@ export default async function DashboardPage() {
           ) : (
             <div className="space-y-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
               <p>
-                Premium timing snapshots include dasha timing windows and richer
-                transit sequencing.
+                Timing snapshots include dasha timing windows and richer transit sequencing.
               </p>
               <p>
-                Free access still keeps the current-cycle summary and top focus
-                areas available on this page.
+                These layers are currently free under limited launch access.
               </p>
             </div>
           )}

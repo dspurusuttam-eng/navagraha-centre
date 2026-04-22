@@ -352,7 +352,7 @@ export function ChartReportPage({
     <Section
       eyebrow="Private Report"
       title="A calm first reading built on structured chart facts."
-      description="This report keeps the chart mathematics and remedy selection deterministic, while the explanation layer stays interpretive, premium, and carefully bounded."
+      description="This report keeps chart mathematics and remedy selection deterministic, while the explanation layer stays interpretive and carefully bounded."
       tone="transparent"
       className="pt-0"
     >
@@ -360,7 +360,7 @@ export function ChartReportPage({
         <Card tone="accent" className="relative overflow-hidden space-y-6">
           <div className="pointer-events-none absolute right-[-10%] top-[-12%] h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(215,187,131,0.22)_0%,rgba(215,187,131,0)_70%)]" />
           <div className="relative z-10 flex flex-wrap items-center gap-3">
-            <Badge tone="accent">Premium Report</Badge>
+            <Badge tone="accent">🔥 Currently Free (Limited Time)</Badge>
             <Badge tone="neutral">{chartReport.interpretation.providerKey}</Badge>
           </div>
 
@@ -475,8 +475,8 @@ export function ChartReportPage({
         <SubscriptionValuePanel
           snapshot={subscriptionState}
           eyebrow="Subscription"
-          title="Membership continuity for deeper report work."
-          description="Your current plan status and optional upgrade pathway stay visible while keeping this report calm and non-intrusive."
+          title="Service access visibility for deeper report work."
+          description="Your current access status remains visible while this report stays calm and non-intrusive."
         />
       </div>
 
@@ -505,9 +505,9 @@ export function ChartReportPage({
         }
         upgradeHref={reportUpgradeCopy.upgradeHref}
         tone="muted"
-        eyebrow="Premium Product Catalog"
-        title="Reports and premium guidance in one structured catalog"
-        description="Move from chart context into report depth, AI continuation, and consultation follow-up without fragmented upsell surfaces."
+        eyebrow="Product Catalog"
+        title="Reports and deeper guidance in one structured catalog"
+        description="Move from chart context into report depth, AI continuation, and consultation follow-up without fragmented prompts."
       />
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
@@ -768,13 +768,13 @@ export function ChartReportPage({
             <Card className="space-y-5">
               <div className="space-y-2">
                 <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-                  Premium Report Layers
+                  Report Layers
                 </p>
                 <h2
                   className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
                   style={{ letterSpacing: "var(--tracking-display)" }}
                 >
-                  This deeper report layer is part of premium access.
+                  This deeper report layer is currently open under limited launch access.
                 </h2>
               </div>
               <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">

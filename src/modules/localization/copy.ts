@@ -1,14 +1,16 @@
 export const globalCtaCopy = {
   generateKundli: "Generate Your Kundli",
-  exploreAi: "Explore NAVAGRAHA AI",
-  bookConsultation: "Book Consultation",
+  exploreAi: "Try NAVAGRAHA AI",
+  bookConsultation: "Book Free Consultation",
   signInAccount: "Sign In / Account",
-  unlockFullReport: "Unlock Full Report",
+  unlockFullReport: "Get Free Report",
 } as const;
 
 export const globalLabelCopy = {
   currencyCode: "INR",
-  currencyNote: "Prices are shown in Indian Rupees (INR).",
+  currencyNote: "All astrology services are currently free for limited launch access.",
+  limitedFreeAccessLabel: "🔥 Currently Free (Limited Time)",
+  limitedFreeBanner: "🔥 Limited Time: All Astrology Services Are Free",
   timezoneHint:
     "Use an IANA timezone, for example: Asia/Kolkata, Europe/London, or America/New_York.",
   dateHint: "Use your birth date in local calendar format (YYYY-MM-DD).",

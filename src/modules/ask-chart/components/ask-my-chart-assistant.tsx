@@ -399,7 +399,7 @@ export function AskMyChartAssistant({
               Plan Access
             </p>
             <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              Free keeps the assistant useful for focused chart questions. Premium adds deeper reasoning and report continuity, while Pro is a cleaner fit when premium usage becomes a daily rhythm.
+              🔥 Currently Free (Limited Time). Ask chart-aware questions and continue into report guidance without paid prompts during launch access.
             </p>
             <div className="mt-4 flex flex-col gap-3 sm:flex-row">
               <Link
@@ -412,7 +412,7 @@ export function AskMyChartAssistant({
                 Ask Your Question
               </Link>
               <Link
-                href="/settings"
+                href="/dashboard/ask-my-chart"
                 className={buttonStyles({
                   size: "sm",
                   tone: "secondary",
@@ -429,8 +429,8 @@ export function AskMyChartAssistant({
                     feature: "assistant-plan-access",
                   });
                 }}
-              >
-                View Plans
+                >
+                Try NAVAGRAHA AI
               </Link>
             </div>
           </div>
