@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import { TrackedLink } from "@/components/analytics/tracked-link";
-import { AdReadyZone } from "@/components/site/ad-ready-zone";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -205,11 +204,12 @@ export default async function RashifalSignPage({
         title="Explore other sign pages"
         description="Use internal sign links for complete daily coverage."
       >
-        <AdReadyZone
-          className="mb-6"
-          label="Sign Page Ad Placeholder"
-          description="Reserved for future ad-safe in-content placement on zodiac detail pages. No active ad code is loaded."
-        />
+        <Card className="mb-6 border-[rgba(184,137,67,0.2)] bg-[rgba(255,255,255,0.9)]">
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+            This sign follows the same daily structure as all others, making
+            cross-sign comparisons easy without changing the reading format.
+          </p>
+        </Card>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {rashifalSigns.map((entry) => (
             <TrackedLink

@@ -1,7 +1,6 @@
 import { TrackedLink } from "@/components/analytics/tracked-link";
 import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
-import { AdReadyZone } from "@/components/site/ad-ready-zone";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -139,11 +138,13 @@ export default function RashifalPage() {
         title="Complete daily Rashifal details for all zodiac signs."
         description="Love, career, business, and lucky indicators are provided for each sign."
       >
-        <AdReadyZone
-          className="mb-6"
-          label="Rashifal Content Ad Placeholder"
-          description="Reserved for future in-feed ad placement on the Rashifal listing page. Disabled during launch-access mode."
-        />
+        <Card className="mb-6 border-[rgba(184,137,67,0.2)] bg-[rgba(255,255,255,0.9)]">
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+            Every sign below follows the same structured daily format: five
+            descriptive lines, dedicated love/career/business guidance, and
+            lucky indicators for quick readability.
+          </p>
+        </Card>
         <div className="grid gap-4 lg:grid-cols-2">
           {rashifalSigns.map((sign) => (
             <Card
