@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
+import { PageViewTracker } from "@/components/analytics/page-view-tracker";
+import { TrackedLink } from "@/components/analytics/tracked-link";
 import { buildPageMetadata } from "@/lib/metadata";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -33,6 +36,12 @@ const productsByCategory = getShopProductsByCategory();
 export default function ShopPage() {
   return (
     <>
+      <PageViewTracker page="/shop" feature="shop-page" />
+      <AnalyticsEventTracker
+        event="shop_interaction"
+        payload={{ page: "/shop", feature: "shop-page" }}
+      />
+
       <PageHero
         eyebrow="Spiritual Shop"
         title="A premium catalog of spiritual supports, merchandised with restraint."
@@ -50,6 +59,45 @@ export default function ShopPage() {
         }}
         supportTitle="Commerce Principles"
       />
+
+      <Section
+        eyebrow="Service Separation"
+        title="Shop products remain separate from astrology service access."
+        description="Reports, consultations, and NAVAGRAHA AI remain currently free under limited launch access. The shop is intentionally positioned as an optional spiritual add-on layer."
+        tone="light"
+      >
+        <Card className="space-y-4">
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            Start with your chart and guidance journey first. Add spiritual products only when they align with your practice and personal intent.
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <TrackedLink
+              href="/reports"
+              eventName="shop_interaction"
+              eventPayload={{ page: "/shop", feature: "shop-to-reports" }}
+              className={buttonStyles({ size: "sm", tone: "secondary" })}
+            >
+              Get Free Report
+            </TrackedLink>
+            <TrackedLink
+              href="/consultation"
+              eventName="shop_interaction"
+              eventPayload={{ page: "/shop", feature: "shop-to-consultation" }}
+              className={buttonStyles({ size: "sm", tone: "tertiary" })}
+            >
+              Book Free Consultation
+            </TrackedLink>
+            <TrackedLink
+              href="/ai"
+              eventName="shop_interaction"
+              eventPayload={{ page: "/shop", feature: "shop-to-ai" }}
+              className={buttonStyles({ size: "sm", tone: "ghost" })}
+            >
+              Try NAVAGRAHA AI
+            </TrackedLink>
+          </div>
+        </Card>
+      </Section>
 
       <Section
         eyebrow="Categories"
@@ -133,15 +181,22 @@ export default function ShopPage() {
             deliberate order-confirmation process.
           </p>
           <div className="flex flex-wrap gap-3">
-            <Link href="/shop/cart" className={buttonStyles({ size: "lg" })}>
+            <TrackedLink
+              href="/shop/cart"
+              eventName="shop_interaction"
+              eventPayload={{ page: "/shop", feature: "shop-open-cart" }}
+              className={buttonStyles({ size: "lg" })}
+            >
               Open Cart
-            </Link>
-            <Link
+            </TrackedLink>
+            <TrackedLink
               href="/consultation"
+              eventName="shop_interaction"
+              eventPayload={{ page: "/shop", feature: "shop-ask-guidance" }}
               className={buttonStyles({ tone: "secondary", size: "lg" })}
             >
               Ask For Guidance
-            </Link>
+            </TrackedLink>
           </div>
         </Card>
       </Section>

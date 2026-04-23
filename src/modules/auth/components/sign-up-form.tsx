@@ -50,6 +50,11 @@ export function SignUpForm({
         feature: "auth-signup",
         intent: intent ?? "general",
       });
+      trackEvent("signup_completed", {
+        page: "/sign-up",
+        feature: "auth-signup",
+        intent: intent ?? "general",
+      });
 
       router.push(callbackUrl);
       router.refresh();

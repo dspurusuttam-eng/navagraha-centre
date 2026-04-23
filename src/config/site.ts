@@ -62,6 +62,8 @@ const offeringsNav = [
   { href: "/services", label: "Services" },
   { href: "/privacy", label: "Privacy" },
   { href: "/terms", label: "Terms" },
+  { href: "/disclaimer", label: "Disclaimer" },
+  { href: "/refund-cancellation", label: "Refund Policy" },
   { href: "/pricing", label: "Plans" },
   { href: "/shop", label: "Shop" },
   { href: "/insights", label: "Insights" },
@@ -77,6 +79,8 @@ const supportNav = [
   { href: "/contact", label: "Contact" },
   { href: "/privacy", label: "Privacy" },
   { href: "/terms", label: "Terms" },
+  { href: "/disclaimer", label: "Disclaimer" },
+  { href: "/refund-cancellation", label: "Refund Policy" },
   { href: "/forgot-password", label: "Password Reset" },
 ] satisfies SiteNavItem[];
 

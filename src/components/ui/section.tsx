@@ -7,12 +7,13 @@ type SectionTone = "default" | "muted" | "transparent" | "light" | "contrast";
 type SectionAlign = "left" | "center";
 
 const toneStyles: Record<SectionTone, string> = {
-  default: "py-[var(--space-10)] sm:py-[var(--space-12)] lg:py-[var(--space-14)]",
+  default:
+    "py-[var(--space-10)] sm:py-[var(--space-12)] lg:py-[var(--space-14)]",
   muted:
-    "py-[var(--space-10)] sm:py-[var(--space-12)] lg:py-[var(--space-14)] bg-[linear-gradient(180deg,rgba(250,244,235,0.88)_0%,rgba(245,236,222,0.84)_100%)]",
+    "py-[var(--space-10)] sm:py-[var(--space-12)] lg:py-[var(--space-14)] bg-[linear-gradient(180deg,rgba(252,246,237,0.9)_0%,rgba(246,237,222,0.86)_100%)]",
   transparent: "py-[var(--space-10)] sm:py-[var(--space-12)] lg:py-[var(--space-14)]",
   light:
-    "py-[var(--space-10)] sm:py-[var(--space-12)] lg:py-[var(--space-14)] bg-[linear-gradient(180deg,var(--color-section-light)_0%,var(--color-section-light-muted)_100%)]",
+    "py-[var(--space-10)] sm:py-[var(--space-12)] lg:py-[var(--space-14)] bg-[linear-gradient(180deg,var(--color-section-light)_0%,var(--color-section-light-muted)_54%,#f9efdc_100%)]",
   contrast:
     "py-[var(--space-10)] sm:py-[var(--space-12)] lg:py-[var(--space-14)] bg-[linear-gradient(180deg,var(--color-section-contrast-elevated)_0%,var(--color-section-contrast)_100%)]",
 };
@@ -44,7 +45,7 @@ export function Section({
     <section
       className={cn(
         toneStyles[tone],
-        "supports-[content-visibility:auto]:[content-visibility:auto] supports-[content-visibility:auto]:[contain-intrinsic-size:1px_900px]",
+        "premium-soft-fade supports-[content-visibility:auto]:[content-visibility:auto] supports-[content-visibility:auto]:[contain-intrinsic-size:1px_900px]",
         className
       )}
       {...props}

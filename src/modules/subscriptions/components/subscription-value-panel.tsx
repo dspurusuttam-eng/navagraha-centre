@@ -204,7 +204,7 @@ export function SubscriptionValuePanel({
             <Badge tone="neutral">{snapshot.recommendation.priority}</Badge>
           </div>
           <p className="text-[length:var(--font-size-body-md)] text-[color:var(--color-foreground)]">
-            🔥 Currently Free (Limited Time)
+            Currently Free (Limited Time)
           </p>
           <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
             Continue using report, assistant, and consultation services under limited launch free access.

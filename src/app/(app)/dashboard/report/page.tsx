@@ -1,5 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
+import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
+import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import { generateUserReport } from "@/lib/ai/report-generator";
 import { buildPageMetadata } from "@/lib/metadata";
 import { requireUserSession } from "@/modules/auth/server";
@@ -29,8 +31,15 @@ export const metadata = buildPageMetadata({
 
 export default async function DashboardReportPage() {
   const session = await requireUserSession();
+  let report: Awaited<ReturnType<typeof generateUserReport>> | null = null;
+  let offers: OfferRecommendationResult =
+    createEmptyOfferRecommendationResult("report");
+  let subscriptionState: SubscriptionRetentionIntelligenceSnapshot =
+    createFallbackSubscriptionRetentionSnapshot();
+  let hasLoadError = false;
+
   try {
-    const [report, offers, subscriptionState] = await Promise.all([
+    [report, offers, subscriptionState] = await Promise.all([
       generateUserReport(session.user.id, session.user.name),
       (async (): Promise<OfferRecommendationResult> => {
         try {
@@ -56,15 +65,11 @@ export default async function DashboardReportPage() {
         }
       })(),
     ]);
-
-    return (
-      <ChartReportPage
-        report={report}
-        offers={offers}
-        subscriptionState={subscriptionState}
-      />
-    );
   } catch {
+    hasLoadError = true;
+  }
+
+  if (hasLoadError || !report) {
     return (
       <Section
         eyebrow="Private Report"
@@ -73,6 +78,12 @@ export default async function DashboardReportPage() {
         tone="transparent"
         className="pt-0"
       >
+        <PageViewTracker page="/dashboard/report" feature="dashboard-report" />
+        <AnalyticsEventTracker
+          event="report_view"
+          payload={{ page: "/dashboard/report", feature: "dashboard-report-fallback" }}
+        />
+
         <Card className="space-y-3">
           <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
             NAVAGRAHA CENTRE kept your protected route stable instead of showing
@@ -83,4 +94,19 @@ export default async function DashboardReportPage() {
       </Section>
     );
   }
+
+  return (
+    <>
+      <PageViewTracker page="/dashboard/report" feature="dashboard-report" />
+      <AnalyticsEventTracker
+        event="report_view"
+        payload={{ page: "/dashboard/report", feature: "dashboard-report" }}
+      />
+      <ChartReportPage
+        report={report}
+        offers={offers}
+        subscriptionState={subscriptionState}
+      />
+    </>
+  );
 }

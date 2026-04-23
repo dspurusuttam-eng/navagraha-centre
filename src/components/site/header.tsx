@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { TrackedLink } from "@/components/analytics/tracked-link";
 import { buttonStyles } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { siteConfig } from "@/config/site";
@@ -7,7 +8,7 @@ const primaryNavigation = [
   { href: "/kundli", label: "Kundli" },
   { href: "/compatibility", label: "Compatibility" },
   { href: "/rashifal", label: "Rashifal" },
-  { href: "/ai", label: "AI" },
+  { href: "/ai", label: "NAVAGRAHA AI" },
   { href: "/reports", label: "Reports" },
 ] as const;
 
@@ -20,7 +21,7 @@ const secondaryNavigation = [
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 border-b border-[color:var(--color-border)] bg-[rgba(255,254,250,0.95)] backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-[color:var(--color-border)] bg-[rgba(255,254,250,0.95)] shadow-[0_8px_24px_rgba(96,74,45,0.08)] backdrop-blur-xl">
       <Container className="py-3">
         <div className="hidden items-center gap-6 lg:flex">
           <Link
@@ -42,7 +43,7 @@ export function Header() {
                 className={buttonStyles({
                   tone: "ghost",
                   size: "sm",
-                  className: "min-h-11 px-4 text-[0.72rem]",
+                  className: "min-h-11 px-4 text-[0.69rem]",
                 })}
               >
                 {item.label}
@@ -57,9 +58,14 @@ export function Header() {
             >
               Account
             </Link>
-            <Link href="/kundli" className={buttonStyles({ size: "sm" })}>
+            <TrackedLink
+              href="/kundli"
+              eventName="cta_click"
+              eventPayload={{ page: "global-header", feature: "header-generate-kundli" }}
+              className={buttonStyles({ size: "sm" })}
+            >
               Generate Kundli
-            </Link>
+            </TrackedLink>
           </div>
         </div>
 
@@ -72,10 +78,15 @@ export function Header() {
             NAVAGRAHA
           </Link>
 
-          <Link href="/kundli" className={buttonStyles({ size: "sm" })}>
+          <TrackedLink
+            href="/kundli"
+            eventName="cta_click"
+            eventPayload={{ page: "global-header-mobile", feature: "header-generate-kundli" }}
+            className={buttonStyles({ size: "sm" })}
+          >
             <span className="sm:hidden">Kundli</span>
             <span className="hidden sm:inline">Generate Kundli</span>
-          </Link>
+          </TrackedLink>
 
           <details className="group relative">
             <summary
@@ -126,8 +137,10 @@ export function Header() {
                   >
                     Account
                   </Link>
-                  <Link
+                  <TrackedLink
                     href="/kundli-ai"
+                    eventName="cta_click"
+                    eventPayload={{ page: "global-header-mobile", feature: "header-try-ai" }}
                     className={buttonStyles({
                       tone: "secondary",
                       size: "sm",
@@ -135,9 +148,11 @@ export function Header() {
                     })}
                   >
                     Try NAVAGRAHA AI
-                  </Link>
-                  <Link
+                  </TrackedLink>
+                  <TrackedLink
                     href="/reports"
+                    eventName="cta_click"
+                    eventPayload={{ page: "global-header-mobile", feature: "header-get-report" }}
                     className={buttonStyles({
                       tone: "secondary",
                       size: "sm",
@@ -145,7 +160,7 @@ export function Header() {
                     })}
                   >
                     Get Free Report
-                  </Link>
+                  </TrackedLink>
                 </div>
               </nav>
             </div>

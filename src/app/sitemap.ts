@@ -1,6 +1,11 @@
 import type { MetadataRoute } from "next";
 import { siteConfig } from "@/config/site";
 import { getContentAdapter } from "@/modules/content";
+import {
+  insightsCategories,
+  insightsSeoLandings,
+} from "@/modules/content/insights-authority";
+import { rashifalSigns } from "@/modules/rashifal/content";
 import { listShopProducts } from "@/modules/shop";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -32,9 +37,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/contact",
     "/privacy",
     "/terms",
+    "/disclaimer",
+    "/refund-cancellation",
     "/shop",
     "/shop/cart",
     "/insights",
+    ...insightsCategories.map((category) => category.path),
+    ...insightsSeoLandings.map((landing) => landing.path),
   ];
 
   return [
@@ -43,6 +52,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: "weekly" as const,
       priority: path === "/" ? 1 : 0.7,
+    })),
+    ...rashifalSigns.map((sign) => ({
+      url: new URL(`/rashifal/${sign.slug}`, siteConfig.url).toString(),
+      lastModified: new Date(),
+      changeFrequency: "daily" as const,
+      priority: 0.75,
     })),
     ...listShopProducts().map((product) => ({
       url: new URL(product.href, siteConfig.url).toString(),

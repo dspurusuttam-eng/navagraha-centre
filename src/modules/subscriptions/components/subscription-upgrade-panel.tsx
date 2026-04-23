@@ -16,7 +16,7 @@ export function SubscriptionUpgradePanel() {
       </div>
 
       <div className="flex flex-wrap gap-3">
-        <Badge tone="accent">🔥 Currently Free (Limited Time)</Badge>
+        <Badge tone="accent">Currently Free (Limited Time)</Badge>
       </div>
 
       <div className="flex flex-wrap gap-3">

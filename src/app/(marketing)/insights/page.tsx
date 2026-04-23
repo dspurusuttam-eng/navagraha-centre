@@ -1,43 +1,47 @@
 import Link from "next/link";
+import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import { AdReadyZone } from "@/components/site/ad-ready-zone";
+import { PageHero } from "@/components/site/page-hero";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
-import { EditorialPlaceholder } from "@/components/site/editorial-placeholder";
-import { PageHero } from "@/components/site/page-hero";
 import { buildPageMetadata } from "@/lib/metadata";
-import { ContentCard } from "@/modules/content/components/content-card";
 import {
-  contentHubs,
   getContentAdapter,
   getInsightsCollectionStructuredData,
 } from "@/modules/content";
+import { ContentCard } from "@/modules/content/components/content-card";
+import {
+  insightsCategories,
+  insightsSeoLandings,
+} from "@/modules/content/insights-authority";
+import { RevenuePathwaysCard } from "@/modules/subscriptions/components/revenue-readiness-panels";
 
 export const metadata = buildPageMetadata({
   title: "Insights",
   description:
-    "Read editorial articles, forecasts, FAQ pages, and remedies guidance from NAVAGRAHA CENTRE.",
+    "Explore NAVAGRAHA CENTRE insights with premium astrology categories, featured articles, and latest authority content.",
   path: "/insights",
   keywords: [
-    "astrology blog",
-    "remedy guidance articles",
-    "monthly forecast",
-    "daily horoscope",
-    "astrology faq",
+    "astrology insights",
+    "vedic astrology content",
+    "rashifal articles",
+    "astrology guides",
+    "remedies insights",
   ],
 });
 export const revalidate = 3600;
 
 export default async function InsightsPage() {
   const contentAdapter = getContentAdapter();
-  const [entries, groups] = await Promise.all([
-    contentAdapter.listPublishedEntries(),
-    contentAdapter.listListingGroups(),
-  ]);
+  const entries = await contentAdapter.listPublishedEntries();
   const featuredEntries = entries.slice(0, 3);
+  const latestEntries = entries.slice(3, 9);
 
   return (
     <>
+      <PageViewTracker page="/insights" feature="insights-page" />
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -46,87 +50,43 @@ export default async function InsightsPage() {
       />
 
       <PageHero
-        eyebrow="Insights"
-        title="Editorial content designed for long-term authority, not filler."
-        description="The insights library gives NAVAGRAHA CENTRE an evergreen content foundation for search, trust, and editorial authority. Each piece is structured for clarity, human review, and disciplined publishing."
+        eyebrow="Insights Authority Engine"
+        title="Astrology insights built for authority, trust, and practical action."
+        description="The insights system is structured as a premium editorial engine: category pathways, searchable topic surfaces, and conversion-safe links into Kundli, NAVAGRAHA AI, and consultation."
         highlights={[
-          "Typed content records for articles, forecasts, FAQs, remedy explainers, and service guides",
-          "A CMS-ready adapter boundary that keeps publishing clean and portable",
-          "Structured metadata and human-reviewed publishing posture from the start",
+          "Category-driven discovery for Rashifal, remedies, relationships, and career.",
+          "Article templates with authorship, structured sections, and practical guidance.",
+          "SEO-safe internal linking across Rashifal, AI, Kundli, and related articles.",
         ]}
-        note="Publication remains human-reviewed and deliberate so the editorial tone stays measured and trustworthy."
-        primaryAction={{ href: "/consultation", label: "Book Free Consultation" }}
-        secondaryAction={{ href: "/services", label: "View Services" }}
+        note="All content remains human-reviewed and aligned with trust-safe premium communication."
+        primaryAction={{ href: "/kundli", label: "Generate Kundli" }}
+        secondaryAction={{ href: "/ai", label: "Try NAVAGRAHA AI" }}
         supportTitle="Editorial Foundation"
       />
 
       <Section
-        eyebrow="Featured Edit"
-        title="A compact editorial front door for search depth and trust."
-        description="The featured selection surfaces the latest high-signal content first, while the grouped library below keeps the overall architecture clear and scalable."
+        eyebrow="Content Categories"
+        title="Navigate insights by category."
+        description="Choose a category to explore focused content clusters and conversion pathways."
       >
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-          <EditorialPlaceholder
-            eyebrow="Publishing Principles"
-            title="Strong content systems rank because they stay clear, useful, and restrained."
-            description="The editorial layer is built to support long-term authority: careful metadata, typed content records, structured review, and public pages that feel composed rather than automated."
-            annotations={[
-              "Human review before publication",
-              "No mass-generated filler pages",
-              "Structured data for article and FAQ surfaces",
-              "CMS-ready boundary for disciplined publishing growth",
-            ]}
-            tone="midnight"
-            className="h-full"
-          />
-
-          <div className="grid gap-6">
-            {featuredEntries.map((entry) => (
-              <ContentCard key={entry.slug} entry={entry} />
-            ))}
-          </div>
-        </div>
-      </Section>
-
-      {groups.map((group) => (
-        <Section
-          key={group.type}
-          eyebrow={group.label}
-          title={`${group.label} content with a clear SEO role.`}
-          description={group.description}
-          tone="muted"
-        >
-          <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
-            {group.entries.map((entry) => (
-              <ContentCard key={entry.slug} entry={entry} />
-            ))}
-          </div>
-        </Section>
-      ))}
-
-      <Section
-        eyebrow="Knowledge Hubs"
-        title="Authority hubs that connect content, tools, and conversion."
-        description="Use structured hubs to navigate major astrology themes without fragmentation across the public website."
-      >
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {contentHubs.map((hub) => (
-            <Card key={hub.slug} interactive className="flex h-full flex-col gap-4">
-              <h3 className="text-[length:var(--font-size-body-lg)] text-[var(--color-ink-strong)]">
-                {hub.title}
-              </h3>
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {insightsCategories.map((category) => (
+            <Card key={category.slug} interactive className="flex h-full flex-col gap-4">
+              <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
+                {category.title}
+              </h2>
               <p className="flex-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                {hub.description}
+                {category.description}
               </p>
               <Link
-                href={hub.path}
+                href={category.path}
                 className={buttonStyles({
                   size: "sm",
                   tone: "secondary",
                   className: "w-full justify-center",
                 })}
               >
-                Open Hub
+                Open Category
               </Link>
             </Card>
           ))}
@@ -134,30 +94,68 @@ export default async function InsightsPage() {
       </Section>
 
       <Section
-        eyebrow="Publishing Boundary"
-        title="Human-reviewed publishing, with clear editorial boundaries."
-        description="The content system is designed for disciplined writing, careful review, and high-signal publishing without filler output."
+        tone="muted"
+        eyebrow="SEO Surfaces"
+        title="High-intent astrology search pathways."
+        description="These SEO surfaces route daily horoscope intent into trusted articles, Rashifal pages, and chart-aware tools."
+      >
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {insightsSeoLandings.map((landing) => (
+            <Card key={landing.slug} interactive className="flex h-full flex-col gap-4">
+              <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
+                {landing.title}
+              </h2>
+              <p className="flex-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                {landing.description}
+              </p>
+              <Link
+                href={landing.path}
+                className={buttonStyles({
+                  size: "sm",
+                  tone: "secondary",
+                  className: "w-full justify-center",
+                })}
+              >
+                Open SEO Surface
+              </Link>
+            </Card>
+          ))}
+        </div>
+      </Section>
+
+      <Section
+        tone="light"
+        eyebrow="Featured Articles"
+        title="High-signal editorial pieces from the authority library."
+        description="These featured articles anchor the insights system with durable, high-intent topics."
+      >
+        <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
+          {featuredEntries.map((entry) => (
+            <ContentCard key={entry.slug} entry={entry} />
+          ))}
+        </div>
+      </Section>
+
+      <Section
+        tone="muted"
+        eyebrow="Latest Articles"
+        title="Freshly updated content for daily and seasonal engagement."
+        description="Latest updates keep the insights system active for return users and search consistency."
       >
         <AdReadyZone className="mb-6" />
+        <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
+          {latestEntries.map((entry) => (
+            <ContentCard key={entry.slug} entry={entry} />
+          ))}
+        </div>
+      </Section>
 
-        <Card tone="accent" className="space-y-5">
-          <p className="text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-            That boundary matters for quality. The long-term goal is stronger
-            search authority built on high-signal content, deliberate review,
-            and a publishing system that protects tone and factual limits.
-          </p>
-          <div className="flex flex-wrap gap-3">
-            <Link href="/contact" className={buttonStyles({ size: "lg" })}>
-              Contact The Centre
-            </Link>
-            <Link
-              href="/joy-prakash-sarmah"
-              className={buttonStyles({ tone: "secondary", size: "lg" })}
-            >
-              Meet Joy Prakash Sarmah
-            </Link>
-          </div>
-        </Card>
+      <Section className="pt-0" tone="transparent">
+        <RevenuePathwaysCard
+          pagePath="/insights"
+          title="Continue from insights into guided astrology pathways"
+          description="Read trusted content first, then move into chart reports, consultation, and optional spiritual add-ons with clear progression."
+        />
       </Section>
     </>
   );

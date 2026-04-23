@@ -10,6 +10,12 @@ import { buildPageMetadata } from "@/lib/metadata";
 import { PremiumProductCatalogSection } from "@/modules/report/components/premium-product-catalog-section";
 import { globalLabelCopy } from "@/modules/localization/copy";
 import { getPlanComparisonRows } from "@/modules/subscriptions/monetization-content";
+import {
+  AiMonetizationPrepSection,
+  ConsultationTiersSection,
+  ReportPackagesSection,
+  RevenueValueLevelsSection,
+} from "@/modules/subscriptions/components/revenue-readiness-panels";
 
 export const metadata = buildPageMetadata({
   title: "Limited-Time Free Access",
@@ -103,7 +109,7 @@ export default function PricingPage() {
                     ? "/consultation"
                     : row.planType === "PREMIUM"
                       ? "/kundli-ai"
-                      : "/career-report"
+                      : "/reports"
                 }
                 className={buttonStyles({
                   size: "sm",
@@ -190,6 +196,11 @@ export default function PricingPage() {
           </div>
         </Card>
       </Section>
+
+      <RevenueValueLevelsSection pagePath="/pricing" tone="light" />
+      <ReportPackagesSection pagePath="/pricing" tone="muted" />
+      <ConsultationTiersSection pagePath="/pricing" tone="light" />
+      <AiMonetizationPrepSection pagePath="/pricing" tone="muted" />
     </>
   );
 }

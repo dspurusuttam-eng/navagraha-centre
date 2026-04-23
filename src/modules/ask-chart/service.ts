@@ -758,29 +758,6 @@ function formatStructuredReplyForConversation(
   ].join("\n\n");
 }
 
-function applyFreePlanResponseGuardrails(
-  response: AstrologyAssistantStructuredResponse
-): AstrologyAssistantStructuredResponse {
-  const maxAnswerLength = 260;
-  const maxReasoningLength = 340;
-  const normalizedAnswer = response.answer.trim();
-  const normalizedReasoning = response.reasoning.trim();
-
-  return {
-    answer:
-      normalizedAnswer.length > maxAnswerLength
-        ? `${normalizedAnswer.slice(0, maxAnswerLength - 1).trimEnd()}…`
-        : normalizedAnswer,
-    reasoning:
-      normalizedReasoning.length > maxReasoningLength
-        ? `${normalizedReasoning
-            .slice(0, maxReasoningLength - 1)
-            .trimEnd()}…`
-        : normalizedReasoning,
-    confidence: response.confidence === "high" ? "medium" : response.confidence,
-  };
-}
-
 function applyFreePlanResponseGuardrailsNormalized(
   response: AstrologyAssistantStructuredResponse
 ): AstrologyAssistantStructuredResponse {

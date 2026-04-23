@@ -26,7 +26,7 @@ export function SubscriptionPricingPanel() {
           Service Access
         </p>
         <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-          🔥 Currently Free (Limited Time)
+          Currently Free (Limited Launch Access)
         </p>
       </div>
 

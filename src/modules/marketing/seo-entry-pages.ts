@@ -1,6 +1,5 @@
 import { siteConfig } from "@/config/site";
 import {
-  buildAcquisitionOnboardingPath,
   buildAcquisitionSignInPath,
   buildAcquisitionSignUpPath,
 } from "@/modules/acquisition/intents";

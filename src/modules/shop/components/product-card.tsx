@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { TrackedLink } from "@/components/analytics/tracked-link";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -40,12 +40,17 @@ export function ProductCard({
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <Link
+          <TrackedLink
             href={product.href}
+            eventName="shop_interaction"
+            eventPayload={{
+              page: "/shop",
+              feature: `shop-product-view-${product.slug}`,
+            }}
             className={buttonStyles({ tone: "secondary", size: "sm" })}
           >
             View Product
-          </Link>
+          </TrackedLink>
           <AddToCartButton productSlug={product.slug} size="sm" />
         </div>
       </div>

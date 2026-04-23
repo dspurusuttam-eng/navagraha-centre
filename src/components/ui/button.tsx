@@ -16,11 +16,11 @@ const baseStyles =
 
 const toneStyles: Record<ButtonTone, string> = {
   accent:
-    "border-[color:var(--button-primary-border)] bg-[image:var(--button-primary-bg)] text-[color:var(--button-primary-text)] shadow-[var(--shadow-glow)] hover:-translate-y-0.5 hover:border-[color:var(--button-primary-hover-border)] hover:brightness-[1.02] hover:shadow-[var(--shadow-md)]",
+    "border-[color:var(--button-primary-border)] bg-[image:var(--button-primary-bg)] text-[color:var(--button-primary-text)] shadow-[var(--shadow-glow)] hover:-translate-y-0.5 hover:border-[color:var(--button-primary-hover-border)] hover:brightness-[1.03] hover:shadow-[0_16px_38px_rgba(185,139,70,0.3)]",
   secondary:
-    "border-[color:var(--button-secondary-border)] bg-[image:var(--button-secondary-bg)] text-[color:var(--button-secondary-text)] shadow-[var(--shadow-sm)] hover:-translate-y-0.5 hover:border-[rgba(184,137,67,0.56)] hover:text-[color:var(--color-ink-strong)]",
+    "border-[color:var(--button-secondary-border)] bg-[image:var(--button-secondary-bg)] text-[color:var(--button-secondary-text)] shadow-[var(--shadow-sm)] hover:-translate-y-0.5 hover:border-[rgba(185,139,70,0.56)] hover:text-[color:var(--color-ink-strong)]",
   tertiary:
-    "border-[color:var(--button-tertiary-border)] bg-[color:var(--button-tertiary-bg)] text-[color:var(--button-tertiary-text)] shadow-[var(--button-tertiary-shadow)] hover:-translate-y-0.5 hover:border-[rgba(184,137,67,0.34)] hover:bg-[color:var(--button-tertiary-bg-hover)] hover:text-[color:var(--button-tertiary-text-hover)]",
+    "border-[color:var(--button-tertiary-border)] bg-[color:var(--button-tertiary-bg)] text-[color:var(--button-tertiary-text)] shadow-[var(--button-tertiary-shadow)] hover:-translate-y-0.5 hover:border-[rgba(185,139,70,0.34)] hover:bg-[color:var(--button-tertiary-bg-hover)] hover:text-[color:var(--button-tertiary-text-hover)]",
   ghost:
     "border-transparent bg-transparent text-[color:var(--color-ink-body)] hover:bg-[color:var(--color-accent-soft)] hover:text-[color:var(--color-ink-strong)]",
 };

@@ -23,7 +23,6 @@ type ShopRuntimeWarningStore = {
 };
 
 declare global {
-  // eslint-disable-next-line no-var
   var __navagrahaShopRuntimeWarnings: ShopRuntimeWarningStore | undefined;
 }
 

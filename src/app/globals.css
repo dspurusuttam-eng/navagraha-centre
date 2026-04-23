@@ -26,19 +26,19 @@ body {
   overflow-x: hidden;
   background:
     radial-gradient(
-      circle at 10% 0%,
-      rgba(184, 137, 67, 0.14),
-      transparent 34%
+      circle at 9% 0%,
+      rgba(185, 139, 70, 0.12),
+      transparent 36%
     ),
     radial-gradient(
-      circle at 88% 10%,
-      rgba(202, 153, 125, 0.1),
-      transparent 28%
+      circle at 88% 12%,
+      rgba(200, 150, 122, 0.08),
+      transparent 30%
     ),
     radial-gradient(
       circle at 50% 100%,
-      rgba(184, 137, 67, 0.08),
-      transparent 36%
+      rgba(185, 139, 70, 0.07),
+      transparent 38%
     ),
     linear-gradient(
       180deg,
@@ -50,6 +50,29 @@ body {
   font-family: var(--font-sans), sans-serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.38;
+  background:
+    radial-gradient(
+      circle at 0.5px 0.5px,
+      var(--color-signature-line) 0.9px,
+      transparent 1.4px
+    )
+    0 0 / 24px 24px;
+  mask-image: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.2) 0%,
+    rgba(0, 0, 0, 0.1) 22%,
+    rgba(0, 0, 0, 0.04) 54%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  z-index: -1;
 }
 
 a {
@@ -96,7 +119,8 @@ select {
   background: linear-gradient(
     180deg,
     var(--color-section-light) 0%,
-    var(--color-section-light-muted) 100%
+    var(--color-section-light-muted) 56%,
+    #f9f1e2 100%
   );
 }
 
@@ -114,6 +138,31 @@ select {
     var(--color-section-contrast-elevated) 0%,
     var(--color-section-contrast) 100%
   );
+}
+
+.brand-signature-grid {
+  position: relative;
+}
+
+.brand-signature-grid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    linear-gradient(
+      120deg,
+      rgba(185, 139, 70, 0.08) 0%,
+      rgba(185, 139, 70, 0.02) 32%,
+      transparent 64%
+    ),
+    repeating-linear-gradient(
+      45deg,
+      transparent 0 14px,
+      rgba(185, 139, 70, 0.04) 14px 15px
+    );
+  mix-blend-mode: multiply;
 }
 
 .type-display {
@@ -223,10 +272,14 @@ select {
   opacity: 0;
   background: radial-gradient(
     circle at top,
-    rgba(184, 137, 67, 0.16) 0%,
-    rgba(184, 137, 67, 0) 60%
+    rgba(185, 139, 70, 0.16) 0%,
+    rgba(185, 139, 70, 0) 60%
   );
   transition: opacity var(--motion-duration-base) var(--ease-standard);
+}
+
+.premium-soft-fade {
+  animation: home-fade-up 520ms var(--ease-emphasized) both;
 }
 
 .home-polish-surface:hover::after,

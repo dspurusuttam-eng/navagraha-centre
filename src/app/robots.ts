@@ -28,6 +28,8 @@ export default function robots(): MetadataRoute.Robots {
           "/navagraha-ai-explainer",
           "/contact",
           "/joy-prakash-sarmah",
+          "/disclaimer",
+          "/refund-cancellation",
           "/shop",
           "/insights",
         ],

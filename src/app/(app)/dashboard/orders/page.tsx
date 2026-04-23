@@ -26,9 +26,13 @@ export const metadata = buildPageMetadata({
 
 export default async function DashboardOrdersPage() {
   const session = await requireUserSession();
+  let orders: Awaited<ReturnType<typeof listMemberOrders>> = [];
+  let offers: OfferRecommendationResult =
+    createEmptyOfferRecommendationResult("dashboard");
+  let hasLoadError = false;
 
   try {
-    const [orders, offers] = await Promise.all([
+    [orders, offers] = await Promise.all([
       listMemberOrders(session.user.id),
       (async (): Promise<OfferRecommendationResult> => {
         try {
@@ -43,9 +47,11 @@ export default async function DashboardOrdersPage() {
         }
       })(),
     ]);
-
-    return <MemberOrderList orders={orders} offers={offers} />;
   } catch {
+    hasLoadError = true;
+  }
+
+  if (hasLoadError) {
     return (
       <Section
         eyebrow="Orders"
@@ -83,4 +89,6 @@ export default async function DashboardOrdersPage() {
       </Section>
     );
   }
+
+  return <MemberOrderList orders={orders} offers={offers} />;
 }

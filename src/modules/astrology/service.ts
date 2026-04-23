@@ -35,28 +35,28 @@ export type AstrologyProviderKey = (typeof providerKeys)[number];
 const providerCache = new Map<AstrologyProviderKey, Promise<AstrologyProvider>>();
 
 async function createMockDeterministicProvider(): Promise<AstrologyProvider> {
-  const module = await import(
+  const providerModule = await import(
     "@/modules/astrology/providers/mock-deterministic-provider"
   );
 
-  return new module.MockDeterministicAstrologyProvider();
+  return new providerModule.MockDeterministicAstrologyProvider();
 }
 
 async function createCircularNatalProvider(): Promise<AstrologyProvider> {
-  const module = await import(
+  const providerModule = await import(
     "@/modules/astrology/providers/circular-natal-horoscope-provider"
   );
 
-  return new module.CircularNatalHoroscopeProvider();
+  return new providerModule.CircularNatalHoroscopeProvider();
 }
 
 async function createSwissEphemerisProvider(): Promise<AstrologyProvider> {
   try {
-    const module = await import(
+    const providerModule = await import(
       "@/modules/astrology/providers/swisseph-vedic-provider"
     );
 
-    return new module.SwissEphemerisVedicProvider();
+    return new providerModule.SwissEphemerisVedicProvider();
   } catch (error) {
     console.error(
       "swisseph-vedic provider unavailable, falling back to mock-deterministic",

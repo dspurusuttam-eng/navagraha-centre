@@ -1,54 +1,58 @@
 :root {
   /* Premium light palette */
-  --color-base-0: #fffdf8;
-  --color-base-1: #faf6ee;
-  --color-base-2: #f4ecdf;
-  --color-base-3: #ece2d2;
-  --color-ink-black: #161210;
-  --color-ink-strong: #2b241d;
-  --color-ink-body: #453b31;
-  --color-ink-muted: #6a5d4f;
+  --color-base-0: #fffefb;
+  --color-base-1: #fbf6ed;
+  --color-base-2: #f6eedf;
+  --color-base-3: #eee3cf;
+  --color-ink-black: #18130f;
+  --color-ink-strong: #2f261e;
+  --color-ink-body: #4c4033;
+  --color-ink-muted: #726252;
 
-  --color-navy-900: #f7f0e2;
-  --color-navy-850: #f3ead9;
-  --color-navy-800: #ece0cb;
-  --color-violet-700: #9d6f4b;
-  --color-violet-600: #b9855e;
-  --color-gold-500: #b88943;
-  --color-gold-400: #d3ad70;
-  --color-gold-300: #ead1a3;
+  --color-navy-900: #faf3e5;
+  --color-navy-850: #f6ecda;
+  --color-navy-800: #f0e3ce;
+  --color-violet-700: #9d7656;
+  --color-violet-600: #bc9068;
+  --color-gold-500: #b98b46;
+  --color-gold-400: #d4ae75;
+  --color-gold-300: #ead4a8;
+  --color-saffron-500: #c8843e;
+  --color-rose-gold-400: #c79679;
+  --color-champagne-300: #f1dfbf;
 
-  --color-trust-bg: rgba(184, 137, 67, 0.12);
-  --color-trust-border: rgba(184, 137, 67, 0.34);
-  --color-trust-text: #7a5526;
-  --color-trust-bg-soft: rgba(184, 137, 67, 0.08);
+  --color-trust-bg: rgba(185, 139, 70, 0.12);
+  --color-trust-border: rgba(185, 139, 70, 0.36);
+  --color-trust-text: #7e5827;
+  --color-trust-bg-soft: rgba(185, 139, 70, 0.08);
 
   /* Shared semantic aliases used across the existing UI */
   --color-surface: var(--color-base-0);
   --color-surface-elevated: var(--color-base-1);
-  --color-surface-floating: rgba(255, 252, 245, 0.95);
-  --color-panel: rgba(255, 251, 244, 0.95);
-  --color-panel-strong: rgba(255, 253, 248, 0.99);
-  --color-field: rgba(255, 253, 248, 0.98);
-  --color-border: rgba(154, 122, 73, 0.22);
-  --color-border-strong: rgba(184, 137, 67, 0.42);
+  --color-surface-floating: rgba(255, 252, 245, 0.96);
+  --color-panel: rgba(255, 251, 244, 0.96);
+  --color-panel-strong: rgba(255, 254, 249, 0.99);
+  --color-field: rgba(255, 253, 248, 0.99);
+  --color-border: rgba(149, 118, 72, 0.22);
+  --color-border-strong: rgba(185, 139, 70, 0.44);
   --color-foreground: var(--color-ink-strong);
   --color-muted: var(--color-ink-muted);
   --color-muted-soft: #8b7a67;
   --color-accent: var(--color-gold-500);
   --color-accent-strong: var(--color-gold-300);
-  --color-accent-soft: rgba(184, 137, 67, 0.14);
-  --color-accent-ring: rgba(184, 137, 67, 0.32);
+  --color-accent-soft: rgba(185, 139, 70, 0.14);
+  --color-accent-ring: rgba(185, 139, 70, 0.34);
   --color-accent-contrast: #20170f;
   --color-overlay: rgba(122, 95, 58, 0.12);
+  --color-signature-line: rgba(185, 139, 70, 0.12);
 
   /* Section surface system */
   --color-section-light: var(--color-base-0);
   --color-section-light-muted: var(--color-base-1);
   --color-section-light-strong: var(--color-base-2);
-  --color-section-contrast: #f7efdf;
-  --color-section-contrast-elevated: #f9f2e6;
-  --color-section-contrast-edge: rgba(184, 137, 67, 0.3);
+  --color-section-contrast: #f8f0e0;
+  --color-section-contrast-elevated: #fbf4e9;
+  --color-section-contrast-edge: rgba(185, 139, 70, 0.3);
 
   /* Typography foundation */
   --space-1: 0.25rem;
@@ -59,23 +63,23 @@
   --space-6: 1.5rem;
   --space-8: 2rem;
   --space-10: 2.5rem;
-  --space-12: 3.75rem;
-  --space-14: 5.25rem;
-  --space-16: 6.5rem;
+  --space-12: 4rem;
+  --space-14: 5.5rem;
+  --space-16: 6.75rem;
 
   --radius-sm: 0.75rem;
   --radius-md: 1rem;
   --radius-lg: 1.25rem;
   --radius-xl: 1.75rem;
-  --radius-2xl: 2.5rem;
+  --radius-2xl: 2.25rem;
   --radius-3xl: 3rem;
   --radius-pill: 999px;
 
-  --shadow-xs: inset 0 1px 0 rgba(255, 255, 255, 0.7);
-  --shadow-sm: 0 12px 32px rgba(85, 67, 40, 0.12);
-  --shadow-md: 0 18px 52px rgba(85, 67, 40, 0.16);
-  --shadow-lg: 0 26px 72px rgba(85, 67, 40, 0.2);
-  --shadow-glow: 0 14px 40px rgba(184, 137, 67, 0.22);
+  --shadow-xs: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  --shadow-sm: 0 10px 30px rgba(94, 72, 43, 0.11);
+  --shadow-md: 0 16px 46px rgba(94, 72, 43, 0.15);
+  --shadow-lg: 0 24px 70px rgba(94, 72, 43, 0.2);
+  --shadow-glow: 0 14px 40px rgba(185, 139, 70, 0.24);
 
   --font-size-display-xl: clamp(3.5rem, 8vw, 6.75rem);
   --font-size-display-lg: clamp(2.85rem, 6vw, 5rem);
@@ -96,7 +100,7 @@
   --tracking-heading: -0.02em;
 
   --motion-duration-fast: 180ms;
-  --motion-duration-base: 280ms;
+  --motion-duration-base: 260ms;
   --motion-duration-slow: 520ms;
   --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
   --ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
@@ -104,57 +108,58 @@
   --container-max: 78rem;
 
   /* CTA hierarchy tokens */
-  --button-primary-border: rgba(184, 137, 67, 0.62);
+  --button-primary-border: rgba(185, 139, 70, 0.66);
   --button-primary-bg: linear-gradient(
-    135deg,
-    var(--color-gold-400) 0%,
-    var(--color-accent) 100%
+    140deg,
+    #dfbe87 0%,
+    var(--color-gold-500) 58%,
+    #a87631 100%
   );
-  --button-primary-text: var(--color-accent-contrast);
-  --button-primary-hover-border: rgba(158, 116, 50, 0.72);
+  --button-primary-text: #20160c;
+  --button-primary-hover-border: rgba(157, 116, 50, 0.74);
 
-  --button-secondary-border: rgba(165, 130, 78, 0.34);
+  --button-secondary-border: rgba(165, 130, 78, 0.36);
   --button-secondary-bg: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.96) 0%,
-    rgba(247, 239, 223, 0.94) 100%
+    rgba(255, 255, 255, 0.97) 0%,
+    rgba(247, 238, 221, 0.95) 100%
   );
   --button-secondary-text: var(--color-ink-body);
 
-  --button-tertiary-border: rgba(113, 90, 57, 0.24);
-  --button-tertiary-bg: rgba(255, 255, 255, 0.88);
-  --button-tertiary-bg-hover: rgba(255, 255, 255, 0.98);
+  --button-tertiary-border: rgba(113, 90, 57, 0.26);
+  --button-tertiary-bg: rgba(255, 255, 255, 0.9);
+  --button-tertiary-bg-hover: rgba(255, 255, 255, 0.99);
   --button-tertiary-text: var(--color-ink-body);
   --button-tertiary-text-hover: var(--color-ink-strong);
   --button-tertiary-shadow: 0 8px 20px rgba(86, 67, 43, 0.1);
 
   /* Card system tokens */
-  --card-default-border: var(--color-border);
+  --card-default-border: rgba(155, 122, 74, 0.24);
   --card-default-bg: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.96) 0%,
-    rgba(249, 242, 230, 0.92) 100%
+    rgba(255, 255, 255, 0.97) 0%,
+    rgba(251, 244, 232, 0.93) 100%
   );
-  --card-muted-border: var(--color-border);
+  --card-muted-border: rgba(155, 122, 74, 0.24);
   --card-muted-bg: linear-gradient(
     180deg,
-    rgba(252, 246, 236, 0.96) 0%,
-    rgba(244, 236, 223, 0.9) 100%
+    rgba(252, 246, 236, 0.97) 0%,
+    rgba(245, 236, 223, 0.91) 100%
   );
-  --card-accent-border: rgba(184, 137, 67, 0.36);
+  --card-accent-border: rgba(185, 139, 70, 0.4);
   --card-accent-bg: linear-gradient(
     180deg,
-    rgba(255, 250, 241, 0.98) 0%,
-    rgba(243, 229, 201, 0.92) 100%
+    rgba(255, 250, 241, 0.99) 0%,
+    rgba(243, 229, 201, 0.93) 100%
   );
-  --card-light-border: rgba(154, 122, 73, 0.2);
+  --card-light-border: rgba(154, 122, 73, 0.24);
   --card-light-bg: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(247, 239, 223, 0.92) 100%
+    rgba(255, 255, 255, 0.96) 0%,
+    rgba(248, 240, 224, 0.92) 100%
   );
   --card-light-text: var(--color-ink-body);
-  --card-light-shadow: 0 14px 34px rgba(96, 76, 48, 0.12);
+  --card-light-shadow: 0 14px 34px rgba(96, 76, 48, 0.14);
   --card-contrast-border: var(--color-section-contrast-edge);
   --card-contrast-bg: linear-gradient(
     180deg,
@@ -163,8 +168,8 @@
   );
 
   /* Form field system tokens */
-  --field-border: rgba(165, 130, 78, 0.32);
-  --field-border-focus: rgba(184, 137, 67, 0.6);
+  --field-border: rgba(165, 130, 78, 0.34);
+  --field-border-focus: rgba(185, 139, 70, 0.62);
   --field-bg: linear-gradient(
     180deg,
     rgba(255, 255, 255, 0.98) 0%,
@@ -172,5 +177,5 @@
   );
   --field-text: var(--color-ink-strong);
   --field-placeholder: var(--color-muted-soft);
-  --field-shadow: 0 8px 20px rgba(104, 81, 50, 0.1);
+  --field-shadow: 0 8px 20px rgba(104, 81, 50, 0.11);
 }

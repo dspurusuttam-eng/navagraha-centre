@@ -1,19 +1,33 @@
 import { TrackedLink } from "@/components/analytics/tracked-link";
-import { AdReadyZone } from "@/components/site/ad-ready-zone";
+import { PageViewTracker } from "@/components/analytics/page-view-tracker";
+import {
+  ConsultationIcon,
+  KundliIcon,
+  NavagrahaAiIcon,
+  RashifalIcon,
+  ReportIcon,
+} from "@/components/icons/astrology-icons";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { buildPageMetadata } from "@/lib/metadata";
+import { siteConfig } from "@/config/site";
+import { contentTypeLabels } from "@/modules/content";
 import { curatedContentEntries } from "@/modules/content/catalog";
 import { contentHubs } from "@/modules/content/hubs";
-import { contentTypeLabels } from "@/modules/content";
-import { recommendConsultationNextAction } from "@/modules/consultations";
 import { globalCtaCopy } from "@/modules/localization/copy";
-import { AiProductFamilySection } from "@/modules/marketing/components/ai-product-family-section";
+import {
+  AstrologerAuthoritySection,
+  CredibilityMarkersSection,
+  ExpectationSettingSection,
+  TestimonialsSection,
+  TrustFaqSection,
+  TrustIndicatorStrip,
+} from "@/modules/marketing/components/trust-conversion-sections";
 import { homePage } from "@/modules/marketing/content";
-import { listFeaturedShopProducts } from "@/modules/shop";
+import { RevenuePathwaysCard } from "@/modules/subscriptions/components/revenue-readiness-panels";
 
 export const metadata = buildPageMetadata({
   ...homePage.metadata,
@@ -26,157 +40,213 @@ function formatPublishedDate(value: string) {
   });
 }
 
-export default function HomePage() {
-  const conversion = recommendConsultationNextAction({
-    surface: "home",
-  });
+const trustItems = [
+  "Vedic chart-first analysis",
+  "Lahiri sidereal foundation",
+  "AI-assisted interpretation",
+  "Human-guided consultation",
+  "Free limited-time access",
+] as const;
 
-  const featuredShopPreview = listFeaturedShopProducts().slice(0, 3);
-  const insightPreviewEntries = [...curatedContentEntries]
+const tools = [
+  {
+    icon: "kundli",
+    title: "Kundli Chart",
+    description: "Generate your sidereal Kundli and Lagna-centered chart map.",
+    href: "/kundli",
+    ctaLabel: "Generate Kundli",
+    feature: "home-tools-kundli",
+  },
+  {
+    icon: "consultation",
+    title: "Marriage Compatibility",
+    description: "Review relationship potential with chart-aware compatibility layers.",
+    href: "/compatibility",
+    ctaLabel: "Check Compatibility",
+    feature: "home-tools-compatibility",
+  },
+  {
+    icon: "rashifal",
+    title: "Daily Rashifal",
+    description: "Get concise daily guidance with premium editorial clarity.",
+    href: "/rashifal",
+    ctaLabel: "Open Rashifal",
+    feature: "home-tools-rashifal",
+  },
+  {
+    icon: "ai",
+    title: "NAVAGRAHA AI",
+    description: "Ask chart-grounded questions with structured Vedic intelligence.",
+    href: "/ai",
+    ctaLabel: "Try NAVAGRAHA AI",
+    feature: "home-tools-ai",
+  },
+  {
+    icon: "reports",
+    title: "Premium Reports",
+    description: "Unlock focused reports for career, relationships, finance, and health.",
+    href: "/reports",
+    ctaLabel: "Get Free Report",
+    feature: "home-tools-reports",
+  },
+  {
+    icon: "consultation",
+    title: "Consultation",
+    description: "Continue with human interpretation led by Joy Prakash Sarmah.",
+    href: "/consultation",
+    ctaLabel: "Book Free Consultation",
+    feature: "home-tools-consultation",
+  },
+] as const;
+
+function getToolIcon(toolIcon: (typeof tools)[number]["icon"]) {
+  switch (toolIcon) {
+    case "kundli":
+      return <KundliIcon />;
+    case "ai":
+      return <NavagrahaAiIcon />;
+    case "rashifal":
+      return <RashifalIcon />;
+    case "reports":
+      return <ReportIcon />;
+    case "consultation":
+      return <ConsultationIcon />;
+    default:
+      return <KundliIcon />;
+  }
+}
+
+const aiServices = [
+  {
+    title: "Kundli AI",
+    description: "Chart summary, planetary emphasis, and structured guidance.",
+    href: "/ai?tool=kundli",
+  },
+  {
+    title: "Numerology AI",
+    description: "Numerology-style orientation integrated with profile context.",
+    href: "/ai?tool=numerology",
+  },
+  {
+    title: "Career Guidance AI",
+    description: "Decision-focused interpretation for professional direction.",
+    href: "/ai?tool=career",
+  },
+  {
+    title: "Marriage Compatibility AI",
+    description: "Relationship dynamics interpreted through chart structure.",
+    href: "/ai?tool=compatibility",
+  },
+  {
+    title: "Daily Guidance AI",
+    description: "Daily chart-aware prompts for calm, actionable reflection.",
+    href: "/ai?tool=daily-guidance",
+  },
+] as const;
+
+const sampleOutputCards = [
+  {
+    label: "Chart Preview",
+    title: "Lagna: Leo | Moon: Pisces",
+    body: "Planet placements and house structure surfaced in one clean chart object.",
+  },
+  {
+    label: "AI Insight Preview",
+    title: "Current emphasis: discipline + timing",
+    body: "NAVAGRAHA AI explains why Saturn/Mars themes are active and what to prioritize.",
+  },
+  {
+    label: "Compatibility Preview",
+    title: "Compatibility pulse: Stable with communication sensitivity",
+    body: "Highlights strengths and friction zones before moving into deeper report layers.",
+  },
+  {
+    label: "Report Preview",
+    title: "Career signal: high growth window",
+    body: "Premium report shows timing windows, strengths, cautions, and next steps.",
+  },
+  {
+    label: "Remedy Preview",
+    title: "Remedy pathway: gentle and optional",
+    body: "Recommendations are framed responsibly, without fear-driven pressure.",
+  },
+] as const;
+
+const differentiators = [
+  "Vedic chart-based foundation, not generic horoscope outputs.",
+  "Calm and trustworthy guidance with clarity-first communication.",
+  "AI plus human wisdom for structured and nuanced interpretation.",
+  "No fear-based astrology or exaggerated guarantee language.",
+  "Premium guided experience from first chart to deeper consultation.",
+] as const;
+
+const insightCategories = [
+  { title: "Daily Rashifal", href: "/rashifal" },
+  { title: "Monthly Forecast", href: "/insights/april-2026-monthly-forecast" },
+  {
+    title: "Remedies",
+    href: "/insights/how-to-approach-remedies-with-discernment",
+  },
+  { title: "Relationship Guidance", href: "/compatibility-hub" },
+  { title: "Spiritual Guidance", href: "/navagraha-ai-explainer" },
+] as const;
+
+const testimonials = [
+  {
+    name: "R. Sharma",
+    quote:
+      "The chart flow was clear and the interpretation stayed calm. I could actually use the guidance for decisions.",
+    tag: "Chart + AI",
+  },
+  {
+    name: "M. Das",
+    quote:
+      "I started with free access and later booked consultation. The transition felt natural and trustworthy.",
+    tag: "Consultation",
+  },
+  {
+    name: "A. Roy",
+    quote:
+      "The report preview gave enough value first, then deeper layers made sense without aggressive upsell pressure.",
+    tag: "Reports",
+  },
+] as const;
+
+export default function HomePage() {
+  const homeStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: siteConfig.name,
+    url: siteConfig.url,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${siteConfig.url}/insights?query={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
+  } as const;
+
+  const featuredInsights = [...curatedContentEntries]
     .filter((entry) => entry.status === "published")
     .sort(
       (a, b) =>
         new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
     )
-    .slice(0, 4);
-  const featuredKnowledgeHubs = contentHubs.slice(0, 4);
-
-  const heroCta = {
-    primary: { href: "/sign-up", label: globalCtaCopy.generateKundli },
-    secondary: { href: "/kundli-ai", label: globalCtaCopy.exploreAi },
-    support: { href: "/consultation", label: globalCtaCopy.bookConsultation },
-  } as const;
-
-  const quickTools = [
-    {
-      icon: "KU",
-      title: "Kundli",
-      href: "/sign-up",
-      feature: "home-quick-kundli",
-    },
-    {
-      icon: "CO",
-      title: "Compatibility",
-      href: "/marriage-compatibility",
-      feature: "home-quick-compatibility",
-    },
-    {
-      icon: "RA",
-      title: "Daily Rashifal",
-      href: "/daily-rashifal",
-      feature: "home-quick-rashifal",
-    },
-    {
-      icon: "RE",
-      title: "Reports",
-      href: "/career-report",
-      feature: "home-quick-reports",
-    },
-    {
-      icon: "AI",
-      title: "Ask My Chart",
-      href: "/dashboard/ask-my-chart",
-      feature: "home-quick-ask-my-chart",
-    },
-    {
-      icon: "CS",
-      title: "Consultation",
-      href: "/consultation",
-      feature: "home-quick-consultation",
-    },
-  ] as const;
-
-  const trustStripItems = [
-    "Vedic Calculation Engine",
-    "AI-Powered Insights",
-    "Secure Birth Data Handling",
-    "Trusted Guidance",
-  ] as const;
-
-  const howItWorksSteps = [
-    {
-      step: "Step 1",
-      title: "Enter Birth Details",
-      description:
-        "Create your account and provide date, time, and place for chart generation.",
-    },
-    {
-      step: "Step 2",
-      title: "Generate Chart",
-      description:
-        "Build your sidereal chart foundation with validated context and deterministic calculation.",
-    },
-    {
-      step: "Step 3",
-      title: "Explore AI Guidance",
-      description:
-        "Use NAVAGRAHA AI for chart-aware exploration across personal and decision-focused topics.",
-    },
-    {
-      step: "Step 4",
-      title: "Unlock Deeper Insight",
-      description:
-        "Continue into premium reports or astrologer consultation for deeper interpretation.",
-    },
-  ] as const;
-
-  const consultationShowcase = [
-    {
-      title: "Private Reading",
-      description:
-        "One-to-one consultation for timing-sensitive decisions and personal clarity.",
-      href: "/consultation?intent=consultation-ready",
-    },
-    {
-      title: "Compatibility Session",
-      description:
-        "Dedicated relationship interpretation with compatibility-focused structure.",
-      href: "/consultation?intent=compatibility-focused",
-    },
-    {
-      title: "Remedy Guidance",
-      description:
-        "Practical remedy discussion with calm boundaries and non-fear framing.",
-      href: "/consultation?intent=remedy-focused",
-    },
-  ] as const;
-
-  const reportHighlights = [
-    {
-      title: "Career Report",
-      description:
-        "Structured direction for professional timing, strengths, and practical focus areas.",
-      href: "/career-report",
-      ctaLabel: "Get Free Report",
-    },
-    {
-      title: "Finance Report",
-      description:
-        "Chart-aware financial insight themes for risk awareness and long-term planning rhythm.",
-      href: "/finance-report",
-      ctaLabel: "Get Free Report",
-    },
-    {
-      title: "Health Report",
-      description:
-        "Wellness-oriented interpretation framed responsibly and designed for reflective action.",
-      href: "/health-report",
-      ctaLabel: "Get Free Report",
-    },
-  ] as const;
-
-  const stackedCtaClass = "w-full justify-center sm:w-auto";
+    .slice(0, 3);
+  const featuredHubs = contentHubs.slice(0, 4);
 
   return (
     <>
-      <section className="relative overflow-hidden border-b border-[color:var(--color-border)] bg-[linear-gradient(180deg,var(--color-section-light)_0%,var(--color-section-light-muted)_60%,var(--color-section-light-strong)_100%)]">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_14%,rgba(226,194,124,0.2),transparent_36%),radial-gradient(circle_at_86%_12%,rgba(210,165,135,0.16),transparent_34%),radial-gradient(circle_at_72%_88%,rgba(204,170,112,0.12),transparent_38%)]" />
-        <div className="pointer-events-none absolute -left-16 top-10 h-44 w-44 rounded-full bg-[rgba(226,194,124,0.16)] blur-[72px] sm:h-56 sm:w-56" />
-        <div className="pointer-events-none absolute -right-14 top-14 h-40 w-40 rounded-full bg-[rgba(210,165,135,0.14)] blur-[72px] sm:h-52 sm:w-52" />
+      <PageViewTracker page="/" feature="home-page" />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeStructuredData) }}
+      />
 
-        <Container className="relative grid gap-8 py-12 sm:py-14 lg:grid-cols-[minmax(0,1.14fr)_minmax(340px,0.86fr)] lg:items-center">
+      <section className="relative overflow-hidden border-b border-[color:var(--color-border)] bg-[linear-gradient(180deg,#fffefb_0%,#fdf8ef_52%,#faf2e4_100%)]">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_12%,rgba(214,171,95,0.22),transparent_34%),radial-gradient(circle_at_84%_14%,rgba(219,178,121,0.18),transparent_34%),radial-gradient(circle_at_68%_88%,rgba(198,148,86,0.12),transparent_38%)]" />
+        <Container className="relative grid gap-8 py-12 sm:py-14 lg:grid-cols-[minmax(0,1.02fr)_minmax(340px,0.98fr)] lg:items-center">
           <div className="home-reveal home-reveal-delay-1 space-y-6">
-            <Badge tone="trust">Global Vedic + AI Platform</Badge>
+            <Badge tone="trust">NAVAGRAHA CENTRE</Badge>
             <div className="space-y-4">
               <h1
                 className="max-w-4xl font-[family-name:var(--font-display)] text-[length:var(--font-size-display-md)] text-[var(--color-ink-strong)] sm:text-[length:var(--font-size-display-lg)]"
@@ -185,393 +255,286 @@ export default function HomePage() {
                   lineHeight: "var(--line-height-tight)",
                 }}
               >
-                Unlock Your Destiny with AI-Powered Astrology
+                India&apos;s Premium Vedic Astrology Platform with NAVAGRAHA AI
               </h1>
               <p className="max-w-[42rem] text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-                Accurate Kundli charts, deeper insights, and personalized guidance.
+                Build your Kundli, explore AI-powered chart insights, review compatibility, and return daily for structured Rashifal guidance.
               </p>
             </div>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
               <TrackedLink
-                href={heroCta.primary.href}
+                href="/kundli"
                 eventName="cta_click"
-                eventPayload={{ page: "/", feature: "hero-generate-kundli" }}
+                eventPayload={{ page: "/", feature: "hero-primary-kundli" }}
                 className={buttonStyles({
                   size: "lg",
-                  className: stackedCtaClass,
+                  className: "w-full justify-center sm:w-auto",
                 })}
               >
-                {heroCta.primary.label}
+                {globalCtaCopy.generateKundli}
               </TrackedLink>
               <TrackedLink
-                href={heroCta.secondary.href}
+                href="/ai"
                 eventName="cta_click"
-                eventPayload={{ page: "/", feature: "hero-explore-ai" }}
+                eventPayload={{ page: "/", feature: "hero-secondary-ai" }}
                 className={buttonStyles({
                   size: "lg",
                   tone: "secondary",
-                  className: stackedCtaClass,
+                  className: "w-full justify-center sm:w-auto",
                 })}
               >
-                {heroCta.secondary.label}
+                Try NAVAGRAHA AI
               </TrackedLink>
             </div>
-
-            <TrackedLink
-              href={heroCta.support.href}
-              eventName="cta_click"
-              eventPayload={{ page: "/", feature: "hero-support-consultation" }}
-              className="inline-flex text-[0.78rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)] transition [transition-duration:var(--motion-duration-base)] hover:text-[var(--color-ink-strong)]"
-            >
-              {heroCta.support.label}
-            </TrackedLink>
           </div>
 
           <div className="home-reveal home-reveal-delay-2">
-            <Card className="home-polish-surface space-y-5 border-[color:var(--color-border)] bg-[linear-gradient(160deg,rgba(255,255,255,0.96)_0%,rgba(248,241,229,0.92)_56%,rgba(246,236,221,0.92)_100%)] p-6 shadow-[0_22px_56px_rgba(86,67,43,0.14)] sm:p-7">
-              <Badge tone="trust">Premium Chart Intelligence</Badge>
-              <h2
-                className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-md)] text-[var(--color-ink-strong)]"
-                style={{
-                  letterSpacing: "var(--tracking-display)",
-                  lineHeight: "var(--line-height-tight)",
-                }}
-              >
-                Built for global users who want clear astrology guidance without noisy prediction portals.
-              </h2>
-              <ul className="space-y-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-                <li className="flex items-start gap-2">
-                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
-                  Deterministic Vedic chart foundation with validated birth context.
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
-                  NAVAGRAHA AI responses grounded in actual chart structure.
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
-                  Direct continuation to reports and consultation when depth is needed.
-                </li>
-              </ul>
-            </Card>
-          </div>
-        </Container>
-
-        <Container className="relative pb-5 sm:pb-6">
-          <div className="home-reveal home-reveal-delay-3 grid gap-3 rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.78)] p-3 sm:grid-cols-2 sm:p-4 lg:grid-cols-3">
-            {quickTools.map((tool) => (
-              <TrackedLink
-                key={tool.title}
-                href={tool.href}
-                eventName="cta_click"
-                eventPayload={{ page: "/", feature: tool.feature }}
-                className="home-polish-surface group flex min-h-20 items-center gap-3 rounded-[var(--radius-lg)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.92)] px-4 py-3 shadow-[0_12px_24px_rgba(86,67,43,0.08)] transition [transition-duration:var(--motion-duration-base)] [transition-timing-function:var(--ease-standard)] motion-safe:hover:-translate-y-0.5 motion-safe:hover:border-[rgba(184,137,67,0.34)] motion-safe:hover:bg-[rgba(255,255,255,0.98)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#f8f5ee]"
-              >
-                <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--color-trust-border)] bg-[var(--color-trust-bg)] text-[0.66rem] font-semibold uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
-                  {tool.icon}
+            <Card className="home-polish-surface space-y-5 border-[color:var(--color-border)] bg-[linear-gradient(165deg,rgba(255,255,255,0.96)_0%,rgba(252,244,232,0.92)_55%,rgba(246,232,209,0.92)_100%)] shadow-[0_26px_60px_rgba(95,67,28,0.14)]">
+              <div className="flex items-center justify-between gap-2">
+                <Badge tone="trust">Chart Preview</Badge>
+                <span className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
+                  Lahiri Sidereal
                 </span>
-                <span className="text-[0.72rem] font-medium uppercase tracking-[0.16em] text-[var(--color-ink-body)] sm:tracking-[var(--tracking-label)]">
-                  {tool.title}
-                </span>
-              </TrackedLink>
-            ))}
-          </div>
-        </Container>
-
-        <Container className="relative pb-9 sm:pb-11">
-          <div className="home-reveal home-reveal-delay-4 grid gap-3 rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.72)] p-3 sm:grid-cols-2 sm:p-4 lg:grid-cols-4">
-            {trustStripItems.map((item) => (
-              <div
-                key={item}
-                className="rounded-[var(--radius-lg)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.9)] px-4 py-3 text-[0.7rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]"
-              >
-                {item}
               </div>
-            ))}
+
+              <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(120px,0.7fr)] sm:items-center">
+                <div className="space-y-3 rounded-[var(--radius-xl)] border border-[rgba(184,137,67,0.26)] bg-[rgba(255,255,255,0.78)] p-4">
+                  <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
+                    Kundli Snapshot
+                  </p>
+                  <p className="text-[length:var(--font-size-body-sm)] text-[var(--color-ink-body)]">
+                    Lagna: Leo | Moon: Pisces | 12 Whole Sign Houses
+                  </p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {["Su 12 deg", "Mo 4 deg", "Ma 21 deg", "Me 19 deg", "Ju 8 deg", "Sa 2 deg"].map(
+                      (item) => (
+                        <span
+                          key={item}
+                          className="rounded-[var(--radius-pill)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.84)] px-2 py-1 text-[0.62rem] uppercase tracking-[0.14em] text-[var(--color-ink-body)]"
+                        >
+                          {item}
+                        </span>
+                      )
+                    )}
+                  </div>
+                </div>
+
+                <div className="mx-auto flex h-36 w-36 items-center justify-center rounded-full border border-[rgba(184,137,67,0.4)] bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.98)_0%,rgba(248,235,210,0.86)_58%,rgba(232,205,156,0.38)_100%)] shadow-[0_14px_30px_rgba(113,81,33,0.16)]">
+                  <div className="relative flex h-28 w-28 items-center justify-center rounded-full border border-[rgba(184,137,67,0.34)]">
+                    <span className="text-[0.62rem] uppercase tracking-[0.16em] text-[var(--color-trust-text)]">
+                      Zodiac
+                    </span>
+                    <span className="absolute left-1/2 top-1/2 h-0.5 w-24 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-[rgba(184,137,67,0.22)]" />
+                    <span className="absolute left-1/2 top-1/2 h-0.5 w-24 -translate-x-1/2 -translate-y-1/2 -rotate-45 bg-[rgba(184,137,67,0.22)]" />
+                    <span className="absolute left-1/2 top-1/2 h-24 w-0.5 -translate-x-1/2 -translate-y-1/2 bg-[rgba(184,137,67,0.16)]" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-2 sm:grid-cols-2">
+                {[
+                  "Planetary insight: Mercury supports communication clarity.",
+                  "Daily cue: prioritize structured decisions over haste.",
+                  "Compatibility note: emotional rhythm is stable this week.",
+                  "Report signal: career timing window is opening.",
+                ].map((item) => (
+                  <div
+                    key={item}
+                    className="rounded-[var(--radius-lg)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.84)] px-3 py-2 text-[0.7rem] uppercase tracking-[0.13em] text-[var(--color-ink-body)]"
+                  >
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </Card>
           </div>
         </Container>
       </section>
 
-      <div className="home-reveal home-reveal-delay-5">
-        <AiProductFamilySection
-          surface="public"
-          pagePath="/"
-          tone="light"
-          eyebrow="NAVAGRAHA AI Flagship"
-          title="A chart-first AI product family, not a single generic chatbot."
-          description="NAVAGRAHA AI unifies Kundli reading, compatibility, career, remedies, and Ask My Chart with clear progression from free value to premium depth."
-        />
-      </div>
+      <TrustIndicatorStrip items={trustItems} />
 
       <Section
-        className="home-reveal home-reveal-delay-6"
         tone="light"
-        eyebrow="How It Works"
-        title="A simple path from first input to deeper insight."
-        description="The full journey remains concise and globally understandable: from birth details to chart, AI guidance, and expert depth."
+        eyebrow="Core Tools"
+        title="Everything essential for your astrology journey in one premium toolkit."
+        description="Choose the entry point you need now, then continue into deeper layers as your guidance path evolves."
       >
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {howItWorksSteps.map((step) => (
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {tools.map((tool) => (
             <Card
-              key={step.title}
+              key={tool.title}
               tone="light"
-              className="flex h-full flex-col gap-4"
+              interactive
+              className="flex h-full flex-col gap-4 border-[rgba(184,137,67,0.26)]"
             >
-              <Badge tone="trust">{step.step}</Badge>
+              <div className="flex items-center justify-between gap-3">
+                {getToolIcon(tool.icon)}
+                <Badge tone="neutral">Tool</Badge>
+              </div>
               <h3 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
-                {step.title}
+                {tool.title}
               </h3>
-              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-                {step.description}
+              <p className="flex-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+                {tool.description}
               </p>
+              <TrackedLink
+                href={tool.href}
+                eventName="cta_click"
+                eventPayload={{ page: "/", feature: tool.feature }}
+                className={buttonStyles({
+                  size: "sm",
+                  tone: "tertiary",
+                  className: "w-full justify-center",
+                })}
+              >
+                {tool.ctaLabel}
+              </TrackedLink>
             </Card>
           ))}
         </div>
       </Section>
 
       <Section
-        className="home-reveal home-reveal-delay-7"
-        tone="light"
-        eyebrow="Consultation + Authority"
-        title="When nuance matters, move into astrologer-led consultation."
-        description="NAVAGRAHA CENTRE pairs AI utility with visible human authority so high-stakes questions can be handled with depth and care."
+        tone="contrast"
+        eyebrow="NAVAGRAHA AI Spotlight"
+        title="Chart-aware AI intelligence built as a premium Vedic guidance layer."
+        description="NAVAGRAHA AI is structured as a focused product family so users can move from chart generation to practical interpretation without generic chatbot drift."
       >
         <Card
           tone="accent"
-          className="mb-6 border-[var(--color-section-contrast-edge)] bg-[linear-gradient(160deg,rgba(255,251,244,0.97)_0%,rgba(244,231,205,0.9)_100%)] shadow-[var(--shadow-md)] lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-6"
+          className="border-[var(--color-section-contrast-edge)] bg-[linear-gradient(155deg,rgba(255,250,240,0.96)_0%,rgba(249,236,208,0.9)_50%,rgba(241,222,189,0.92)_100%)]"
         >
-          <div className="space-y-3">
-            <Badge tone="accent">Expert Consultation</Badge>
-            <p className="max-w-2xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              {conversion.guidanceLine}
-            </p>
-            <p className="max-w-2xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              {conversion.bestNextAction.description}
-            </p>
-          </div>
-          <TrackedLink
-            href="/consultation?intent=consultation-ready"
-            eventName="cta_click"
-            eventPayload={{ page: "/", feature: "consultation-primary-cta" }}
-            className={buttonStyles({
-              size: "lg",
-              tone: "secondary",
-              className: stackedCtaClass,
-            })}
-          >
-            Book Free Consultation
-          </TrackedLink>
-        </Card>
-
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {consultationShowcase.map((item) => (
-            <Card
-              key={item.title}
-              interactive
-              className="flex h-full flex-col gap-4 border-[rgba(184,137,67,0.24)] bg-[linear-gradient(165deg,rgba(255,255,255,0.96)_0%,rgba(246,236,218,0.92)_100%)]"
-            >
-              <Badge tone="neutral">Consultation Format</Badge>
-              <h3 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
-                {item.title}
-              </h3>
-              <p className="flex-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                {item.description}
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
+            <div className="space-y-4">
+              <p className="max-w-3xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+                Ask deeper chart questions, compare interpretation layers, and continue seamlessly into reports or consultation when needed.
               </p>
-              <TrackedLink
-                href={item.href}
-                eventName="cta_click"
-                eventPayload={{ page: "/", feature: `consultation-card-${item.title}` }}
-                className={buttonStyles({
-                  size: "sm",
-                  tone: "secondary",
-                  className: "w-full justify-center",
-                })}
-              >
-                Book Free Consultation
-              </TrackedLink>
-            </Card>
-          ))}
-        </div>
-
-        <Card className="mt-6 border-[rgba(184,137,67,0.24)] bg-[rgba(255,255,255,0.8)]">
-          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
-            <div className="space-y-3">
-              <Badge tone="neutral">Astrologer Authority</Badge>
-              <p className="max-w-2xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                Joy Prakash Sarmah remains the visible consultation authority behind interpretation quality, tone, and accountability.
-              </p>
+              <div className="grid gap-3 md:grid-cols-2">
+                {aiServices.map((service) => (
+                  <TrackedLink
+                    key={service.title}
+                    href={service.href}
+                    eventName="cta_click"
+                    eventPayload={{
+                      page: "/",
+                      feature: `ai-spotlight-${service.title}`,
+                    }}
+                    className="rounded-[var(--radius-lg)] border border-[rgba(184,137,67,0.28)] bg-[rgba(255,255,255,0.86)] px-4 py-3 transition [transition-duration:var(--motion-duration-base)] hover:border-[rgba(184,137,67,0.44)]"
+                  >
+                    <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
+                      {service.title}
+                    </p>
+                    <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+                      {service.description}
+                    </p>
+                  </TrackedLink>
+                ))}
+              </div>
             </div>
+
             <TrackedLink
-              href="/joy-prakash-sarmah"
+              href="/ai"
               eventName="cta_click"
-              eventPayload={{ page: "/", feature: "authority-profile-cta" }}
+              eventPayload={{ page: "/", feature: "ai-spotlight-primary-cta" }}
               className={buttonStyles({
-                size: "sm",
-                tone: "tertiary",
-                className: stackedCtaClass,
+                size: "lg",
+                className: "w-full justify-center lg:w-auto",
               })}
             >
-              View Astrologer Profile
+              Try NAVAGRAHA AI Free
             </TrackedLink>
           </div>
         </Card>
       </Section>
 
+      <section className="border-y border-[color:var(--color-border)] bg-[linear-gradient(180deg,rgba(255,249,240,0.92)_0%,rgba(247,236,214,0.9)_100%)]">
+        <Container className="py-5 text-center">
+          <p className="text-[0.72rem] uppercase tracking-[0.16em] text-[var(--color-trust-text)] sm:text-[0.75rem]">
+            Limited Launch Access: All Core Astrology Services Are Currently Free
+          </p>
+        </Container>
+      </section>
+
       <Section
-        className="home-reveal home-reveal-delay-8"
         tone="light"
-        eyebrow="Reports (Free Access)"
-        title="Go deeper with focused report layers."
-        description="Reports convert chart complexity into structured guidance that remains clear, calm, and action-oriented."
+        eyebrow="Sample Output"
+        title="A clear preview of the experience before you start."
+        description="From chart structure to AI interpretation, every layer is designed to feel concrete, readable, and premium."
       >
-        <div className="grid gap-4 md:grid-cols-3">
-          {reportHighlights.map((report) => (
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+          {sampleOutputCards.map((card) => (
             <Card
-              key={report.title}
+              key={card.label}
               tone="light"
-              interactive
-              className="flex h-full flex-col gap-4"
+              className="flex h-full flex-col gap-3 border-[rgba(184,137,67,0.24)]"
             >
-              <Badge tone="trust">Report Layer</Badge>
-              <h3 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
-                {report.title}
-              </h3>
-              <p className="flex-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-                {report.description}
+              <Badge tone="trust">{card.label}</Badge>
+              <p className="text-[length:var(--font-size-body-sm)] font-medium text-[var(--color-ink-strong)]">
+                {card.title}
               </p>
-              <TrackedLink
-                href={report.href}
-                eventName="cta_click"
-                eventPayload={{ page: "/", feature: `reports-${report.title}` }}
-                className={buttonStyles({
-                  size: "sm",
-                  tone: "tertiary",
-                  className: "w-full justify-center",
-                })}
-              >
-                {report.ctaLabel}
-              </TrackedLink>
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+                {card.body}
+              </p>
             </Card>
           ))}
         </div>
       </Section>
 
       <Section
-        className="home-reveal home-reveal-delay-8"
         tone="light"
-        eyebrow="Remedies + Shop"
-        title="Curated spiritual support, kept secondary to chart and guidance."
-        description="Remedies and products are presented as optional and contextual supports, not primary conversion pressure."
+        eyebrow="Why NAVAGRAHA CENTRE"
+        title="Designed for users who want grounded, premium astrology guidance."
+        description="The platform combines deterministic Vedic structure, calm communication, and guided depth without fear-based pressure."
       >
-        <Card
-          tone="light"
-          className="mb-6 lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-6"
-        >
-          <div className="space-y-3">
-            <Badge tone="trust">Editorial Remedy Philosophy</Badge>
-            <p className="max-w-2xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-              Remedy pathways are framed with proportion and discretion. Purchase is optional; context and consultation remain primary.
-            </p>
-          </div>
-          <TrackedLink
-            href="/shop"
-            eventName="cta_click"
-            eventPayload={{ page: "/", feature: "shop-primary-cta" }}
-            className={buttonStyles({
-              size: "sm",
-              tone: "secondary",
-              className: stackedCtaClass,
-            })}
-          >
-            Visit Shop
-          </TrackedLink>
-        </Card>
-
-        <div className="grid gap-4 md:grid-cols-3">
-          {featuredShopPreview.map((product) => (
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+          {differentiators.map((item) => (
             <Card
-              key={product.slug}
+              key={item}
               tone="light"
-              interactive
-              className="flex h-full flex-col gap-4"
+              className="border-[rgba(184,137,67,0.22)] bg-[rgba(255,255,255,0.9)] p-4"
             >
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge tone="trust">{product.categoryLabel}</Badge>
-                <Badge tone="outline">{product.typeLabel}</Badge>
-              </div>
-              <h3 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
-                {product.name}
-              </h3>
-              <p className="flex-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-                {product.summary}
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+                {item}
               </p>
-              <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
-                {product.priceLabel}
-              </p>
-              <TrackedLink
-                href={product.href}
-                eventName="cta_click"
-                eventPayload={{ page: "/", feature: `shop-product-${product.slug}` }}
-                className={buttonStyles({
-                  size: "sm",
-                  tone: "tertiary",
-                  className: "w-full justify-center",
-                })}
-              >
-                View Product
-              </TrackedLink>
             </Card>
           ))}
         </div>
       </Section>
 
       <Section
-        className="home-reveal home-reveal-delay-8"
         tone="light"
-        eyebrow="Latest Insights"
-        title="Fresh editorial insights from NAVAGRAHA CENTRE."
-        description="Read the latest astrology articles, forecasts, and guidance notes in one clean publishing surface."
+        eyebrow="Insights Ecosystem"
+        title="A richer content ecosystem built for trust, discovery, and return engagement."
+        description="Navigate structured categories, then continue into tools, AI, and consultation from relevant content paths."
       >
-        <Card
-          tone="light"
-          className="mb-6 lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-6"
-        >
-          <div className="space-y-3">
-            <Badge tone="trust">Insights Library</Badge>
-            <p className="max-w-2xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-              Browse recent posts and then open the full insights library for deeper reading.
-            </p>
-          </div>
-          <TrackedLink
-            href="/insights"
-            eventName="cta_click"
-            eventPayload={{ page: "/", feature: "insights-library-cta" }}
-            className={buttonStyles({
-              size: "sm",
-              tone: "secondary",
-              className: stackedCtaClass,
-            })}
-          >
-            View All Insights
-          </TrackedLink>
-        </Card>
+        <div className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+          {insightCategories.map((category) => (
+            <TrackedLink
+              key={category.title}
+              href={category.href}
+              eventName="cta_click"
+              eventPayload={{
+                page: "/",
+                feature: `insight-category-${category.title}`,
+              }}
+              className="rounded-[var(--radius-pill)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.9)] px-4 py-3 text-center text-[0.68rem] uppercase tracking-[0.14em] text-[var(--color-trust-text)] transition [transition-duration:var(--motion-duration-base)] hover:border-[rgba(184,137,67,0.38)]"
+            >
+              {category.title}
+            </TrackedLink>
+          ))}
+        </div>
 
         <div className="grid gap-4 md:grid-cols-3">
-          {insightPreviewEntries.map((entry) => (
-            <Card
-              key={entry.slug}
-              tone="light"
-              interactive
-              className="flex h-full flex-col gap-4"
-            >
+          {featuredInsights.map((entry) => (
+            <Card key={entry.slug} tone="light" interactive className="h-full space-y-3">
               <div className="flex items-center justify-between gap-2">
                 <Badge tone="trust">{contentTypeLabels[entry.type]}</Badge>
-                <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
+                <span className="text-[0.66rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
                   {entry.readingTimeMinutes} min
-                </p>
+                </span>
               </div>
-              <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
+              <p className="text-[0.66rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
                 Published {formatPublishedDate(entry.publishedAt)}
               </p>
               <h3
@@ -580,76 +543,104 @@ export default function HomePage() {
               >
                 {entry.title}
               </h3>
-              <p className="flex-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
                 {entry.excerpt}
               </p>
               <TrackedLink
                 href={entry.path}
                 eventName="cta_click"
-                eventPayload={{ page: "/", feature: `insight-${entry.slug}` }}
+                eventPayload={{ page: "/", feature: `insight-open-${entry.slug}` }}
                 className={buttonStyles({
                   size: "sm",
                   tone: "tertiary",
                   className: "w-full justify-center",
                 })}
               >
-                Read Article
+                Read Insight
               </TrackedLink>
             </Card>
           ))}
         </div>
 
-        <AdReadyZone className="mt-6" />
-
-        <div className="mt-6 grid gap-3 sm:grid-cols-2">
-          {featuredKnowledgeHubs.map((hub) => (
+        <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {featuredHubs.map((hub) => (
             <TrackedLink
               key={hub.slug}
               href={hub.path}
               eventName="cta_click"
-              eventPayload={{ page: "/", feature: `knowledge-hub-${hub.slug}` }}
-              className="home-polish-surface flex min-h-20 items-center justify-between gap-3 rounded-[var(--radius-lg)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.92)] px-4 py-3 text-[0.74rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-ink-body)] transition [transition-duration:var(--motion-duration-base)] motion-safe:hover:-translate-y-0.5 motion-safe:hover:border-[rgba(184,137,67,0.34)]"
+              eventPayload={{ page: "/", feature: `hub-open-${hub.slug}` }}
+              className="rounded-[var(--radius-lg)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.9)] px-4 py-3 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-ink-body)] transition [transition-duration:var(--motion-duration-base)] hover:border-[rgba(184,137,67,0.34)]"
             >
-              <span>{hub.title}</span>
-              <span className="text-[var(--color-trust-text)]">Hub</span>
+              {hub.title}
             </TrackedLink>
           ))}
         </div>
       </Section>
 
       <Section
-        className="home-reveal home-reveal-delay-8"
         tone="light"
-        eyebrow="FAQ"
-        title="Common questions before you begin"
-        description="Short answers to reduce hesitation and help users choose the right next step."
-      >
-        <div className="grid gap-4 md:grid-cols-2">
-          {homePage.faqTeaser.map((item) => (
-            <Card key={item.question} tone="light">
-              <details className="group">
-                <summary className="cursor-pointer list-none rounded-[var(--radius-md)] pr-6 text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)] marker:content-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#f8f5ee]">
-                  {item.question}
-                  <span className="ml-2 inline-block text-[var(--color-trust-text)] transition [transition-duration:var(--motion-duration-base)] group-open:rotate-45">
-                    +
-                  </span>
-                </summary>
-                <p className="mt-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-                  {item.answer}
-                </p>
-              </details>
-            </Card>
-          ))}
-        </div>
-      </Section>
-
-      <Section
-        className="home-reveal home-reveal-delay-8 pt-0"
-        tone="transparent"
+        eyebrow="Astrologer Authority"
+        title="Guided by Joy Prakash Sarmah"
+        description="NAVAGRAHA CENTRE combines technology and human discernment, with Joy Prakash Sarmah as the visible astrologer behind interpretive depth and consultation quality."
       >
         <Card
+          tone="light"
+          className="border-[rgba(184,137,67,0.24)] bg-[linear-gradient(165deg,rgba(255,255,255,0.96)_0%,rgba(247,236,216,0.9)_100%)] lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-6"
+        >
+          <div className="space-y-3">
+            <Badge tone="trust">Human-Led Interpretation</Badge>
+            <p className="max-w-3xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+              Consultation pathways are kept calm and trust-oriented so users can move from self-service outputs into nuanced, context-aware interpretation.
+            </p>
+          </div>
+          <TrackedLink
+            href="/consultation"
+            eventName="cta_click"
+            eventPayload={{ page: "/", feature: "authority-book-consultation" }}
+            className={buttonStyles({
+              size: "lg",
+              tone: "secondary",
+              className: "w-full justify-center lg:w-auto",
+            })}
+          >
+            Book Free Consultation
+          </TrackedLink>
+        </Card>
+      </Section>
+
+      <AstrologerAuthoritySection pagePath="/" tone="light" />
+
+      <TestimonialsSection
+        pagePath="/"
+        testimonials={testimonials}
+        tone="light"
+        title="Trusted by members who moved from curiosity to clarity."
+        description="These reflections show how chart-first guidance, NAVAGRAHA AI, and consultation work together in a calm premium flow."
+      />
+
+      <ExpectationSettingSection tone="transparent" />
+
+      <TrustFaqSection tone="muted" />
+
+      <CredibilityMarkersSection
+        pagePath="/"
+        publishedOn="April 22, 2026"
+        updatedOn="April 22, 2026"
+        tone="transparent"
+      />
+
+      <Section className="pt-0" tone="transparent">
+        <RevenuePathwaysCard
+          pagePath="/"
+          title="Move from free value to deeper premium-ready pathways"
+          description="Generate your Kundli, continue with NAVAGRAHA AI, then step into reports, consultation, or optional spiritual add-ons as needed."
+        />
+      </Section>
+
+      <Section className="pt-0" tone="transparent">
+        <Card
           tone="accent"
-          className="home-polish-surface border-[var(--color-section-contrast-edge)] bg-[linear-gradient(165deg,rgba(255,252,246,0.98)_0%,rgba(244,231,205,0.94)_58%,rgba(239,224,197,0.96)_100%)] shadow-[var(--shadow-md)] lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8"
+          className="border-[rgba(184,137,67,0.35)] bg-[linear-gradient(160deg,rgba(255,252,246,0.98)_0%,rgba(246,232,206,0.94)_58%,rgba(239,222,193,0.96)_100%)] shadow-[var(--shadow-md)] lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8"
         >
           <div className="space-y-4">
             <Badge tone="accent">Final CTA</Badge>
@@ -660,36 +651,36 @@ export default function HomePage() {
                 lineHeight: "var(--line-height-tight)",
               }}
             >
-              Begin with your Kundli. Continue with AI, reports, and expert consultation.
+              Start Your Astrology Journey with Clarity
             </h2>
-            <p className="max-w-2xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              Create your account, generate your chart foundation, and move into the guidance path that fits your current need.
+            <p className="max-w-2xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+              Begin with your Kundli, continue with NAVAGRAHA AI, and step into consultation when deeper interpretation is needed.
             </p>
           </div>
 
-          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap">
+          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
             <TrackedLink
-              href="/sign-up"
+              href="/kundli"
               eventName="cta_click"
-              eventPayload={{ page: "/", feature: "final-generate-kundli" }}
+              eventPayload={{ page: "/", feature: "final-cta-kundli" }}
               className={buttonStyles({
                 size: "lg",
-                className: stackedCtaClass,
+                className: "w-full justify-center sm:w-auto",
               })}
             >
-              Generate Your Kundli
+              Generate Kundli
             </TrackedLink>
             <TrackedLink
-              href="/consultation?intent=consultation-ready"
+              href="/ai"
               eventName="cta_click"
-              eventPayload={{ page: "/", feature: "final-book-consultation" }}
+              eventPayload={{ page: "/", feature: "final-cta-ai" }}
               className={buttonStyles({
                 size: "lg",
                 tone: "secondary",
-                className: stackedCtaClass,
+                className: "w-full justify-center sm:w-auto",
               })}
             >
-              Book Free Consultation
+              Explore NAVAGRAHA AI
             </TrackedLink>
           </div>
         </Card>

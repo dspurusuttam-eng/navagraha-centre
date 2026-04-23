@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
+import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
@@ -42,6 +44,12 @@ export default async function AskMyChartPage({
         tone="transparent"
         className="pt-0"
       >
+        <PageViewTracker page="/dashboard/ask-my-chart" feature="ask-my-chart" />
+        <AnalyticsEventTracker
+          event="ai_opened"
+          payload={{ page: "/dashboard/ask-my-chart", feature: "ask-my-chart" }}
+        />
+
         <Card className="space-y-5">
           <p className="max-w-2xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
             NAVAGRAHA CENTRE kept this route stable instead of surfacing a hard
@@ -76,6 +84,12 @@ export default async function AskMyChartPage({
         tone="transparent"
         className="pt-0"
       >
+        <PageViewTracker page="/dashboard/ask-my-chart" feature="ask-my-chart" />
+        <AnalyticsEventTracker
+          event="ai_opened"
+          payload={{ page: "/dashboard/ask-my-chart", feature: "ask-my-chart" }}
+        />
+
         <Card className="space-y-5">
           <p className="max-w-2xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
             Once your birth profile and initial chart are saved, Ask My Chart
@@ -103,6 +117,12 @@ export default async function AskMyChartPage({
 
   return (
     <>
+      <PageViewTracker page="/dashboard/ask-my-chart" feature="ask-my-chart" />
+      <AnalyticsEventTracker
+        event="ai_opened"
+        payload={{ page: "/dashboard/ask-my-chart", feature: "ask-my-chart" }}
+      />
+
       <Section
         eyebrow="Ask My Chart"
         title="A private copilot for grounded chart questions."

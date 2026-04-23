@@ -31,7 +31,7 @@ export function Footer() {
   ] as const;
 
   return (
-    <footer className="border-t border-[color:var(--color-border)] bg-[linear-gradient(180deg,var(--color-base-0)_0%,var(--color-base-1)_100%)]">
+    <footer className="border-t border-[color:var(--color-border)] bg-[linear-gradient(180deg,var(--color-base-0)_0%,var(--color-base-1)_78%,#f6ecd9_100%)]">
       <Container className="space-y-8 py-[var(--space-10)] sm:py-[var(--space-12)]">
         <div className="grid gap-8 sm:grid-cols-3">
           {footerColumns.map((column) => (
@@ -56,15 +56,22 @@ export function Footer() {
         </div>
 
         <div className="flex flex-col gap-3 border-t border-[color:var(--color-border)] pt-5 text-[0.74rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-ink-muted)] sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            © {new Date().getFullYear()} {siteConfig.name}
-          </p>
+          <p>&copy; {new Date().getFullYear()} {siteConfig.name}</p>
           <div className="flex items-center gap-4">
             <Link href="/privacy" className="hover:text-[var(--color-ink-strong)]">
               Privacy
             </Link>
             <Link href="/terms" className="hover:text-[var(--color-ink-strong)]">
               Terms
+            </Link>
+            <Link href="/disclaimer" className="hover:text-[var(--color-ink-strong)]">
+              Disclaimer
+            </Link>
+            <Link
+              href="/refund-cancellation"
+              className="hover:text-[var(--color-ink-strong)]"
+            >
+              Refund Policy
             </Link>
           </div>
         </div>

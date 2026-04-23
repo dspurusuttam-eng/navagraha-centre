@@ -128,6 +128,27 @@ export function PageHero({
         </div>
 
         <Card tone="accent" className="flex flex-col gap-6 p-6 sm:p-7">
+          <div className="grid gap-4 sm:grid-cols-[minmax(120px,0.6fr)_minmax(0,1fr)] sm:items-center">
+            <div className="mx-auto flex h-28 w-28 items-center justify-center rounded-full border border-[rgba(185,139,70,0.34)] bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.98)_0%,rgba(248,236,214,0.9)_54%,rgba(228,200,149,0.36)_100%)] shadow-[0_14px_34px_rgba(104,78,35,0.16)]">
+              <div className="relative h-20 w-20 rounded-full border border-[rgba(185,139,70,0.4)]">
+                <span className="absolute left-1/2 top-1/2 h-0.5 w-16 -translate-x-1/2 -translate-y-1/2 bg-[rgba(185,139,70,0.24)]" />
+                <span className="absolute left-1/2 top-1/2 h-0.5 w-16 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-[rgba(185,139,70,0.22)]" />
+                <span className="absolute left-1/2 top-1/2 h-0.5 w-16 -translate-x-1/2 -translate-y-1/2 -rotate-45 bg-[rgba(185,139,70,0.22)]" />
+                <span className="absolute left-1/2 top-1/2 h-16 w-0.5 -translate-x-1/2 -translate-y-1/2 bg-[rgba(185,139,70,0.2)]" />
+              </div>
+            </div>
+            <div className="grid gap-2">
+              <div className="rounded-[var(--radius-lg)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.82)] px-3 py-2 text-[0.64rem] uppercase tracking-[0.14em] text-[var(--color-trust-text)]">
+                Kundli Snapshot
+              </div>
+              <div className="rounded-[var(--radius-lg)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.82)] px-3 py-2 text-[0.64rem] uppercase tracking-[0.14em] text-[var(--color-trust-text)]">
+                Astrology Wheel
+              </div>
+              <div className="rounded-[var(--radius-lg)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.82)] px-3 py-2 text-[0.64rem] uppercase tracking-[0.14em] text-[var(--color-trust-text)]">
+                AI Context Layer
+              </div>
+            </div>
+          </div>
           <div className="space-y-3">
             <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
               {supportTitle}

@@ -37,7 +37,6 @@ function createInitialState(): AnalyticsState {
 }
 
 declare global {
-  // eslint-disable-next-line no-var
   var __navagrahaAnalyticsState: AnalyticsState | undefined;
 }
 
@@ -142,6 +141,19 @@ export function getAnalyticsSummarySnapshot() {
       assistant: counts.assistant_query,
       premium: counts.premium_click,
       payment: counts.payment_success,
+    },
+    conversion: {
+      generateKundliClick: counts.generate_kundli_click,
+      kundliCompleted: counts.kundli_completed,
+      aiOpened: counts.ai_opened,
+      aiQuestionSubmitted: counts.ai_question_submitted,
+      rashifalPageView: counts.rashifal_page_view,
+      reportPreviewOpened: counts.report_preview_opened,
+      consultationStarted: counts.consultation_started,
+      signupCompleted: counts.signup_completed,
+      reportView: counts.report_view,
+      consultationClick: counts.consultation_click,
+      shopInteraction: counts.shop_interaction,
     },
     acquisition: {
       pageVisit: counts.page_visit,

@@ -229,6 +229,10 @@ export function AskMyChartAssistant({
 
     try {
       const session = activeConversation?.session ?? (await createSession());
+      trackEvent("ai_question_submitted", {
+        page: "/dashboard/ask-my-chart",
+        feature: "ask-my-chart",
+      });
       const response = await fetch(
         `/api/ai/ask-chart/sessions/${session.id}/messages`,
         {
@@ -399,7 +403,7 @@ export function AskMyChartAssistant({
               Plan Access
             </p>
             <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              🔥 Currently Free (Limited Time). Ask chart-aware questions and continue into report guidance without paid prompts during launch access.
+              Currently free (limited-time launch access). Ask chart-aware questions and continue into report guidance without paid prompts during launch access.
             </p>
             <div className="mt-4 flex flex-col gap-3 sm:flex-row">
               <Link

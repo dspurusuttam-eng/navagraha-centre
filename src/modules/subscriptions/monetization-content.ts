@@ -46,7 +46,7 @@ export type MonetizationNextAction = {
   secondaryHref: string;
 };
 
-const limitedFreeAccessLabel = "🔥 Currently Free (Limited Time)";
+const limitedFreeAccessLabel = "Currently Free (Limited Launch Access)";
 
 const planRows: readonly PlanComparisonRow[] = [
   {
@@ -54,43 +54,43 @@ const planRows: readonly PlanComparisonRow[] = [
     title: "Free",
     priceLabel: limitedFreeAccessLabel,
     shortDescription:
-      "Foundational chart access with practical assistant usage and report previews.",
-    aiQuestions: "Focused daily chart-aware questions",
-    reports: "Free report previews and guided report starts",
-    assistantDepth: "Clear chart and timing summaries",
-    advancedInsights: "Lagna, placements, and core house context",
-    continuity: "A clean starting layer for new members",
-    bestFor: "Members starting their chart journey",
+      "Foundational chart access with practical assistant usage and compatibility preview.",
+    aiQuestions: "Limited AI prompts with chart-aware basics",
+    reports: "Basic report preview and guided starts",
+    assistantDepth: "Core chart and timing summaries",
+    advancedInsights: "Basic compatibility and daily Rashifal context",
+    continuity: "Best for early exploration",
+    bestFor: "Members starting their astrology journey",
     ctaLabel: "Start Free Analysis",
     featuredLabel: null,
   },
   {
     planType: "PREMIUM",
-    title: "Premium",
+    title: "Mid-Tier",
     priceLabel: limitedFreeAccessLabel,
     shortDescription:
-      "Deeper assistant and report guidance is currently open under launch access.",
-    aiQuestions: "Deeper chart-aware question flow",
-    reports: "Richer report sections and follow-up continuity",
-    assistantDepth: "Multi-house reasoning and broader timing context",
-    advancedInsights: "Expanded chart depth and interpretation layers",
-    continuity: "Best for regular AI + report users",
-    bestFor: "Members using assistant and reports repeatedly",
+      "Expanded report and AI depth for members needing richer interpretation.",
+    aiQuestions: "Advanced AI insights with deeper reasoning context",
+    reports: "Detailed report sections plus PDF output readiness",
+    assistantDepth: "Multi-house and cross-theme guidance layers",
+    advancedInsights: "Report-to-assistant continuity for deeper planning",
+    continuity: "Most balanced depth for frequent users",
+    bestFor: "Members using reports and AI repeatedly",
     ctaLabel: "Try NAVAGRAHA AI",
     featuredLabel: "MOST_POPULAR",
   },
   {
     planType: "PRO",
-    title: "Pro",
+    title: "Premium",
     priceLabel: limitedFreeAccessLabel,
     shortDescription:
-      "Highest continuity surfaces are visible now through limited launch free access.",
-    aiQuestions: "Highest-volume assistant continuity path",
-    reports: "Deepest report usage continuity",
-    assistantDepth: "Sustained reasoning depth across sessions",
-    advancedInsights: "Full premium-like workflow visibility",
-    continuity: "For members needing uninterrupted depth",
-    bestFor: "Advanced and frequent platform users",
+      "Human-led, high-context guidance tier for serious long-term users.",
+    aiQuestions: "Highest continuity assistant path",
+    reports: "Deep chart reading and premium guided services",
+    assistantDepth: "Consultation-ready interpretation continuity",
+    advancedInsights: "Priority depth across reports and guidance flows",
+    continuity: "Best for high-context decision support",
+    bestFor: "Members needing consultation-led premium depth",
     ctaLabel: "Book Free Consultation",
     featuredLabel: null,
   },
@@ -257,8 +257,7 @@ export function getMonetizationUpgradeCopy(input: {
     default:
       return {
         title: limitedFreeAccessLabel,
-        message:
-          "Astrology services are currently free for limited launch access.",
+        message: "Astrology services are currently free for limited launch access.",
         ctaLabel: "Start Free Analysis",
         upgradeHref: input.surface === "protected" ? "/dashboard" : "/sign-up",
       };

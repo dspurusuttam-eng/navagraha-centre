@@ -6,15 +6,30 @@ type PageMetadataInput = {
   description: string;
   path: string;
   keywords?: readonly string[];
+  index?: boolean;
 };
+
+function shouldIndexPath(path: string) {
+  return !(
+    path.startsWith("/dashboard") ||
+    path.startsWith("/settings") ||
+    path.startsWith("/sign-") ||
+    path.startsWith("/forgot-password") ||
+    path.startsWith("/reset-password") ||
+    path.startsWith("/style-guide") ||
+    path.startsWith("/admin")
+  );
+}
 
 export function buildPageMetadata({
   title,
   description,
   path,
   keywords = [],
+  index,
 }: PageMetadataInput): Metadata {
   const url = new URL(path, siteConfig.url).toString();
+  const shouldIndex = index ?? shouldIndexPath(path);
   const sharedKeywords = [
     "NAVAGRAHA CENTRE",
     "Joy Prakash Sarmah",
@@ -32,8 +47,8 @@ export function buildPageMetadata({
       canonical: url,
     },
     robots: {
-      index: true,
-      follow: true,
+      index: shouldIndex,
+      follow: shouldIndex,
     },
     openGraph: {
       title,

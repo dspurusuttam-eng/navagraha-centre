@@ -30,7 +30,7 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-[var(--radius-2xl)] border p-5 shadow-[var(--shadow-md)] transition [transition-duration:var(--motion-duration-base)] [transition-timing-function:var(--ease-emphasized)] sm:p-6",
+        "brand-signature-grid relative overflow-hidden rounded-[var(--radius-2xl)] border p-5 shadow-[var(--shadow-md)] transition [transition-duration:var(--motion-duration-base)] [transition-timing-function:var(--ease-emphasized)] before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:bg-[linear-gradient(130deg,rgba(185,139,70,0.18),rgba(255,255,255,0)_42%,rgba(185,139,70,0.14)_100%)] before:opacity-90 sm:p-6",
         toneStyles[tone],
         interactive &&
           "hover:-translate-y-1 hover:border-[color:var(--color-border-strong)] hover:shadow-[var(--shadow-lg)]",

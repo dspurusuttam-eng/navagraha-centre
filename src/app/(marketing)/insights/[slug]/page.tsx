@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -14,6 +15,7 @@ import {
 } from "@/modules/content";
 import { ContentCard } from "@/modules/content/components/content-card";
 import { EditorialAttribution } from "@/modules/content/components/editorial-attribution";
+import type { ContentEntry } from "@/modules/content/types";
 
 type InsightDetailPageProps = {
   params: Promise<{
@@ -25,6 +27,36 @@ function formatPublishedDate(value: string) {
   return new Date(value).toLocaleDateString("en-IN", {
     dateStyle: "medium",
   });
+}
+
+function getPracticalGuidance(entry: ContentEntry) {
+  if (entry.heroHighlights.length) {
+    return entry.heroHighlights.slice(0, 4);
+  }
+
+  const fallback = entry.sections
+    .flatMap((section) => section.paragraphs)
+    .slice(0, 4);
+
+  if (fallback.length) {
+    return fallback;
+  }
+
+  return [entry.excerpt];
+}
+
+function getRemedyGuidance(entry: ContentEntry) {
+  const hasRemedySignal =
+    entry.type === "REMEDIES_ARTICLE" ||
+    entry.keywords.some((keyword) => keyword.toLowerCase().includes("remed"));
+
+  if (!hasRemedySignal) {
+    return [];
+  }
+
+  return entry.sections
+    .flatMap((section) => section.paragraphs)
+    .slice(0, 3);
 }
 
 export async function generateStaticParams() {
@@ -91,9 +123,16 @@ export default async function InsightDetailPage({
     : [];
 
   const structuredData = getContentStructuredData(entry);
+  const practicalGuidance = getPracticalGuidance(entry);
+  const remedyGuidance = getRemedyGuidance(entry);
 
   return (
     <>
+      <PageViewTracker
+        page={`/insights/${entry.slug}`}
+        feature={`insight-detail-${entry.slug}`}
+      />
+
       {structuredData.map((record, index) => (
         <script
           key={`${entry.slug}-${index}`}
@@ -147,6 +186,63 @@ export default async function InsightDetailPage({
               </Card>
             ))}
 
+            <Card className="space-y-4">
+              <div className="space-y-2">
+                <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                  Practical Guidance
+                </p>
+                <h2
+                  className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[var(--color-ink-strong)]"
+                  style={{ letterSpacing: "var(--tracking-display)" }}
+                >
+                  Immediate takeaways you can apply today.
+                </h2>
+              </div>
+
+              <div className="space-y-3">
+                {practicalGuidance.map((item) => (
+                  <p
+                    key={item}
+                    className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]"
+                  >
+                    - {item}
+                  </p>
+                ))}
+              </div>
+            </Card>
+
+            {remedyGuidance.length ? (
+              <Card className="space-y-4">
+                <div className="space-y-2">
+                  <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                    Remedy Section
+                  </p>
+                  <h2
+                    className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[var(--color-ink-strong)]"
+                    style={{ letterSpacing: "var(--tracking-display)" }}
+                  >
+                    Optional remedy guidance with clear boundaries.
+                  </h2>
+                </div>
+
+                <div className="space-y-3">
+                  {remedyGuidance.map((item) => (
+                    <p
+                      key={item}
+                      className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]"
+                    >
+                      - {item}
+                    </p>
+                  ))}
+                </div>
+              </Card>
+            ) : null}
+
+            <AdReadyZone
+              label="In-Article Ad Placeholder"
+              description="Reserved in-content ad zone for future AdSense blocks, kept disabled in this phase."
+            />
+
             {entry.faqItems?.length ? (
               <Card className="space-y-5">
                 <div className="space-y-2">
@@ -178,6 +274,38 @@ export default async function InsightDetailPage({
                 </div>
               </Card>
             ) : null}
+
+            <Card tone="accent" className="space-y-5">
+              <div className="space-y-2">
+                <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                  Continue Your Analysis
+                </p>
+                <h2
+                  className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[var(--color-ink-strong)]"
+                  style={{ letterSpacing: "var(--tracking-display)" }}
+                >
+                  Move from public insight to personal chart guidance.
+                </h2>
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                <Link href="/kundli" className={buttonStyles({ size: "sm" })}>
+                  Generate Kundli
+                </Link>
+                <Link
+                  href="/ai"
+                  className={buttonStyles({ tone: "secondary", size: "sm" })}
+                >
+                  Try NAVAGRAHA AI
+                </Link>
+                <Link
+                  href="/consultation"
+                  className={buttonStyles({ tone: "tertiary", size: "sm" })}
+                >
+                  Book Consultation
+                </Link>
+              </div>
+            </Card>
           </div>
 
           <div className="space-y-6">
@@ -216,6 +344,18 @@ export default async function InsightDetailPage({
                   More Insights
                 </Link>
                 <Link
+                  href="/kundli"
+                  className={buttonStyles({ tone: "secondary", size: "sm" })}
+                >
+                  Generate Kundli
+                </Link>
+                <Link
+                  href="/ai"
+                  className={buttonStyles({ tone: "tertiary", size: "sm" })}
+                >
+                  Try NAVAGRAHA AI
+                </Link>
+                <Link
                   href="/consultation"
                   className={buttonStyles({ tone: "secondary", size: "sm" })}
                 >
@@ -228,6 +368,32 @@ export default async function InsightDetailPage({
               author={entry.author}
               reviewer={entry.reviewer}
             />
+
+            <Card className="space-y-4">
+              <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                Quick Links
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <Link
+                  href="/rashifal"
+                  className={buttonStyles({ tone: "tertiary", size: "sm" })}
+                >
+                  Open Rashifal
+                </Link>
+                <Link
+                  href="/kundli"
+                  className={buttonStyles({ tone: "secondary", size: "sm" })}
+                >
+                  Generate Kundli
+                </Link>
+                <Link
+                  href="/ai"
+                  className={buttonStyles({ tone: "secondary", size: "sm" })}
+                >
+                  Ask NAVAGRAHA AI
+                </Link>
+              </div>
+            </Card>
 
             <AdReadyZone />
           </div>

@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
+import { PageViewTracker } from "@/components/analytics/page-view-tracker";
+import { TrackedLink } from "@/components/analytics/tracked-link";
 import { PageHero } from "@/components/site/page-hero";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
@@ -8,10 +11,19 @@ import { buildPageMetadata } from "@/lib/metadata";
 import {
   consultationHost,
   consultationPackages,
-  consultationProcess,
   recommendConsultationNextAction,
 } from "@/modules/consultations";
 import { globalLabelCopy } from "@/modules/localization/copy";
+import {
+  AstrologerAuthoritySection,
+  ConsultationReassuranceSection,
+  CredibilityMarkersSection,
+  ExpectationSettingSection,
+  TestimonialsSection,
+  ThreeStepProcessSection,
+  TrustIndicatorStrip,
+} from "@/modules/marketing/components/trust-conversion-sections";
+import { ConsultationTiersSection } from "@/modules/subscriptions/components/revenue-readiness-panels";
 
 export const metadata = buildPageMetadata({
   title: "Consultations With Joy Prakash Sarmah",
@@ -24,6 +36,35 @@ export const metadata = buildPageMetadata({
     "manual astrology booking flow",
   ],
 });
+
+const consultationTrustIndicators = [
+  "Vedic chart-based system",
+  "Lahiri sidereal foundation",
+  "Human-guided interpretation",
+  "Limited-time free access",
+  "Structured astrology workflow",
+] as const;
+
+const consultationTestimonials = [
+  {
+    name: "T. Gupta",
+    quote:
+      "The session gave clarity on what to focus on next. It felt calm and practical, not dramatic.",
+    tag: "Session Clarity",
+  },
+  {
+    name: "L. Deka",
+    quote:
+      "AI helped me prepare questions, but consultation gave the nuance I needed for a major decision.",
+    tag: "AI + Human Guidance",
+  },
+  {
+    name: "J. Singh",
+    quote:
+      "I appreciated the clear boundaries and the way remedies were explained as supportive, not guaranteed.",
+    tag: "Trust-Safe Guidance",
+  },
+] as const;
 
 export default async function ConsultationPage({
   searchParams,
@@ -41,6 +82,12 @@ export default async function ConsultationPage({
 
   return (
     <>
+      <PageViewTracker page="/consultation" feature="consultation-page" />
+      <AnalyticsEventTracker
+        event="consultation_click"
+        payload={{ page: "/consultation", feature: "consultation-page" }}
+      />
+
       <PageHero
         eyebrow="Consultations"
         title="Reserve a calm, premium consultation with Joy Prakash Sarmah."
@@ -62,6 +109,8 @@ export default async function ConsultationPage({
         }}
         supportTitle="Recommended Next Step"
       />
+
+      <TrustIndicatorStrip items={consultationTrustIndicators} />
 
       <Section
         eyebrow="Service Packages"
@@ -123,38 +172,49 @@ export default async function ConsultationPage({
               </div>
 
               <div className="mt-auto">
-                <Link
+                <TrackedLink
                   href={`/dashboard/consultations/book?package=${item.slug}`}
+                  eventName="consultation_started"
+                  eventPayload={{
+                    page: "/consultation",
+                    feature: `consultation-package-${item.slug}`,
+                  }}
                   className={buttonStyles({ tone: "secondary", size: "sm" })}
                 >
                   Book Free Consultation
-                </Link>
+                </TrackedLink>
               </div>
             </Card>
           ))}
         </div>
       </Section>
 
-      <Section
-        eyebrow="How It Works"
-        title="The flow stays manual, explicit, and easy to follow."
-        description="The consultation path stays human-led, avoids hidden complexity, and keeps timezone handling explicit."
+      <ConsultationTiersSection pagePath="/consultation" tone="light" />
+
+      <ThreeStepProcessSection
         tone="muted"
-      >
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {consultationProcess.map((step, index) => (
-            <Card key={step.title} className="space-y-4">
-              <Badge tone="neutral">{`0${index + 1}`}</Badge>
-              <h3 className="text-[length:var(--font-size-body-lg)] font-medium text-[color:var(--color-foreground)]">
-                {step.title}
-              </h3>
-              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                {step.description}
-              </p>
-            </Card>
-          ))}
-        </div>
-      </Section>
+        title="Consultation works in three calm steps."
+        description="The flow is intentionally simple so users know exactly what happens before booking."
+        steps={[
+          {
+            title: "Choose your session type",
+            description:
+              "Pick Quick Guidance, Detailed Reading, or Premium Guidance based on your current decision depth.",
+          },
+          {
+            title: "Complete protected intake",
+            description:
+              "Share chart context and intent in a structured member flow with explicit timezone and session details.",
+          },
+          {
+            title: "Receive guided interpretation",
+            description:
+              "Joy Prakash Sarmah reviews your context and provides calm next-step guidance with optional follow-up paths.",
+          },
+        ]}
+      />
+
+      <ConsultationReassuranceSection tone="light" />
 
       <Section
         eyebrow="Timezone Clarity"
@@ -180,12 +240,17 @@ export default async function ConsultationPage({
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Link
+            <TrackedLink
               href="/dashboard/consultations/book"
+              eventName="consultation_started"
+              eventPayload={{
+                page: "/consultation",
+                feature: "consultation-timezone-continue-booking",
+              }}
               className={buttonStyles({ size: "lg" })}
             >
               Continue To Booking
-            </Link>
+            </TrackedLink>
           </div>
         </Card>
       </Section>
@@ -223,6 +288,30 @@ export default async function ConsultationPage({
           </Card>
         </div>
       </Section>
+
+      <AstrologerAuthoritySection
+        pagePath="/consultation"
+        tone="light"
+        ctaHref="/dashboard/consultations/book"
+        ctaLabel="Continue To Booking"
+      />
+
+      <TestimonialsSection
+        pagePath="/consultation"
+        testimonials={consultationTestimonials}
+        tone="light"
+        title="Consultation trust is built through clarity, not pressure."
+        description="These experiences highlight the difference between quick AI help and deeper human interpretation."
+      />
+
+      <ExpectationSettingSection tone="transparent" />
+
+      <CredibilityMarkersSection
+        pagePath="/consultation"
+        publishedOn="April 22, 2026"
+        updatedOn="April 22, 2026"
+        tone="transparent"
+      />
     </>
   );
 }

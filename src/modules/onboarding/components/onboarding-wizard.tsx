@@ -148,13 +148,18 @@ export function OnboardingWizard({
           feature: "birth-onboarding",
           intent: intent ?? "general",
         });
+        trackEvent("kundli_completed", {
+          page: "/dashboard/onboarding",
+          feature: "birth-onboarding",
+          intent: intent ?? "general",
+        });
       }
 
       startTransition(() => {
         router.push(state.redirectTo!);
       });
     }
-  }, [router, state.redirectTo, state.status]);
+  }, [intent, router, state.redirectTo, state.status]);
 
   useEffect(() => {
     return () => {

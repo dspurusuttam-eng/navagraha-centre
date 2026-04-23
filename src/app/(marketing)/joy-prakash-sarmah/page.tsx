@@ -7,6 +7,11 @@ import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
 import { buildPageMetadata } from "@/lib/metadata";
 import { recommendConsultationNextAction } from "@/modules/consultations";
+import {
+  AstrologerAuthoritySection,
+  CredibilityMarkersSection,
+  ExpectationSettingSection,
+} from "@/modules/marketing/components/trust-conversion-sections";
 import { astrologerPage } from "@/modules/marketing/content";
 
 export const metadata = buildPageMetadata({
@@ -128,6 +133,17 @@ export default async function JoyPrakashSarmahPage({
           </Card>
         </div>
       </Section>
+
+      <AstrologerAuthoritySection pagePath="/joy-prakash-sarmah" tone="light" />
+
+      <ExpectationSettingSection tone="transparent" />
+
+      <CredibilityMarkersSection
+        pagePath="/joy-prakash-sarmah"
+        publishedOn="April 22, 2026"
+        updatedOn="April 22, 2026"
+        tone="transparent"
+      />
 
       <Section className="pt-0" tone="transparent">
         <Card

@@ -7,7 +7,6 @@ import {
   nakshatraLabelMap,
   ownSignsByBody,
   planetLabelMap,
-  signRulerMap,
   zodiacSignLabelMap,
 } from "@/lib/astrology/constants";
 import {

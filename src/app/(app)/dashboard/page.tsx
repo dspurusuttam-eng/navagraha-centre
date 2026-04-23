@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
@@ -12,6 +13,12 @@ import { generateUserReport } from "@/lib/ai/report-generator";
 import type { ChartInsights, GeneratedUserReport } from "@/lib/ai/types";
 import { buildPageMetadata } from "@/lib/metadata";
 import { getDashboardOverview } from "@/modules/account/service";
+import { DashboardEcosystemHome } from "@/modules/account/components/dashboard-ecosystem-home";
+import {
+  createEmptyDashboardEcosystemData,
+  getDashboardEcosystemData,
+  type DashboardEcosystemData,
+} from "@/modules/account/dashboard-ecosystem";
 import { requireUserSession } from "@/modules/auth/server";
 import { getChartOverview } from "@/modules/onboarding/service";
 import {
@@ -127,6 +134,7 @@ export default async function DashboardPage() {
     offers,
     subscriptionState,
     userPlanState,
+    ecosystemState,
   ] =
     await Promise.all([
     (async () => {
@@ -217,6 +225,15 @@ export default async function DashboardPage() {
           };
         }
       })(),
+      (async (): Promise<DashboardEcosystemData> => {
+        try {
+          return await getDashboardEcosystemData(session.user.id);
+        } catch (error) {
+          console.error("Dashboard ecosystem state failed", error);
+
+          return createEmptyDashboardEcosystemData();
+        }
+      })(),
     ]);
   const retentionState = await (async (): Promise<RetentionDashboardSnapshot> => {
     try {
@@ -249,7 +266,16 @@ export default async function DashboardPage() {
       tone="transparent"
       className="pt-0"
     >
+      <PageViewTracker page="/dashboard" feature="dashboard-home" />
+
       <RetentionEventTracker snapshot={retentionState} userPlan={userPlanState.plan} />
+
+      <DashboardEcosystemHome
+        userName={session.user.name}
+        chartOverview={chartOverview}
+        retentionState={retentionState}
+        ecosystem={ecosystemState}
+      />
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <Card className="space-y-3">

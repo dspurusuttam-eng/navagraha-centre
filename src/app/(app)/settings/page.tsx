@@ -115,6 +115,60 @@ export default async function SettingsPage() {
           </ul>
         </Card>
 
+        <Card className="space-y-5">
+          <div className="space-y-2">
+            <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+              Notification Preferences (Prepared)
+            </p>
+            <h2
+              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
+              style={{ letterSpacing: "var(--tracking-display)" }}
+            >
+              Daily updates, reminders, and AI suggestions are staged for rollout.
+            </h2>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            {[
+              {
+                label: "Daily updates",
+                value: "Enabled",
+              },
+              {
+                label: "Consultation reminders",
+                value: profile.timezone ? "Enabled" : "Pending timezone",
+              },
+              {
+                label: "AI suggestions",
+                value: "Enabled",
+              },
+              {
+                label: "Service announcements",
+                value: "Enabled",
+              },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-3"
+              >
+                <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                  {item.label}
+                </p>
+                <p className="mt-2 text-[length:var(--font-size-body-sm)] text-[color:var(--color-foreground)]">
+                  {item.value}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            Communication preference:{" "}
+            <span className="text-[color:var(--color-foreground)]">
+              {profile.phone ? "Email and phone updates" : "Email updates"}
+            </span>
+          </p>
+        </Card>
+
         <SubscriptionValuePanel
           snapshot={subscriptionState}
           userPlan={userPlanState.plan}

@@ -109,10 +109,6 @@ type SaveOnboardingInput = {
   astrologyServiceOverride?: AstrologyService;
 };
 
-type SnapshotUserRecord = {
-  name: string;
-} | null;
-
 type SnapshotBirthRecord = {
   birthDate: string;
   birthTime: string | null;
