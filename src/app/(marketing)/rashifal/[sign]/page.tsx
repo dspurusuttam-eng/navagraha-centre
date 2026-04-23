@@ -162,38 +162,39 @@ export default async function RashifalSignPage({
       >
         <Card
           tone="light"
-          className="space-y-4 border-[rgba(184,137,67,0.24)] bg-[rgba(255,255,255,0.94)]"
+          className="space-y-6 border-[rgba(184,137,67,0.24)] bg-[rgba(255,255,255,0.94)] p-5 sm:space-y-7 sm:p-6"
         >
-          <ul className="space-y-2">
+          <ul className="space-y-3 sm:space-y-4">
             {signData.fullDescription.map((line) => (
               <li
                 key={line}
-                className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]"
+                className="rounded-[var(--radius-md)] border border-[rgba(184,137,67,0.14)] bg-[rgba(255,255,255,0.84)] px-3 py-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)] sm:px-4 sm:py-3"
               >
-                - {line}
+                {line}
               </li>
             ))}
           </ul>
 
-          <div className="grid gap-3 text-[length:var(--font-size-body-sm)] text-[var(--color-ink-body)] sm:grid-cols-3">
-            <p>
-              <span className="font-medium text-[var(--color-ink-strong)]">
-                Love:
-              </span>{" "}
-              {signData.love}
-            </p>
-            <p>
-              <span className="font-medium text-[var(--color-ink-strong)]">
-                Career:
-              </span>{" "}
-              {signData.career}
-            </p>
-            <p>
-              <span className="font-medium text-[var(--color-ink-strong)]">
-                Business:
-              </span>{" "}
-              {signData.business}
-            </p>
+          <div className="space-y-3 border-t border-[rgba(184,137,67,0.2)] pt-5 sm:pt-6">
+            <div className="grid gap-3 sm:grid-cols-3">
+              {[
+                { label: "Love", value: signData.love },
+                { label: "Career", value: signData.career },
+                { label: "Business", value: signData.business },
+              ].map((entry) => (
+                <div
+                  key={entry.label}
+                  className="rounded-[var(--radius-lg)] border border-[rgba(184,137,67,0.18)] bg-[rgba(255,255,255,0.88)] px-4 py-3"
+                >
+                  <p className="text-[0.7rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
+                    {entry.label}
+                  </p>
+                  <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+                    {entry.value}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </Card>
       </Section>
