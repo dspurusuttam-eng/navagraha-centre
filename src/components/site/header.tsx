@@ -21,7 +21,10 @@ const secondaryNavigation = [
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 border-b border-[color:var(--color-border)] bg-[rgba(255,254,250,0.95)] shadow-[0_8px_24px_rgba(96,74,45,0.08)] backdrop-blur-xl">
+    <header
+      data-nosnippet
+      className="sticky top-0 z-50 border-b border-[color:var(--color-border)] bg-[rgba(255,254,250,0.95)] shadow-[0_8px_24px_rgba(96,74,45,0.08)] backdrop-blur-xl"
+    >
       <Container className="py-3">
         <div className="hidden items-center gap-6 lg:flex">
           <Link

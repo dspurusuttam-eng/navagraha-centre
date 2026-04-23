@@ -31,7 +31,10 @@ export function Footer() {
   ] as const;
 
   return (
-    <footer className="border-t border-[color:var(--color-border)] bg-[linear-gradient(180deg,var(--color-base-0)_0%,var(--color-base-1)_78%,#f6ecd9_100%)]">
+    <footer
+      data-nosnippet
+      className="border-t border-[color:var(--color-border)] bg-[linear-gradient(180deg,var(--color-base-0)_0%,var(--color-base-1)_78%,#f6ecd9_100%)]"
+    >
       <Container className="space-y-8 py-[var(--space-10)] sm:py-[var(--space-12)]">
         <div className="grid gap-8 sm:grid-cols-3">
           {footerColumns.map((column) => (
