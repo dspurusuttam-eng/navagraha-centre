@@ -51,31 +51,33 @@ function sanitizeCartLines(items: ShopCartLineInput[]) {
   }));
 }
 
+function readStoredCartLines() {
+  if (typeof window === "undefined") {
+    return [];
+  }
+
+  try {
+    const storedValue = window.localStorage.getItem(storageKey);
+
+    if (!storedValue) {
+      return [];
+    }
+
+    const parsed = JSON.parse(storedValue) as ShopCartLineInput[];
+
+    return sanitizeCartLines(parsed);
+  } catch {
+    return [];
+  }
+}
+
 export function ShopCartProvider({
   children,
 }: Readonly<{
   children: ReactNode;
 }>) {
-  const [lines, setLines] = useState<ShopCartLineInput[]>([]);
-  const [isHydrated, setIsHydrated] = useState(false);
-
-  useEffect(() => {
-    try {
-      const storedValue = window.localStorage.getItem(storageKey);
-
-      if (!storedValue) {
-        setIsHydrated(true);
-        return;
-      }
-
-      const parsed = JSON.parse(storedValue) as ShopCartLineInput[];
-      setLines(sanitizeCartLines(parsed));
-    } catch {
-      setLines([]);
-    } finally {
-      setIsHydrated(true);
-    }
-  }, []);
+  const [lines, setLines] = useState<ShopCartLineInput[]>(readStoredCartLines);
+  const isHydrated = true;
 
   useEffect(() => {
     if (!isHydrated) {

@@ -9,8 +9,28 @@ import {
 } from "@/lib/ai/chart-analysis";
 import { getCurrentCycleSummary } from "@/lib/ai/current-cycle";
 import { suggestRemedies } from "@/lib/ai/remedies-engine";
-import type { GeneratedUserReport } from "@/lib/ai/types";
+import type { GeneratedUserReport, ReportPredictiveContext } from "@/lib/ai/types";
+import { retrieveOrRefreshBirthChartForUser } from "@/modules/astrology/chart-retrieval";
+import { getPredictiveReportContextForChart } from "@/modules/astrology/predictive-report-context";
 import { getChartReport } from "@/modules/report/service";
+
+function buildReportPredictiveContext(
+  userChartResult: Awaited<ReturnType<typeof retrieveOrRefreshBirthChartForUser>>
+): ReportPredictiveContext | null {
+  if (!userChartResult.success) {
+    return null;
+  }
+
+  const predictive = getPredictiveReportContextForChart({
+    chart: userChartResult.data.chart,
+  });
+
+  if (!predictive.success) {
+    return null;
+  }
+
+  return predictive.data;
+}
 
 function createFallbackUserReport(): GeneratedUserReport {
   return {
@@ -22,6 +42,7 @@ function createFallbackUserReport(): GeneratedUserReport {
     currentCycle: fallbackCurrentCycleSummary,
     consultationNotes: [],
     remedies: [],
+    predictiveContext: null,
     reportSummary: {
       headline: "Your report surface is available.",
       overview:
@@ -35,7 +56,8 @@ export async function generateUserReport(
   subjectName?: string | null
 ): Promise<GeneratedUserReport> {
   try {
-    const [chartReport, insights, currentCycle, context, remedies] = await Promise.all([
+    const [chartReport, insights, currentCycle, context, remedies, userChartResult] =
+      await Promise.all([
       getChartReport(userId, subjectName ?? "NAVAGRAHA CENTRE member"),
       generateChartInsights(userId),
       getCurrentCycleSummary(userId),
@@ -44,7 +66,9 @@ export async function generateUserReport(
         console.error("suggestRemedies failed", error);
         return [];
       }),
+      retrieveOrRefreshBirthChartForUser(userId),
     ]);
+    const predictiveContext = buildReportPredictiveContext(userChartResult);
 
     return {
       chartReport:
@@ -56,6 +80,7 @@ export async function generateUserReport(
       currentCycle,
       consultationNotes: context.consultationNotes ?? [],
       remedies: remedies ?? [],
+      predictiveContext,
       reportSummary: {
         headline:
           chartReport.status === "ready"

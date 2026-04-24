@@ -5,6 +5,7 @@ import {
   ConsultationIcon,
   KundliIcon,
   NavagrahaAiIcon,
+  NumerologyIcon,
   RashifalIcon,
   ReportIcon,
 } from "@/components/icons/astrology-icons";
@@ -45,42 +46,50 @@ const aiTools = [
     title: "Kundli AI",
     description: "Chart-first AI reading with planetary and house emphasis.",
     href: "/kundli-ai?tool=kundli-ai",
+    ctaLabel: "Try Free",
   },
   {
-    icon: "reports",
+    icon: "numerology",
     title: "Numerology AI",
-    description: "Numerology-style orientation mapped to your personal profile.",
-    href: "/kundli-ai?tool=numerology-ai",
+    description:
+      "Discover your core numbers, personality patterns, strengths, growth and life direction through premium numerology insights.",
+    href: "/numerology",
+    ctaLabel: "Explore Numerology",
   },
   {
     icon: "consultation",
     title: "Marriage Compatibility AI",
     description: "Relationship dynamics interpreted through structured chart context.",
     href: "/kundli-ai?tool=marriage-compatibility-ai",
+    ctaLabel: "Try Free",
   },
   {
     icon: "reports",
     title: "Career Guidance AI",
     description: "Decision-focused career insight from your chart baseline.",
     href: "/kundli-ai?tool=career-guidance-ai",
+    ctaLabel: "Try Free",
   },
   {
     icon: "reports",
     title: "Finance AI",
     description: "Financial timing and caution themes in a clear AI summary.",
     href: "/kundli-ai?tool=finance-ai",
+    ctaLabel: "Try Free",
   },
   {
     icon: "consultation",
     title: "Health AI",
     description: "Wellness-oriented guidance signals framed responsibly.",
     href: "/kundli-ai?tool=health-ai",
+    ctaLabel: "Try Free",
   },
   {
     icon: "rashifal",
     title: "Daily Prediction AI",
     description: "Daily chart-aware prompts for calm and practical action.",
     href: "/kundli-ai?tool=daily-prediction-ai",
+    ctaLabel: "Try Free",
   },
 ] as const;
 
@@ -92,6 +101,8 @@ function getAiToolIcon(icon: (typeof aiTools)[number]["icon"]) {
       return <RashifalIcon />;
     case "consultation":
       return <ConsultationIcon />;
+    case "numerology":
+      return <NumerologyIcon />;
     case "reports":
       return <ReportIcon />;
     default:
@@ -277,7 +288,7 @@ export default function AiPage() {
                   className: "w-full justify-center",
                 })}
               >
-                Try Free
+                {tool.ctaLabel}
               </TrackedLink>
             </Card>
           ))}

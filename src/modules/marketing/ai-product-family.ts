@@ -3,6 +3,7 @@ export type AiProductFamilySurface = "public" | "protected";
 export type AiProductFamilyItem = {
   key:
     | "ai-kundli-reading"
+    | "ai-numerology-insights"
     | "ai-compatibility"
     | "ai-career-insights"
     | "ai-remedy-guidance"
@@ -43,6 +44,28 @@ const aiProductFamilyItems: readonly AiProductFamilyItem[] = [
     relatedTools: [
       { label: "Ask My Chart", href: "/dashboard/ask-my-chart" },
       { label: "Premium Reports", href: "/dashboard/report" },
+    ],
+  },
+  {
+    key: "ai-numerology-insights",
+    title: "Numerology AI",
+    description:
+      "Discover your core numbers, personality patterns, strengths, growth and life direction through premium numerology insights.",
+    helpsWith: [
+      "Birth, Destiny, and Name Number orientation in one structured flow",
+      "Compound-number context with practical interpretation notes",
+    ],
+    premiumDepth:
+      "Currently free under limited launch access with richer interpretation layers and continuity.",
+    trustNote:
+      "Numerology guidance is reflective support and should be paired with practical decision-making.",
+    publicHref: "/numerology",
+    protectedHref: "/numerology",
+    ctaLabelPublic: "Explore Numerology",
+    ctaLabelProtected: "Explore Numerology",
+    relatedTools: [
+      { label: "NAVAGRAHA AI", href: "/ai" },
+      { label: "Ask My Chart", href: "/dashboard/ask-my-chart" },
     ],
   },
   {

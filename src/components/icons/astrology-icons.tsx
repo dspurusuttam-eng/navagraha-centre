@@ -90,3 +90,14 @@ export function ReportIcon({ className }: Readonly<{ className?: string }>) {
     </IconFrame>
   );
 }
+
+export function NumerologyIcon({ className }: Readonly<{ className?: string }>) {
+  return (
+    <IconFrame className={className}>
+      <BaseIcon>
+        <circle cx="12" cy="12" r="8" />
+        <path d="M7.2 8.2h3.4v7.6M12.3 8.2h4.5M14.6 8.2v7.6M17.1 15.8h-4.8" />
+      </BaseIcon>
+    </IconFrame>
+  );
+}

@@ -18,6 +18,7 @@ export function Footer() {
         { href: "/kundli", label: "Kundli" },
         { href: "/rashifal", label: "Rashifal" },
         { href: "/compatibility", label: "Compatibility" },
+        { href: "/numerology", label: "Numerology" },
       ],
     },
     {

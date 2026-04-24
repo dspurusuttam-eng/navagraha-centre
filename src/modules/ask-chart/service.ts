@@ -15,6 +15,11 @@ import {
 import {
   retrieveOrRefreshBirthChartForUser,
 } from "@/modules/astrology/chart-retrieval";
+import type { UnifiedSiderealChart } from "@/modules/astrology/chart-contract-types";
+import {
+  getPredictiveAssistantContextForChart,
+  type PredictiveAssistantContextOutput,
+} from "@/modules/astrology/predictive-assistant-context";
 import { getAstrologyService } from "@/modules/astrology/server";
 import type { BirthDetails, NatalChartResponse, PlanetaryBody } from "@/modules/astrology/types";
 import { getContentAdapter } from "@/modules/content/server";
@@ -154,6 +159,7 @@ type AskMyChartToolBundle = {
       exact: boolean;
     }[];
   };
+  predictiveAssistantContext: PredictiveAssistantContextOutput | null;
   approvedRemedies: {
     remedies: {
       id: string;
@@ -597,6 +603,18 @@ async function getTransitSnapshotTool(userId: string) {
   }
 }
 
+function getPredictiveAssistantContextTool(chart: UnifiedSiderealChart) {
+  const synthesis = getPredictiveAssistantContextForChart({
+    chart,
+  });
+
+  if (!synthesis.success) {
+    return null;
+  }
+
+  return synthesis.data;
+}
+
 async function getApprovedRemediesTool(
   userId: string,
   chartRecordId: string,
@@ -934,7 +952,8 @@ function buildFallbackStructuredReply(
 async function buildToolBundle(
   userId: string,
   question: string,
-  overview: ChartOverview
+  overview: ChartOverview,
+  chartContract: UnifiedSiderealChart
 ) {
   if (!overview.chart || !overview.chartRecord) {
     throw new Error("A stored chart is required before Ask My Chart can respond.");
@@ -952,6 +971,7 @@ async function buildToolBundle(
   const relatedProducts = await getRelatedProductsTool(
     approvedRemedies.remedies.map((remedy) => remedy.slug)
   );
+  const predictiveAssistantContext = getPredictiveAssistantContextTool(chartContract);
   const consultationContext = await getConsultationContextTool(
     userId,
     approvedRemedies.remedies
@@ -961,6 +981,7 @@ async function buildToolBundle(
     chartSnapshot,
     chartSummaryFacts,
     transitSnapshot,
+    predictiveAssistantContext,
     approvedRemedies,
     relatedProducts,
     publishedInsights,
@@ -985,6 +1006,10 @@ function getUsedToolNames(
 
   if (classification.intent === "TRANSIT_EXPLANATION" && toolBundle.transitSnapshot) {
     names.push("get_current_transit_snapshot");
+  }
+
+  if (toolBundle.predictiveAssistantContext) {
+    names.push("get_predictive_assistant_context");
   }
 
   if (toolBundle.consultationContext) {
@@ -1362,7 +1387,12 @@ export async function sendAskMyChartMessage(input: {
           chart: savedChartResult.data.chart,
           natalChart: overview.chart,
         });
-        const toolBundle = await buildToolBundle(input.userId, question, overview);
+        const toolBundle = await buildToolBundle(
+          input.userId,
+          question,
+          overview,
+          savedChartResult.data.chart
+        );
 
         if (!chartContext.verification.isValidForAssistant) {
           structuredResponse = {

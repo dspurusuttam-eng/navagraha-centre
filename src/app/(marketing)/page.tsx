@@ -4,6 +4,7 @@ import {
   ConsultationIcon,
   KundliIcon,
   NavagrahaAiIcon,
+  NumerologyIcon,
   RashifalIcon,
   ReportIcon,
 } from "@/components/icons/astrology-icons";
@@ -74,6 +75,15 @@ const tools = [
     feature: "home-tools-rashifal",
   },
   {
+    icon: "numerology",
+    title: "Numerology",
+    description:
+      "Generate a premium numerology profile with core and compound numbers.",
+    href: "/numerology",
+    ctaLabel: "Open Numerology",
+    feature: "home-tools-numerology",
+  },
+  {
     icon: "ai",
     title: "NAVAGRAHA AI",
     description: "Ask chart-grounded questions with structured Vedic intelligence.",
@@ -111,6 +121,8 @@ function getToolIcon(toolIcon: (typeof tools)[number]["icon"]) {
       return <ReportIcon />;
     case "consultation":
       return <ConsultationIcon />;
+    case "numerology":
+      return <NumerologyIcon />;
     default:
       return <KundliIcon />;
   }
@@ -118,31 +130,59 @@ function getToolIcon(toolIcon: (typeof tools)[number]["icon"]) {
 
 const aiServices = [
   {
+    icon: "kundli",
     title: "Kundli AI",
     description: "Chart summary, planetary emphasis, and structured guidance.",
     href: "/ai?tool=kundli",
+    ctaLabel: "Try Free",
   },
   {
+    icon: "numerology",
     title: "Numerology AI",
-    description: "Numerology-style orientation integrated with profile context.",
-    href: "/ai?tool=numerology",
+    description:
+      "Discover your core numbers, personality patterns, strengths, growth and life direction through premium numerology insights.",
+    href: "/numerology",
+    ctaLabel: "Explore Numerology",
   },
   {
+    icon: "reports",
     title: "Career Guidance AI",
     description: "Decision-focused interpretation for professional direction.",
     href: "/ai?tool=career",
+    ctaLabel: "Try Free",
   },
   {
+    icon: "consultation",
     title: "Marriage Compatibility AI",
     description: "Relationship dynamics interpreted through chart structure.",
     href: "/ai?tool=compatibility",
+    ctaLabel: "Try Free",
   },
   {
+    icon: "rashifal",
     title: "Daily Guidance AI",
     description: "Daily chart-aware prompts for calm, actionable reflection.",
     href: "/ai?tool=daily-guidance",
+    ctaLabel: "Try Free",
   },
 ] as const;
+
+function getAiServiceIcon(icon: (typeof aiServices)[number]["icon"]) {
+  switch (icon) {
+    case "kundli":
+      return <KundliIcon className="h-9 w-9" />;
+    case "numerology":
+      return <NumerologyIcon className="h-9 w-9" />;
+    case "reports":
+      return <ReportIcon className="h-9 w-9" />;
+    case "consultation":
+      return <ConsultationIcon className="h-9 w-9" />;
+    case "rashifal":
+      return <RashifalIcon className="h-9 w-9" />;
+    default:
+      return <NavagrahaAiIcon className="h-9 w-9" />;
+  }
+}
 
 const sampleOutputCards = [
   {
@@ -422,11 +462,18 @@ export default function HomePage() {
                     }}
                     className="rounded-[var(--radius-lg)] border border-[rgba(184,137,67,0.28)] bg-[rgba(255,255,255,0.86)] px-4 py-3 transition [transition-duration:var(--motion-duration-base)] hover:border-[rgba(184,137,67,0.44)]"
                   >
+                    <div className="mb-2 flex items-center justify-between gap-2">
+                      {getAiServiceIcon(service.icon)}
+                      <Badge tone="neutral">AI Tool</Badge>
+                    </div>
                     <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
                       {service.title}
                     </p>
                     <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
                       {service.description}
+                    </p>
+                    <p className="mt-3 text-[0.68rem] uppercase tracking-[0.14em] text-[var(--color-accent)]">
+                      {service.ctaLabel}
                     </p>
                   </TrackedLink>
                 ))}

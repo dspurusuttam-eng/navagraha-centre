@@ -159,23 +159,24 @@ export default async function RashifalSignPage({
         eyebrow="Full Rashifal"
         title={`${signData.name} today in detail`}
         description="Complete sign-level guidance for love, career, business, and daily focus."
+        contentClassName="[&>div>p]:text-[var(--color-ink-body)]"
       >
         <Card
           tone="light"
-          className="space-y-6 border-[rgba(184,137,67,0.24)] bg-[rgba(255,255,255,0.94)] p-5 sm:space-y-7 sm:p-6"
+          className="space-y-7 border-[rgba(184,137,67,0.24)] bg-[rgba(255,255,255,0.94)] p-5 sm:space-y-8 sm:p-6"
         >
-          <ul className="space-y-3 sm:space-y-4">
+          <ul className="space-y-4 sm:space-y-5">
             {signData.fullDescription.map((line) => (
               <li
                 key={line}
-                className="rounded-[var(--radius-md)] border border-[rgba(184,137,67,0.14)] bg-[rgba(255,255,255,0.84)] px-3 py-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)] sm:px-4 sm:py-3"
+                className="rounded-[var(--radius-md)] border border-[rgba(184,137,67,0.16)] bg-[rgba(255,255,255,0.9)] px-3 py-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-strong)] sm:px-4 sm:py-3"
               >
                 {line}
               </li>
             ))}
           </ul>
 
-          <div className="space-y-3 border-t border-[rgba(184,137,67,0.2)] pt-5 sm:pt-6">
+          <div className="space-y-4 border-t border-[rgba(184,137,67,0.24)] pt-6 sm:pt-7">
             <div className="grid gap-3 sm:grid-cols-3">
               {[
                 { label: "Love", value: signData.love },
@@ -184,12 +185,12 @@ export default async function RashifalSignPage({
               ].map((entry) => (
                 <div
                   key={entry.label}
-                  className="rounded-[var(--radius-lg)] border border-[rgba(184,137,67,0.18)] bg-[rgba(255,255,255,0.88)] px-4 py-3"
+                  className="rounded-[var(--radius-lg)] border border-[rgba(184,137,67,0.22)] bg-[rgba(255,255,255,0.9)] px-4 py-3"
                 >
                   <p className="text-[0.7rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
                     {entry.label}
                   </p>
-                  <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+                  <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-strong)]">
                     {entry.value}
                   </p>
                 </div>

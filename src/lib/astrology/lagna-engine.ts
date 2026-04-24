@@ -1,19 +1,17 @@
 import "server-only";
 
 import path from "node:path";
-import swisseph from "swisseph";
 import type {
   AstronomyReadyBirthContext,
   BirthContextResolutionResult,
 } from "@/lib/astrology/birth-context-engine";
+import { getSwissEphModule } from "@/lib/astrology/swiss-module";
 import {
   validateAstronomyReadyBirthContext,
   validateBirthContextResolutionResult,
   type BirthContextValidationResult,
 } from "@/lib/astrology/birth-context-validator";
 
-const SIDEREAL_MODE = swisseph.SE_SIDM_LAHIRI;
-const HOUSE_FLAGS = swisseph.SEFLG_SIDEREAL;
 const HOUSE_SYSTEM = "P";
 
 const ZODIAC_SIGNS = [
@@ -124,6 +122,7 @@ function resolveEphemerisPath() {
 }
 
 function toJulianDayUt(birthUtcIso: string) {
+  const swisseph = getSwissEphModule();
   const utcDate = new Date(birthUtcIso);
 
   if (Number.isNaN(utcDate.getTime())) {
@@ -208,6 +207,7 @@ export function calculateSiderealLagna(
   }
 
   const julianDayUt = toJulianDayUt(context.birth_utc);
+  const swisseph = getSwissEphModule();
 
   if (julianDayUt === null) {
     return fail(
@@ -218,12 +218,12 @@ export function calculateSiderealLagna(
   }
 
   swisseph.swe_set_ephe_path(resolveEphemerisPath());
-  swisseph.swe_set_sid_mode(SIDEREAL_MODE, 0, 0);
+  swisseph.swe_set_sid_mode(swisseph.SE_SIDM_LAHIRI, 0, 0);
 
   try {
     const houseResult = swisseph.swe_houses_ex(
       julianDayUt,
-      HOUSE_FLAGS,
+      swisseph.SEFLG_SIDEREAL,
       context.normalized_place.latitude,
       context.normalized_place.longitude,
       HOUSE_SYSTEM

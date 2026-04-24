@@ -73,6 +73,7 @@ function createFallbackUserReport(): GeneratedUserReport {
     currentCycle: fallbackCurrentCycleSummary,
     consultationNotes: [],
     remedies: [],
+    predictiveContext: null,
     reportSummary: {
       headline: "Your private workspace is available.",
       overview:

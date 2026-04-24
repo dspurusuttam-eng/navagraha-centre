@@ -355,6 +355,12 @@ export const contentHubs: readonly ContentHub[] = [
         href: "/kundli-ai",
       },
       {
+        title: "Numerology AI",
+        description:
+          "Open the premium numerology tool to review core numbers, growth notes, and practical guidance patterns.",
+        href: "/numerology",
+      },
+      {
         title: "Ask My Chart",
         description:
           "Use the protected assistant for chart-grounded follow-up questions and premium depth prompts.",

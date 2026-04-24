@@ -1,5 +1,6 @@
 import type { ChartReportState } from "@/modules/report/service";
 import type { CurrentCycleSummary } from "@/lib/astrology/current-cycle";
+import type { PredictiveReportContextOutput } from "@/modules/astrology/predictive-report-context";
 
 export type ChartInsights = {
   summary: string;
@@ -47,12 +48,15 @@ export type ConsultationReply = {
   supported: boolean;
 };
 
+export type ReportPredictiveContext = PredictiveReportContextOutput;
+
 export type GeneratedUserReport = {
   chartReport: ChartReportState;
   insights: ChartInsights;
   currentCycle: CurrentCycleSummary;
   consultationNotes: ConsultationNoteSummary[];
   remedies: RemedySuggestion[];
+  predictiveContext: ReportPredictiveContext | null;
   reportSummary: {
     headline: string;
     overview: string;

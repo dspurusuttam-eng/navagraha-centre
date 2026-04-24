@@ -15,6 +15,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/kundli",
     "/compatibility",
     "/ai",
+    "/numerology",
     "/reports",
     "/about",
     "/services",
