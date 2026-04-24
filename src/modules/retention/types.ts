@@ -35,16 +35,31 @@ export type RetentionDashboardActivity = {
     | "EXPIRED";
 };
 
+export type RetentionPanchangSurface = {
+  isAvailable: boolean;
+  asOfDate: string | null;
+  locationLabel: string | null;
+  highlight: string;
+  spiritualTone: string;
+  suitableFocus: string;
+  returnPromptTitle: string;
+  returnPromptSummary: string;
+  returnPromptHref: string;
+  returnPromptCtaLabel: string;
+};
+
 export type RetentionDashboardSnapshot = {
   generatedAtUtc: string;
   lifecycleStage: RetentionLifecycleStage;
   lifecycleLabel: string;
   dailyInsight: RetentionSurfaceCard;
   currentEnergy: RetentionSurfaceCard;
+  panchang: RetentionPanchangSurface;
   recommendedNextStep: RetentionNextStep;
   activity: RetentionDashboardActivity;
   analytics: {
     showChartIncompleteNudge: boolean;
     showPremiumFollowupNudge: boolean;
+    showPanchangReturnPrompt: boolean;
   };
 };

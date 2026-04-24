@@ -101,6 +101,22 @@ function createFallbackRetentionDashboardState(): RetentionDashboardSnapshot {
       supportingLine:
         "Finish chart setup to move from account shell to active astrology context.",
     },
+    panchang: {
+      isAvailable: false,
+      asOfDate: null,
+      locationLabel: null,
+      highlight:
+        "Daily Panchang highlights become available after adding a location-ready profile.",
+      spiritualTone:
+        "Use Panchang as a calm daily timing reference before deeper chart interpretation.",
+      suitableFocus:
+        "Check Tithi, Nakshatra, and transition windows for practical day planning.",
+      returnPromptTitle: "Revisit today’s Panchang",
+      returnPromptSummary:
+        "Open Panchang to generate today’s timing context for your selected place.",
+      returnPromptHref: "/panchang",
+      returnPromptCtaLabel: "Open Panchang",
+    },
     recommendedNextStep: {
       title: "Complete your chart to unlock insights.",
       summary:
@@ -121,6 +137,7 @@ function createFallbackRetentionDashboardState(): RetentionDashboardSnapshot {
     analytics: {
       showChartIncompleteNudge: true,
       showPremiumFollowupNudge: false,
+      showPanchangReturnPrompt: true,
     },
   };
 }

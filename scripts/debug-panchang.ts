@@ -52,6 +52,7 @@ async function main() {
           result.success
             ? {
                 tithi: result.data.tithi,
+                paksha: result.data.paksha,
                 vara: result.data.vara,
                 nakshatra: result.data.nakshatra,
                 yoga: result.data.yoga,
@@ -59,6 +60,9 @@ async function main() {
                 sunrise: result.data.sunrise,
                 sunset: result.data.sunset,
                 moon_sign: result.data.moon_sign,
+                transitions: result.data.transitions,
+                advanced_timings: result.data.advanced_timings,
+                guidance: result.data.guidance,
               }
             : null,
       },

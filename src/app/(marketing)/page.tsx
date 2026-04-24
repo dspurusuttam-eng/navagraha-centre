@@ -567,6 +567,43 @@ export default function HomePage() {
         title="A richer content ecosystem built for trust, discovery, and return engagement."
         description="Navigate structured categories, then continue into tools, AI, and consultation from relevant content paths."
       >
+        <Card
+          tone="light"
+          className="mb-6 grid gap-4 border-[rgba(184,137,67,0.24)] bg-[rgba(255,255,255,0.9)] lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
+        >
+          <div className="space-y-2">
+            <Badge tone="trust">Daily Timing Layer</Badge>
+            <p className="text-[length:var(--font-size-body-md)] text-[var(--color-ink-strong)]">
+              Check Panchang first for daily timing context, then continue into Rashifal and deeper chart tools.
+            </p>
+          </div>
+          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+            <TrackedLink
+              href="/panchang"
+              eventName="cta_click"
+              eventPayload={{ page: "/", feature: "home-panchang-discovery" }}
+              className={buttonStyles({
+                size: "sm",
+                className: "w-full justify-center sm:w-auto",
+              })}
+            >
+              Open Panchang
+            </TrackedLink>
+            <TrackedLink
+              href="/rashifal"
+              eventName="cta_click"
+              eventPayload={{ page: "/", feature: "home-panchang-discovery-rashifal" }}
+              className={buttonStyles({
+                size: "sm",
+                tone: "secondary",
+                className: "w-full justify-center sm:w-auto",
+              })}
+            >
+              Open Rashifal
+            </TrackedLink>
+          </div>
+        </Card>
+
         <div className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
           {insightCategories.map((category) => (
             <TrackedLink

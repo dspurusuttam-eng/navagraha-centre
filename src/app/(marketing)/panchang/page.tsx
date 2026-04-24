@@ -9,24 +9,67 @@ import { buildPageMetadata } from "@/lib/metadata";
 import { PanchangToolPanel } from "@/modules/panchang/components/panchang-tool-panel";
 
 export const metadata = buildPageMetadata({
-  title: "Daily Panchang Tool",
+  title: "Daily Panchang Calculator",
   description:
-    "Calculate daily Panchang factors including Tithi, Vara, Nakshatra, Yoga, Karana, sunrise, sunset, and moon sign for your selected date and place.",
+    "Check daily Panchang with Tithi, Vara, Nakshatra, Yoga, Karana, sunrise, sunset, Rahu Kaal, Gulika, Yamaganda, Abhijit Muhurta, and next-change timings for your selected date and place.",
   path: "/panchang",
   keywords: [
     "daily panchang",
     "panchang calculator",
-    "tithi vara nakshatra yoga karana",
+    "today panchang",
+    "tithi vara nakshatra yoga karana timings",
     "vedic panchang",
     "navagraha panchang",
   ],
 });
 export const revalidate = 3600;
 
+const panchangFaqEntries = [
+  {
+    question: "How is this Panchang calculated?",
+    answer:
+      "The tool resolves place and timezone first, then calculates Tithi, Vara, Nakshatra, Yoga, and Karana using deterministic sidereal/Lahiri-aligned astrology calculations.",
+  },
+  {
+    question: "Why do transition timings matter?",
+    answer:
+      "Transition timings show when core Panchang factors change during the day, helping you plan important work windows with better timing awareness.",
+  },
+  {
+    question: "Should I check Panchang or Rashifal first?",
+    answer:
+      "Use Panchang for daily timing context first, then open Rashifal for sign-level guidance and NAVAGRAHA AI for chart-aware interpretation.",
+  },
+  {
+    question: "Can I use this without creating an account?",
+    answer:
+      "Yes. Panchang is public for daily use. You can generate your Kundli later if you want deeper personalized guidance.",
+  },
+] as const;
+
+const panchangFaqStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: panchangFaqEntries.map((entry) => ({
+    "@type": "Question",
+    name: entry.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: entry.answer,
+    },
+  })),
+} as const;
+
 export default function PanchangPage() {
   return (
     <>
       <PageViewTracker page="/panchang" feature="panchang-page" />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(panchangFaqStructuredData),
+        }}
+      />
 
       <PageHero
         eyebrow="Daily Panchang Utility"
@@ -35,6 +78,7 @@ export default function PanchangPage() {
         highlights={[
           "Deterministic Panchang output using sidereal/Lahiri system alignment.",
           "Timezone-aware sunrise and sunset for location-specific daily context.",
+          "Advanced timing utilities include Rahu Kaal, Gulika Kaal, Yamaganda, and Abhijit Muhurta.",
           "Structured output ready for future AI, report, and content integration.",
         ]}
         note="Panchang is a timing reference layer and should be used with practical judgment for important decisions."
@@ -62,8 +106,8 @@ export default function PanchangPage() {
       <Section
         tone="light"
         eyebrow="Panchang Tool"
-        title="Enter date and place once to generate the daily Panchang profile."
-        description="This first version is intentionally focused and production-safe, designed for clean daily use and future expansion."
+        title="Generate a complete daily Panchang profile with transitions and guidance."
+        description="Enter date and place once to view core values, next transitions, and structured daily guidance in one clean result flow."
       >
         <div id="panchang-tool">
           <PanchangToolPanel />
@@ -91,7 +135,7 @@ export default function PanchangPage() {
             {
               title: "Return daily structure",
               description:
-                "Output includes weekday, sunrise/sunset, moon sign, and compact guidance blocks for daily planning.",
+                "Output includes core Panchang values, next-change transitions, and conservative guidance blocks for daily planning.",
             },
           ].map((item) => (
             <Card key={item.title} tone="light" className="space-y-3">
@@ -102,6 +146,126 @@ export default function PanchangPage() {
               <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
                 {item.description}
               </p>
+            </Card>
+          ))}
+        </div>
+      </Section>
+
+      <Section
+        tone="light"
+        eyebrow="Daily Use"
+        title="Use Panchang as a practical daily timing layer."
+        description="Keep the flow simple: check the core factors, note transition windows, then continue into deeper chart-aware tools when needed."
+      >
+        <div className="grid gap-4 lg:grid-cols-3">
+          <Card tone="light" className="space-y-3">
+            <Badge tone="trust">Daily Rhythm</Badge>
+            <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
+              Start with timing clarity
+            </h2>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+              Check Tithi, Nakshatra, and Yoga first to understand the day&apos;s overall tone before major decisions.
+            </p>
+          </Card>
+          <Card tone="light" className="space-y-3">
+            <Badge tone="trust">Transition Awareness</Badge>
+            <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
+              Watch next-change timings
+            </h2>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+              Use transition timings as planning checkpoints for meetings, focused work, and important commitments.
+            </p>
+          </Card>
+          <Card tone="light" className="space-y-3">
+            <Badge tone="trust">Deeper Layer</Badge>
+            <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
+              Add personalization when needed
+            </h2>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+              Continue into Kundli, NAVAGRAHA AI, and consultation when you need chart-level interpretation beyond daily timing.
+            </p>
+          </Card>
+        </div>
+      </Section>
+
+      <Section
+        tone="muted"
+        eyebrow="Panchang FAQ"
+        title="Common questions about daily Panchang usage."
+        description="These answers are intentionally concise and practical for everyday checking."
+      >
+        <div className="grid gap-4 md:grid-cols-2">
+          {panchangFaqEntries.map((entry) => (
+            <Card key={entry.question} tone="light" className="space-y-3">
+              <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
+                {entry.question}
+              </h2>
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+                {entry.answer}
+              </p>
+            </Card>
+          ))}
+        </div>
+      </Section>
+
+      <Section
+        tone="light"
+        eyebrow="Related Tools"
+        title="Continue from Panchang into complementary guidance surfaces."
+        description="Internal links are kept focused so you can move into the right next tool without clutter."
+      >
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {[
+            {
+              href: "/rashifal",
+              label: "Open Daily Rashifal",
+              title: "Rashifal",
+              description:
+                "Sign-level daily guidance to complement timing context from Panchang.",
+              feature: "panchang-related-rashifal",
+            },
+            {
+              href: "/numerology",
+              label: "Open Numerology",
+              title: "Numerology",
+              description:
+                "Explore number-based tendencies alongside your daily Panchang timing layer.",
+              feature: "panchang-related-numerology",
+            },
+            {
+              href: "/reports",
+              label: "Get Free Report",
+              title: "Premium Reports",
+              description:
+                "Move from daily signals into deeper structured interpretation and planning.",
+              feature: "panchang-related-reports",
+            },
+            {
+              href: "/consultation",
+              label: "Book Consultation",
+              title: "Consultation",
+              description:
+                "Discuss timing and chart context directly with guided human interpretation.",
+              feature: "panchang-related-consultation",
+            },
+          ].map((item) => (
+            <Card key={item.title} tone="light" className="flex h-full flex-col gap-3">
+              <Badge tone="trust">{item.title}</Badge>
+              <p className="flex-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+                {item.description}
+              </p>
+              <TrackedLink
+                href={item.href}
+                eventName="cta_click"
+                eventPayload={{ page: "/panchang", feature: item.feature }}
+                className={buttonStyles({
+                  size: "sm",
+                  tone: "secondary",
+                  className: "w-full justify-center",
+                })}
+              >
+                {item.label}
+              </TrackedLink>
             </Card>
           ))}
         </div>

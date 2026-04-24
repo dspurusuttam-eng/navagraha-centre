@@ -10,6 +10,9 @@ const TITHI_SPAN_DEGREES = 12;
 const KARANA_SPAN_DEGREES = 6;
 const NAKSHATRA_SPAN_DEGREES = FULL_CIRCLE_DEGREES / 27;
 const PADA_SPAN_DEGREES = NAKSHATRA_SPAN_DEGREES / 4;
+const TRANSITION_SEARCH_WINDOW_HOURS = 72;
+const TRANSITION_SEARCH_STEP_MINUTES = 30;
+const TRANSITION_BINARY_PRECISION_SECONDS = 30;
 
 const TITHI_NAMES = [
   "Pratipada",
@@ -139,6 +142,10 @@ const ZODIAC_SIGNS = [
   "Pisces",
 ] as const;
 
+const RAHU_KAAL_SEGMENTS_BY_WEEKDAY = [8, 2, 7, 5, 6, 4, 3] as const;
+const GULIKA_KAAL_SEGMENTS_BY_WEEKDAY = [7, 6, 5, 4, 3, 2, 1] as const;
+const YAMAGANDA_SEGMENTS_BY_WEEKDAY = [5, 4, 3, 2, 1, 7, 6] as const;
+
 export type PanchangLocationInput = {
   displayName: string;
   latitude: number;
@@ -164,12 +171,44 @@ type PanchangFailureCode =
   | "PLANETARY_CALCULATION_FAILED"
   | "MISSING_SUN_OR_MOON"
   | "SUN_EVENT_CALCULATION_FAILED"
+  | "TRANSITION_CALCULATION_FAILED"
   | "SWISSEPH_CALCULATION_ERROR";
 
 type PanchangSummary = {
   spiritual_tone: string[];
   caution_areas: string[];
   suitable_focus: string[];
+};
+
+type PanchangTimingWindow = {
+  start_utc: string;
+  end_utc: string;
+  start_local_time: string;
+  end_local_time: string;
+  start_local_date_time: string;
+  end_local_date_time: string;
+  duration_minutes: number;
+};
+
+type PanchangAdvancedTimings = {
+  rahu_kaal: PanchangTimingWindow;
+  gulika_kaal: PanchangTimingWindow;
+  yamaganda: PanchangTimingWindow;
+  abhijit_muhurta: PanchangTimingWindow;
+  timing_summary: {
+    auspicious_windows: string[];
+    caution_windows: string[];
+    note: string;
+  };
+};
+
+type PanchangGuidance = {
+  spiritual_tone: string[];
+  suitable_focus: string[];
+  caution_areas: string[];
+  observance_hint: string[];
+  daily_quality: string;
+  day_feel: string;
 };
 
 export type PanchangContextOutput = {
@@ -196,6 +235,7 @@ export type PanchangContextOutput = {
     paksha: "Shukla" | "Krishna";
     progress_percent: number;
   };
+  paksha: "Shukla" | "Krishna";
   vara: string;
   nakshatra: {
     index: number;
@@ -221,6 +261,30 @@ export type PanchangContextOutput = {
     utc: string;
   };
   moon_sign: string;
+  transitions: {
+    next_tithi_change: {
+      utc: string;
+      local_time: string;
+      local_date_time: string;
+    };
+    next_nakshatra_change: {
+      utc: string;
+      local_time: string;
+      local_date_time: string;
+    };
+    next_yoga_change: {
+      utc: string;
+      local_time: string;
+      local_date_time: string;
+    };
+    next_karana_change: {
+      utc: string;
+      local_time: string;
+      local_date_time: string;
+    };
+  };
+  advanced_timings: PanchangAdvancedTimings;
+  guidance: PanchangGuidance;
   summary: PanchangSummary;
 };
 
@@ -458,6 +522,40 @@ function formatLocalTime(utcIso: string, timeZone: string) {
   }).format(new Date(utcIso));
 }
 
+function formatLocalDateTime(utcIso: string, timeZone: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  }).format(new Date(utcIso));
+}
+
+function formatTimingWindow(input: {
+  startUtcIso: string;
+  endUtcIso: string;
+  timezoneIana: string;
+}) {
+  const startMs = new Date(input.startUtcIso).getTime();
+  const endMs = new Date(input.endUtcIso).getTime();
+
+  return {
+    start_utc: input.startUtcIso,
+    end_utc: input.endUtcIso,
+    start_local_time: formatLocalTime(input.startUtcIso, input.timezoneIana),
+    end_local_time: formatLocalTime(input.endUtcIso, input.timezoneIana),
+    start_local_date_time: formatLocalDateTime(
+      input.startUtcIso,
+      input.timezoneIana
+    ),
+    end_local_date_time: formatLocalDateTime(input.endUtcIso, input.timezoneIana),
+    duration_minutes: Math.max(0, Math.round((endMs - startMs) / 60_000)),
+  } satisfies PanchangTimingWindow;
+}
+
 function getSunAndMoon(planets: CoreGrahaSiderealLongitude[]) {
   const sun = planets.find((planet) => planet.graha === "SUN");
   const moon = planets.find((planet) => planet.graha === "MOON");
@@ -471,6 +569,26 @@ function getSunAndMoon(planets: CoreGrahaSiderealLongitude[]) {
     moonLongitude: normalizeLongitude(moon.sidereal_longitude),
   };
 }
+
+type PanchangFactorKey = "tithi" | "nakshatra" | "yoga" | "karana";
+
+type PanchangFactorKeys = {
+  tithi: number;
+  nakshatra: number;
+  yoga: number;
+  karana: number;
+};
+
+type PanchangTransitionWindow = {
+  start_ms: number;
+  end_ms: number;
+};
+
+type PanchangTransitionOutput = PanchangContextOutput["transitions"];
+
+type PanchangTransitionState = {
+  factor_keys: PanchangFactorKeys;
+};
 
 function getTithi(input: { sunLongitude: number; moonLongitude: number }) {
   const phase = normalizeLongitude(input.moonLongitude - input.sunLongitude);
@@ -538,6 +656,24 @@ function getKarana(phaseDegrees: number) {
   };
 }
 
+function getFactorKeys(input: { sunLongitude: number; moonLongitude: number }) {
+  const phase = normalizeLongitude(input.moonLongitude - input.sunLongitude);
+  const tithi = Math.floor(phase / TITHI_SPAN_DEGREES);
+  const nakshatra = Math.floor(input.moonLongitude / NAKSHATRA_SPAN_DEGREES);
+  const yoga = Math.floor(
+    normalizeLongitude(input.sunLongitude + input.moonLongitude) /
+      NAKSHATRA_SPAN_DEGREES
+  );
+  const karana = Math.floor(phase / KARANA_SPAN_DEGREES);
+
+  return {
+    tithi,
+    nakshatra,
+    yoga,
+    karana,
+  } satisfies PanchangFactorKeys;
+}
+
 function getMoonSign(moonLongitude: number) {
   const signIndex = Math.floor(moonLongitude / 30);
 
@@ -551,14 +687,393 @@ function getVara(dateLocal: string) {
   return WEEKDAY_NAMES[date.getUTCDay()] ?? WEEKDAY_NAMES[0];
 }
 
-function buildSummary(input: {
+function getWeekdayIndex(dateLocal: string) {
+  const [year, month, day] = dateLocal.split("-").map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+
+  return date.getUTCDay();
+}
+
+function buildDaySegmentTimingWindow(input: {
+  sunriseUtc: string;
+  sunsetUtc: string;
+  timezoneIana: string;
+  segmentIndex: number;
+}) {
+  const sunriseMs = new Date(input.sunriseUtc).getTime();
+  const sunsetMs = new Date(input.sunsetUtc).getTime();
+
+  if (
+    !Number.isFinite(sunriseMs) ||
+    !Number.isFinite(sunsetMs) ||
+    sunsetMs <= sunriseMs ||
+    input.segmentIndex < 1 ||
+    input.segmentIndex > 8
+  ) {
+    return null;
+  }
+
+  const dayDurationMs = sunsetMs - sunriseMs;
+  const segmentDurationMs = dayDurationMs / 8;
+  const startMs = sunriseMs + (input.segmentIndex - 1) * segmentDurationMs;
+  const endMs = startMs + segmentDurationMs;
+
+  return formatTimingWindow({
+    startUtcIso: new Date(startMs).toISOString(),
+    endUtcIso: new Date(endMs).toISOString(),
+    timezoneIana: input.timezoneIana,
+  });
+}
+
+function buildAbhijitMuhurtaTimingWindow(input: {
+  sunriseUtc: string;
+  sunsetUtc: string;
+  timezoneIana: string;
+}) {
+  const sunriseMs = new Date(input.sunriseUtc).getTime();
+  const sunsetMs = new Date(input.sunsetUtc).getTime();
+
+  if (!Number.isFinite(sunriseMs) || !Number.isFinite(sunsetMs) || sunsetMs <= sunriseMs) {
+    return null;
+  }
+
+  const dayDurationMs = sunsetMs - sunriseMs;
+  const middayMs = sunriseMs + dayDurationMs / 2;
+  const halfMuhurtaMs = dayDurationMs / 30;
+
+  return formatTimingWindow({
+    startUtcIso: new Date(middayMs - halfMuhurtaMs).toISOString(),
+    endUtcIso: new Date(middayMs + halfMuhurtaMs).toISOString(),
+    timezoneIana: input.timezoneIana,
+  });
+}
+
+function buildAdvancedTimings(input: {
+  dateLocal: string;
+  sunriseUtc: string;
+  sunsetUtc: string;
+  timezoneIana: string;
+}) {
+  const weekdayIndex = getWeekdayIndex(input.dateLocal);
+  const rahuKaal = buildDaySegmentTimingWindow({
+    sunriseUtc: input.sunriseUtc,
+    sunsetUtc: input.sunsetUtc,
+    timezoneIana: input.timezoneIana,
+    segmentIndex: RAHU_KAAL_SEGMENTS_BY_WEEKDAY[weekdayIndex] ?? 8,
+  });
+  const gulikaKaal = buildDaySegmentTimingWindow({
+    sunriseUtc: input.sunriseUtc,
+    sunsetUtc: input.sunsetUtc,
+    timezoneIana: input.timezoneIana,
+    segmentIndex: GULIKA_KAAL_SEGMENTS_BY_WEEKDAY[weekdayIndex] ?? 7,
+  });
+  const yamaganda = buildDaySegmentTimingWindow({
+    sunriseUtc: input.sunriseUtc,
+    sunsetUtc: input.sunsetUtc,
+    timezoneIana: input.timezoneIana,
+    segmentIndex: YAMAGANDA_SEGMENTS_BY_WEEKDAY[weekdayIndex] ?? 5,
+  });
+  const abhijitMuhurta = buildAbhijitMuhurtaTimingWindow({
+    sunriseUtc: input.sunriseUtc,
+    sunsetUtc: input.sunsetUtc,
+    timezoneIana: input.timezoneIana,
+  });
+
+  if (!rahuKaal || !gulikaKaal || !yamaganda || !abhijitMuhurta) {
+    return null;
+  }
+
+  return {
+    rahu_kaal: rahuKaal,
+    gulika_kaal: gulikaKaal,
+    yamaganda,
+    abhijit_muhurta: abhijitMuhurta,
+    timing_summary: {
+      auspicious_windows: [
+        `Abhijit Muhurta: ${abhijitMuhurta.start_local_time} - ${abhijitMuhurta.end_local_time}`,
+      ],
+      caution_windows: [
+        `Rahu Kaal: ${rahuKaal.start_local_time} - ${rahuKaal.end_local_time}`,
+        `Gulika Kaal: ${gulikaKaal.start_local_time} - ${gulikaKaal.end_local_time}`,
+        `Yamaganda: ${yamaganda.start_local_time} - ${yamaganda.end_local_time}`,
+      ],
+      note: "Use timing windows as supportive references alongside practical judgment.",
+    },
+  } satisfies PanchangAdvancedTimings;
+}
+
+function resolveTransitionState(
+  asOfUtc: Date,
+  cache: Map<number, PanchangTransitionState>
+) {
+  const cacheKey = asOfUtc.getTime();
+  const cached = cache.get(cacheKey);
+
+  if (cached) {
+    return cached;
+  }
+
+  const planetary = calculateCoreGrahaSiderealLongitudesAtUtc({
+    asOfUtc,
+  });
+
+  if (!planetary.success) {
+    return null;
+  }
+
+  const sunAndMoon = getSunAndMoon(planetary.data.planets);
+
+  if (!sunAndMoon) {
+    return null;
+  }
+
+  const state: PanchangTransitionState = {
+    factor_keys: getFactorKeys(sunAndMoon),
+  };
+
+  cache.set(cacheKey, state);
+
+  return state;
+}
+
+function findTransitionWindows(input: {
+  asOfUtc: Date;
+  initialKeys: PanchangFactorKeys;
+  cache: Map<number, PanchangTransitionState>;
+}) {
+  const unresolved = new Set<PanchangFactorKey>([
+    "tithi",
+    "nakshatra",
+    "yoga",
+    "karana",
+  ]);
+  const windows: Partial<Record<PanchangFactorKey, PanchangTransitionWindow>> =
+    {};
+  const searchStepMs = TRANSITION_SEARCH_STEP_MINUTES * 60_000;
+  const searchEndMs =
+    input.asOfUtc.getTime() + TRANSITION_SEARCH_WINDOW_HOURS * 3_600_000;
+  let previousMs = input.asOfUtc.getTime();
+  let previousState: PanchangTransitionState = {
+    factor_keys: input.initialKeys,
+  };
+
+  while (unresolved.size > 0 && previousMs < searchEndMs) {
+    const nextMs = Math.min(previousMs + searchStepMs, searchEndMs);
+    const nextState = resolveTransitionState(new Date(nextMs), input.cache);
+
+    if (!nextState) {
+      return null;
+    }
+
+    for (const factor of unresolved) {
+      if (nextState.factor_keys[factor] !== previousState.factor_keys[factor]) {
+        windows[factor] = {
+          start_ms: previousMs,
+          end_ms: nextMs,
+        };
+      }
+    }
+
+    for (const factor of [...unresolved]) {
+      if (windows[factor]) {
+        unresolved.delete(factor);
+      }
+    }
+
+    previousMs = nextMs;
+    previousState = nextState;
+  }
+
+  return unresolved.size === 0
+    ? (windows as Record<PanchangFactorKey, PanchangTransitionWindow>)
+    : null;
+}
+
+function refineTransitionTime(input: {
+  factor: PanchangFactorKey;
+  initialKeyValue: number;
+  window: PanchangTransitionWindow;
+  cache: Map<number, PanchangTransitionState>;
+}) {
+  let lowMs = input.window.start_ms;
+  let highMs = input.window.end_ms;
+  const precisionMs = TRANSITION_BINARY_PRECISION_SECONDS * 1_000;
+  const highState = resolveTransitionState(new Date(highMs), input.cache);
+
+  if (!highState || highState.factor_keys[input.factor] === input.initialKeyValue) {
+    return null;
+  }
+
+  while (highMs - lowMs > precisionMs) {
+    const midMs = lowMs + Math.floor((highMs - lowMs) / 2);
+    const midState = resolveTransitionState(new Date(midMs), input.cache);
+
+    if (!midState) {
+      return null;
+    }
+
+    if (midState.factor_keys[input.factor] === input.initialKeyValue) {
+      lowMs = midMs;
+    } else {
+      highMs = midMs;
+    }
+  }
+
+  return new Date(highMs).toISOString();
+}
+
+function buildTransitions(input: {
+  asOfUtc: string;
+  timezoneIana: string;
+  initialKeys: PanchangFactorKeys;
+}) {
+  const asOfDate = new Date(input.asOfUtc);
+
+  if (Number.isNaN(asOfDate.getTime())) {
+    return null;
+  }
+
+  const cache = new Map<number, PanchangTransitionState>();
+  cache.set(asOfDate.getTime(), {
+    factor_keys: input.initialKeys,
+  });
+
+  const windows = findTransitionWindows({
+    asOfUtc: asOfDate,
+    initialKeys: input.initialKeys,
+    cache,
+  });
+
+  if (!windows) {
+    return null;
+  }
+
+  const nextTithiChange = refineTransitionTime({
+    factor: "tithi",
+    initialKeyValue: input.initialKeys.tithi,
+    window: windows.tithi,
+    cache,
+  });
+  const nextNakshatraChange = refineTransitionTime({
+    factor: "nakshatra",
+    initialKeyValue: input.initialKeys.nakshatra,
+    window: windows.nakshatra,
+    cache,
+  });
+  const nextYogaChange = refineTransitionTime({
+    factor: "yoga",
+    initialKeyValue: input.initialKeys.yoga,
+    window: windows.yoga,
+    cache,
+  });
+  const nextKaranaChange = refineTransitionTime({
+    factor: "karana",
+    initialKeyValue: input.initialKeys.karana,
+    window: windows.karana,
+    cache,
+  });
+
+  if (
+    !nextTithiChange ||
+    !nextNakshatraChange ||
+    !nextYogaChange ||
+    !nextKaranaChange
+  ) {
+    return null;
+  }
+
+  return {
+    next_tithi_change: {
+      utc: nextTithiChange,
+      local_time: formatLocalTime(nextTithiChange, input.timezoneIana),
+      local_date_time: formatLocalDateTime(nextTithiChange, input.timezoneIana),
+    },
+    next_nakshatra_change: {
+      utc: nextNakshatraChange,
+      local_time: formatLocalTime(nextNakshatraChange, input.timezoneIana),
+      local_date_time: formatLocalDateTime(
+        nextNakshatraChange,
+        input.timezoneIana
+      ),
+    },
+    next_yoga_change: {
+      utc: nextYogaChange,
+      local_time: formatLocalTime(nextYogaChange, input.timezoneIana),
+      local_date_time: formatLocalDateTime(nextYogaChange, input.timezoneIana),
+    },
+    next_karana_change: {
+      utc: nextKaranaChange,
+      local_time: formatLocalTime(nextKaranaChange, input.timezoneIana),
+      local_date_time: formatLocalDateTime(nextKaranaChange, input.timezoneIana),
+    },
+  } satisfies PanchangTransitionOutput;
+}
+
+function buildDailyGuidance(input: {
   tithiName: string;
   paksha: "Shukla" | "Krishna";
   yogaName: string;
   karanaName: string;
   vara: string;
   moonSign: string;
-}): PanchangSummary {
+  transitions: PanchangTransitionOutput;
+}): PanchangGuidance {
+  const supportiveYogas = new Set([
+    "Saubhagya",
+    "Shubha",
+    "Siddhi",
+    "Siddha",
+    "Shukla",
+    "Brahma",
+    "Indra",
+  ]);
+  const pressureYogas = new Set([
+    "Atiganda",
+    "Shoola",
+    "Ganda",
+    "Vyaghata",
+    "Vyatipata",
+    "Vaidhriti",
+  ]);
+
+  let qualityScore = 0;
+
+  if (input.paksha === "Shukla") {
+    qualityScore += 1;
+  } else {
+    qualityScore -= 1;
+  }
+
+  if (supportiveYogas.has(input.yogaName)) {
+    qualityScore += 2;
+  }
+
+  if (pressureYogas.has(input.yogaName)) {
+    qualityScore -= 2;
+  }
+
+  if (input.karanaName === "Vishti") {
+    qualityScore -= 2;
+  } else if (input.karanaName === "Naga" || input.karanaName === "Shakuni") {
+    qualityScore -= 1;
+  } else {
+    qualityScore += 1;
+  }
+
+  const dailyQuality =
+    qualityScore >= 2
+      ? "Supportive and growth-oriented with steady momentum."
+      : qualityScore >= 0
+        ? "Balanced and practical; progress is best through disciplined pacing."
+        : "Reflective and caution-oriented; prioritize clarity over urgency.";
+
+  const dayFeel =
+    qualityScore >= 2
+      ? "Supportive"
+      : qualityScore >= 0
+        ? "Balanced"
+        : "Reflective";
+
   const cautionByKarana = input.karanaName === "Vishti"
     ? "Vishti Karana often prefers patience over impulsive commitments."
     : input.karanaName === "Naga"
@@ -583,6 +1098,20 @@ function buildSummary(input: {
       `Prioritize ${input.vara} responsibilities with steady pacing.`,
       `Moon in ${input.moonSign} supports emotionally aware communication and clear boundaries.`,
     ],
+    observance_hint: [
+      `Reassess plans near the next Tithi change at ${input.transitions.next_tithi_change.local_date_time}.`,
+      `Track mood and communication shifts around the next Nakshatra change at ${input.transitions.next_nakshatra_change.local_date_time}.`,
+    ],
+    daily_quality: dailyQuality,
+    day_feel: dayFeel,
+  };
+}
+
+function buildSummaryFromGuidance(guidance: PanchangGuidance): PanchangSummary {
+  return {
+    spiritual_tone: guidance.spiritual_tone,
+    caution_areas: guidance.caution_areas,
+    suitable_focus: guidance.suitable_focus,
   };
 }
 
@@ -701,6 +1230,41 @@ export function calculateDailyPanchangContext(
   const karana = getKarana(tithi.phase);
   const moonSign = getMoonSign(sunAndMoon.moonLongitude);
   const vara = getVara(dateLocal);
+  const advancedTimings = buildAdvancedTimings({
+    dateLocal,
+    sunriseUtc,
+    sunsetUtc,
+    timezoneIana: location.timezoneIana,
+  });
+  const transitions = buildTransitions({
+    asOfUtc: sunriseUtc,
+    timezoneIana: location.timezoneIana,
+    initialKeys: getFactorKeys(sunAndMoon),
+  });
+
+  if (!transitions) {
+    return fail(
+      "TRANSITION_CALCULATION_FAILED",
+      "Panchang transitions could not be calculated for the selected date and place."
+    );
+  }
+
+  if (!advancedTimings) {
+    return fail(
+      "SUN_EVENT_CALCULATION_FAILED",
+      "Advanced daily timing windows could not be calculated for this date and place."
+    );
+  }
+
+  const guidance = buildDailyGuidance({
+    tithiName: tithi.name,
+    paksha: tithi.paksha,
+    yogaName: yoga.name,
+    karanaName: karana.name,
+    vara,
+    moonSign,
+    transitions,
+  });
 
   return {
     success: true,
@@ -728,6 +1292,7 @@ export function calculateDailyPanchangContext(
         paksha: tithi.paksha,
         progress_percent: tithi.progress_percent,
       },
+      paksha: tithi.paksha,
       vara,
       nakshatra,
       yoga,
@@ -741,14 +1306,10 @@ export function calculateDailyPanchangContext(
         utc: sunsetUtc,
       },
       moon_sign: moonSign,
-      summary: buildSummary({
-        tithiName: tithi.name,
-        paksha: tithi.paksha,
-        yogaName: yoga.name,
-        karanaName: karana.name,
-        vara,
-        moonSign,
-      }),
+      transitions,
+      advanced_timings: advancedTimings,
+      guidance,
+      summary: buildSummaryFromGuidance(guidance),
     },
   };
 }

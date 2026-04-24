@@ -165,6 +165,9 @@ export function getAnalyticsSummarySnapshot() {
       returnPromptShown: counts.return_prompt_shown,
       chartIncompleteNudge: counts.chart_incomplete_nudge,
       premiumFollowupNudge: counts.premium_followup_nudge,
+      panchangView: counts.panchang_view,
+      dailyPanchangView: counts.daily_panchang_view,
+      panchangReturnPromptShown: counts.panchang_return_prompt_shown,
     },
     monetization: {
       pricingView: counts.pricing_view,
