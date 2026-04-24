@@ -42,6 +42,7 @@
     "debug:predictive-assistant-context": "tsx scripts/debug-predictive-assistant-context.ts",
     "debug:transit": "tsx scripts/debug-transit.ts",
     "debug:numerology": "tsx scripts/debug-numerology.ts",
+    "debug:panchang": "tsx scripts/debug-panchang.ts",
     "debug:planetary": "tsx scripts/debug-planetary-pipeline.ts",
     "env:check": "tsx scripts/validate-env.ts",
     "env:audit": "tsx scripts/audit-env-secrets.ts",

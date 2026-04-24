@@ -5,6 +5,7 @@ import {
   KundliIcon,
   NavagrahaAiIcon,
   NumerologyIcon,
+  PanchangIcon,
   RashifalIcon,
   ReportIcon,
 } from "@/components/icons/astrology-icons";
@@ -75,6 +76,15 @@ const tools = [
     feature: "home-tools-rashifal",
   },
   {
+    icon: "panchang",
+    title: "Daily Panchang",
+    description:
+      "Check Tithi, Vara, Nakshatra, Yoga, Karana, sunrise, and moon sign for your day.",
+    href: "/panchang",
+    ctaLabel: "Open Panchang",
+    feature: "home-tools-panchang",
+  },
+  {
     icon: "numerology",
     title: "Numerology",
     description:
@@ -123,6 +133,8 @@ function getToolIcon(toolIcon: (typeof tools)[number]["icon"]) {
       return <ConsultationIcon />;
     case "numerology":
       return <NumerologyIcon />;
+    case "panchang":
+      return <PanchangIcon />;
     default:
       return <KundliIcon />;
   }

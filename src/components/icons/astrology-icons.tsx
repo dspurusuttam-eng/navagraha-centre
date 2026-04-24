@@ -101,3 +101,15 @@ export function NumerologyIcon({ className }: Readonly<{ className?: string }>) 
     </IconFrame>
   );
 }
+
+export function PanchangIcon({ className }: Readonly<{ className?: string }>) {
+  return (
+    <IconFrame className={className}>
+      <BaseIcon>
+        <rect x="5" y="6" width="14" height="13" rx="2.2" />
+        <path d="M8 4.5v3M16 4.5v3M5 10h14" />
+        <path d="M8.2 13h2.2M13.6 13h2.2M8.2 16h2.2M13.6 16h2.2" />
+      </BaseIcon>
+    </IconFrame>
+  );
+}
