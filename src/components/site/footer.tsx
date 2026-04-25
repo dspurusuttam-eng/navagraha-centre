@@ -15,10 +15,13 @@ export function Footer() {
     {
       title: "Tools",
       links: [
+        { href: "/tools", label: "All Tools" },
         { href: "/kundli", label: "Kundli" },
         { href: "/rashifal", label: "Rashifal" },
         { href: "/compatibility", label: "Compatibility" },
         { href: "/numerology", label: "Numerology" },
+        { href: "/calculators", label: "Calculators" },
+        { href: "/muhurta", label: "Muhurta Lite" },
       ],
     },
     {

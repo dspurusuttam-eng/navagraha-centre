@@ -239,8 +239,8 @@ export default async function InsightDetailPage({
             ) : null}
 
             <AdReadyZone
-              label="In-Article Ad Placeholder"
-              description="Reserved in-content ad zone for future AdSense blocks, kept disabled in this phase."
+              label="In-Article Sponsored Zone"
+              description="Reserved in-content zone for future sponsor placement, intentionally kept script-free in this phase."
             />
 
             {entry.faqItems?.length ? (

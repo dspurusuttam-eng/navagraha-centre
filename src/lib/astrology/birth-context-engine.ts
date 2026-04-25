@@ -4,11 +4,13 @@ import type { NormalizedBirthContextInput } from "@/lib/astrology/birth-input-no
 
 const OPENCAGE_GEOCODING_ENDPOINT =
   "https://api.opencagedata.com/geocode/v1/json";
+const OPEN_METEO_GEOCODING_ENDPOINT =
+  "https://geocoding-api.open-meteo.com/v1/search";
 const REQUEST_TIMEOUT_MS = 8_000;
-const DEFAULT_GEOCODING_PROVIDER = "opencage";
+const DEFAULT_GEOCODING_PROVIDER = "open-meteo";
 
 type BirthContextLocationConfidence = "high" | "moderate" | "low";
-type GeocodingProvider = "opencage";
+type GeocodingProvider = "opencage" | "open-meteo";
 
 type OpenCageResult = {
   formatted: string;
@@ -39,6 +41,24 @@ type OpenCageResponse = {
     code?: number;
     message?: string;
   };
+};
+
+type OpenMeteoResult = {
+  name?: string;
+  latitude: number;
+  longitude: number;
+  timezone?: string;
+  country?: string;
+  country_code?: string;
+  admin1?: string;
+  admin2?: string;
+  admin3?: string;
+  feature_code?: string;
+  population?: number;
+};
+
+type OpenMeteoResponse = {
+  results?: OpenMeteoResult[];
 };
 
 type BirthContextResolutionStage = "config" | "place" | "timezone" | "utc";
@@ -122,7 +142,7 @@ function getGeocodingProvider() {
 function isSupportedGeocodingProvider(
   provider: string
 ): provider is GeocodingProvider {
-  return provider === "opencage";
+  return provider === "opencage" || provider === "open-meteo";
 }
 
 function getGeocodingApiKey() {
@@ -240,7 +260,9 @@ function convertLocalToUtcDate(
   return new Date(utcMs);
 }
 
-function mapLocationConfidence(result: OpenCageResult): BirthContextLocationConfidence {
+function mapLocationConfidenceFromOpenCage(
+  result: OpenCageResult
+): BirthContextLocationConfidence {
   const confidence = result.confidence ?? 0;
 
   if (confidence >= 8) {
@@ -254,7 +276,7 @@ function mapLocationConfidence(result: OpenCageResult): BirthContextLocationConf
   return "low";
 }
 
-function buildCanonicalBirthPlace(result: OpenCageResult): {
+function buildCanonicalBirthPlaceFromOpenCage(result: OpenCageResult): {
   place: ResolvedBirthPlace;
   timezoneIana: string | null;
 } | null {
@@ -294,7 +316,7 @@ function buildCanonicalBirthPlace(result: OpenCageResult): {
   };
 }
 
-function isPlaceAmbiguous(query: string, results: OpenCageResult[]): boolean {
+function isOpenCagePlaceAmbiguous(query: string, results: OpenCageResult[]): boolean {
   if (results.length < 2) {
     return false;
   }
@@ -305,8 +327,94 @@ function isPlaceAmbiguous(query: string, results: OpenCageResult[]): boolean {
     return false;
   }
 
-  const first = buildCanonicalBirthPlace(results[0]);
-  const second = buildCanonicalBirthPlace(results[1]);
+  const first = buildCanonicalBirthPlaceFromOpenCage(results[0]);
+  const second = buildCanonicalBirthPlaceFromOpenCage(results[1]);
+
+  if (!first || !second) {
+    return true;
+  }
+
+  return (
+    first.place.country_code !== second.place.country_code ||
+    first.place.region !== second.place.region
+  );
+}
+
+function mapLocationConfidenceFromOpenMeteo(
+  result: OpenMeteoResult
+): BirthContextLocationConfidence {
+  const featureCode = result.feature_code?.toUpperCase() ?? "";
+  const population = typeof result.population === "number" ? result.population : 0;
+
+  if (
+    (featureCode === "PPLC" || featureCode === "PPLA" || featureCode === "PPL") &&
+    population >= 100_000
+  ) {
+    return "high";
+  }
+
+  if (featureCode.startsWith("PPL") || population >= 10_000) {
+    return "moderate";
+  }
+
+  return "low";
+}
+
+function buildCanonicalBirthPlaceFromOpenMeteo(result: OpenMeteoResult): {
+  place: ResolvedBirthPlace;
+  timezoneIana: string | null;
+} | null {
+  const countryCode = result.country_code?.trim().toUpperCase() ?? "";
+  const countryName = result.country?.trim() || countryCode;
+  const city =
+    result.name?.trim() ||
+    result.admin2?.trim() ||
+    result.admin3?.trim() ||
+    null;
+  const region = result.admin1?.trim() || null;
+  const latitude = result.latitude;
+  const longitude = result.longitude;
+  const displayParts = [city, region, countryName].filter(
+    (part): part is string => Boolean(part)
+  );
+
+  if (
+    !countryCode ||
+    !countryName ||
+    displayParts.length === 0 ||
+    !isValidLatitude(latitude) ||
+    !isValidLongitude(longitude)
+  ) {
+    return null;
+  }
+
+  return {
+    place: {
+      display_name: displayParts.join(", "),
+      latitude,
+      longitude,
+      country_code: countryCode,
+      country_name: countryName,
+      region,
+      city,
+    },
+    timezoneIana: result.timezone?.trim() || null,
+  };
+}
+
+function isOpenMeteoPlaceAmbiguous(query: string, results: OpenMeteoResult[]): boolean {
+  if (results.length < 2) {
+    return false;
+  }
+
+  const queryIncludesCountryHint = query.toLowerCase().split(",").length >= 2;
+
+  if (queryIncludesCountryHint) {
+    return false;
+  }
+
+  const first = buildCanonicalBirthPlaceFromOpenMeteo(results[0]);
+  const second = buildCanonicalBirthPlaceFromOpenMeteo(results[1]);
 
   if (!first || !second) {
     return true;
@@ -378,7 +486,7 @@ async function resolvePlaceWithOpenCage(
       issue: BirthContextResolutionIssue;
     }
 > {
-  const cacheKey = placeQueryNormalized.toLowerCase();
+  const cacheKey = `opencage:${placeQueryNormalized.toLowerCase()}`;
   const cached = placeResolutionCache.get(cacheKey);
 
   if (cached) {
@@ -436,7 +544,7 @@ async function resolvePlaceWithOpenCage(
     };
   }
 
-  if (isPlaceAmbiguous(placeQueryNormalized, payload.results)) {
+  if (isOpenCagePlaceAmbiguous(placeQueryNormalized, payload.results)) {
     return {
       success: false,
       issue: issue(
@@ -447,7 +555,7 @@ async function resolvePlaceWithOpenCage(
     };
   }
 
-  const selected = buildCanonicalBirthPlace(payload.results[0]);
+  const selected = buildCanonicalBirthPlaceFromOpenCage(payload.results[0]);
 
   if (!selected) {
     return {
@@ -460,18 +568,111 @@ async function resolvePlaceWithOpenCage(
     };
   }
 
-  const locationConfidence = mapLocationConfidence(payload.results[0]);
+  const locationConfidenceRaw = mapLocationConfidenceFromOpenCage(
+    payload.results[0]
+  );
+  const locationConfidence =
+    locationConfidenceRaw === "low" ? "moderate" : locationConfidenceRaw;
 
-  if (locationConfidence === "low") {
+  const resolved = {
+    place: selected.place,
+    timezoneIana: selected.timezoneIana,
+    locationConfidence,
+  };
+
+  placeResolutionCache.set(cacheKey, resolved);
+
+  return {
+    success: true,
+    data: resolved,
+  };
+}
+
+async function resolvePlaceWithOpenMeteo(
+  placeQueryNormalized: string
+): Promise<
+  | {
+      success: true;
+      data: PlaceResolutionData;
+    }
+  | {
+      success: false;
+      issue: BirthContextResolutionIssue;
+    }
+> {
+  const cacheKey = `open-meteo:${placeQueryNormalized.toLowerCase()}`;
+  const cached = placeResolutionCache.get(cacheKey);
+
+  if (cached) {
+    return { success: true, data: cached };
+  }
+
+  const url = new URL(OPEN_METEO_GEOCODING_ENDPOINT);
+  url.searchParams.set("name", placeQueryNormalized);
+  url.searchParams.set("count", "5");
+  url.searchParams.set("language", "en");
+  url.searchParams.set("format", "json");
+
+  let payload: OpenMeteoResponse;
+
+  try {
+    payload = await fetchJsonWithTimeout<OpenMeteoResponse>(url);
+  } catch (error) {
+    const statusMatch =
+      error instanceof Error ? error.message.match(/^HTTP_(\d+)$/) : null;
+    const statusCode = statusMatch ? Number(statusMatch[1]) : undefined;
+
+    return {
+      success: false,
+      issue: buildPlaceProviderError(
+        statusCode,
+        error instanceof Error
+          ? `Birth place lookup failed: ${error.message}`
+          : "Birth place lookup failed due to an unknown geocoding provider error."
+      ),
+    };
+  }
+
+  if (!Array.isArray(payload.results) || payload.results.length === 0) {
+    return {
+      success: false,
+      issue: issue(
+        "place",
+        "PLACE_NOT_FOUND",
+        "Birth place could not be resolved. Please enter a more specific city/region/country."
+      ),
+    };
+  }
+
+  if (isOpenMeteoPlaceAmbiguous(placeQueryNormalized, payload.results)) {
     return {
       success: false,
       issue: issue(
         "place",
         "PLACE_AMBIGUOUS",
-        "Birth place confidence is too low for accurate astrology timing. Please include city, region/state, and country."
+        "Birth place is ambiguous. Please include region/state and country for precise resolution."
       ),
     };
   }
+
+  const selected = buildCanonicalBirthPlaceFromOpenMeteo(payload.results[0]);
+
+  if (!selected) {
+    return {
+      success: false,
+      issue: issue(
+        "place",
+        "PLACE_PROVIDER_ERROR",
+        "Birth place provider returned incomplete coordinate data. Please try a more explicit location."
+      ),
+    };
+  }
+
+  const locationConfidenceRaw = mapLocationConfidenceFromOpenMeteo(
+    payload.results[0]
+  );
+  const locationConfidence =
+    locationConfidenceRaw === "low" ? "moderate" : locationConfidenceRaw;
 
   const resolved = {
     place: selected.place,
@@ -508,23 +709,21 @@ async function resolvePlace(
       issue: issue(
         "config",
         "UNSUPPORTED_GEOCODING_PROVIDER",
-        `Unsupported geocoding provider "${provider}". Set GEOCODING_PROVIDER=opencage.`
+        `Unsupported geocoding provider "${provider}". Set GEOCODING_PROVIDER to "opencage" or "open-meteo".`
       ),
     };
   }
 
-  if (!apiKey) {
-    return {
-      success: false,
-      issue: issue(
-        "config",
-        "MISSING_GEOCODING_API_KEY",
-        "Birth place resolution is unavailable because GEOCODING_API_KEY is not configured."
-      ),
-    };
+  if (provider === "open-meteo") {
+    return resolvePlaceWithOpenMeteo(placeQueryNormalized);
   }
 
-  return resolvePlaceWithOpenCage(placeQueryNormalized, apiKey);
+  if (apiKey) {
+    return resolvePlaceWithOpenCage(placeQueryNormalized, apiKey);
+  }
+
+  // Fallback keeps place-based calculators operational when OpenCage keys are missing.
+  return resolvePlaceWithOpenMeteo(placeQueryNormalized);
 }
 
 async function resolveTimezoneAtBirth(input: {

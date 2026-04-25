@@ -107,6 +107,70 @@ export default function NumerologyPage() {
         </div>
       </Section>
 
+      <Section
+        tone="light"
+        eyebrow="Related Tools"
+        title="Move from numerology into complementary utilities and guidance."
+        description="Use these linked tools to continue from number patterns into timing, chart context, and deeper interpretation."
+      >
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {[
+            {
+              href: "/tools",
+              label: "Explore All Tools",
+              title: "Tools Hub",
+              description: "See the complete utility ecosystem and choose your next step.",
+              eventName: "utility_card_click" as const,
+              feature: "numerology-related-tools-hub",
+            },
+            {
+              href: "/calculators",
+              label: "Open Calculators",
+              title: "Quick Calculators",
+              description: "Run Moon sign, Nakshatra, Lagna, and compatibility quick checks.",
+              eventName: "calculator_tool_click" as const,
+              feature: "numerology-related-calculators",
+            },
+            {
+              href: "/panchang",
+              label: "Open Panchang",
+              title: "Daily Panchang",
+              description: "Add day-level timing context before important decisions.",
+              eventName: "panchang_tool_click" as const,
+              feature: "numerology-related-panchang",
+            },
+            {
+              href: "/consultation",
+              label: "Book Consultation",
+              title: "Guided Consultation",
+              description:
+                "Review numerology plus chart context with human interpretation support.",
+              eventName: "premium_utility_cta_click" as const,
+              feature: "numerology-related-consultation",
+            },
+          ].map((item) => (
+            <Card key={item.title} tone="light" className="flex h-full flex-col gap-3">
+              <Badge tone="trust">{item.title}</Badge>
+              <p className="flex-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+                {item.description}
+              </p>
+              <TrackedLink
+                href={item.href}
+                eventName={item.eventName}
+                eventPayload={{ page: "/numerology", feature: item.feature }}
+                className={buttonStyles({
+                  size: "sm",
+                  tone: "tertiary",
+                  className: "w-full justify-center",
+                })}
+              >
+                {item.label}
+              </TrackedLink>
+            </Card>
+          ))}
+        </div>
+      </Section>
+
       <Section className="pt-0" tone="transparent">
         <Card
           tone="accent"

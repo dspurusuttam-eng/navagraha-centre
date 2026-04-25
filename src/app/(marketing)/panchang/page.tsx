@@ -214,8 +214,26 @@ export default function PanchangPage() {
         title="Continue from Panchang into complementary guidance surfaces."
         description="Internal links are kept focused so you can move into the right next tool without clutter."
       >
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {[
+            {
+              href: "/tools",
+              label: "Explore All Tools",
+              title: "Tools Hub",
+              description:
+                "Open the utility hub to move across chart, timing, numerology, and AI layers cleanly.",
+              feature: "panchang-related-tools-hub",
+              eventName: "utility_card_click" as const,
+            },
+            {
+              href: "/muhurta",
+              label: "Open Muhurta-lite",
+              title: "Muhurta-lite",
+              description:
+                "Focused daily timing windows for Rahu Kaal, Gulika Kaal, Yamaganda, and Abhijit Muhurta.",
+              feature: "panchang-related-muhurta",
+              eventName: "muhurta_tool_click" as const,
+            },
             {
               href: "/rashifal",
               label: "Open Daily Rashifal",
@@ -223,6 +241,7 @@ export default function PanchangPage() {
               description:
                 "Sign-level daily guidance to complement timing context from Panchang.",
               feature: "panchang-related-rashifal",
+              eventName: "utility_card_click" as const,
             },
             {
               href: "/numerology",
@@ -231,6 +250,7 @@ export default function PanchangPage() {
               description:
                 "Explore number-based tendencies alongside your daily Panchang timing layer.",
               feature: "panchang-related-numerology",
+              eventName: "numerology_tool_click" as const,
             },
             {
               href: "/reports",
@@ -239,6 +259,7 @@ export default function PanchangPage() {
               description:
                 "Move from daily signals into deeper structured interpretation and planning.",
               feature: "panchang-related-reports",
+              eventName: "premium_utility_cta_click" as const,
             },
             {
               href: "/consultation",
@@ -247,6 +268,7 @@ export default function PanchangPage() {
               description:
                 "Discuss timing and chart context directly with guided human interpretation.",
               feature: "panchang-related-consultation",
+              eventName: "premium_utility_cta_click" as const,
             },
           ].map((item) => (
             <Card key={item.title} tone="light" className="flex h-full flex-col gap-3">
@@ -256,7 +278,7 @@ export default function PanchangPage() {
               </p>
               <TrackedLink
                 href={item.href}
-                eventName="cta_click"
+                eventName={item.eventName}
                 eventPayload={{ page: "/panchang", feature: item.feature }}
                 className={buttonStyles({
                   size: "sm",

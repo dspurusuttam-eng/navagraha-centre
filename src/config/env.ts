@@ -196,7 +196,7 @@ export function validateLaunchEnvironment(
     "OPS_HEALTHCHECK_TIMEOUT_MS"
   );
   const geocodingProvider =
-    getStringValue(env, "GEOCODING_PROVIDER").toLowerCase() || "opencage";
+    getStringValue(env, "GEOCODING_PROVIDER").toLowerCase() || "open-meteo";
   const geocodingApiKey =
     getStringValue(env, "GEOCODING_API_KEY") ||
     getStringValue(env, "OPENCAGE_API_KEY");
@@ -277,23 +277,23 @@ export function validateLaunchEnvironment(
   validateTrustedOrigins(env, issues);
   validatePublicEnvironmentExposure(env, issues);
 
-  if (geocodingProvider !== "opencage") {
+  if (geocodingProvider !== "opencage" && geocodingProvider !== "open-meteo") {
     pushIssue(
       issues,
       "GEOCODING_PROVIDER",
       "warning",
-      `Unsupported geocoding provider "${geocodingProvider}". Use GEOCODING_PROVIDER=opencage.`
+      `Unsupported geocoding provider "${geocodingProvider}". Use GEOCODING_PROVIDER=open-meteo or GEOCODING_PROVIDER=opencage.`
     );
   }
 
-  if (!geocodingApiKey) {
+  if (geocodingProvider === "opencage" && !geocodingApiKey) {
     pushIssue(
       issues,
       "GEOCODING_API_KEY",
       productionRuntime ? "error" : "warning",
       productionRuntime
-        ? "GEOCODING_API_KEY is required in production for birth place resolution."
-        : "Birthplace geocoding/timezone resolution will be unavailable without GEOCODING_API_KEY."
+        ? "GEOCODING_API_KEY is required in production when GEOCODING_PROVIDER=opencage."
+        : "Birthplace geocoding/timezone resolution through OpenCage will be unavailable without GEOCODING_API_KEY."
     );
   }
 

@@ -113,3 +113,14 @@ export function PanchangIcon({ className }: Readonly<{ className?: string }>) {
     </IconFrame>
   );
 }
+
+export function CalculatorIcon({ className }: Readonly<{ className?: string }>) {
+  return (
+    <IconFrame className={className}>
+      <BaseIcon>
+        <rect x="5" y="4.5" width="14" height="15" rx="2.2" />
+        <path d="M8 8h8M8.2 11.5h2.2M11.8 11.5H14M15.8 11.5H18M8.2 15h2.2M11.8 15H14M15.8 15H18" />
+      </BaseIcon>
+    </IconFrame>
+  );
+}

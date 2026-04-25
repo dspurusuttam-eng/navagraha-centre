@@ -293,6 +293,29 @@ export default function AiPage() {
             </Card>
           ))}
         </div>
+        <Card
+          tone="light"
+          className="mt-5 grid gap-4 border-[rgba(184,137,67,0.24)] bg-[rgba(255,255,255,0.9)] lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
+        >
+          <div className="space-y-2">
+            <Badge tone="trust">Utility Discovery</Badge>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+              Need chart, Panchang, numerology, or quick calculators first? Open the utility hub to choose the best starting point.
+            </p>
+          </div>
+          <TrackedLink
+            href="/tools"
+            eventName="utility_card_click"
+            eventPayload={{ page: "/ai", feature: "ai-tools-hub-discovery" }}
+            className={buttonStyles({
+              size: "sm",
+              tone: "tertiary",
+              className: "w-full justify-center lg:w-auto",
+            })}
+          >
+            Explore All Tools
+          </TrackedLink>
+        </Card>
       </Section>
 
       <Section

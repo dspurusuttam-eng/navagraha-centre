@@ -1,6 +1,7 @@
 import { TrackedLink } from "@/components/analytics/tracked-link";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import {
+  CalculatorIcon,
   ConsultationIcon,
   KundliIcon,
   NavagrahaAiIcon,
@@ -57,6 +58,7 @@ const tools = [
     description: "Generate your sidereal Kundli and Lagna-centered chart map.",
     href: "/kundli",
     ctaLabel: "Generate Kundli",
+    eventName: "utility_card_click",
     feature: "home-tools-kundli",
   },
   {
@@ -65,6 +67,7 @@ const tools = [
     description: "Review relationship potential with chart-aware compatibility layers.",
     href: "/compatibility",
     ctaLabel: "Check Compatibility",
+    eventName: "utility_card_click",
     feature: "home-tools-compatibility",
   },
   {
@@ -73,6 +76,7 @@ const tools = [
     description: "Get concise daily guidance with premium editorial clarity.",
     href: "/rashifal",
     ctaLabel: "Open Rashifal",
+    eventName: "utility_card_click",
     feature: "home-tools-rashifal",
   },
   {
@@ -82,6 +86,7 @@ const tools = [
       "Check Tithi, Vara, Nakshatra, Yoga, Karana, sunrise, and moon sign for your day.",
     href: "/panchang",
     ctaLabel: "Open Panchang",
+    eventName: "panchang_tool_click",
     feature: "home-tools-panchang",
   },
   {
@@ -91,6 +96,7 @@ const tools = [
       "Generate a premium numerology profile with core and compound numbers.",
     href: "/numerology",
     ctaLabel: "Open Numerology",
+    eventName: "numerology_tool_click",
     feature: "home-tools-numerology",
   },
   {
@@ -99,7 +105,18 @@ const tools = [
     description: "Ask chart-grounded questions with structured Vedic intelligence.",
     href: "/ai",
     ctaLabel: "Try NAVAGRAHA AI",
+    eventName: "utility_card_click",
     feature: "home-tools-ai",
+  },
+  {
+    icon: "calculators",
+    title: "Astrology Calculators",
+    description:
+      "Use quick calculators for Nakshatra, Moon Sign, Lagna, and date suitability checks.",
+    href: "/calculators",
+    ctaLabel: "Open Calculators",
+    eventName: "calculator_tool_click",
+    feature: "home-tools-calculators",
   },
   {
     icon: "reports",
@@ -107,6 +124,7 @@ const tools = [
     description: "Unlock focused reports for career, relationships, finance, and health.",
     href: "/reports",
     ctaLabel: "Get Free Report",
+    eventName: "utility_card_click",
     feature: "home-tools-reports",
   },
   {
@@ -115,7 +133,18 @@ const tools = [
     description: "Continue with human interpretation led by Joy Prakash Sarmah.",
     href: "/consultation",
     ctaLabel: "Book Free Consultation",
+    eventName: "utility_card_click",
     feature: "home-tools-consultation",
+  },
+  {
+    icon: "calculators",
+    title: "All Tools Hub",
+    description:
+      "Explore every utility in one structured hub with clean pathways to deeper guidance.",
+    href: "/tools",
+    ctaLabel: "Explore All Tools",
+    eventName: "utility_card_click",
+    feature: "home-tools-hub",
   },
 ] as const;
 
@@ -135,6 +164,8 @@ function getToolIcon(toolIcon: (typeof tools)[number]["icon"]) {
       return <NumerologyIcon />;
     case "panchang":
       return <PanchangIcon />;
+    case "calculators":
+      return <CalculatorIcon />;
     default:
       return <KundliIcon />;
   }
@@ -432,7 +463,7 @@ export default function HomePage() {
               </p>
               <TrackedLink
                 href={tool.href}
-                eventName="cta_click"
+                eventName={tool.eventName}
                 eventPayload={{ page: "/", feature: tool.feature }}
                 className={buttonStyles({
                   size: "sm",

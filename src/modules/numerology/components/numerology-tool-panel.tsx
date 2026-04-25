@@ -357,7 +357,7 @@ export function NumerologyToolPanel() {
             <div className="flex flex-col gap-3 sm:flex-row">
               <TrackedLink
                 href="/ai?tool=numerology"
-                eventName="cta_click"
+                eventName="premium_utility_cta_click"
                 eventPayload={{
                   page: "/numerology",
                   feature: "numerology-result-ai",
@@ -371,7 +371,7 @@ export function NumerologyToolPanel() {
               </TrackedLink>
               <TrackedLink
                 href="/reports"
-                eventName="cta_click"
+                eventName="premium_utility_cta_click"
                 eventPayload={{
                   page: "/numerology",
                   feature: "numerology-result-reports",
@@ -386,7 +386,7 @@ export function NumerologyToolPanel() {
               </TrackedLink>
               <TrackedLink
                 href="/consultation"
-                eventName="cta_click"
+                eventName="premium_utility_cta_click"
                 eventPayload={{
                   page: "/numerology",
                   feature: "numerology-result-consultation",

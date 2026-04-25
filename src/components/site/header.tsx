@@ -13,9 +13,12 @@ const primaryNavigation = [
 ] as const;
 
 const secondaryNavigation = [
+  { href: "/tools", label: "Tools" },
   { href: "/consultation", label: "Consultation" },
   { href: "/shop", label: "Shop" },
   { href: "/insights", label: "Insights" },
+  { href: "/calculators", label: "Calculators" },
+  { href: "/muhurta", label: "Time Tools" },
   { href: "/pricing", label: "Pricing" },
 ] as const;
 

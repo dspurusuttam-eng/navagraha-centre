@@ -9,8 +9,8 @@ type AdReadyZoneProps = {
 };
 
 export function AdReadyZone({
-  label = "Future Sponsored Placement",
-  description = "Reserved content-safe slot for future AdSense integration. No live ad script is loaded in this phase.",
+  label = "Sponsored Insights Zone",
+  description = "Reserved in-content zone for future sponsor blocks while preserving reading flow and layout stability.",
   className,
 }: Readonly<AdReadyZoneProps>) {
   return (
