@@ -4,6 +4,7 @@ import { WebVitalsReporter } from "@/components/analytics/web-vitals-reporter";
 import { Footer } from "@/components/site/footer";
 import { Header } from "@/components/site/header";
 import { siteConfig } from "@/config/site";
+import { defaultLocale, getLocaleDirection } from "@/modules/localization";
 import "./globals.css";
 
 const displayFont = Cormorant_Garamond({
@@ -52,7 +53,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${displayFont.variable} ${sansFont.variable}`}>
+    <html
+      lang={defaultLocale}
+      dir={getLocaleDirection(defaultLocale)}
+      className={`${displayFont.variable} ${sansFont.variable}`}
+    >
       <body className="flex min-h-screen flex-col antialiased">
         <Header />
         <main className="content-fade-in flex-1">{children}</main>

@@ -1,5 +1,9 @@
 import { getPublicEnvironment } from "@/config/env";
-import { globalCtaCopy } from "@/modules/localization/copy";
+import {
+  globalCtaCopy,
+  globalFooterCopy,
+  globalNavigationCopy,
+} from "@/modules/localization/copy";
 
 export type SiteNavItem = {
   href: string;
@@ -20,63 +24,63 @@ const siteUrl = normalizeSiteUrl(publicEnvironment.siteUrl);
 const siteName = publicEnvironment.siteName;
 
 const marketingNav = [
-  { href: "/", label: "Home" },
-  { href: "/kundli", label: "Kundli" },
-  { href: "/compatibility", label: "Compatibility" },
-  { href: "/rashifal", label: "Rashifal" },
-  { href: "/tools", label: "Tools" },
-  { href: "/panchang", label: "Panchang" },
-  { href: "/muhurta", label: "Time Tools" },
-  { href: "/ai", label: "NAVAGRAHA AI" },
-  { href: "/numerology", label: "Numerology" },
-  { href: "/calculators", label: "Calculators" },
-  { href: "/reports", label: "Reports" },
-  { href: "/consultation", label: "Consultation" },
-  { href: "/shop", label: "Shop" },
-  { href: "/insights", label: "Insights" },
+  { href: "/", label: globalNavigationCopy.home },
+  { href: "/kundli", label: globalNavigationCopy.kundli },
+  { href: "/compatibility", label: globalNavigationCopy.compatibility },
+  { href: "/rashifal", label: globalNavigationCopy.rashifal },
+  { href: "/tools", label: globalNavigationCopy.tools },
+  { href: "/panchang", label: globalNavigationCopy.panchang },
+  { href: "/muhurta", label: globalNavigationCopy.timeTools },
+  { href: "/ai", label: globalNavigationCopy.ai },
+  { href: "/numerology", label: globalFooterCopy.links.numerology },
+  { href: "/calculators", label: globalNavigationCopy.calculators },
+  { href: "/reports", label: globalNavigationCopy.reports },
+  { href: "/consultation", label: globalNavigationCopy.consultation },
+  { href: "/shop", label: globalNavigationCopy.shop },
+  { href: "/insights", label: globalNavigationCopy.insights },
 ] satisfies SiteNavItem[];
 
 const appNav = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/dashboard/onboarding", label: "Onboarding" },
-  { href: "/dashboard/ask-my-chart", label: "Ask My Chart" },
-  { href: "/dashboard/consultations", label: "Consultations" },
-  { href: "/dashboard/orders", label: "Orders" },
-  { href: "/dashboard/chart", label: "Chart" },
-  { href: "/dashboard/report", label: "Report" },
-  { href: "/settings", label: "Settings" },
+  { href: "/dashboard", label: globalNavigationCopy.dashboard },
+  { href: "/dashboard/onboarding", label: globalNavigationCopy.onboarding },
+  { href: "/dashboard/ask-my-chart", label: globalNavigationCopy.askMyChart },
+  { href: "/dashboard/consultations", label: globalNavigationCopy.consultations },
+  { href: "/dashboard/orders", label: globalNavigationCopy.orders },
+  { href: "/dashboard/chart", label: globalNavigationCopy.chart },
+  { href: "/dashboard/report", label: globalNavigationCopy.report },
+  { href: "/settings", label: globalNavigationCopy.settings },
 ] satisfies SiteNavItem[];
 
-const adminNav = [{ href: "/admin", label: "Admin" }] satisfies SiteNavItem[];
+const adminNav = [{ href: "/admin", label: globalNavigationCopy.admin }] satisfies SiteNavItem[];
 
 const foundationNav = [
-  { href: "/style-guide", label: "Style Guide" },
+  { href: "/style-guide", label: globalNavigationCopy.styleGuide },
 ] satisfies SiteNavItem[];
 
 const offeringsNav = [
   { href: "/sign-up", label: globalCtaCopy.generateKundli },
-  { href: "/marriage-compatibility", label: "Compatibility" },
-  { href: "/daily-rashifal", label: "Daily Rashifal" },
-  { href: "/tools", label: "All Tools" },
-  { href: "/panchang", label: "Panchang" },
-  { href: "/muhurta", label: "Time Tools" },
-  { href: "/numerology", label: "Numerology" },
-  { href: "/calculators", label: "Calculators" },
-  { href: "/career-report", label: "Reports" },
-  { href: "/consultation", label: "Consultation" },
-  { href: "/kundli-ai", label: "NAVAGRAHA AI" },
-  { href: "/sign-in", label: "Login" },
-  { href: "/dashboard", label: "Account" },
-  { href: "/contact", label: "Contact" },
-  { href: "/about", label: "About" },
-  { href: "/services", label: "Services" },
-  { href: "/privacy", label: "Privacy" },
-  { href: "/terms", label: "Terms" },
-  { href: "/disclaimer", label: "Disclaimer" },
-  { href: "/refund-cancellation", label: "Refund Policy" },
-  { href: "/pricing", label: "Plans" },
-  { href: "/shop", label: "Shop" },
-  { href: "/insights", label: "Insights" },
+  { href: "/marriage-compatibility", label: globalNavigationCopy.compatibility },
+  { href: "/daily-rashifal", label: globalNavigationCopy.dailyRashifal },
+  { href: "/tools", label: globalFooterCopy.links.allTools },
+  { href: "/panchang", label: globalNavigationCopy.panchang },
+  { href: "/muhurta", label: globalNavigationCopy.timeTools },
+  { href: "/numerology", label: globalFooterCopy.links.numerology },
+  { href: "/calculators", label: globalNavigationCopy.calculators },
+  { href: "/career-report", label: globalNavigationCopy.reports },
+  { href: "/consultation", label: globalNavigationCopy.consultation },
+  { href: "/kundli-ai", label: globalNavigationCopy.ai },
+  { href: "/sign-in", label: globalNavigationCopy.login },
+  { href: "/dashboard", label: globalNavigationCopy.account },
+  { href: "/contact", label: globalFooterCopy.links.contact },
+  { href: "/about", label: globalFooterCopy.links.about },
+  { href: "/services", label: globalNavigationCopy.services },
+  { href: "/privacy", label: globalFooterCopy.links.privacy },
+  { href: "/terms", label: globalFooterCopy.links.terms },
+  { href: "/disclaimer", label: globalFooterCopy.links.disclaimer },
+  { href: "/refund-cancellation", label: globalFooterCopy.links.refundPolicy },
+  { href: "/pricing", label: globalNavigationCopy.plans },
+  { href: "/shop", label: globalNavigationCopy.shop },
+  { href: "/insights", label: globalNavigationCopy.insights },
 ] satisfies SiteNavItem[];
 
 const profileNav = [
@@ -84,14 +88,14 @@ const profileNav = [
 ] satisfies SiteNavItem[];
 
 const supportNav = [
-  { href: "/sign-in", label: "Login" },
-  { href: "/dashboard", label: "Account" },
-  { href: "/contact", label: "Contact" },
-  { href: "/privacy", label: "Privacy" },
-  { href: "/terms", label: "Terms" },
-  { href: "/disclaimer", label: "Disclaimer" },
-  { href: "/refund-cancellation", label: "Refund Policy" },
-  { href: "/forgot-password", label: "Password Reset" },
+  { href: "/sign-in", label: globalNavigationCopy.login },
+  { href: "/dashboard", label: globalNavigationCopy.account },
+  { href: "/contact", label: globalFooterCopy.links.contact },
+  { href: "/privacy", label: globalFooterCopy.links.privacy },
+  { href: "/terms", label: globalFooterCopy.links.terms },
+  { href: "/disclaimer", label: globalFooterCopy.links.disclaimer },
+  { href: "/refund-cancellation", label: globalFooterCopy.links.refundPolicy },
+  { href: "/forgot-password", label: globalNavigationCopy.passwordReset },
 ] satisfies SiteNavItem[];
 
 export const siteConfig = {

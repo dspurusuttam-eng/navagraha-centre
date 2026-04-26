@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "languageName": "English",
+    "languageNativeName": "English"
+  },
+  "common": {
+    "language": "Language",
+    "englishDefault": "English (Default)",
+    "live": "Live",
+    "planned": "Planned",
+    "comingSoon": "Coming soon",
+    "defaultExperience": "Default experience",
+    "futureLanguagesNote": "English remains the live experience. Additional languages will appear here as they are released."
+  },
+  "cta": {
+    "generateKundli": "Generate Your Kundli",
+    "exploreAi": "Try NAVAGRAHA AI",
+    "bookConsultation": "Book Free Consultation",
+    "signInAccount": "Sign In / Account",
+    "unlockFullReport": "Get Free Report"
+  },
+  "labels": {
+    "currencyCode": "INR",
+    "currencyNote": "All astrology services are currently free for limited launch access.",
+    "limitedFreeAccessLabel": "Currently Free (Limited Launch Access)",
+    "limitedFreeBanner": "Limited Launch Access: All Astrology Services Are Free",
+    "earlyAccessLabel": "Early Access Premium Experience",
+    "premiumExperienceLabel": "Premium Experience",
+    "timezoneHint": "Use an IANA timezone, for example: Asia/Kolkata, Europe/London, or America/New_York.",
+    "dateHint": "Use your birth date in local calendar format (YYYY-MM-DD).",
+    "timeHint": "Use your birth time in local time (24-hour format)."
+  },
+  "navigation": {
+    "home": "Home",
+    "kundli": "Kundli",
+    "compatibility": "Compatibility",
+    "rashifal": "Rashifal",
+    "ai": "NAVAGRAHA AI",
+    "reports": "Reports",
+    "tools": "Tools",
+    "panchang": "Panchang",
+    "consultation": "Consultation",
+    "shop": "Shop",
+    "insights": "Insights",
+    "calculators": "Calculators",
+    "timeTools": "Time Tools",
+    "dailyRashifal": "Daily Rashifal",
+    "pricing": "Pricing",
+    "plans": "Plans",
+    "services": "Services",
+    "account": "Account",
+    "menu": "Menu",
+    "dashboard": "Dashboard",
+    "onboarding": "Onboarding",
+    "askMyChart": "Ask My Chart",
+    "consultations": "Consultations",
+    "orders": "Orders",
+    "chart": "Chart",
+    "report": "Report",
+    "settings": "Settings",
+    "admin": "Admin",
+    "styleGuide": "Style Guide",
+    "login": "Login",
+    "passwordReset": "Password Reset"
+  },
+  "footer": {
+    "columns": {
+      "centre": "Centre",
+      "tools": "Tools",
+      "services": "Services"
+    },
+    "links": {
+      "about": "About",
+      "contact": "Contact",
+      "astrologer": "Astrologer",
+      "allTools": "All Tools",
+      "numerology": "Numerology",
+      "muhurtaLite": "Muhurta Lite",
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "disclaimer": "Disclaimer",
+      "refundPolicy": "Refund Policy"
+    },
+    "languageLabel": "Language",
+    "languageHelper": "English is active today. Future Indian and international languages are registered here and will remain disabled until complete translations are ready."
+  }
+}

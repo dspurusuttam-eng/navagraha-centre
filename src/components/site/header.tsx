@@ -3,23 +3,24 @@ import { TrackedLink } from "@/components/analytics/tracked-link";
 import { buttonStyles } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { siteConfig } from "@/config/site";
+import { globalCtaCopy, globalNavigationCopy } from "@/modules/localization/copy";
 
 const primaryNavigation = [
-  { href: "/kundli", label: "Kundli" },
-  { href: "/compatibility", label: "Compatibility" },
-  { href: "/rashifal", label: "Rashifal" },
-  { href: "/ai", label: "NAVAGRAHA AI" },
-  { href: "/reports", label: "Reports" },
+  { href: "/kundli", label: globalNavigationCopy.kundli },
+  { href: "/compatibility", label: globalNavigationCopy.compatibility },
+  { href: "/rashifal", label: globalNavigationCopy.rashifal },
+  { href: "/ai", label: globalNavigationCopy.ai },
+  { href: "/reports", label: globalNavigationCopy.reports },
 ] as const;
 
 const secondaryNavigation = [
-  { href: "/tools", label: "Tools" },
-  { href: "/consultation", label: "Consultation" },
-  { href: "/shop", label: "Shop" },
-  { href: "/insights", label: "Insights" },
-  { href: "/calculators", label: "Calculators" },
-  { href: "/muhurta", label: "Time Tools" },
-  { href: "/pricing", label: "Pricing" },
+  { href: "/tools", label: globalNavigationCopy.tools },
+  { href: "/consultation", label: globalNavigationCopy.consultation },
+  { href: "/shop", label: globalNavigationCopy.shop },
+  { href: "/insights", label: globalNavigationCopy.insights },
+  { href: "/calculators", label: globalNavigationCopy.calculators },
+  { href: "/muhurta", label: globalNavigationCopy.timeTools },
+  { href: "/pricing", label: globalNavigationCopy.pricing },
 ] as const;
 
 export function Header() {
@@ -62,7 +63,7 @@ export function Header() {
               href="/dashboard"
               className={buttonStyles({ tone: "tertiary", size: "sm" })}
             >
-              Account
+              {globalNavigationCopy.account}
             </Link>
             <TrackedLink
               href="/kundli"
@@ -70,7 +71,7 @@ export function Header() {
               eventPayload={{ page: "global-header", feature: "header-generate-kundli" }}
               className={buttonStyles({ size: "sm" })}
             >
-              Generate Kundli
+              {globalCtaCopy.generateKundli}
             </TrackedLink>
           </div>
         </div>
@@ -102,7 +103,7 @@ export function Header() {
                 className: "cursor-pointer list-none px-4 marker:content-none",
               })}
             >
-              Menu
+              {globalNavigationCopy.menu}
             </summary>
             <div className="absolute right-0 top-[calc(100%+0.6rem)] w-[min(90vw,22rem)] rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,254,250,0.98)] p-3 shadow-[var(--shadow-md)]">
               <nav aria-label="Mobile navigation" className="grid gap-2">
@@ -141,7 +142,7 @@ export function Header() {
                       className: "w-full justify-center",
                     })}
                   >
-                    Account
+                    {globalNavigationCopy.account}
                   </Link>
                   <TrackedLink
                     href="/kundli-ai"
@@ -153,7 +154,7 @@ export function Header() {
                       className: "w-full justify-center",
                     })}
                   >
-                    Try NAVAGRAHA AI
+                    {globalCtaCopy.exploreAi}
                   </TrackedLink>
                   <TrackedLink
                     href="/reports"
@@ -165,7 +166,7 @@ export function Header() {
                       className: "w-full justify-center",
                     })}
                   >
-                    Get Free Report
+                    {globalCtaCopy.unlockFullReport}
                   </TrackedLink>
                 </div>
               </nav>

@@ -1,35 +1,37 @@
 import Link from "next/link";
+import { LanguageSwitcher } from "@/components/site/language-switcher";
 import { Container } from "@/components/ui/container";
 import { siteConfig } from "@/config/site";
+import { globalFooterCopy, globalNavigationCopy } from "@/modules/localization/copy";
 
 export function Footer() {
   const footerColumns = [
     {
-      title: "Centre",
+      title: globalFooterCopy.columns.centre,
       links: [
-        { href: "/about", label: "About" },
-        { href: "/contact", label: "Contact" },
-        { href: "/joy-prakash-sarmah", label: "Astrologer" },
+        { href: "/about", label: globalFooterCopy.links.about },
+        { href: "/contact", label: globalFooterCopy.links.contact },
+        { href: "/joy-prakash-sarmah", label: globalFooterCopy.links.astrologer },
       ],
     },
     {
-      title: "Tools",
+      title: globalFooterCopy.columns.tools,
       links: [
-        { href: "/tools", label: "All Tools" },
-        { href: "/kundli", label: "Kundli" },
-        { href: "/rashifal", label: "Rashifal" },
-        { href: "/compatibility", label: "Compatibility" },
-        { href: "/numerology", label: "Numerology" },
-        { href: "/calculators", label: "Calculators" },
-        { href: "/muhurta", label: "Muhurta Lite" },
+        { href: "/tools", label: globalFooterCopy.links.allTools },
+        { href: "/kundli", label: globalNavigationCopy.kundli },
+        { href: "/rashifal", label: globalNavigationCopy.rashifal },
+        { href: "/compatibility", label: globalNavigationCopy.compatibility },
+        { href: "/numerology", label: globalFooterCopy.links.numerology },
+        { href: "/calculators", label: globalNavigationCopy.calculators },
+        { href: "/muhurta", label: globalFooterCopy.links.muhurtaLite },
       ],
     },
     {
-      title: "Services",
+      title: globalFooterCopy.columns.services,
       links: [
-        { href: "/reports", label: "Reports" },
-        { href: "/consultation", label: "Consultation" },
-        { href: "/shop", label: "Shop" },
+        { href: "/reports", label: globalNavigationCopy.reports },
+        { href: "/consultation", label: globalNavigationCopy.consultation },
+        { href: "/shop", label: globalNavigationCopy.shop },
       ],
     },
   ] as const;
@@ -62,23 +64,25 @@ export function Footer() {
           ))}
         </div>
 
+        <LanguageSwitcher />
+
         <div className="flex flex-col gap-3 border-t border-[color:var(--color-border)] pt-5 text-[0.74rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-ink-muted)] sm:flex-row sm:items-center sm:justify-between">
           <p>&copy; {new Date().getFullYear()} {siteConfig.name}</p>
           <div className="flex items-center gap-4">
             <Link href="/privacy" className="hover:text-[var(--color-ink-strong)]">
-              Privacy
+              {globalFooterCopy.links.privacy}
             </Link>
             <Link href="/terms" className="hover:text-[var(--color-ink-strong)]">
-              Terms
+              {globalFooterCopy.links.terms}
             </Link>
             <Link href="/disclaimer" className="hover:text-[var(--color-ink-strong)]">
-              Disclaimer
+              {globalFooterCopy.links.disclaimer}
             </Link>
             <Link
               href="/refund-cancellation"
               className="hover:text-[var(--color-ink-strong)]"
             >
-              Refund Policy
+              {globalFooterCopy.links.refundPolicy}
             </Link>
           </div>
         </div>
