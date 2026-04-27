@@ -53,12 +53,19 @@ function createFallbackUserReport(): GeneratedUserReport {
 
 export async function generateUserReport(
   userId: string,
-  subjectName?: string | null
+  subjectName?: string | null,
+  localeLabel?: string | null,
+  localeCode?: string | null
 ): Promise<GeneratedUserReport> {
   try {
     const [chartReport, insights, currentCycle, context, remedies, userChartResult] =
       await Promise.all([
-      getChartReport(userId, subjectName ?? "NAVAGRAHA CENTRE member"),
+      getChartReport(
+        userId,
+        subjectName ?? "NAVAGRAHA CENTRE member",
+        localeLabel,
+        localeCode
+      ),
       generateChartInsights(userId),
       getCurrentCycleSummary(userId),
       loadChartAnalysisContext(userId),

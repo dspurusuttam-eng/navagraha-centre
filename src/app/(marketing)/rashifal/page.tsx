@@ -6,22 +6,32 @@ import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
-import { buildPageMetadata } from "@/lib/metadata";
+import { createToolMetadata } from "@/lib/seo/metadata";
+import { getCoreSeoCopy } from "@/lib/seo/seo-config";
+import { getRequestLocale, hasExplicitLocalePrefixInRequest } from "@/modules/localization/request";
 import { rashifalSigns } from "@/modules/rashifal/content";
 import { RevenuePathwaysCard } from "@/modules/subscriptions/components/revenue-readiness-panels";
 
-export const metadata = buildPageMetadata({
-  title: "Today's Rashifal - Daily Horoscope for All Zodiac Signs",
-  description:
-    "Read today's Rashifal for all 12 zodiac signs, then continue with personalized Kundli and NAVAGRAHA AI guidance.",
-  path: "/rashifal",
-  keywords: [
-    "daily rashifal",
-    "today horoscope all zodiac signs",
-    "vedic rashifal",
-    "zodiac daily prediction",
-  ],
-});
+export async function generateMetadata() {
+  const locale = await getRequestLocale();
+  const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
+  const localized = getCoreSeoCopy("rashifal", locale);
+
+  return createToolMetadata({
+    title: localized.title,
+    description: localized.description,
+    path: "/rashifal",
+    locale,
+    explicitLocalePrefix: hasExplicitLocalePrefix,
+    keywords: [
+      "daily rashifal",
+      "today horoscope",
+      "zodiac signs",
+      "love career business rashifal",
+      "lucky color lucky number lucky time",
+    ],
+  });
+}
 export const revalidate = 3600;
 
 export default function RashifalPage() {

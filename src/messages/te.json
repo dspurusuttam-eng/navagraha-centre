@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "languageName": "Telugu",
+    "languageNativeName": "తెలుగు"
+  },
+  "common": {
+    "language": "భాష",
+    "englishDefault": "ఇంగ్లీష్ (డిఫాల్ట్)",
+    "live": "సక్రియం",
+    "planned": "ప్రణాళికలో",
+    "comingSoon": "త్వరలో అందుబాటులో",
+    "defaultExperience": "డిఫాల్ట్ అనుభవం",
+    "futureLanguagesNote": "ప్రస్తుతం ఇంగ్లీష్ లైవ్ అనుభవం. ఇతర భాషలు విడుదలైన తర్వాత ఇక్కడ అందుబాటులో ఉంటాయి."
+  },
+  "cta": {
+    "generateKundli": "మీ కుండ్లీ రూపొందించండి",
+    "exploreAi": "NAVAGRAHA AI ప్రయత్నించండి",
+    "bookConsultation": "ఉచిత కన్సల్టేషన్ బుక్ చేయండి",
+    "signInAccount": "సైన్ ఇన్ / ఖాతా",
+    "unlockFullReport": "ఉచిత నివేదిక పొందండి"
+  },
+  "labels": {
+    "currencyCode": "INR",
+    "currencyNote": "పరిమిత లాంచ్ యాక్సెస్‌లో అన్ని జ్యోతిష్య సేవలు ప్రస్తుతం ఉచితం.",
+    "limitedFreeAccessLabel": "ప్రస్తుతం ఉచితం (పరిమిత లాంచ్ యాక్సెస్)",
+    "limitedFreeBanner": "పరిమిత లాంచ్ యాక్సెస్: అన్ని జ్యోతిష్య సేవలు ఉచితం",
+    "earlyAccessLabel": "ఎర్లీ యాక్సెస్ ప్రీమియం అనుభవం",
+    "premiumExperienceLabel": "ప్రీమియం అనుభవం",
+    "timezoneHint": "IANA టైమ్‌జోన్ వాడండి, ఉదాహరణకు: Asia/Kolkata, Europe/London, లేదా America/New_York.",
+    "dateHint": "మీ జన్మతేదీని స్థానిక క్యాలెండర్ ఫార్మాట్‌లో ఇవ్వండి (YYYY-MM-DD).",
+    "timeHint": "మీ జన్మ సమయాన్ని స్థానిక సమయంగా ఇవ్వండి (24-గంటల ఫార్మాట్)."
+  },
+  "navigation": {
+    "home": "హోమ్",
+    "kundli": "కుండ్లీ",
+    "compatibility": "సరిపోలిక",
+    "rashifal": "రాశిఫలము",
+    "ai": "NAVAGRAHA AI",
+    "reports": "నివేదికలు",
+    "tools": "సాధనాలు",
+    "panchang": "పంచాంగం",
+    "consultation": "కన్సల్టేషన్",
+    "shop": "షాప్",
+    "insights": "ఇన్‌సైట్స్",
+    "calculators": "క్యాలిక్యులేటర్లు",
+    "timeTools": "టైమ్ టూల్స్",
+    "dailyRashifal": "దైనందిన రాశిఫలము",
+    "pricing": "ధరలు",
+    "plans": "ప్లాన్స్",
+    "services": "సేవలు",
+    "account": "ఖాతా",
+    "menu": "మెను",
+    "dashboard": "డాష్‌బోర్డ్",
+    "onboarding": "ఆన్‌బోర్డింగ్",
+    "askMyChart": "Ask My Chart",
+    "consultations": "కన్సల్టేషన్లు",
+    "orders": "ఆర్డర్లు",
+    "chart": "చార్ట్",
+    "report": "నివేదిక",
+    "settings": "సెట్టింగ్స్",
+    "admin": "అడ్మిన్",
+    "styleGuide": "స్టైల్ గైడ్",
+    "login": "లాగిన్",
+    "passwordReset": "పాస్‌వర్డ్ రీసెట్"
+  },
+  "footer": {
+    "columns": {
+      "centre": "సెంటర్",
+      "tools": "సాధనాలు",
+      "services": "సేవలు"
+    },
+    "links": {
+      "about": "మా గురించి",
+      "contact": "సంప్రదించండి",
+      "astrologer": "జ్యోతిష్యులు",
+      "allTools": "అన్ని సాధనాలు",
+      "numerology": "సంఖ్యాశాస్త్రం",
+      "muhurtaLite": "ముహూర్త లైట్",
+      "privacy": "గోప్యత",
+      "terms": "నిబంధనలు",
+      "disclaimer": "డిస్క్లైమర్",
+      "refundPolicy": "రిఫండ్ పాలసీ"
+    },
+    "languageLabel": "భాష",
+    "languageHelper": "ఈరోజు ఇంగ్లీష్ సక్రియంగా ఉంది. భారతీయ మరియు అంతర్జాతీయ భాషలు ఇక్కడ చూపబడతాయి; పూర్తి అనువాదం సిద్ధమయ్యే వరకు అవి నిలిపివేయబడతాయి."
+  }
+}

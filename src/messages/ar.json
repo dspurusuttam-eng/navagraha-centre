@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "languageName": "Arabic",
+    "languageNativeName": "العربية"
+  },
+  "common": {
+    "language": "اللغة",
+    "englishDefault": "الإنجليزية (الافتراضية)",
+    "live": "نشط",
+    "planned": "مخطط",
+    "comingSoon": "قريبًا",
+    "defaultExperience": "التجربة الافتراضية",
+    "futureLanguagesNote": "تظل الإنجليزية هي التجربة النشطة. ستظهر اللغات الإضافية هنا عند إطلاقها."
+  },
+  "cta": {
+    "generateKundli": "أنشئ الكوندلي الخاص بك",
+    "exploreAi": "جرّب NAVAGRAHA AI",
+    "bookConsultation": "احجز استشارة مجانية",
+    "signInAccount": "تسجيل الدخول / الحساب",
+    "unlockFullReport": "احصل على تقرير مجاني"
+  },
+  "labels": {
+    "currencyCode": "INR",
+    "currencyNote": "جميع خدمات التنجيم مجانية حاليًا ضمن وصول الإطلاق المحدود.",
+    "limitedFreeAccessLabel": "مجاني حاليًا (وصول إطلاق محدود)",
+    "limitedFreeBanner": "وصول إطلاق محدود: جميع خدمات التنجيم مجانية",
+    "earlyAccessLabel": "تجربة مميزة للوصول المبكر",
+    "premiumExperienceLabel": "تجربة مميزة",
+    "timezoneHint": "استخدم منطقة زمنية وفق IANA، مثل: Asia/Kolkata أو Europe/London أو America/New_York.",
+    "dateHint": "استخدم تاريخ الميلاد بالتنسيق المحلي (YYYY-MM-DD).",
+    "timeHint": "استخدم وقت الميلاد بالتنسيق المحلي (24 ساعة)."
+  },
+  "navigation": {
+    "home": "الرئيسية",
+    "kundli": "كوندلي",
+    "compatibility": "التوافق",
+    "rashifal": "راشيفال",
+    "ai": "NAVAGRAHA AI",
+    "reports": "التقارير",
+    "tools": "الأدوات",
+    "panchang": "بانشانغ",
+    "consultation": "الاستشارة",
+    "shop": "المتجر",
+    "insights": "الرؤى",
+    "calculators": "الحاسبات",
+    "timeTools": "أدوات التوقيت",
+    "dailyRashifal": "راشيفال اليومي",
+    "pricing": "الأسعار",
+    "plans": "الخطط",
+    "services": "الخدمات",
+    "account": "الحساب",
+    "menu": "القائمة",
+    "dashboard": "لوحة التحكم",
+    "onboarding": "التهيئة",
+    "askMyChart": "Ask My Chart",
+    "consultations": "الاستشارات",
+    "orders": "الطلبات",
+    "chart": "الخريطة",
+    "report": "التقرير",
+    "settings": "الإعدادات",
+    "admin": "المشرف",
+    "styleGuide": "دليل النمط",
+    "login": "تسجيل الدخول",
+    "passwordReset": "إعادة تعيين كلمة المرور"
+  },
+  "footer": {
+    "columns": {
+      "centre": "المركز",
+      "tools": "الأدوات",
+      "services": "الخدمات"
+    },
+    "links": {
+      "about": "من نحن",
+      "contact": "اتصل بنا",
+      "astrologer": "المنجم",
+      "allTools": "جميع الأدوات",
+      "numerology": "علم الأعداد",
+      "muhurtaLite": "موهورتا لايت",
+      "privacy": "الخصوصية",
+      "terms": "الشروط",
+      "disclaimer": "إخلاء المسؤولية",
+      "refundPolicy": "سياسة الاسترداد"
+    },
+    "languageLabel": "اللغة",
+    "languageHelper": "الإنجليزية نشطة اليوم. اللغات الهندية والدولية مسجلة هنا وستبقى معطلة حتى تكتمل الترجمات."
+  }
+}

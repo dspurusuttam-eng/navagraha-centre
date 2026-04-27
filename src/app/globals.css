@@ -287,6 +287,22 @@ select {
   opacity: 1;
 }
 
+html[dir="rtl"] body {
+  direction: rtl;
+}
+
+html[dir="rtl"] input,
+html[dir="rtl"] textarea,
+html[dir="rtl"] select {
+  text-align: right;
+}
+
+html[dir="rtl"] .type-display,
+html[dir="rtl"] .type-heading,
+html[dir="rtl"] .type-body {
+  text-align: right;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .content-fade-in,
   .route-loader-fade,

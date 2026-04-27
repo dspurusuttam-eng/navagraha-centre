@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "languageName": "Gujarati",
+    "languageNativeName": "ગુજરાતી"
+  },
+  "common": {
+    "language": "ભાષા",
+    "englishDefault": "અંગ્રેજી (ડિફૉલ્ટ)",
+    "live": "સક્રિય",
+    "planned": "યોજનાબદ્ધ",
+    "comingSoon": "જલ્દી આવી રહ્યું છે",
+    "defaultExperience": "ડિફૉલ્ટ અનુભવ",
+    "futureLanguagesNote": "હાલ અંગ્રેજી લાઇવ અનુભવ છે. અન્ય ભાષાઓ રિલીઝ થયા પછી અહીં ઉપલબ્ધ થશે."
+  },
+  "cta": {
+    "generateKundli": "તમારી કુંડળી બનાવો",
+    "exploreAi": "NAVAGRAHA AI અજમાવો",
+    "bookConsultation": "મફત પરામર્શ બુક કરો",
+    "signInAccount": "સાઇન ઇન / એકાઉન્ટ",
+    "unlockFullReport": "મફત રિપોર્ટ મેળવો"
+  },
+  "labels": {
+    "currencyCode": "INR",
+    "currencyNote": "બધી જ્યોતિષ સેવાઓ મર્યાદિત લોન્ચ ઍક્સેસ દરમિયાન હાલમાં મફત છે.",
+    "limitedFreeAccessLabel": "હાલમાં મફત (મર્યાદિત લોન્ચ ઍક્સેસ)",
+    "limitedFreeBanner": "મર્યાદિત લોન્ચ ઍક્સેસ: બધી જ્યોતિષ સેવાઓ મફત",
+    "earlyAccessLabel": "અર્લી ઍક્સેસ પ્રીમિયમ અનુભવ",
+    "premiumExperienceLabel": "પ્રીમિયમ અનુભવ",
+    "timezoneHint": "IANA ટાઇમઝોન વાપરો, જેમ કે: Asia/Kolkata, Europe/London, અથવા America/New_York.",
+    "dateHint": "જન્મતારીખ સ્થાનિક કેલેન્ડર ફોર્મેટમાં દાખલ કરો (YYYY-MM-DD).",
+    "timeHint": "જન્મ સમય સ્થાનિક સમય પ્રમાણે દાખલ કરો (24-કલાક ફોર્મેટ)."
+  },
+  "navigation": {
+    "home": "હોમ",
+    "kundli": "કુંડળી",
+    "compatibility": "સુસંગતતા",
+    "rashifal": "રાશિફળ",
+    "ai": "NAVAGRAHA AI",
+    "reports": "રિપોર્ટ્સ",
+    "tools": "ટૂલ્સ",
+    "panchang": "પંચાંગ",
+    "consultation": "પરામર્શ",
+    "shop": "શોપ",
+    "insights": "ઇન્સાઇટ્સ",
+    "calculators": "કૅલ્ક્યુલેટર્સ",
+    "timeTools": "સમય ટૂલ્સ",
+    "dailyRashifal": "દૈનિક રાશિફળ",
+    "pricing": "પ્રાઇસિંગ",
+    "plans": "પ્લાન્સ",
+    "services": "સેવાઓ",
+    "account": "એકાઉન્ટ",
+    "menu": "મેનુ",
+    "dashboard": "ડૅશબોર્ડ",
+    "onboarding": "ઓનબોર્ડિંગ",
+    "askMyChart": "Ask My Chart",
+    "consultations": "પરામર્શો",
+    "orders": "ઓર્ડર્સ",
+    "chart": "ચાર્ટ",
+    "report": "રિપોર્ટ",
+    "settings": "સેટિંગ્સ",
+    "admin": "એડમિન",
+    "styleGuide": "સ્ટાઇલ ગાઇડ",
+    "login": "લોગિન",
+    "passwordReset": "પાસવર્ડ રીસેટ"
+  },
+  "footer": {
+    "columns": {
+      "centre": "સેન્ટર",
+      "tools": "ટૂલ્સ",
+      "services": "સેવાઓ"
+    },
+    "links": {
+      "about": "અમારા વિશે",
+      "contact": "સંપર્ક",
+      "astrologer": "જ્યોતિષાચાર્ય",
+      "allTools": "બધા ટૂલ્સ",
+      "numerology": "અંકશાસ્ત્ર",
+      "muhurtaLite": "મુહૂર્ત લાઇટ",
+      "privacy": "પ્રાઇવસી",
+      "terms": "શરતો",
+      "disclaimer": "અસ્વીકરણ",
+      "refundPolicy": "રિફંડ પોલિસી"
+    },
+    "languageLabel": "ભાષા",
+    "languageHelper": "આજે અંગ્રેજી સક્રિય છે. ભારતીય અને આંતરરાષ્ટ્રીય ભાષાઓ અહીં યાદીબદ્ધ છે અને સંપૂર્ણ અનુવાદ તૈયાર થાય ત્યાં સુધી નિષ્ક્રિય રહેશે."
+  }
+}

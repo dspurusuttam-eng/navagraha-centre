@@ -2,18 +2,29 @@ import Link from "next/link";
 import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import { TrackedLink } from "@/components/analytics/tracked-link";
+import { JsonLd } from "@/components/seo/json-ld";
 import { PageHero } from "@/components/site/page-hero";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
-import { buildPageMetadata } from "@/lib/metadata";
+import { createToolMetadata } from "@/lib/seo/metadata";
+import { getCoreSeoCopy } from "@/lib/seo/seo-config";
+import {
+  createBreadcrumbSchema,
+  createPersonSchema,
+  createServiceSchema,
+} from "@/lib/seo/schema";
 import {
   consultationHost,
   consultationPackages,
   recommendConsultationNextAction,
 } from "@/modules/consultations";
 import { globalLabelCopy } from "@/modules/localization/copy";
+import {
+  getRequestLocale,
+  hasExplicitLocalePrefixInRequest,
+} from "@/modules/localization/request";
 import {
   AstrologerAuthoritySection,
   ConsultationReassuranceSection,
@@ -25,17 +36,26 @@ import {
 } from "@/modules/marketing/components/trust-conversion-sections";
 import { ConsultationTiersSection } from "@/modules/subscriptions/components/revenue-readiness-panels";
 
-export const metadata = buildPageMetadata({
-  title: "Consultations With Joy Prakash Sarmah",
-  description:
-    "Reserve a premium astrology consultation with Joy Prakash Sarmah through NAVAGRAHA CENTRE's calm, explicit booking flow.",
-  path: "/consultation",
-  keywords: [
-    "Joy Prakash Sarmah consultation",
-    "premium astrology booking",
-    "manual astrology booking flow",
-  ],
-});
+export async function generateMetadata() {
+  const locale = await getRequestLocale();
+  const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
+  const localized = getCoreSeoCopy("consultation", locale);
+
+  return createToolMetadata({
+    title: localized.title,
+    description: localized.description,
+    path: "/consultation",
+    locale,
+    explicitLocalePrefix: hasExplicitLocalePrefix,
+    keywords: [
+      "astrology consultation",
+      "J P Sarmah",
+      "vedic consultation",
+      "kundli consultation",
+      "spiritual guidance",
+    ],
+  });
+}
 
 const consultationTrustIndicators = [
   "Vedic chart-based system",
@@ -73,15 +93,40 @@ export default async function ConsultationPage({
     intent?: string;
   }>;
 }>) {
+  const locale = await getRequestLocale();
+  const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
   const resolvedSearchParams = await searchParams;
   const conversion = recommendConsultationNextAction({
     surface: "consultation",
     explicitIntent: resolvedSearchParams.intent,
     contextHint: "consultation package selection",
   });
+  const consultationSchemas = [
+    createBreadcrumbSchema({
+      locale,
+      explicitLocalePrefix: hasExplicitLocalePrefix,
+      items: [
+        { name: "Home", path: "/" },
+        { name: "Consultation", path: "/consultation" },
+      ],
+    }),
+    createServiceSchema({
+      name: "Astrology Consultation",
+      description:
+        "Book a Vedic astrology consultation with J P Sarmah for chart interpretation and practical guidance.",
+      path: "/consultation",
+      locale,
+      serviceType: "Vedic Astrology Consultation",
+    }),
+    createPersonSchema({
+      locale,
+      path: "/joy-prakash-sarmah",
+    }),
+  ];
 
   return (
     <>
+      <JsonLd id="consultation-page-schema" data={consultationSchemas} />
       <PageViewTracker page="/consultation" feature="consultation-page" />
       <AnalyticsEventTracker
         event="consultation_click"

@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "languageName": "Sanskrit",
+    "languageNativeName": "संस्कृतम्"
+  },
+  "common": {
+    "language": "भाषा",
+    "englishDefault": "आङ्ग्लभाषा (मूलरूपेण)",
+    "live": "सक्रियम्",
+    "planned": "योजितम्",
+    "comingSoon": "शीघ्रमेव आगमिष्यति",
+    "defaultExperience": "मूल-अनुभवः",
+    "futureLanguagesNote": "अधुना आङ्ग्लभाषैव सक्रिय-अनुभवः अस्ति। अन्याः भाषाः प्रकाशनानन्तरम् अत्र दर्शिताः भविष्यन्ति।"
+  },
+  "cta": {
+    "generateKundli": "स्व-जन्मकुण्डलीं निर्मीयताम्",
+    "exploreAi": "NAVAGRAHA AI परीक्ष्यताम्",
+    "bookConsultation": "निःशुल्क-परामर्शः आरक्ष्यताम्",
+    "signInAccount": "प्रवेशः / खाता",
+    "unlockFullReport": "निःशुल्क-प्रतिवेदनं प्राप्यताम्"
+  },
+  "labels": {
+    "currencyCode": "INR",
+    "currencyNote": "सीमित-प्रारम्भ-अवधौ सर्वाः ज्योतिष-सेवाः अधुना निःशुल्काः सन्ति।",
+    "limitedFreeAccessLabel": "अधुना निःशुल्कम् (सीमित-प्रारम्भ-प्रवेशः)",
+    "limitedFreeBanner": "सीमित-प्रारम्भ-प्रवेशः: सर्वाः ज्योतिष-सेवाः निःशुल्काः",
+    "earlyAccessLabel": "प्रारम्भिक-प्रवेशः प्रीमियम-अनुभवः",
+    "premiumExperienceLabel": "प्रीमियम-अनुभवः",
+    "timezoneHint": "IANA समयक्षेत्रं उपयुज्यताम्, यथा: Asia/Kolkata, Europe/London, अथवा America/New_York.",
+    "dateHint": "जन्म-तिथिः स्थानिक-रूपेण दत्तव्या (YYYY-MM-DD)।",
+    "timeHint": "जन्म-समयः स्थानिक-रूपेण दत्तव्यः (24-घण्टा-रूपेण)।"
+  },
+  "navigation": {
+    "home": "मुखपृष्ठम्",
+    "kundli": "जन्मकुण्डली",
+    "compatibility": "मेलन-विश्लेषणम्",
+    "rashifal": "राशिफलम्",
+    "ai": "NAVAGRAHA AI",
+    "reports": "प्रतिवेदनानि",
+    "tools": "साधनानि",
+    "panchang": "पञ्चाङ्गम्",
+    "consultation": "परामर्शः",
+    "shop": "विक्रयालयः",
+    "insights": "अवलोकनानि",
+    "calculators": "गणक-साधनानि",
+    "timeTools": "काल-साधनानि",
+    "dailyRashifal": "दैनिक-राशिफलम्",
+    "pricing": "मूल्यनिर्धारणम्",
+    "plans": "योजनाः",
+    "services": "सेवाः",
+    "account": "खाता",
+    "menu": "सूची",
+    "dashboard": "नियन्त्रण-पटलम्",
+    "onboarding": "आरम्भ-प्रक्रिया",
+    "askMyChart": "Ask My Chart",
+    "consultations": "परामर्शाः",
+    "orders": "आदेशाः",
+    "chart": "चक्रम्",
+    "report": "प्रतिवेदनम्",
+    "settings": "विन्यासाः",
+    "admin": "प्रशासकः",
+    "styleGuide": "शैली-मार्गदर्शिका",
+    "login": "प्रवेशः",
+    "passwordReset": "कूटशब्द-पुनर्स्थापनम्"
+  },
+  "footer": {
+    "columns": {
+      "centre": "केन्द्रम्",
+      "tools": "साधनानि",
+      "services": "सेवाः"
+    },
+    "links": {
+      "about": "अस्माकं विषये",
+      "contact": "सम्पर्कः",
+      "astrologer": "ज्योतिषाचार्यः",
+      "allTools": "सर्व-साधनानि",
+      "numerology": "संख्यातत्त्वम्",
+      "muhurtaLite": "मुहूर्त-लाइट",
+      "privacy": "गोपनीयता",
+      "terms": "नियमाः",
+      "disclaimer": "अस्वीकरणम्",
+      "refundPolicy": "धन-प्रत्यावर्तन-नीतिः"
+    },
+    "languageLabel": "भाषा",
+    "languageHelper": "अद्य आङ्ग्लभाषा सक्रियास्ति। भारतीय-अन्तरराष्ट्रीय-भाषाः अत्र सूचीकृताः, पूर्ण-अनुवादपर्यन्तं निष्क्रियाः भविष्यन्ति।"
+  }
+}

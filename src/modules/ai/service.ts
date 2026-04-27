@@ -5,6 +5,11 @@ import { resolveAiProviderKey } from "@/modules/ai/config";
 import { createFallbackInterpretation } from "@/modules/ai/prompts";
 import { assessChartInterpretationPolicy } from "@/modules/ai/policy";
 import {
+  logAccuracyEvent,
+  resolvePredictionLocale,
+  validateChartInterpretationOutput,
+} from "@/lib/astrology/accuracy";
+import {
   createAiProvider,
   isAiProviderKey,
   listRegisteredAiProviderKeys,
@@ -104,15 +109,37 @@ export function createAiInterpretationService(
           request
         );
         const normalizedResult = normalizeChartInterpretationResult(result);
+        const outputLocale = resolvePredictionLocale(request.preferredLanguageLabel);
         const policyAssessment = assessChartInterpretationPolicy(
           request,
           normalizedResult
         );
-        const safeResult = policyAssessment.passed
+        const policySafeResult = policyAssessment.passed
           ? normalizedResult
           : normalizeChartInterpretationResult(
               createFallbackInterpretation(request, "mock-curated")
             );
+        const outputValidation = validateChartInterpretationOutput({
+          output: policySafeResult,
+          locale: outputLocale,
+        });
+        const safeResult = outputValidation.valid
+          ? policySafeResult
+          : normalizeChartInterpretationResult(
+              createFallbackInterpretation(request, "mock-curated")
+            );
+
+        if (!outputValidation.valid) {
+          logAccuracyEvent("report-output-validation-failed", {
+            reportId: request.reportId,
+            locale: outputLocale,
+            issueCount: outputValidation.issues.length,
+            highSeverityIssueCount: outputValidation.issues.filter(
+              (item) => item.severity === "high"
+            ).length,
+          });
+        }
+
         const loggedProviderKey = isAiProviderKey(safeResult.providerKey)
           ? safeResult.providerKey
           : providerKey;

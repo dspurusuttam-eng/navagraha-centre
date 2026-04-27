@@ -5,23 +5,32 @@ import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
-import { buildPageMetadata } from "@/lib/metadata";
+import { createToolMetadata } from "@/lib/seo/metadata";
+import { getCoreSeoCopy } from "@/lib/seo/seo-config";
+import { getRequestLocale, hasExplicitLocalePrefixInRequest } from "@/modules/localization/request";
 import { PanchangToolPanel } from "@/modules/panchang/components/panchang-tool-panel";
 
-export const metadata = buildPageMetadata({
-  title: "Daily Panchang Calculator",
-  description:
-    "Check daily Panchang with Tithi, Vara, Nakshatra, Yoga, Karana, sunrise, sunset, Rahu Kaal, Gulika, Yamaganda, Abhijit Muhurta, and next-change timings for your selected date and place.",
-  path: "/panchang",
-  keywords: [
-    "daily panchang",
-    "panchang calculator",
-    "today panchang",
-    "tithi vara nakshatra yoga karana timings",
-    "vedic panchang",
-    "navagraha panchang",
-  ],
-});
+export async function generateMetadata() {
+  const locale = await getRequestLocale();
+  const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
+  const localized = getCoreSeoCopy("panchang", locale);
+
+  return createToolMetadata({
+    title: localized.title,
+    description: localized.description,
+    path: "/panchang",
+    locale,
+    explicitLocalePrefix: hasExplicitLocalePrefix,
+    keywords: [
+      "daily panchang",
+      "tithi",
+      "nakshatra",
+      "yoga",
+      "karana",
+      "muhurat",
+    ],
+  });
+}
 export const revalidate = 3600;
 
 const panchangFaqEntries = [

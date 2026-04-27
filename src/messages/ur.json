@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "languageName": "Urdu",
+    "languageNativeName": "اردو"
+  },
+  "common": {
+    "language": "زبان",
+    "englishDefault": "انگریزی (ڈیفالٹ)",
+    "live": "فعال",
+    "planned": "منصوبہ بند",
+    "comingSoon": "جلد دستیاب",
+    "defaultExperience": "ڈیفالٹ تجربہ",
+    "futureLanguagesNote": "فی الحال انگریزی لائیو تجربہ ہے۔ دیگر زبانیں جاری ہونے پر یہاں دستیاب ہوں گی۔"
+  },
+  "cta": {
+    "generateKundli": "اپنی کنڈلی بنائیں",
+    "exploreAi": "NAVAGRAHA AI آزمائیں",
+    "bookConsultation": "مفت مشاورت بک کریں",
+    "signInAccount": "سائن اِن / اکاؤنٹ",
+    "unlockFullReport": "مفت رپورٹ حاصل کریں"
+  },
+  "labels": {
+    "currencyCode": "INR",
+    "currencyNote": "محدود لانچ رسائی کے دوران تمام نجومی خدمات فی الحال مفت ہیں۔",
+    "limitedFreeAccessLabel": "فی الحال مفت (محدود لانچ رسائی)",
+    "limitedFreeBanner": "محدود لانچ رسائی: تمام نجومی خدمات مفت",
+    "earlyAccessLabel": "ابتدائی رسائی پریمیم تجربہ",
+    "premiumExperienceLabel": "پریمیم تجربہ",
+    "timezoneHint": "IANA ٹائم زون استعمال کریں، مثال: Asia/Kolkata, Europe/London, یا America/New_York.",
+    "dateHint": "اپنی تاریخ پیدائش مقامی کیلنڈر فارمیٹ میں درج کریں (YYYY-MM-DD).",
+    "timeHint": "اپنا وقت پیدائش مقامی وقت (24 گھنٹے فارمیٹ) میں درج کریں۔"
+  },
+  "navigation": {
+    "home": "ہوم",
+    "kundli": "کنڈلی",
+    "compatibility": "مطابقت",
+    "rashifal": "راشی فال",
+    "ai": "NAVAGRAHA AI",
+    "reports": "رپورٹس",
+    "tools": "اوزار",
+    "panchang": "پنچانگ",
+    "consultation": "مشاورت",
+    "shop": "شاپ",
+    "insights": "انسائٹس",
+    "calculators": "کیلکولیٹرز",
+    "timeTools": "وقت کے اوزار",
+    "dailyRashifal": "روزانہ راشی فال",
+    "pricing": "قیمت",
+    "plans": "منصوبے",
+    "services": "خدمات",
+    "account": "اکاؤنٹ",
+    "menu": "مینو",
+    "dashboard": "ڈیش بورڈ",
+    "onboarding": "آن بورڈنگ",
+    "askMyChart": "Ask My Chart",
+    "consultations": "مشاورتی سیشن",
+    "orders": "آرڈرز",
+    "chart": "چارٹ",
+    "report": "رپورٹ",
+    "settings": "سیٹنگز",
+    "admin": "ایڈمن",
+    "styleGuide": "اسٹائل گائیڈ",
+    "login": "لاگ اِن",
+    "passwordReset": "پاس ورڈ ری سیٹ"
+  },
+  "footer": {
+    "columns": {
+      "centre": "مرکز",
+      "tools": "اوزار",
+      "services": "خدمات"
+    },
+    "links": {
+      "about": "ہمارے بارے میں",
+      "contact": "رابطہ",
+      "astrologer": "ماہر نجوم",
+      "allTools": "تمام اوزار",
+      "numerology": "علم اعداد",
+      "muhurtaLite": "مہورت لائٹ",
+      "privacy": "رازداری",
+      "terms": "شرائط",
+      "disclaimer": "دستبرداری",
+      "refundPolicy": "ریفنڈ پالیسی"
+    },
+    "languageLabel": "زبان",
+    "languageHelper": "آج انگریزی فعال ہے۔ بھارتی اور بین الاقوامی زبانیں یہاں درج ہیں اور مکمل ترجمہ تیار ہونے تک غیر فعال رہیں گی۔"
+  }
+}

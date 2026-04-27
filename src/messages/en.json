@@ -10,7 +10,7 @@
     "planned": "Planned",
     "comingSoon": "Coming soon",
     "defaultExperience": "Default experience",
-    "futureLanguagesNote": "English remains the live experience. Additional languages will appear here as they are released."
+    "futureLanguagesNote": "English, Assamese, and Hindi are now live. Additional languages will appear here as they are released."
   },
   "cta": {
     "generateKundli": "Generate Your Kundli",
@@ -41,7 +41,7 @@
     "panchang": "Panchang",
     "consultation": "Consultation",
     "shop": "Shop",
-    "insights": "Insights",
+    "insights": "From the Desk",
     "calculators": "Calculators",
     "timeTools": "Time Tools",
     "dailyRashifal": "Daily Rashifal",
@@ -82,6 +82,6 @@
       "refundPolicy": "Refund Policy"
     },
     "languageLabel": "Language",
-    "languageHelper": "English is active today. Future Indian and international languages are registered here and will remain disabled until complete translations are ready."
+    "languageHelper": "English, Assamese, and Hindi are active now. Additional Indian and international languages are listed here and will unlock as full translations are reviewed."
   }
 }

@@ -5,22 +5,31 @@ import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
-import { buildPageMetadata } from "@/lib/metadata";
+import { createToolMetadata } from "@/lib/seo/metadata";
+import { getCoreSeoCopy } from "@/lib/seo/seo-config";
+import { getRequestLocale, hasExplicitLocalePrefixInRequest } from "@/modules/localization/request";
 import { NumerologyToolPanel } from "@/modules/numerology/components/numerology-tool-panel";
 
-export const metadata = buildPageMetadata({
-  title: "Premium Numerology Calculator",
-  description:
-    "Calculate Birth, Destiny, Name, and compound numbers with premium structured numerology interpretation for relationships, career, and decision clarity.",
-  path: "/numerology",
-  keywords: [
-    "numerology calculator",
-    "birth number calculator",
-    "destiny number calculator",
-    "name number",
-    "navagraha numerology",
-  ],
-});
+export async function generateMetadata() {
+  const locale = await getRequestLocale();
+  const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
+  const localized = getCoreSeoCopy("numerology", locale);
+
+  return createToolMetadata({
+    title: localized.title,
+    description: localized.description,
+    path: "/numerology",
+    locale,
+    explicitLocalePrefix: hasExplicitLocalePrefix,
+    keywords: [
+      "numerology analysis",
+      "name number",
+      "birth number",
+      "destiny number",
+      "date of birth numerology",
+    ],
+  });
+}
 export const revalidate = 3600;
 
 export default function NumerologyPage() {

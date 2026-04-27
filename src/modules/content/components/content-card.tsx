@@ -4,18 +4,25 @@ import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { contentTypeLabels } from "@/modules/content";
 import type { ContentEntry } from "@/modules/content";
+import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
 
-function formatPublishedDate(value: string) {
-  return new Date(value).toLocaleDateString("en-IN", {
+function formatPublishedDate(value: string, locale?: string) {
+  return new Date(value).toLocaleDateString(locale ?? "en-IN", {
     dateStyle: "medium",
   });
 }
 
 export function ContentCard({
   entry,
+  locale,
 }: Readonly<{
   entry: ContentEntry;
+  locale?: string;
 }>) {
+  const localizedPath = getLocalizedPath(locale, entry.path, {
+    forcePrefix: locale !== undefined && locale !== defaultLocale,
+  });
+
   return (
     <Card interactive className="space-y-5">
       <div className="flex flex-wrap items-center gap-3">
@@ -36,12 +43,12 @@ export function ContentCard({
       </div>
 
       <div className="space-y-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-        <p>Published {formatPublishedDate(entry.publishedAt)}</p>
+        <p>Published {formatPublishedDate(entry.publishedAt, locale)}</p>
         <p>Reviewed for tone and safety before publication</p>
       </div>
 
       <Link
-        href={entry.path}
+        href={localizedPath}
         className={buttonStyles({ tone: "secondary", size: "sm" })}
       >
         Read Article

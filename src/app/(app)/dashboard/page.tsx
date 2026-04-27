@@ -42,6 +42,7 @@ import {
   getRetentionDashboardSnapshot,
   type RetentionDashboardSnapshot,
 } from "@/modules/retention";
+import { getRequestLocaleDefinition } from "@/modules/localization/request";
 
 export const metadata = buildPageMetadata({
   title: "Dashboard",
@@ -144,6 +145,7 @@ function createFallbackRetentionDashboardState(): RetentionDashboardSnapshot {
 
 export default async function DashboardPage() {
   const session = await requireUserSession();
+  const localeDefinition = await getRequestLocaleDefinition();
   const [
     overview,
     chartOverview,
@@ -184,7 +186,12 @@ export default async function DashboardPage() {
     })(),
     (async (): Promise<GeneratedUserReport> => {
       try {
-        return await generateUserReport(session.user.id, session.user.name);
+        return await generateUserReport(
+          session.user.id,
+          session.user.name,
+          localeDefinition.label,
+          localeDefinition.code
+        );
       } catch (error) {
         console.error("Dashboard report failed", error);
 

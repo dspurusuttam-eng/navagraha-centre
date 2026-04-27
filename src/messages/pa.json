@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "languageName": "Punjabi",
+    "languageNativeName": "ਪੰਜਾਬੀ"
+  },
+  "common": {
+    "language": "ਭਾਸ਼ਾ",
+    "englishDefault": "ਅੰਗਰੇਜ਼ੀ (ਡਿਫਾਲਟ)",
+    "live": "ਸਕ੍ਰਿਆ",
+    "planned": "ਯੋਜਿਤ",
+    "comingSoon": "ਜਲਦੀ ਆ ਰਹੀ ਹੈ",
+    "defaultExperience": "ਡਿਫਾਲਟ ਤਜਰਬਾ",
+    "futureLanguagesNote": "ਇਸ ਵੇਲੇ ਅੰਗਰੇਜ਼ੀ ਲਾਈਵ ਤਜਰਬਾ ਹੈ। ਹੋਰ ਭਾਸ਼ਾਵਾਂ ਰਿਲੀਜ਼ ਹੋਣ ਉੱਤੇ ਇੱਥੇ ਮਿਲਣਗੀਆਂ।"
+  },
+  "cta": {
+    "generateKundli": "ਆਪਣੀ ਕੁੰਡਲੀ ਬਣਾਓ",
+    "exploreAi": "NAVAGRAHA AI ਅਜ਼ਮਾਓ",
+    "bookConsultation": "ਮੁਫ਼ਤ ਸਲਾਹ ਬੁੱਕ ਕਰੋ",
+    "signInAccount": "ਸਾਈਨ ਇਨ / ਖਾਤਾ",
+    "unlockFullReport": "ਮੁਫ਼ਤ ਰਿਪੋਰਟ ਲਵੋ"
+  },
+  "labels": {
+    "currencyCode": "INR",
+    "currencyNote": "ਸੀਮਿਤ ਲਾਂਚ ਐਕਸੈਸ ਦੌਰਾਨ ਸਾਰੀਆਂ ਜੋਤਿਸ਼ ਸੇਵਾਵਾਂ ਇਸ ਵੇਲੇ ਮੁਫ਼ਤ ਹਨ।",
+    "limitedFreeAccessLabel": "ਇਸ ਵੇਲੇ ਮੁਫ਼ਤ (ਸੀਮਿਤ ਲਾਂਚ ਐਕਸੈਸ)",
+    "limitedFreeBanner": "ਸੀਮਿਤ ਲਾਂਚ ਐਕਸੈਸ: ਸਾਰੀਆਂ ਜੋਤਿਸ਼ ਸੇਵਾਵਾਂ ਮੁਫ਼ਤ",
+    "earlyAccessLabel": "ਅਰਲੀ ਐਕਸੈਸ ਪ੍ਰੀਮੀਅਮ ਤਜਰਬਾ",
+    "premiumExperienceLabel": "ਪ੍ਰੀਮੀਅਮ ਤਜਰਬਾ",
+    "timezoneHint": "IANA ਟਾਈਮਜ਼ੋਨ ਵਰਤੋ, ਉਦਾਹਰਨ: Asia/Kolkata, Europe/London, ਜਾਂ America/New_York.",
+    "dateHint": "ਆਪਣੀ ਜਨਮ ਮਿਤੀ ਸਥਾਨਕ ਕੈਲੇਂਡਰ ਫਾਰਮੈਟ ਵਿੱਚ ਦਿਓ (YYYY-MM-DD)।",
+    "timeHint": "ਆਪਣਾ ਜਨਮ ਸਮਾਂ ਸਥਾਨਕ ਸਮੇਂ ਵਿੱਚ ਦਿਓ (24-ਘੰਟੇ ਫਾਰਮੈਟ)।"
+  },
+  "navigation": {
+    "home": "ਹੋਮ",
+    "kundli": "ਕੁੰਡਲੀ",
+    "compatibility": "ਅਨੁਕੂਲਤਾ",
+    "rashifal": "ਰਾਸ਼ੀਫਲ",
+    "ai": "NAVAGRAHA AI",
+    "reports": "ਰਿਪੋਰਟਾਂ",
+    "tools": "ਟੂਲਸ",
+    "panchang": "ਪੰਚਾਂਗ",
+    "consultation": "ਸਲਾਹ",
+    "shop": "ਸ਼ਾਪ",
+    "insights": "ਇਨਸਾਈਟਸ",
+    "calculators": "ਕੈਲਕੂਲੇਟਰ",
+    "timeTools": "ਟਾਈਮ ਟੂਲਸ",
+    "dailyRashifal": "ਦੈਨਿਕ ਰਾਸ਼ੀਫਲ",
+    "pricing": "ਕੀਮਤ",
+    "plans": "ਪਲਾਨ",
+    "services": "ਸੇਵਾਵਾਂ",
+    "account": "ਖਾਤਾ",
+    "menu": "ਮੇਨੂ",
+    "dashboard": "ਡੈਸ਼ਬੋਰਡ",
+    "onboarding": "ਆਨਬੋਰਡਿੰਗ",
+    "askMyChart": "Ask My Chart",
+    "consultations": "ਸਲਾਹਕਾਰ ਸੈਸ਼ਨ",
+    "orders": "ਆਰਡਰ",
+    "chart": "ਚਾਰਟ",
+    "report": "ਰਿਪੋਰਟ",
+    "settings": "ਸੈਟਿੰਗਜ਼",
+    "admin": "ਐਡਮਿਨ",
+    "styleGuide": "ਸਟਾਈਲ ਗਾਈਡ",
+    "login": "ਲਾਗਇਨ",
+    "passwordReset": "ਪਾਸਵਰਡ ਰੀਸੈਟ"
+  },
+  "footer": {
+    "columns": {
+      "centre": "ਸੈਂਟਰ",
+      "tools": "ਟੂਲਸ",
+      "services": "ਸੇਵਾਵਾਂ"
+    },
+    "links": {
+      "about": "ਸਾਡੇ ਬਾਰੇ",
+      "contact": "ਸੰਪਰਕ",
+      "astrologer": "ਜੋਤਿਸ਼ੀ",
+      "allTools": "ਸਾਰੇ ਟੂਲਸ",
+      "numerology": "ਅੰਕ ਵਿਦਿਆ",
+      "muhurtaLite": "ਮੁਹੂਰਤ ਲਾਈਟ",
+      "privacy": "ਪ੍ਰਾਈਵੇਸੀ",
+      "terms": "ਸ਼ਰਤਾਂ",
+      "disclaimer": "ਅਸਵੀਕਰਣ",
+      "refundPolicy": "ਰਿਫੰਡ ਨੀਤੀ"
+    },
+    "languageLabel": "ਭਾਸ਼ਾ",
+    "languageHelper": "ਅੱਜ ਅੰਗਰੇਜ਼ੀ ਸਕ੍ਰਿਆ ਹੈ। ਭਾਰਤੀ ਅਤੇ ਅੰਤਰਰਾਸ਼ਟਰੀ ਭਾਸ਼ਾਵਾਂ ਇੱਥੇ ਦਰਸਾਈਆਂ ਗਈਆਂ ਹਨ ਅਤੇ ਪੂਰੇ ਅਨੁਵਾਦ ਤਿਆਰ ਹੋਣ ਤੱਕ ਅਯੋਗ ਰਹਿਣਗੀਆਂ।"
+  }
+}

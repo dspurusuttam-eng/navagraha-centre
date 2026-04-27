@@ -3,6 +3,12 @@ import "server-only";
 import { normalizeBirthContextInput } from "@/lib/astrology/birth-input-normalizer";
 import { resolveAstronomyReadyBirthContext } from "@/lib/astrology/birth-context-engine";
 import { buildSiderealBirthChart } from "@/lib/astrology/chart-builder";
+import {
+  getFirstAccuracyErrorMessage,
+  validateCompatibilityRequestInput,
+  validateNumerologyRequestInput,
+  validatePanchangRequestInput,
+} from "@/lib/astrology/accuracy";
 import { calculateNumerologyContext } from "@/modules/numerology";
 import { calculateDailyPanchangContext } from "@/modules/panchang";
 import type {
@@ -338,21 +344,22 @@ async function runLagnaCalculator(
 function runBirthNumberCalculator(
   input: BirthNumberInput
 ): AstrologyCalculatorExecutionResult {
-  const dateOfBirth = normalizeInputText(input.dateOfBirth);
+  const inputValidation = validateNumerologyRequestInput({
+    dateOfBirth: normalizeInputText(input.dateOfBirth),
+  });
 
-  if (!dateOfBirth) {
+  if (!inputValidation.ok) {
     return fail(
-      "MISSING_REQUIRED_FIELDS",
-      "Date of birth is required for the birth number calculator."
+      "INVALID_INPUT",
+      getFirstAccuracyErrorMessage(
+        inputValidation.issues,
+        "Date of birth is required for the birth number calculator."
+      )
     );
   }
 
-  if (dateOfBirth.length > 32) {
-    return fail("INVALID_FIELD_LENGTH", "Date of birth exceeds allowed length.");
-  }
-
   const numerology = calculateNumerologyContext({
-    dateOfBirth,
+    dateOfBirth: inputValidation.data.dateOfBirth,
     fullName: null,
   });
 
@@ -366,7 +373,9 @@ function runBirthNumberCalculator(
       generatedAtUtc: new Date().toISOString(),
       result: {
         calculator: "birth-number",
-        inputSummary: [{ label: "Date of Birth", value: dateOfBirth }],
+        inputSummary: [
+          { label: "Date of Birth", value: inputValidation.data.dateOfBirth },
+        ],
         mainResult: {
           title: "Birth Number / Destiny Number",
           value: `${numerology.data.birthNumber.number} / ${numerology.data.destinyNumber.number}`,
@@ -402,22 +411,27 @@ function runBirthNumberCalculator(
 function runCompatibilityQuickCalculator(
   input: CompatibilityQuickInput
 ): AstrologyCalculatorExecutionResult {
-  const firstDateOfBirth = normalizeInputText(input.firstDateOfBirth);
-  const secondDateOfBirth = normalizeInputText(input.secondDateOfBirth);
+  const validation = validateCompatibilityRequestInput({
+    firstDateOfBirth: normalizeInputText(input.firstDateOfBirth),
+    secondDateOfBirth: normalizeInputText(input.secondDateOfBirth),
+  });
 
-  if (!firstDateOfBirth || !secondDateOfBirth) {
+  if (!validation.ok) {
     return fail(
-      "MISSING_REQUIRED_FIELDS",
-      "Both dates of birth are required for compatibility quick score."
+      "INVALID_INPUT",
+      getFirstAccuracyErrorMessage(
+        validation.issues,
+        "Both dates of birth are required for compatibility quick score."
+      )
     );
   }
 
   const first = calculateNumerologyContext({
-    dateOfBirth: firstDateOfBirth,
+    dateOfBirth: validation.data.firstDateOfBirth,
     fullName: null,
   });
   const second = calculateNumerologyContext({
-    dateOfBirth: secondDateOfBirth,
+    dateOfBirth: validation.data.secondDateOfBirth,
     fullName: null,
   });
 
@@ -456,8 +470,8 @@ function runCompatibilityQuickCalculator(
       result: {
         calculator: "compatibility-quick",
         inputSummary: [
-          { label: "Profile A DOB", value: firstDateOfBirth },
-          { label: "Profile B DOB", value: secondDateOfBirth },
+          { label: "Profile A DOB", value: validation.data.firstDateOfBirth },
+          { label: "Profile B DOB", value: validation.data.secondDateOfBirth },
         ],
         mainResult: {
           title: "Quick Compatibility Score",
@@ -494,20 +508,25 @@ function runCompatibilityQuickCalculator(
 async function runDateCheckCalculator(
   input: DateCheckInput
 ): Promise<AstrologyCalculatorExecutionResult> {
-  const date = normalizeInputText(input.date);
-  const place = normalizeInputText(input.place);
+  const validation = validatePanchangRequestInput({
+    date: normalizeInputText(input.date),
+    place: normalizeInputText(input.place),
+  });
 
-  if (!date || !place) {
+  if (!validation.ok) {
     return fail(
-      "MISSING_REQUIRED_FIELDS",
-      "Date and place are required for date suitability check."
+      "INVALID_INPUT",
+      getFirstAccuracyErrorMessage(
+        validation.issues,
+        "Date and place are required for date suitability check."
+      )
     );
   }
 
   const context = await resolveBirthContextAsync({
-    date,
+    date: validation.data.date,
     time: "12:00",
-    place,
+    place: validation.data.place,
   });
 
   if (!context.success) {

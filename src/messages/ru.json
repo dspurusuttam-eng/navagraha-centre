@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "languageName": "Russian",
+    "languageNativeName": "Русский"
+  },
+  "common": {
+    "language": "Язык",
+    "englishDefault": "Английский (По умолчанию)",
+    "live": "Активно",
+    "planned": "Запланировано",
+    "comingSoon": "Скоро",
+    "defaultExperience": "Опыт по умолчанию",
+    "futureLanguagesNote": "Английский остается активным опытом. Дополнительные языки появятся здесь после выпуска."
+  },
+  "cta": {
+    "generateKundli": "Создать Вашу Кундли",
+    "exploreAi": "Попробовать NAVAGRAHA AI",
+    "bookConsultation": "Записаться на Бесплатную Консультацию",
+    "signInAccount": "Вход / Аккаунт",
+    "unlockFullReport": "Получить Бесплатный Отчет"
+  },
+  "labels": {
+    "currencyCode": "INR",
+    "currencyNote": "Все астрологические сервисы сейчас бесплатны в рамках ограниченного стартового доступа.",
+    "limitedFreeAccessLabel": "Сейчас Бесплатно (Ограниченный Стартовый Доступ)",
+    "limitedFreeBanner": "Ограниченный Стартовый Доступ: Все Астрологические Сервисы Бесплатны",
+    "earlyAccessLabel": "Премиум-Опыт Раннего Доступа",
+    "premiumExperienceLabel": "Премиум-Опыт",
+    "timezoneHint": "Используйте часовой пояс IANA, например: Asia/Kolkata, Europe/London или America/New_York.",
+    "dateHint": "Используйте дату рождения в локальном формате (YYYY-MM-DD).",
+    "timeHint": "Используйте время рождения в локальном формате (24 часа)."
+  },
+  "navigation": {
+    "home": "Главная",
+    "kundli": "Кундли",
+    "compatibility": "Совместимость",
+    "rashifal": "Рашифал",
+    "ai": "NAVAGRAHA AI",
+    "reports": "Отчеты",
+    "tools": "Инструменты",
+    "panchang": "Панчанг",
+    "consultation": "Консультация",
+    "shop": "Магазин",
+    "insights": "Инсайты",
+    "calculators": "Калькуляторы",
+    "timeTools": "Инструменты Времени",
+    "dailyRashifal": "Ежедневный Рашифал",
+    "pricing": "Цены",
+    "plans": "Планы",
+    "services": "Услуги",
+    "account": "Аккаунт",
+    "menu": "Меню",
+    "dashboard": "Панель",
+    "onboarding": "Онбординг",
+    "askMyChart": "Ask My Chart",
+    "consultations": "Консультации",
+    "orders": "Заказы",
+    "chart": "Карта",
+    "report": "Отчет",
+    "settings": "Настройки",
+    "admin": "Админ",
+    "styleGuide": "Руководство по Стилю",
+    "login": "Войти",
+    "passwordReset": "Сброс Пароля"
+  },
+  "footer": {
+    "columns": {
+      "centre": "Центр",
+      "tools": "Инструменты",
+      "services": "Услуги"
+    },
+    "links": {
+      "about": "О нас",
+      "contact": "Контакты",
+      "astrologer": "Астролог",
+      "allTools": "Все Инструменты",
+      "numerology": "Нумерология",
+      "muhurtaLite": "Мухурта Лайт",
+      "privacy": "Конфиденциальность",
+      "terms": "Условия",
+      "disclaimer": "Отказ от ответственности",
+      "refundPolicy": "Политика возврата"
+    },
+    "languageLabel": "Язык",
+    "languageHelper": "Сегодня активен английский. Индийские и международные языки зарегистрированы здесь и останутся отключенными до завершения переводов."
+  }
+}

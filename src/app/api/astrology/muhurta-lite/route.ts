@@ -1,5 +1,10 @@
 import { normalizeBirthContextInput } from "@/lib/astrology/birth-input-normalizer";
 import { resolveAstronomyReadyBirthContext } from "@/lib/astrology/birth-context-engine";
+import {
+  getFirstAccuracyErrorMessage,
+  validateMuhurtaLiteOutputCompleteness,
+  validatePanchangRequestInput,
+} from "@/lib/astrology/accuracy";
 import { apiErrorResponse, readJsonObjectBody } from "@/lib/api/http";
 import { captureException } from "@/lib/observability";
 import { calculateMuhurtaLiteContext } from "@/modules/muhurta-lite";
@@ -55,27 +60,26 @@ export async function POST(request: Request) {
 
   const date = readText(payload.date);
   const place = readText(payload.place);
+  const validatedInput = validatePanchangRequestInput({
+    date,
+    place,
+  });
 
-  if (!date || !place) {
+  if (!validatedInput.ok) {
     return apiErrorResponse({
-      statusCode: 400,
-      code: "MISSING_REQUIRED_FIELDS",
-      message: "Date and place are required.",
-    });
-  }
-
-  if (date.length > 32 || place.length > 160) {
-    return apiErrorResponse({
-      statusCode: 400,
-      code: "INVALID_FIELD_LENGTH",
-      message: "Date or place exceeds allowed length.",
+      statusCode: 422,
+      code: "INVALID_MUHURTA_INPUT",
+      message: getFirstAccuracyErrorMessage(
+        validatedInput.issues,
+        "Date and place are required."
+      ),
     });
   }
 
   const normalized = normalizeBirthContextInput({
-    dateLocalInput: date,
+    dateLocalInput: validatedInput.data.date,
     timeLocalInput: "12:00",
-    placeTextInput: place,
+    placeTextInput: validatedInput.data.place,
   });
 
   if (!normalized.success) {
@@ -134,9 +138,22 @@ export async function POST(request: Request) {
       message: muhurtaLite.error.message,
     });
   }
+  const completeness = validateMuhurtaLiteOutputCompleteness(muhurtaLite.data);
+
+  if (!completeness.isComplete) {
+    return apiErrorResponse({
+      statusCode: 422,
+      code: "INCOMPLETE_MUHURTA_DATA",
+      message:
+        "Daily timing data is incomplete for this date and location. Please try again.",
+    });
+  }
 
   return Response.json({
     data: muhurtaLite.data,
+    accuracy: {
+      isComplete: true,
+      missingFields: [],
+    },
   });
 }
-

@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "languageName": "Indonesian",
+    "languageNativeName": "Bahasa Indonesia"
+  },
+  "common": {
+    "language": "Bahasa",
+    "englishDefault": "Inggris (Default)",
+    "live": "Aktif",
+    "planned": "Direncanakan",
+    "comingSoon": "Segera hadir",
+    "defaultExperience": "Pengalaman default",
+    "futureLanguagesNote": "Bahasa Inggris tetap menjadi pengalaman aktif. Bahasa tambahan akan muncul di sini saat dirilis."
+  },
+  "cta": {
+    "generateKundli": "Buat Kundli Anda",
+    "exploreAi": "Coba NAVAGRAHA AI",
+    "bookConsultation": "Pesan Konsultasi Gratis",
+    "signInAccount": "Masuk / Akun",
+    "unlockFullReport": "Dapatkan Laporan Gratis"
+  },
+  "labels": {
+    "currencyCode": "INR",
+    "currencyNote": "Semua layanan astrologi saat ini gratis selama akses peluncuran terbatas.",
+    "limitedFreeAccessLabel": "Saat Ini Gratis (Akses Peluncuran Terbatas)",
+    "limitedFreeBanner": "Akses Peluncuran Terbatas: Semua Layanan Astrologi Gratis",
+    "earlyAccessLabel": "Pengalaman Premium Akses Awal",
+    "premiumExperienceLabel": "Pengalaman Premium",
+    "timezoneHint": "Gunakan zona waktu IANA, misalnya: Asia/Kolkata, Europe/London, atau America/New_York.",
+    "dateHint": "Gunakan tanggal lahir Anda dalam format lokal (YYYY-MM-DD).",
+    "timeHint": "Gunakan waktu lahir Anda dalam format lokal (24 jam)."
+  },
+  "navigation": {
+    "home": "Beranda",
+    "kundli": "Kundli",
+    "compatibility": "Kecocokan",
+    "rashifal": "Rashifal",
+    "ai": "NAVAGRAHA AI",
+    "reports": "Laporan",
+    "tools": "Alat",
+    "panchang": "Panchang",
+    "consultation": "Konsultasi",
+    "shop": "Toko",
+    "insights": "Insight",
+    "calculators": "Kalkulator",
+    "timeTools": "Alat Waktu",
+    "dailyRashifal": "Rashifal Harian",
+    "pricing": "Harga",
+    "plans": "Paket",
+    "services": "Layanan",
+    "account": "Akun",
+    "menu": "Menu",
+    "dashboard": "Dasbor",
+    "onboarding": "Onboarding",
+    "askMyChart": "Ask My Chart",
+    "consultations": "Konsultasi",
+    "orders": "Pesanan",
+    "chart": "Bagan",
+    "report": "Laporan",
+    "settings": "Pengaturan",
+    "admin": "Admin",
+    "styleGuide": "Panduan Gaya",
+    "login": "Masuk",
+    "passwordReset": "Reset Kata Sandi"
+  },
+  "footer": {
+    "columns": {
+      "centre": "Pusat",
+      "tools": "Alat",
+      "services": "Layanan"
+    },
+    "links": {
+      "about": "Tentang",
+      "contact": "Kontak",
+      "astrologer": "Astrolog",
+      "allTools": "Semua Alat",
+      "numerology": "Numerologi",
+      "muhurtaLite": "Muhurta Lite",
+      "privacy": "Privasi",
+      "terms": "Ketentuan",
+      "disclaimer": "Penafian",
+      "refundPolicy": "Kebijakan Pengembalian Dana"
+    },
+    "languageLabel": "Bahasa",
+    "languageHelper": "Bahasa Inggris aktif hari ini. Bahasa India dan internasional terdaftar di sini dan akan tetap dinonaktifkan sampai terjemahan selesai."
+  }
+}

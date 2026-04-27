@@ -1,66 +1,60 @@
 import type { Metadata } from "next";
-import { siteConfig } from "@/config/site";
+import { createPageMetadata } from "@/lib/seo/metadata";
+import { seoConfig } from "@/lib/seo/seo-config";
+import { resolveLocale } from "@/modules/localization/config";
 
 type PageMetadataInput = {
   title: string;
   description: string;
   path: string;
   keywords?: readonly string[];
+  locale?: string | null;
+  explicitLocalePrefix?: boolean;
   index?: boolean;
 };
-
-function shouldIndexPath(path: string) {
-  return !(
-    path.startsWith("/dashboard") ||
-    path.startsWith("/settings") ||
-    path.startsWith("/sign-") ||
-    path.startsWith("/forgot-password") ||
-    path.startsWith("/reset-password") ||
-    path.startsWith("/style-guide") ||
-    path.startsWith("/admin")
-  );
-}
 
 export function buildPageMetadata({
   title,
   description,
   path,
   keywords = [],
+  locale,
+  explicitLocalePrefix,
   index,
 }: PageMetadataInput): Metadata {
-  const url = new URL(path, siteConfig.url).toString();
-  const shouldIndex = index ?? shouldIndexPath(path);
-  const sharedKeywords = [
-    "NAVAGRAHA CENTRE",
-    "Joy Prakash Sarmah",
-    "luxury astrology",
-    "vedic astrology platform",
-    "premium astrology consultation",
-    "remedy guidance",
-  ];
-
-  return {
+  return createPageMetadata({
     title,
     description,
-    keywords: [...sharedKeywords, ...keywords],
-    alternates: {
-      canonical: url,
+    path,
+    keywords,
+    locale,
+    explicitLocalePrefix,
+    index,
+  });
+}
+
+export function buildLocalizedRootMetadata(input: {
+  locale?: string | null;
+  title: string;
+  description: string;
+  path?: string;
+  explicitLocalePrefix?: boolean;
+}) {
+  const resolvedLocale = resolveLocale(input.locale);
+  const path = input.path ?? "/";
+
+  return {
+    ...createPageMetadata({
+      title: input.title,
+      description: input.description,
+      path,
+      locale: resolvedLocale,
+      explicitLocalePrefix: input.explicitLocalePrefix,
+      index: true,
+    }),
+    title: {
+      default: input.title,
+      template: seoConfig.titleTemplate,
     },
-    robots: {
-      index: shouldIndex,
-      follow: shouldIndex,
-    },
-    openGraph: {
-      title,
-      description,
-      url,
-      siteName: siteConfig.name,
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-    },
-  };
+  } satisfies Metadata;
 }

@@ -1,7 +1,19 @@
 import "server-only";
 
 import type { ChartInterpretationResult } from "@/modules/ai";
+import { createFallbackInterpretation } from "@/modules/ai/prompts";
 import { getAiInterpretationService } from "@/modules/ai/server";
+import {
+  calculatePredictionConfidence,
+  formatConfidenceLine,
+  getAstrologyDisclaimer,
+  getIncompleteDataFallback,
+  logAccuracyEvent,
+  resolvePredictionLocale,
+  validateChartInterpretationOutput,
+  validateNatalReportCompleteness,
+  type PredictionConfidenceLevel,
+} from "@/lib/astrology/accuracy";
 import {
   getRemedyRecommendationService,
   type RemedyRecommendation,
@@ -26,12 +38,22 @@ type ReadyChartOverview = ChartOverview & {
   chart: NonNullable<ChartOverview["chart"]>;
 };
 
+export type ReportAccuracySnapshot = {
+  locale: string;
+  confidenceLevel: PredictionConfidenceLevel;
+  confidenceLine: string;
+  disclaimer: string;
+  incompleteDataNotice: string | null;
+  missingFields: string[];
+};
+
 export type ChartReportReadyState = {
   status: "ready";
   overview: ReadyChartOverview;
   signals: ReportChartSignal[];
   remedies: RemedyRecommendation[];
   interpretation: ChartInterpretationResult;
+  accuracy: ReportAccuracySnapshot;
 };
 
 export type ChartReportState =
@@ -43,7 +65,9 @@ export type ChartReportState =
 
 export async function getChartReport(
   userId: string,
-  subjectName: string
+  subjectName: string,
+  localeLabel?: string | null,
+  localeCode?: string | null
 ): Promise<ChartReportState> {
   const chartContext = await getReportChartContextForUser(userId);
   const overview = chartContext.overview;
@@ -64,15 +88,94 @@ export async function getChartReport(
       surfaceKey: "report",
     },
   });
+  const resolvedLocale = resolvePredictionLocale(
+    localeCode ?? localeLabel ?? overview.preferredLanguageLabel
+  );
+  const completeness = validateNatalReportCompleteness(overview.chart);
+  const hasBirthTime = Boolean(overview.birthProfile.birthTime?.trim());
+  const confidence = calculatePredictionConfidence({
+    hasBirthDate: Boolean(overview.birthProfile.birthDate?.trim()),
+    hasBirthTime,
+    hasBirthPlace: Boolean(
+      overview.birthProfile.city?.trim() && overview.birthProfile.country?.trim()
+    ),
+    hasCoordinates:
+      overview.birthProfile.latitude !== null &&
+      overview.birthProfile.longitude !== null,
+    hasTimezone: Boolean(overview.birthProfile.timezone?.trim()),
+    isBirthTimeApproximate:
+      overview.birthProfile.birthTime === "00:00" ||
+      overview.birthProfile.birthTime === "12:00",
+    chartVerified: Boolean(overview.chart.metadata.deterministic),
+    astrologyDataComplete: completeness.isComplete,
+  });
+  const accuracy: ReportAccuracySnapshot = {
+    locale: resolvedLocale,
+    confidenceLevel: confidence.level,
+    confidenceLine: formatConfidenceLine({
+      locale: resolvedLocale,
+      level: confidence.level,
+    }),
+    disclaimer: getAstrologyDisclaimer(resolvedLocale),
+    incompleteDataNotice: completeness.isComplete
+      ? null
+      : getIncompleteDataFallback(resolvedLocale),
+    missingFields: completeness.missingFields,
+  };
 
-  const interpretation =
-    await getAiInterpretationService().generateChartInterpretation({
+  let interpretation: ChartInterpretationResult;
+
+  if (!completeness.isComplete) {
+    interpretation = createFallbackInterpretation({
       reportId: overview.chartRecord.id,
       subjectName,
-      preferredLanguageLabel: overview.preferredLanguageLabel,
+      preferredLanguageLabel: localeLabel ?? overview.preferredLanguageLabel,
       chart: overview.chart,
       signals: recommendations.signals,
     });
+    interpretation = {
+      ...interpretation,
+      caution: `${interpretation.caution} ${getIncompleteDataFallback(resolvedLocale)}`,
+    };
+
+    logAccuracyEvent("report-completeness-fallback", {
+      userId,
+      locale: resolvedLocale,
+      missingFields: completeness.missingFields,
+    });
+  } else {
+    interpretation = await getAiInterpretationService().generateChartInterpretation({
+      reportId: overview.chartRecord.id,
+      subjectName,
+      preferredLanguageLabel: localeLabel ?? overview.preferredLanguageLabel,
+      chart: overview.chart,
+      signals: recommendations.signals,
+    });
+
+    const outputValidation = validateChartInterpretationOutput({
+      output: interpretation,
+      locale: resolvedLocale,
+    });
+
+    if (!outputValidation.valid) {
+      interpretation = createFallbackInterpretation({
+        reportId: overview.chartRecord.id,
+        subjectName,
+        preferredLanguageLabel: localeLabel ?? overview.preferredLanguageLabel,
+        chart: overview.chart,
+        signals: recommendations.signals,
+      });
+
+      logAccuracyEvent("report-output-fallback", {
+        userId,
+        locale: resolvedLocale,
+        issueCount: outputValidation.issues.length,
+        highSeverityIssueCount: outputValidation.issues.filter(
+          (item) => item.severity === "high"
+        ).length,
+      });
+    }
+  }
 
   const readyOverview: ReadyChartOverview = {
     ...overview,
@@ -87,5 +190,6 @@ export async function getChartReport(
     signals: recommendations.signals,
     remedies: recommendations.recommendations,
     interpretation,
+    accuracy,
   };
 }

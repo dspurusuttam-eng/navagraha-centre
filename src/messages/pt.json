@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "languageName": "Portuguese",
+    "languageNativeName": "Português"
+  },
+  "common": {
+    "language": "Idioma",
+    "englishDefault": "Inglês (Padrão)",
+    "live": "Ativo",
+    "planned": "Planejado",
+    "comingSoon": "Em breve",
+    "defaultExperience": "Experiência padrão",
+    "futureLanguagesNote": "O inglês permanece como a experiência ativa. Idiomas adicionais aparecerão aqui quando forem lançados."
+  },
+  "cta": {
+    "generateKundli": "Gerar Seu Kundli",
+    "exploreAi": "Experimentar NAVAGRAHA AI",
+    "bookConsultation": "Agendar Consulta Gratuita",
+    "signInAccount": "Entrar / Conta",
+    "unlockFullReport": "Obter Relatório Gratuito"
+  },
+  "labels": {
+    "currencyCode": "INR",
+    "currencyNote": "Todos os serviços astrológicos estão atualmente gratuitos durante o acesso limitado de lançamento.",
+    "limitedFreeAccessLabel": "Atualmente Grátis (Acesso Limitado de Lançamento)",
+    "limitedFreeBanner": "Acesso Limitado de Lançamento: Todos os Serviços Astrológicos São Gratuitos",
+    "earlyAccessLabel": "Experiência Premium de Acesso Antecipado",
+    "premiumExperienceLabel": "Experiência Premium",
+    "timezoneHint": "Use um fuso horário IANA, por exemplo: Asia/Kolkata, Europe/London ou America/New_York.",
+    "dateHint": "Use sua data de nascimento no formato local (YYYY-MM-DD).",
+    "timeHint": "Use seu horário de nascimento no formato local (24 horas)."
+  },
+  "navigation": {
+    "home": "Início",
+    "kundli": "Kundli",
+    "compatibility": "Compatibilidade",
+    "rashifal": "Rashifal",
+    "ai": "NAVAGRAHA AI",
+    "reports": "Relatórios",
+    "tools": "Ferramentas",
+    "panchang": "Panchang",
+    "consultation": "Consulta",
+    "shop": "Loja",
+    "insights": "Insights",
+    "calculators": "Calculadoras",
+    "timeTools": "Ferramentas de Tempo",
+    "dailyRashifal": "Rashifal Diário",
+    "pricing": "Preços",
+    "plans": "Planos",
+    "services": "Serviços",
+    "account": "Conta",
+    "menu": "Menu",
+    "dashboard": "Painel",
+    "onboarding": "Integração",
+    "askMyChart": "Ask My Chart",
+    "consultations": "Consultas",
+    "orders": "Pedidos",
+    "chart": "Mapa",
+    "report": "Relatório",
+    "settings": "Configurações",
+    "admin": "Admin",
+    "styleGuide": "Guia de Estilo",
+    "login": "Entrar",
+    "passwordReset": "Redefinir Senha"
+  },
+  "footer": {
+    "columns": {
+      "centre": "Centro",
+      "tools": "Ferramentas",
+      "services": "Serviços"
+    },
+    "links": {
+      "about": "Sobre",
+      "contact": "Contato",
+      "astrologer": "Astrólogo",
+      "allTools": "Todas as Ferramentas",
+      "numerology": "Numerologia",
+      "muhurtaLite": "Muhurta Lite",
+      "privacy": "Privacidade",
+      "terms": "Termos",
+      "disclaimer": "Aviso Legal",
+      "refundPolicy": "Política de Reembolso"
+    },
+    "languageLabel": "Idioma",
+    "languageHelper": "O inglês está ativo hoje. Os idiomas indianos e internacionais estão registrados aqui e permanecerão desativados até que as traduções estejam completas."
+  }
+}

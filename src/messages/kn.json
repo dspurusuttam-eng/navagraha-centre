@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "languageName": "Kannada",
+    "languageNativeName": "ಕನ್ನಡ"
+  },
+  "common": {
+    "language": "ಭಾಷೆ",
+    "englishDefault": "ಇಂಗ್ಲಿಷ್ (ಡೀಫಾಲ್ಟ್)",
+    "live": "ಸಕ್ರಿಯ",
+    "planned": "ಯೋಜಿತ",
+    "comingSoon": "ಶೀಘ್ರದಲ್ಲೇ ಬರುತ್ತದೆ",
+    "defaultExperience": "ಡೀಫಾಲ್ಟ್ ಅನುಭವ",
+    "futureLanguagesNote": "ಈಗ ಇಂಗ್ಲಿಷ್ ಲೈವ್ ಅನುಭವವಾಗಿದೆ. ಇತರೆ ಭಾಷೆಗಳು ಬಿಡುಗಡೆಯಾದಾಗ ಇಲ್ಲಿ ಲಭ್ಯವಾಗುತ್ತವೆ."
+  },
+  "cta": {
+    "generateKundli": "ನಿಮ್ಮ ಕುಂಡಲಿ ರಚಿಸಿ",
+    "exploreAi": "NAVAGRAHA AI ಪ್ರಯತ್ನಿಸಿ",
+    "bookConsultation": "ಉಚಿತ ಸಲಹೆ ಬುಕ್ ಮಾಡಿ",
+    "signInAccount": "ಸೈನ್ ಇನ್ / ಖಾತೆ",
+    "unlockFullReport": "ಉಚಿತ ವರದಿ ಪಡೆಯಿರಿ"
+  },
+  "labels": {
+    "currencyCode": "INR",
+    "currencyNote": "ಸೀಮಿತ ಲಾಂಚ್ ಪ್ರವೇಶದಲ್ಲಿ ಎಲ್ಲಾ ಜ್ಯೋತಿಷ್ಯ ಸೇವೆಗಳು ಪ್ರಸ್ತುತ ಉಚಿತ.",
+    "limitedFreeAccessLabel": "ಪ್ರಸ್ತುತ ಉಚಿತ (ಸೀಮಿತ ಲಾಂಚ್ ಪ್ರವೇಶ)",
+    "limitedFreeBanner": "ಸೀಮಿತ ಲಾಂಚ್ ಪ್ರವೇಶ: ಎಲ್ಲಾ ಜ್ಯೋತಿಷ್ಯ ಸೇವೆಗಳು ಉಚಿತ",
+    "earlyAccessLabel": "ಅರ್ಲಿ ಆಕ್ಸೆಸ್ ಪ್ರೀಮಿಯಂ ಅನುಭವ",
+    "premiumExperienceLabel": "ಪ್ರೀಮಿಯಂ ಅನುಭವ",
+    "timezoneHint": "IANA ಸಮಯವಲಯವನ್ನು ಬಳಸಿ, ಉದಾಹರಣೆ: Asia/Kolkata, Europe/London, ಅಥವಾ America/New_York.",
+    "dateHint": "ನಿಮ್ಮ ಜನ್ಮ ದಿನಾಂಕವನ್ನು ಸ್ಥಳೀಯ ಕ್ಯಾಲೆಂಡರ್ ಮಾದರಿಯಲ್ಲಿ ನಮೂದಿಸಿ (YYYY-MM-DD).",
+    "timeHint": "ನಿಮ್ಮ ಜನ್ಮ ಸಮಯವನ್ನು ಸ್ಥಳೀಯ ಸಮಯದಲ್ಲಿ ನಮೂದಿಸಿ (24-ಗಂಟೆ ಮಾದರಿ)."
+  },
+  "navigation": {
+    "home": "ಮುಖಪುಟ",
+    "kundli": "ಕುಂಡಲಿ",
+    "compatibility": "ಹೊಂದಾಣಿಕೆ",
+    "rashifal": "ರಾಶಿಫಲ",
+    "ai": "NAVAGRAHA AI",
+    "reports": "ವರದಿಗಳು",
+    "tools": "ಉಪಕರಣಗಳು",
+    "panchang": "ಪಂಚಾಂಗ",
+    "consultation": "ಸಲಹೆ",
+    "shop": "ಅಂಗಡಿ",
+    "insights": "ಇನ್‌ಸೈಟ್ಸ್",
+    "calculators": "ಕ್ಯಾಲ್ಕುಲೇಟರ್‌ಗಳು",
+    "timeTools": "ಸಮಯ ಉಪಕರಣಗಳು",
+    "dailyRashifal": "ದೈನಂದಿನ ರಾಶಿಫಲ",
+    "pricing": "ಬೆಲೆ",
+    "plans": "ಯೋಜನೆಗಳು",
+    "services": "ಸೇವೆಗಳು",
+    "account": "ಖಾತೆ",
+    "menu": "ಮೆನು",
+    "dashboard": "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
+    "onboarding": "ಆನ್‌ಬೋರ್ಡಿಂಗ್",
+    "askMyChart": "Ask My Chart",
+    "consultations": "ಸಲಹೆಗಳು",
+    "orders": "ಆರ್ಡರ್‌ಗಳು",
+    "chart": "ಚಾರ್ಟ್",
+    "report": "ವರದಿ",
+    "settings": "ಸೆಟ್ಟಿಂಗ್ಸ್",
+    "admin": "ಆಡ್ಮಿನ್",
+    "styleGuide": "ಸ್ಟೈಲ್ ಗೈಡ್",
+    "login": "ಲಾಗಿನ್",
+    "passwordReset": "ಪಾಸ್‌ವರ್ಡ್ ರೀಸೆಟ್"
+  },
+  "footer": {
+    "columns": {
+      "centre": "ಕೇಂದ್ರ",
+      "tools": "ಉಪಕರಣಗಳು",
+      "services": "ಸೇವೆಗಳು"
+    },
+    "links": {
+      "about": "ನಮ್ಮ ಬಗ್ಗೆ",
+      "contact": "ಸಂಪರ್ಕ",
+      "astrologer": "ಜ್ಯೋತಿಷಿ",
+      "allTools": "ಎಲ್ಲಾ ಉಪಕರಣಗಳು",
+      "numerology": "ಅಂಕಶಾಸ್ತ್ರ",
+      "muhurtaLite": "ಮುಹೂರ್ತ ಲೈಟ್",
+      "privacy": "ಗೌಪ್ಯತೆ",
+      "terms": "ನಿಯಮಗಳು",
+      "disclaimer": "ಹೆಚ್ಚರಿಕೆ",
+      "refundPolicy": "ಹಿಂತಿರುಗింపు ನೀತಿ"
+    },
+    "languageLabel": "ಭಾಷೆ",
+    "languageHelper": "ಇಂದು ಇಂಗ್ಲಿಷ್ ಸಕ್ರಿಯವಾಗಿದೆ. ಭಾರತೀಯ ಮತ್ತು ಅಂತರರಾಷ್ಟ್ರೀಯ ಭಾಷೆಗಳು ಇಲ್ಲಿ ಪಟ್ಟಿ ಮಾಡಲ್ಪಟ್ಟಿವೆ; ಸಂಪೂರ್ಣ ಅನುವಾದ ಸಿದ್ಧವಾಗುವವರೆಗೂ ಅವು ನಿಷ್ಕ್ರಿಯವಾಗಿರುತ್ತವೆ."
+  }
+}

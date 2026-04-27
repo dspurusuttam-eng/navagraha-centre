@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "languageName": "Chinese",
+    "languageNativeName": "中文"
+  },
+  "common": {
+    "language": "语言",
+    "englishDefault": "英语（默认）",
+    "live": "已启用",
+    "planned": "计划中",
+    "comingSoon": "即将推出",
+    "defaultExperience": "默认体验",
+    "futureLanguagesNote": "英语仍为当前可用体验。其他语言发布后将在此显示。"
+  },
+  "cta": {
+    "generateKundli": "生成你的 Kundli",
+    "exploreAi": "试用 NAVAGRAHA AI",
+    "bookConsultation": "预约免费咨询",
+    "signInAccount": "登录 / 账户",
+    "unlockFullReport": "获取免费报告"
+  },
+  "labels": {
+    "currencyCode": "INR",
+    "currencyNote": "所有占星服务目前在限时上线期间免费开放。",
+    "limitedFreeAccessLabel": "当前免费（限时上线访问）",
+    "limitedFreeBanner": "限时上线访问：所有占星服务免费",
+    "earlyAccessLabel": "抢先体验高级服务",
+    "premiumExperienceLabel": "高级体验",
+    "timezoneHint": "请使用 IANA 时区，例如：Asia/Kolkata、Europe/London 或 America/New_York。",
+    "dateHint": "请使用本地日期格式填写出生日期（YYYY-MM-DD）。",
+    "timeHint": "请使用本地时间格式填写出生时间（24小时制）。"
+  },
+  "navigation": {
+    "home": "首页",
+    "kundli": "Kundli",
+    "compatibility": "配对",
+    "rashifal": "Rashifal",
+    "ai": "NAVAGRAHA AI",
+    "reports": "报告",
+    "tools": "工具",
+    "panchang": "Panchang",
+    "consultation": "咨询",
+    "shop": "商店",
+    "insights": "洞察",
+    "calculators": "计算器",
+    "timeTools": "时间工具",
+    "dailyRashifal": "每日 Rashifal",
+    "pricing": "定价",
+    "plans": "方案",
+    "services": "服务",
+    "account": "账户",
+    "menu": "菜单",
+    "dashboard": "仪表盘",
+    "onboarding": "引导流程",
+    "askMyChart": "Ask My Chart",
+    "consultations": "咨询",
+    "orders": "订单",
+    "chart": "星盘",
+    "report": "报告",
+    "settings": "设置",
+    "admin": "管理",
+    "styleGuide": "样式指南",
+    "login": "登录",
+    "passwordReset": "重置密码"
+  },
+  "footer": {
+    "columns": {
+      "centre": "中心",
+      "tools": "工具",
+      "services": "服务"
+    },
+    "links": {
+      "about": "关于我们",
+      "contact": "联系我们",
+      "astrologer": "占星师",
+      "allTools": "全部工具",
+      "numerology": "数字命理",
+      "muhurtaLite": "Muhurta Lite",
+      "privacy": "隐私政策",
+      "terms": "条款",
+      "disclaimer": "免责声明",
+      "refundPolicy": "退款政策"
+    },
+    "languageLabel": "语言",
+    "languageHelper": "当前英语处于启用状态。印度语言和国际语言已在此注册，在翻译完成前将保持禁用。"
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "languageName": "Malayalam",
+    "languageNativeName": "മലയാളം"
+  },
+  "common": {
+    "language": "ഭാഷ",
+    "englishDefault": "ഇംഗ്ലീഷ് (ഡീഫോൾട്ട്)",
+    "live": "സജീവം",
+    "planned": "പദ്ധതിയിലുള്ളത്",
+    "comingSoon": "ഉടൻ വരുന്നു",
+    "defaultExperience": "ഡീഫോൾട്ട് അനുഭവം",
+    "futureLanguagesNote": "ഇപ്പോൾ ഇംഗ്ലീഷാണ് ലൈവ് അനുഭവം. മറ്റു ഭാഷകൾ പുറത്തിറങ്ങുമ്പോൾ ഇവിടെ ലഭ്യമാകും."
+  },
+  "cta": {
+    "generateKundli": "നിങ്ങളുടെ കുണ്ഡലി സൃഷ്ടിക്കുക",
+    "exploreAi": "NAVAGRAHA AI പരീക്ഷിക്കുക",
+    "bookConsultation": "സൗജന്യ കൺസൾട്ടേഷൻ ബുക്ക് ചെയ്യുക",
+    "signInAccount": "സൈൻ ഇൻ / അക്കൗണ്ട്",
+    "unlockFullReport": "സൗജന്യ റിപ്പോർട്ട് നേടുക"
+  },
+  "labels": {
+    "currencyCode": "INR",
+    "currencyNote": "പരിമിത ലോഞ്ച് ആക്സസിൽ എല്ലാ ജ്യോതിഷ സേവനങ്ങളും ഇപ്പോൾ സൗജന്യമാണ്.",
+    "limitedFreeAccessLabel": "ഇപ്പോൾ സൗജന്യം (പരിമിത ലോഞ്ച് ആക്സസ്)",
+    "limitedFreeBanner": "പരിമിത ലോഞ്ച് ആക്സസ്: എല്ലാ ജ്യോതിഷ സേവനങ്ങളും സൗജന്യം",
+    "earlyAccessLabel": "എർലി ആക്സസ് പ്രീമിയം അനുഭവം",
+    "premiumExperienceLabel": "പ്രീമിയം അനുഭവം",
+    "timezoneHint": "IANA ടൈംസോൺ ഉപയോഗിക്കുക, ഉദാഹരണം: Asia/Kolkata, Europe/London, അല്ലെങ്കിൽ America/New_York.",
+    "dateHint": "ജനന തീയതി പ്രാദേശിക കലണ്ടർ ഫോർമാറ്റിൽ നൽകുക (YYYY-MM-DD).",
+    "timeHint": "ജനന സമയം പ്രാദേശിക സമയത്തിൽ നൽകുക (24-മണിക്കൂർ ഫോർമാറ്റ്)."
+  },
+  "navigation": {
+    "home": "ഹോം",
+    "kundli": "കുണ്ഡലി",
+    "compatibility": "അനുയോജ്യത",
+    "rashifal": "രാശിഫലം",
+    "ai": "NAVAGRAHA AI",
+    "reports": "റിപ്പോർട്ടുകൾ",
+    "tools": "ടൂളുകൾ",
+    "panchang": "പഞ്ചാംഗം",
+    "consultation": "കൺസൾട്ടേഷൻ",
+    "shop": "ഷോപ്പ്",
+    "insights": "ഇൻസൈറ്റ്സ്",
+    "calculators": "കാൽക്കുലേറ്ററുകൾ",
+    "timeTools": "സമയം ടൂളുകൾ",
+    "dailyRashifal": "ദൈനംദിന രാശിഫലം",
+    "pricing": "വില",
+    "plans": "പ്ലാനുകൾ",
+    "services": "സേവനങ്ങൾ",
+    "account": "അക്കൗണ്ട്",
+    "menu": "മെനു",
+    "dashboard": "ഡാഷ്ബോർഡ്",
+    "onboarding": "ഓൺബോർഡിംഗ്",
+    "askMyChart": "Ask My Chart",
+    "consultations": "കൺസൾട്ടേഷനുകൾ",
+    "orders": "ഓർഡറുകൾ",
+    "chart": "ചാർട്ട്",
+    "report": "റിപ്പോർട്ട്",
+    "settings": "ക്രമീകരണങ്ങൾ",
+    "admin": "അഡ്മിൻ",
+    "styleGuide": "സ്റ്റൈൽ ഗൈഡ്",
+    "login": "ലോഗിൻ",
+    "passwordReset": "പാസ്‌വേഡ് റീസെറ്റ്"
+  },
+  "footer": {
+    "columns": {
+      "centre": "സെന്റർ",
+      "tools": "ടൂളുകൾ",
+      "services": "സേവനങ്ങൾ"
+    },
+    "links": {
+      "about": "ഞങ്ങളേക്കുറിച്ച്",
+      "contact": "ബന്ധപ്പെടുക",
+      "astrologer": "ജ്യോതിഷി",
+      "allTools": "എല്ലാ ടൂളുകളും",
+      "numerology": "സംഖ്യാശാസ്ത്രം",
+      "muhurtaLite": "മുഹൂർത്ത ലൈറ്റ്",
+      "privacy": "സ്വകാര്യത",
+      "terms": "നിബന്ധനകൾ",
+      "disclaimer": "നിരാകരണം",
+      "refundPolicy": "റീഫണ്ട് നയം"
+    },
+    "languageLabel": "ഭാഷ",
+    "languageHelper": "ഇന്ന് ഇംഗ്ലീഷ് സജീവമാണ്. ഇന്ത്യൻ, അന്താരാഷ്ട്ര ഭാഷകൾ ഇവിടെ പട്ടികപ്പെടുത്തിയിട്ടുണ്ട്; പൂർണ്ണ വിവർത്തനങ്ങൾ തയ്യാറാകുന്നത് വരെ അവ നിഷ്ക്രിയമായിരിക്കും."
+  }
+}

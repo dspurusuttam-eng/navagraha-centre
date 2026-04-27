@@ -2,36 +2,52 @@ import Link from "next/link";
 import { LanguageSwitcher } from "@/components/site/language-switcher";
 import { Container } from "@/components/ui/container";
 import { siteConfig } from "@/config/site";
-import { globalFooterCopy, globalNavigationCopy } from "@/modules/localization/copy";
+import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
+import { getGlobalCopyBundleForLocale } from "@/modules/localization/copy";
+import {
+  getRequestLocale,
+  hasExplicitLocalePrefixInRequest,
+} from "@/modules/localization/request";
 
-export function Footer() {
+export async function Footer() {
+  const requestLocale = await getRequestLocale();
+  const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
+  const copy = await getGlobalCopyBundleForLocale(requestLocale);
+  const localizeHref = (href: string) =>
+    getLocalizedPath(requestLocale, href, {
+      forcePrefix:
+        requestLocale !== defaultLocale ||
+        hasExplicitLocalePrefix,
+    });
+
   const footerColumns = [
     {
-      title: globalFooterCopy.columns.centre,
+      title: copy.footer.columns.centre,
       links: [
-        { href: "/about", label: globalFooterCopy.links.about },
-        { href: "/contact", label: globalFooterCopy.links.contact },
-        { href: "/joy-prakash-sarmah", label: globalFooterCopy.links.astrologer },
+        { href: localizeHref("/about"), label: copy.footer.links.about },
+        { href: localizeHref("/contact"), label: copy.footer.links.contact },
+        { href: localizeHref("/from-the-desk"), label: copy.navigation.insights },
+        { href: localizeHref("/joy-prakash-sarmah"), label: copy.footer.links.astrologer },
       ],
     },
     {
-      title: globalFooterCopy.columns.tools,
+      title: copy.footer.columns.tools,
       links: [
-        { href: "/tools", label: globalFooterCopy.links.allTools },
-        { href: "/kundli", label: globalNavigationCopy.kundli },
-        { href: "/rashifal", label: globalNavigationCopy.rashifal },
-        { href: "/compatibility", label: globalNavigationCopy.compatibility },
-        { href: "/numerology", label: globalFooterCopy.links.numerology },
-        { href: "/calculators", label: globalNavigationCopy.calculators },
-        { href: "/muhurta", label: globalFooterCopy.links.muhurtaLite },
+        { href: localizeHref("/tools"), label: copy.footer.links.allTools },
+        { href: localizeHref("/kundli"), label: copy.navigation.kundli },
+        { href: localizeHref("/rashifal"), label: copy.navigation.rashifal },
+        { href: localizeHref("/compatibility"), label: copy.navigation.compatibility },
+        { href: localizeHref("/numerology"), label: copy.footer.links.numerology },
+        { href: localizeHref("/calculators"), label: copy.navigation.calculators },
+        { href: localizeHref("/muhurta"), label: copy.footer.links.muhurtaLite },
       ],
     },
     {
-      title: globalFooterCopy.columns.services,
+      title: copy.footer.columns.services,
       links: [
-        { href: "/reports", label: globalNavigationCopy.reports },
-        { href: "/consultation", label: globalNavigationCopy.consultation },
-        { href: "/shop", label: globalNavigationCopy.shop },
+        { href: localizeHref("/reports"), label: copy.navigation.reports },
+        { href: localizeHref("/consultation"), label: copy.navigation.consultation },
+        { href: localizeHref("/shop"), label: copy.navigation.shop },
       ],
     },
   ] as const;
@@ -69,20 +85,20 @@ export function Footer() {
         <div className="flex flex-col gap-3 border-t border-[color:var(--color-border)] pt-5 text-[0.74rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-ink-muted)] sm:flex-row sm:items-center sm:justify-between">
           <p>&copy; {new Date().getFullYear()} {siteConfig.name}</p>
           <div className="flex items-center gap-4">
-            <Link href="/privacy" className="hover:text-[var(--color-ink-strong)]">
-              {globalFooterCopy.links.privacy}
+            <Link href={localizeHref("/privacy")} className="hover:text-[var(--color-ink-strong)]">
+              {copy.footer.links.privacy}
             </Link>
-            <Link href="/terms" className="hover:text-[var(--color-ink-strong)]">
-              {globalFooterCopy.links.terms}
+            <Link href={localizeHref("/terms")} className="hover:text-[var(--color-ink-strong)]">
+              {copy.footer.links.terms}
             </Link>
-            <Link href="/disclaimer" className="hover:text-[var(--color-ink-strong)]">
-              {globalFooterCopy.links.disclaimer}
+            <Link href={localizeHref("/disclaimer")} className="hover:text-[var(--color-ink-strong)]">
+              {copy.footer.links.disclaimer}
             </Link>
             <Link
-              href="/refund-cancellation"
+              href={localizeHref("/refund-cancellation")}
               className="hover:text-[var(--color-ink-strong)]"
             >
-              {globalFooterCopy.links.refundPolicy}
+              {copy.footer.links.refundPolicy}
             </Link>
           </div>
         </div>

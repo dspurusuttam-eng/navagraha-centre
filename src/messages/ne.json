@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "languageName": "Nepali",
+    "languageNativeName": "नेपाली"
+  },
+  "common": {
+    "language": "भाषा",
+    "englishDefault": "अंग्रेजी (डिफल्ट)",
+    "live": "सक्रिय",
+    "planned": "योजनामा",
+    "comingSoon": "छिट्टै आउँदैछ",
+    "defaultExperience": "डिफल्ट अनुभव",
+    "futureLanguagesNote": "हाल अंग्रेजी लाइभ अनुभव हो। अन्य भाषाहरू रिलिज भएपछि यहाँ उपलब्ध हुनेछन्।"
+  },
+  "cta": {
+    "generateKundli": "तपाईंको कुण्डली बनाउनुहोस्",
+    "exploreAi": "NAVAGRAHA AI प्रयोग गर्नुहोस्",
+    "bookConsultation": "निःशुल्क परामर्श बुक गर्नुहोस्",
+    "signInAccount": "साइन इन / खाता",
+    "unlockFullReport": "निःशुल्क रिपोर्ट पाउनुहोस्"
+  },
+  "labels": {
+    "currencyCode": "INR",
+    "currencyNote": "सीमित लन्च पहुँच अवधिमा सबै ज्योतिष सेवाहरू अहिले निःशुल्क छन्।",
+    "limitedFreeAccessLabel": "हाल निःशुल्क (सीमित लन्च पहुँच)",
+    "limitedFreeBanner": "सीमित लन्च पहुँच: सबै ज्योतिष सेवाहरू निःशुल्क",
+    "earlyAccessLabel": "अर्ली एक्सेस प्रिमियम अनुभव",
+    "premiumExperienceLabel": "प्रिमियम अनुभव",
+    "timezoneHint": "IANA टाइमजोन प्रयोग गर्नुहोस्, जस्तै: Asia/Kolkata, Europe/London, वा America/New_York.",
+    "dateHint": "जन्म मिति स्थानीय क्यालेन्डर ढाँचामा दिनुहोस् (YYYY-MM-DD)।",
+    "timeHint": "जन्म समय स्थानीय समय (24-घण्टा ढाँचा) मा दिनुहोस्।"
+  },
+  "navigation": {
+    "home": "होम",
+    "kundli": "कुण्डली",
+    "compatibility": "मिलान",
+    "rashifal": "राशिफल",
+    "ai": "NAVAGRAHA AI",
+    "reports": "रिपोर्टहरू",
+    "tools": "उपकरणहरू",
+    "panchang": "पञ्चाङ्ग",
+    "consultation": "परामर्श",
+    "shop": "शप",
+    "insights": "इन्साइट्स",
+    "calculators": "क्याल्कुलेटरहरू",
+    "timeTools": "समय उपकरणहरू",
+    "dailyRashifal": "दैनिक राशिफल",
+    "pricing": "मूल्य",
+    "plans": "योजनाहरू",
+    "services": "सेवाहरू",
+    "account": "खाता",
+    "menu": "मेनु",
+    "dashboard": "ड्यासबोर्ड",
+    "onboarding": "अनबोर्डिङ",
+    "askMyChart": "Ask My Chart",
+    "consultations": "परामर्शहरू",
+    "orders": "अर्डरहरू",
+    "chart": "चार्ट",
+    "report": "रिपोर्ट",
+    "settings": "सेटिङ्स",
+    "admin": "एडमिन",
+    "styleGuide": "स्टाइल गाइड",
+    "login": "लगइन",
+    "passwordReset": "पासवर्ड रिसेट"
+  },
+  "footer": {
+    "columns": {
+      "centre": "केन्द्र",
+      "tools": "उपकरणहरू",
+      "services": "सेवाहरू"
+    },
+    "links": {
+      "about": "हाम्रो बारेमा",
+      "contact": "सम्पर्क",
+      "astrologer": "ज्योतिषाचार्य",
+      "allTools": "सबै उपकरणहरू",
+      "numerology": "अंकशास्त्र",
+      "muhurtaLite": "मुहूर्त लाइट",
+      "privacy": "गोपनीयता",
+      "terms": "सर्तहरू",
+      "disclaimer": "अस्वीकरण",
+      "refundPolicy": "फिर्ता नीति"
+    },
+    "languageLabel": "भाषा",
+    "languageHelper": "आज अंग्रेजी सक्रिय छ। भारतीय र अन्तर्राष्ट्रिय भाषाहरू यहाँ सूचीबद्ध छन् र पूर्ण अनुवाद तयार नभएसम्म निष्क्रिय रहनेछन्।"
+  }
+}

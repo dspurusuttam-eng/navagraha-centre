@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "languageName": "Chinese (Traditional)",
+    "languageNativeName": "繁體中文"
+  },
+  "common": {
+    "language": "語言",
+    "englishDefault": "英文（預設）",
+    "live": "已啟用",
+    "planned": "規劃中",
+    "comingSoon": "即將推出",
+    "defaultExperience": "預設體驗",
+    "futureLanguagesNote": "英文仍為目前啟用體驗。其他語言發布後將顯示於此。"
+  },
+  "cta": {
+    "generateKundli": "建立你的 Kundli",
+    "exploreAi": "試用 NAVAGRAHA AI",
+    "bookConsultation": "預約免費諮詢",
+    "signInAccount": "登入 / 帳戶",
+    "unlockFullReport": "取得免費報告"
+  },
+  "labels": {
+    "currencyCode": "INR",
+    "currencyNote": "所有占星服務目前於限時上線期間免費開放。",
+    "limitedFreeAccessLabel": "目前免費（限時上線存取）",
+    "limitedFreeBanner": "限時上線存取：所有占星服務皆免費",
+    "earlyAccessLabel": "搶先體驗高級服務",
+    "premiumExperienceLabel": "高級體驗",
+    "timezoneHint": "請使用 IANA 時區，例如：Asia/Kolkata、Europe/London 或 America/New_York。",
+    "dateHint": "請使用在地日期格式輸入出生日期（YYYY-MM-DD）。",
+    "timeHint": "請使用在地時間格式輸入出生時間（24 小時制）。"
+  },
+  "navigation": {
+    "home": "首頁",
+    "kundli": "Kundli",
+    "compatibility": "配對",
+    "rashifal": "Rashifal",
+    "ai": "NAVAGRAHA AI",
+    "reports": "報告",
+    "tools": "工具",
+    "panchang": "Panchang",
+    "consultation": "諮詢",
+    "shop": "商店",
+    "insights": "洞察",
+    "calculators": "計算工具",
+    "timeTools": "時間工具",
+    "dailyRashifal": "每日 Rashifal",
+    "pricing": "定價",
+    "plans": "方案",
+    "services": "服務",
+    "account": "帳戶",
+    "menu": "選單",
+    "dashboard": "儀表板",
+    "onboarding": "引導流程",
+    "askMyChart": "Ask My Chart",
+    "consultations": "諮詢",
+    "orders": "訂單",
+    "chart": "星盤",
+    "report": "報告",
+    "settings": "設定",
+    "admin": "管理",
+    "styleGuide": "樣式指南",
+    "login": "登入",
+    "passwordReset": "重設密碼"
+  },
+  "footer": {
+    "columns": {
+      "centre": "中心",
+      "tools": "工具",
+      "services": "服務"
+    },
+    "links": {
+      "about": "關於我們",
+      "contact": "聯絡我們",
+      "astrologer": "占星師",
+      "allTools": "全部工具",
+      "numerology": "數字命理",
+      "muhurtaLite": "Muhurta Lite",
+      "privacy": "隱私權",
+      "terms": "條款",
+      "disclaimer": "免責聲明",
+      "refundPolicy": "退款政策"
+    },
+    "languageLabel": "語言",
+    "languageHelper": "目前英文處於啟用狀態。印度語言與國際語言已在此註冊，在翻譯完成前將保持停用。"
+  }
+}

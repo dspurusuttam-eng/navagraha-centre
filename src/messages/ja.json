@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "languageName": "Japanese",
+    "languageNativeName": "日本語"
+  },
+  "common": {
+    "language": "言語",
+    "englishDefault": "英語（デフォルト）",
+    "live": "有効",
+    "planned": "予定",
+    "comingSoon": "近日公開",
+    "defaultExperience": "デフォルト体験",
+    "futureLanguagesNote": "英語が現在の有効な体験です。追加言語は公開後にここへ表示されます。"
+  },
+  "cta": {
+    "generateKundli": "あなたのクンドリを作成",
+    "exploreAi": "NAVAGRAHA AI を試す",
+    "bookConsultation": "無料相談を予約",
+    "signInAccount": "サインイン / アカウント",
+    "unlockFullReport": "無料レポートを取得"
+  },
+  "labels": {
+    "currencyCode": "INR",
+    "currencyNote": "すべての占星術サービスは、期間限定ローンチアクセス中は現在無料です。",
+    "limitedFreeAccessLabel": "現在無料（期間限定ローンチアクセス）",
+    "limitedFreeBanner": "期間限定ローンチアクセス：すべての占星術サービスが無料",
+    "earlyAccessLabel": "早期アクセス プレミアム体験",
+    "premiumExperienceLabel": "プレミアム体験",
+    "timezoneHint": "IANA タイムゾーンを使用してください（例：Asia/Kolkata、Europe/London、America/New_York）。",
+    "dateHint": "生年月日をローカル形式（YYYY-MM-DD）で入力してください。",
+    "timeHint": "出生時刻をローカル形式（24時間）で入力してください。"
+  },
+  "navigation": {
+    "home": "ホーム",
+    "kundli": "クンドリ",
+    "compatibility": "相性",
+    "rashifal": "ラシファル",
+    "ai": "NAVAGRAHA AI",
+    "reports": "レポート",
+    "tools": "ツール",
+    "panchang": "パンチャンガ",
+    "consultation": "相談",
+    "shop": "ショップ",
+    "insights": "インサイト",
+    "calculators": "計算ツール",
+    "timeTools": "時間ツール",
+    "dailyRashifal": "毎日のラシファル",
+    "pricing": "料金",
+    "plans": "プラン",
+    "services": "サービス",
+    "account": "アカウント",
+    "menu": "メニュー",
+    "dashboard": "ダッシュボード",
+    "onboarding": "オンボーディング",
+    "askMyChart": "Ask My Chart",
+    "consultations": "相談履歴",
+    "orders": "注文",
+    "chart": "チャート",
+    "report": "レポート",
+    "settings": "設定",
+    "admin": "管理",
+    "styleGuide": "スタイルガイド",
+    "login": "ログイン",
+    "passwordReset": "パスワード再設定"
+  },
+  "footer": {
+    "columns": {
+      "centre": "センター",
+      "tools": "ツール",
+      "services": "サービス"
+    },
+    "links": {
+      "about": "概要",
+      "contact": "お問い合わせ",
+      "astrologer": "占星術師",
+      "allTools": "すべてのツール",
+      "numerology": "数秘術",
+      "muhurtaLite": "ムフルタ ライト",
+      "privacy": "プライバシー",
+      "terms": "利用規約",
+      "disclaimer": "免責事項",
+      "refundPolicy": "返金ポリシー"
+    },
+    "languageLabel": "言語",
+    "languageHelper": "現在は英語が有効です。インド言語と国際言語はここに登録され、翻訳が完了するまで無効のままになります。"
+  }
+}

@@ -6,7 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
-import { buildPageMetadata } from "@/lib/metadata";
+import { createToolMetadata } from "@/lib/seo/metadata";
+import { getCoreSeoCopy } from "@/lib/seo/seo-config";
+import { getRequestLocale, hasExplicitLocalePrefixInRequest } from "@/modules/localization/request";
 import {
   CredibilityMarkersSection,
   ExpectationSettingSection,
@@ -20,18 +22,26 @@ import {
   ReportPackagesSection,
 } from "@/modules/subscriptions/components/revenue-readiness-panels";
 
-export const metadata = buildPageMetadata({
-  title: "Reports",
-  description:
-    "Explore NAVAGRAHA CENTRE report packages with clear value hierarchy and limited launch free access.",
-  path: "/reports",
-  keywords: [
-    "astrology reports",
-    "career report",
-    "compatibility report",
-    "premium report packages",
-  ],
-});
+export async function generateMetadata() {
+  const locale = await getRequestLocale();
+  const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
+  const localized = getCoreSeoCopy("reports", locale);
+
+  return createToolMetadata({
+    title: localized.title,
+    description: localized.description,
+    path: "/reports",
+    locale,
+    explicitLocalePrefix: hasExplicitLocalePrefix,
+    keywords: [
+      "astrology reports",
+      "kundli report",
+      "career report",
+      "marriage report",
+      "vedic remedies report",
+    ],
+  });
+}
 
 const reportTrustIndicators = [
   "Vedic chart-based system",

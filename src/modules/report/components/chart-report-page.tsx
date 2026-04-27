@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
 import { TrackedLink } from "@/components/analytics/tracked-link";
+import { AstrologyDisclaimer } from "@/components/astrology/astrology-disclaimer";
 import type { GeneratedUserReport } from "@/lib/ai/types";
 import type { PlanetaryBody } from "@/modules/astrology";
 import { Badge } from "@/components/ui/badge";
@@ -362,6 +363,7 @@ export function ChartReportPage({
           <div className="relative z-10 flex flex-wrap items-center gap-3">
             <Badge tone="accent">🔥 Currently Free (Limited Time)</Badge>
             <Badge tone="neutral">{chartReport.interpretation.providerKey}</Badge>
+            <Badge tone="outline">{chartReport.accuracy.confidenceLevel}</Badge>
           </div>
 
           <div className="relative z-10 space-y-4">
@@ -394,6 +396,20 @@ export function ChartReportPage({
               label="Report Language"
               value={chartReport.overview.preferredLanguageLabel}
             />
+          </div>
+
+          <div className="relative z-10 rounded-[var(--radius-xl)] border border-[rgba(215,187,131,0.18)] bg-[rgba(215,187,131,0.06)] px-4 py-4">
+            <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+              Prediction Confidence
+            </p>
+            <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-foreground)]">
+              {chartReport.accuracy.confidenceLine}
+            </p>
+            {chartReport.accuracy.incompleteDataNotice ? (
+              <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                {chartReport.accuracy.incompleteDataNotice}
+              </p>
+            ) : null}
           </div>
         </Card>
 
@@ -969,6 +985,7 @@ export function ChartReportPage({
                 {line}
               </p>
             ))}
+            <AstrologyDisclaimer text={chartReport.accuracy.disclaimer} />
           </div>
         </Card>
       </div>

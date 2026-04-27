@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "languageName": "Bengali",
+    "languageNativeName": "বাংলা"
+  },
+  "common": {
+    "language": "ভাষা",
+    "englishDefault": "ইংরেজি (ডিফল্ট)",
+    "live": "সক্রিয়",
+    "planned": "পরিকল্পিত",
+    "comingSoon": "শীঘ্রই আসছে",
+    "defaultExperience": "ডিফল্ট অভিজ্ঞতা",
+    "futureLanguagesNote": "এখন ইংরেজি লাইভ অভিজ্ঞতা। অন্যান্য ভাষা প্রকাশিত হলে এখানে দেখা যাবে।"
+  },
+  "cta": {
+    "generateKundli": "আপনার কুণ্ডলী তৈরি করুন",
+    "exploreAi": "NAVAGRAHA AI চেষ্টা করুন",
+    "bookConsultation": "ফ্রি পরামর্শ বুক করুন",
+    "signInAccount": "সাইন ইন / অ্যাকাউন্ট",
+    "unlockFullReport": "ফ্রি রিপোর্ট পান"
+  },
+  "labels": {
+    "currencyCode": "INR",
+    "currencyNote": "সীমিত লঞ্চ অ্যাক্সেসে এখন সব জ্যোতিষ সেবা বিনামূল্যে।",
+    "limitedFreeAccessLabel": "এখন বিনামূল্যে (সীমিত লঞ্চ অ্যাক্সেস)",
+    "limitedFreeBanner": "সীমিত লঞ্চ অ্যাক্সেস: সব জ্যোতিষ সেবা ফ্রি",
+    "earlyAccessLabel": "আর্লি অ্যাক্সেস প্রিমিয়াম অভিজ্ঞতা",
+    "premiumExperienceLabel": "প্রিমিয়াম অভিজ্ঞতা",
+    "timezoneHint": "IANA টাইমজোন ব্যবহার করুন, যেমন: Asia/Kolkata, Europe/London, বা America/New_York.",
+    "dateHint": "জন্মতারিখ স্থানীয় ক্যালেন্ডার ফরম্যাটে দিন (YYYY-MM-DD)।",
+    "timeHint": "জন্মসময় স্থানীয় সময়ে দিন (24-ঘণ্টা ফরম্যাট)।"
+  },
+  "navigation": {
+    "home": "হোম",
+    "kundli": "কুণ্ডলী",
+    "compatibility": "সামঞ্জস্য",
+    "rashifal": "রাশিফল",
+    "ai": "NAVAGRAHA AI",
+    "reports": "রিপোর্ট",
+    "tools": "টুলস",
+    "panchang": "পঞ্চাং",
+    "consultation": "পরামর্শ",
+    "shop": "শপ",
+    "insights": "ইনসাইটস",
+    "calculators": "ক্যালকুলেটর",
+    "timeTools": "টাইম টুলস",
+    "dailyRashifal": "দৈনিক রাশিফল",
+    "pricing": "প্রাইসিং",
+    "plans": "প্ল্যান",
+    "services": "সেবা",
+    "account": "অ্যাকাউন্ট",
+    "menu": "মেনু",
+    "dashboard": "ড্যাশবোর্ড",
+    "onboarding": "অনবোর্ডিং",
+    "askMyChart": "Ask My Chart",
+    "consultations": "পরামর্শসমূহ",
+    "orders": "অর্ডার",
+    "chart": "চার্ট",
+    "report": "রিপোর্ট",
+    "settings": "সেটিংস",
+    "admin": "অ্যাডমিন",
+    "styleGuide": "স্টাইল গাইড",
+    "login": "লগইন",
+    "passwordReset": "পাসওয়ার্ড রিসেট"
+  },
+  "footer": {
+    "columns": {
+      "centre": "সেন্টার",
+      "tools": "টুলস",
+      "services": "সেবা"
+    },
+    "links": {
+      "about": "আমাদের সম্পর্কে",
+      "contact": "যোগাযোগ",
+      "astrologer": "জ্যোতিষী",
+      "allTools": "সব টুলস",
+      "numerology": "সংখ্যাতত্ত্ব",
+      "muhurtaLite": "মুহূর্ত লাইট",
+      "privacy": "প্রাইভেসি",
+      "terms": "শর্তাবলি",
+      "disclaimer": "ডিসক্লেইমার",
+      "refundPolicy": "রিফান্ড নীতি"
+    },
+    "languageLabel": "ভাষা",
+    "languageHelper": "আজ ইংরেজি সক্রিয়। ভারতীয় ও আন্তর্জাতিক ভাষাগুলো এখানে দেখানো আছে এবং পূর্ণ অনুবাদ প্রস্তুত না হওয়া পর্যন্ত নিষ্ক্রিয় থাকবে।"
+  }
+}

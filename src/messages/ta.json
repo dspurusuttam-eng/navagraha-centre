@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "languageName": "Tamil",
+    "languageNativeName": "தமிழ்"
+  },
+  "common": {
+    "language": "மொழி",
+    "englishDefault": "ஆங்கிலம் (இயல்புநிலை)",
+    "live": "செயலில்",
+    "planned": "திட்டமிடப்பட்டது",
+    "comingSoon": "விரைவில் வரும்",
+    "defaultExperience": "இயல்புநிலை அனுபவம்",
+    "futureLanguagesNote": "இப்போது ஆங்கிலம் மட்டுமே நேரடி அனுபவம். பிற மொழிகள் வெளியானதும் இங்கே கிடைக்கும்."
+  },
+  "cta": {
+    "generateKundli": "உங்கள் குண்டலியை உருவாக்கவும்",
+    "exploreAi": "NAVAGRAHA AI-யை முயற்சிக்கவும்",
+    "bookConsultation": "இலவச ஆலோசனையை பதிவு செய்யவும்",
+    "signInAccount": "உள்நுழை / கணக்கு",
+    "unlockFullReport": "இலவச அறிக்கையை பெறவும்"
+  },
+  "labels": {
+    "currencyCode": "INR",
+    "currencyNote": "வரையறுக்கப்பட்ட தொடக்க அணுகலில் அனைத்து ஜோதிட சேவைகளும் தற்போது இலவசம்.",
+    "limitedFreeAccessLabel": "தற்போது இலவசம் (வரையறுக்கப்பட்ட தொடக்க அணுகல்)",
+    "limitedFreeBanner": "வரையறுக்கப்பட்ட தொடக்க அணுகல்: அனைத்து ஜோதிட சேவைகளும் இலவசம்",
+    "earlyAccessLabel": "ஆரம்ப அணுகல் பிரீமியம் அனுபவம்",
+    "premiumExperienceLabel": "பிரீமியம் அனுபவம்",
+    "timezoneHint": "IANA நேரமண்டலத்தை பயன்படுத்தவும், உதா: Asia/Kolkata, Europe/London, அல்லது America/New_York.",
+    "dateHint": "உங்கள் பிறந்த தேதியை உள்ளூர் நாட்காட்டி வடிவில் உள்ளிடவும் (YYYY-MM-DD).",
+    "timeHint": "உங்கள் பிறந்த நேரத்தை உள்ளூர் நேரத்தில் உள்ளிடவும் (24 மணி வடிவம்)."
+  },
+  "navigation": {
+    "home": "முகப்பு",
+    "kundli": "குண்டலி",
+    "compatibility": "இணக்கம்",
+    "rashifal": "ராசிபலன்",
+    "ai": "NAVAGRAHA AI",
+    "reports": "அறிக்கைகள்",
+    "tools": "கருவிகள்",
+    "panchang": "பஞ்சாங்கம்",
+    "consultation": "ஆலோசனை",
+    "shop": "கடை",
+    "insights": "இன்சைட்ஸ்",
+    "calculators": "கணக்கீட்டுக் கருவிகள்",
+    "timeTools": "நேர கருவிகள்",
+    "dailyRashifal": "தினசரி ராசிபலன்",
+    "pricing": "விலைத் திட்டம்",
+    "plans": "திட்டங்கள்",
+    "services": "சேவைகள்",
+    "account": "கணக்கு",
+    "menu": "மெனு",
+    "dashboard": "டாஷ்போர்டு",
+    "onboarding": "ஆன்போர்டிங்",
+    "askMyChart": "Ask My Chart",
+    "consultations": "ஆலோசனைகள்",
+    "orders": "ஆர்டர்கள்",
+    "chart": "அட்டவணை",
+    "report": "அறிக்கை",
+    "settings": "அமைப்புகள்",
+    "admin": "நிர்வாகம்",
+    "styleGuide": "பாணி வழிகாட்டி",
+    "login": "உள்நுழைவு",
+    "passwordReset": "கடவுச்சொல் மீட்டமைப்பு"
+  },
+  "footer": {
+    "columns": {
+      "centre": "மையம்",
+      "tools": "கருவிகள்",
+      "services": "சேவைகள்"
+    },
+    "links": {
+      "about": "எங்களை பற்றி",
+      "contact": "தொடர்பு",
+      "astrologer": "ஜோதிடர்",
+      "allTools": "அனைத்து கருவிகள்",
+      "numerology": "எண் கணிதம்",
+      "muhurtaLite": "முஹூர்த்த லைட்",
+      "privacy": "தனியுரிமை",
+      "terms": "விதிமுறைகள்",
+      "disclaimer": "பொறுப்புத் துறப்பு",
+      "refundPolicy": "பணம் திருப்பி வழங்கல் கொள்கை"
+    },
+    "languageLabel": "மொழி",
+    "languageHelper": "இன்று ஆங்கிலம் செயல்பாட்டில் உள்ளது. இந்திய மற்றும் சர்வதேச மொழிகள் இங்கே பட்டியலிடப்பட்டுள்ளன; முழு மொழிபெயர்ப்புகள் தயார் ஆகும் வரை அவை முடக்கப்பட்டே இருக்கும்."
+  }
+}

@@ -1,148 +1,127 @@
 import type { Metadata } from "next";
-import { siteConfig } from "@/config/site";
+import { createArticleMetadata } from "@/lib/seo/metadata";
+import {
+  createArticleSchema,
+  createBreadcrumbSchema,
+  createCollectionPageSchema,
+  createFaqSchema,
+  createPersonSchema,
+  type JsonLdRecord,
+} from "@/lib/seo/schema";
+import {
+  defaultLocale,
+  resolveLocale,
+  type SupportedLocale,
+} from "@/modules/localization/config";
 import type { ContentEntry } from "@/modules/content/types";
 
-type StructuredDataRecord = Record<string, unknown>;
+type ContentMetadataOptions = {
+  locale?: string | null;
+  explicitLocalePrefix?: boolean;
+  alternatesByLocale?: Partial<Record<SupportedLocale, string>>;
+};
 
-function buildBreadcrumbStructuredData(
-  entry: ContentEntry
-): StructuredDataRecord {
-  return {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: siteConfig.url,
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Insights",
-        item: new URL("/insights", siteConfig.url).toString(),
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: entry.title,
-        item: new URL(entry.path, siteConfig.url).toString(),
-      },
-    ],
-  };
-}
-
-function buildArticleStructuredData(entry: ContentEntry): StructuredDataRecord {
-  return {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: entry.title,
-    description: entry.description,
-    datePublished: entry.publishedAt,
-    dateModified: entry.updatedAt,
-    mainEntityOfPage: new URL(entry.path, siteConfig.url).toString(),
-    author: {
-      "@type": "Person",
-      name: entry.author.name,
-      jobTitle: entry.author.title,
-    },
-    publisher: {
-      "@type": "Organization",
-      name: siteConfig.name,
-      url: siteConfig.url,
-    },
-    reviewer: entry.reviewer
-      ? {
-          "@type": "Person",
-          name: entry.reviewer.name,
-          jobTitle: entry.reviewer.title,
-        }
-      : undefined,
-  };
-}
-
-function buildFaqStructuredData(
-  entry: ContentEntry
-): StructuredDataRecord | null {
-  if (!entry.faqItems?.length) {
-    return null;
+function getCollectionInfo(path: string) {
+  if (path.startsWith("/from-the-desk")) {
+    return {
+      path: "/from-the-desk",
+      label: "From the Desk of J P Sarmah",
+    };
   }
 
   return {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: entry.faqItems.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item.answer,
-      },
-    })),
+    path: "/insights",
+    label: "Insights",
   };
 }
 
-export function buildContentMetadata(entry: ContentEntry): Metadata {
-  const url = new URL(entry.path, siteConfig.url).toString();
+export function buildContentMetadata(
+  entry: ContentEntry,
+  options?: ContentMetadataOptions
+): Metadata {
+  const locale = resolveLocale(options?.locale);
 
-  return {
-    title: entry.title,
-    description: entry.description,
-    keywords: ["NAVAGRAHA CENTRE", "Joy Prakash Sarmah", ...entry.keywords],
-    alternates: {
-      canonical: entry.path,
-    },
-    robots: {
-      index: entry.status === "published",
-      follow: entry.status === "published",
-    },
-    authors: [{ name: entry.author.name }],
-    openGraph: {
-      title: entry.title,
-      description: entry.description,
-      url,
-      siteName: siteConfig.name,
-      type: "article",
-      publishedTime: entry.publishedAt,
-      modifiedTime: entry.updatedAt,
-      authors: [entry.author.name],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: entry.title,
-      description: entry.description,
-    },
-  };
+  return createArticleMetadata({
+    title: entry.seoTitle || entry.title,
+    description: entry.seoDescription || entry.description,
+    path: entry.path,
+    locale,
+    explicitLocalePrefix: options?.explicitLocalePrefix,
+    alternatesByLocale: options?.alternatesByLocale,
+    keywords: entry.keywords,
+    imagePath: entry.featuredImage?.src,
+    publishedTime: entry.publishedAt,
+    modifiedTime: entry.updatedAt,
+    authors: [entry.author.name],
+    index: entry.status === "published",
+  });
 }
 
-export function getContentStructuredData(entry: ContentEntry) {
-  const structuredData: StructuredDataRecord[] = [
-    buildBreadcrumbStructuredData(entry),
-    buildArticleStructuredData(entry),
+export function getContentStructuredData(
+  entry: ContentEntry,
+  options?: {
+    locale?: string | null;
+    explicitLocalePrefix?: boolean;
+  }
+) {
+  const locale = resolveLocale(options?.locale);
+  const collection = getCollectionInfo(entry.path);
+  const structuredData: JsonLdRecord[] = [
+    createBreadcrumbSchema({
+      locale,
+      explicitLocalePrefix: options?.explicitLocalePrefix,
+      items: [
+        { name: "Home", path: "/" },
+        { name: collection.label, path: collection.path },
+        { name: entry.title, path: entry.path },
+      ],
+    }),
+    createArticleSchema({
+      title: entry.title,
+      description: entry.description,
+      path: entry.path,
+      locale,
+      explicitLocalePrefix: options?.explicitLocalePrefix,
+      publishedAt: entry.publishedAt,
+      updatedAt: entry.updatedAt,
+      imagePath: entry.featuredImage?.src,
+      category: entry.category,
+      keywords: entry.keywords,
+      authorName: entry.author.name,
+    }),
+    createPersonSchema({
+      locale,
+      path: "/joy-prakash-sarmah",
+    }),
   ];
 
-  const faqStructuredData = buildFaqStructuredData(entry);
-
-  if (faqStructuredData) {
-    structuredData.push(faqStructuredData);
+  if (entry.faqItems?.length) {
+    structuredData.push(
+      createFaqSchema({
+        questions: entry.faqItems,
+      })
+    );
   }
 
   return structuredData;
 }
 
-export function getInsightsCollectionStructuredData() {
-  return {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    name: "NAVAGRAHA CENTRE Insights",
+export function getInsightsCollectionStructuredData(options?: {
+  locale?: string | null;
+}) {
+  const locale = resolveLocale(options?.locale);
+
+  return createCollectionPageSchema({
+    name: "From the Desk of J P Sarmah",
     description:
-      "Editorial articles, forecasts, FAQs, and remedy guidance content from NAVAGRAHA CENTRE.",
-    url: new URL("/insights", siteConfig.url).toString(),
-    publisher: {
-      "@type": "Organization",
-      name: siteConfig.name,
-      url: siteConfig.url,
-    },
-  };
+      "Official NAVAGRAHA CENTRE editorial desk for Daily Rashifal, Panchang guidance, Vedic astrology insights, and remedies.",
+    path: "/from-the-desk",
+    locale,
+  });
+}
+
+export function getDefaultContentAlternates() {
+  return {
+    [defaultLocale]: "/from-the-desk",
+  } as Partial<Record<SupportedLocale, string>>;
 }

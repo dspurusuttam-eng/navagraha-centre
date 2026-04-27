@@ -4,6 +4,10 @@ import type {
   ChartInterpretationSection,
   ChartInterpretationSectionKey,
 } from "@/modules/ai/types";
+import {
+  buildPredictionPrompt,
+  resolvePredictionLocale,
+} from "@/lib/astrology/accuracy";
 
 const sectionDefinitions = [
   { key: "orientation", title: "Orientation", label: "ORIENTATION" },
@@ -109,12 +113,25 @@ export function buildChartInterpretationPrompt(
   template: ChartInterpretationPromptTemplateContent = defaultChartInterpretationPromptTemplate
 ) {
   const payload = buildPromptPayload(request);
+  const locale = resolvePredictionLocale(request.preferredLanguageLabel);
+  const structuredPrompt = buildPredictionPrompt({
+    toolType: "REPORT",
+    locale,
+    baseSystemPrompt: template.systemPrompt,
+    preferredLanguageLabel: request.preferredLanguageLabel,
+    astrologyDataSummary: payload,
+    outputFormatRequirements: [
+      "Return plain text sections only.",
+      "Use exactly these labels in this order: SUMMARY, ORIENTATION, STRENGTHS, CONSIDERATIONS, INTEGRATION, CAUTION.",
+      "Keep each section to one concise and readable paragraph.",
+    ],
+  });
 
   return {
-    instructions: template.systemPrompt,
+    instructions: structuredPrompt.instructions,
     input: [
       template.userPrompt,
-      JSON.stringify(payload, null, 2),
+      structuredPrompt.input,
     ].join("\n\n"),
   };
 }

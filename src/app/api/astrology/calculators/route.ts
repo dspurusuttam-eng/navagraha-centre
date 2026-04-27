@@ -1,4 +1,10 @@
 import { apiErrorResponse, readJsonObjectBody } from "@/lib/api/http";
+import {
+  getFirstAccuracyErrorMessage,
+  validateCompatibilityRequestInput,
+  validateNumerologyRequestInput,
+  validatePanchangRequestInput,
+} from "@/lib/astrology/accuracy";
 import { runAstrologyCalculator } from "@/modules/calculators/service";
 
 export const dynamic = "force-dynamic";
@@ -56,30 +62,83 @@ export async function POST(request: Request) {
       });
       break;
     case "birth-number":
+      {
+      const validation = validateNumerologyRequestInput({
+        dateOfBirth: readText(input.dateOfBirth),
+      });
+
+      if (!validation.ok) {
+        return apiErrorResponse({
+          statusCode: 422,
+          code: "INVALID_INPUT",
+          message: getFirstAccuracyErrorMessage(
+            validation.issues,
+            "Date of birth is required."
+          ),
+        });
+      }
+
       result = await runAstrologyCalculator({
         calculator,
         input: {
-          dateOfBirth: readText(input.dateOfBirth),
+          dateOfBirth: validation.data.dateOfBirth,
         },
       });
+      }
       break;
     case "compatibility-quick":
+      {
+      const validation = validateCompatibilityRequestInput({
+        firstDateOfBirth: readText(input.firstDateOfBirth),
+        secondDateOfBirth: readText(input.secondDateOfBirth),
+      });
+
+      if (!validation.ok) {
+        return apiErrorResponse({
+          statusCode: 422,
+          code: "INVALID_INPUT",
+          message: getFirstAccuracyErrorMessage(
+            validation.issues,
+            "Both birth dates are required."
+          ),
+        });
+      }
+
       result = await runAstrologyCalculator({
         calculator,
         input: {
-          firstDateOfBirth: readText(input.firstDateOfBirth),
-          secondDateOfBirth: readText(input.secondDateOfBirth),
+          firstDateOfBirth: validation.data.firstDateOfBirth,
+          secondDateOfBirth: validation.data.secondDateOfBirth,
         },
       });
+      }
       break;
     case "date-check":
+      {
+      const validation = validatePanchangRequestInput({
+        date: readText(input.date),
+        place: readText(input.place),
+      });
+
+      if (!validation.ok) {
+        return apiErrorResponse({
+          statusCode: 422,
+          code: "INVALID_INPUT",
+          message: getFirstAccuracyErrorMessage(
+            validation.issues,
+            "Date and place are required."
+          ),
+        });
+      }
+
       result = await runAstrologyCalculator({
         calculator,
         input: {
-          date: readText(input.date),
-          place: readText(input.place),
+          date: validation.data.date,
+          place: validation.data.place,
         },
       });
+      }
       break;
     default:
       return apiErrorResponse({

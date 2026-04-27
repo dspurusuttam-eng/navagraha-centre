@@ -15,12 +15,14 @@ import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
-import { buildPageMetadata } from "@/lib/metadata";
+import { createPageMetadata } from "@/lib/seo/metadata";
+import { getCoreSeoCopy } from "@/lib/seo/seo-config";
 import { siteConfig } from "@/config/site";
 import { contentTypeLabels } from "@/modules/content";
 import { curatedContentEntries } from "@/modules/content/catalog";
 import { contentHubs } from "@/modules/content/hubs";
 import { globalCtaCopy } from "@/modules/localization/copy";
+import { getRequestLocale, hasExplicitLocalePrefixInRequest } from "@/modules/localization/request";
 import {
   AstrologerAuthoritySection,
   CredibilityMarkersSection,
@@ -29,12 +31,29 @@ import {
   TrustFaqSection,
   TrustIndicatorStrip,
 } from "@/modules/marketing/components/trust-conversion-sections";
-import { homePage } from "@/modules/marketing/content";
 import { RevenuePathwaysCard } from "@/modules/subscriptions/components/revenue-readiness-panels";
 
-export const metadata = buildPageMetadata({
-  ...homePage.metadata,
-});
+export async function generateMetadata() {
+  const locale = await getRequestLocale();
+  const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
+  const localized = getCoreSeoCopy("home", locale);
+
+  return createPageMetadata({
+    title: localized.title,
+    description: localized.description,
+    path: "/",
+    locale,
+    explicitLocalePrefix: hasExplicitLocalePrefix,
+    keywords: [
+      "AI Vedic astrology",
+      "kundli",
+      "daily rashifal",
+      "daily panchang",
+      "numerology",
+      "astrology reports",
+    ],
+  });
+}
 export const revalidate = 3600;
 
 function formatPublishedDate(value: string) {
@@ -265,10 +284,10 @@ const differentiators = [
 
 const insightCategories = [
   { title: "Daily Rashifal", href: "/rashifal" },
-  { title: "Monthly Forecast", href: "/insights/april-2026-monthly-forecast" },
+  { title: "Monthly Forecast", href: "/from-the-desk/april-2026-monthly-forecast" },
   {
     title: "Remedies",
-    href: "/insights/how-to-approach-remedies-with-discernment",
+    href: "/from-the-desk/how-to-approach-remedies-with-discernment",
   },
   { title: "Relationship Guidance", href: "/compatibility-hub" },
   { title: "Spiritual Guidance", href: "/navagraha-ai-explainer" },
@@ -303,7 +322,7 @@ export default function HomePage() {
     url: siteConfig.url,
     potentialAction: {
       "@type": "SearchAction",
-      target: `${siteConfig.url}/insights?query={search_term_string}`,
+      target: `${siteConfig.url}/from-the-desk?query={search_term_string}`,
       "query-input": "required name=search_term_string",
     },
   } as const;

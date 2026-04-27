@@ -16,6 +16,7 @@ import {
   type SubscriptionRetentionIntelligenceSnapshot,
 } from "@/modules/subscriptions";
 import { ChartReportPage } from "@/modules/report/components/chart-report-page";
+import { getRequestLocaleDefinition } from "@/modules/localization/request";
 
 export const metadata = buildPageMetadata({
   title: "Chart Report",
@@ -31,6 +32,7 @@ export const metadata = buildPageMetadata({
 
 export default async function DashboardReportPage() {
   const session = await requireUserSession();
+  const localeDefinition = await getRequestLocaleDefinition();
   let report: Awaited<ReturnType<typeof generateUserReport>> | null = null;
   let offers: OfferRecommendationResult =
     createEmptyOfferRecommendationResult("report");
@@ -40,7 +42,12 @@ export default async function DashboardReportPage() {
 
   try {
     [report, offers, subscriptionState] = await Promise.all([
-      generateUserReport(session.user.id, session.user.name),
+      generateUserReport(
+        session.user.id,
+        session.user.name,
+        localeDefinition.label,
+        localeDefinition.code
+      ),
       (async (): Promise<OfferRecommendationResult> => {
         try {
           return await getOfferRecommendations({

@@ -14,7 +14,9 @@ import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
-import { buildPageMetadata } from "@/lib/metadata";
+import { createToolMetadata } from "@/lib/seo/metadata";
+import { getCoreSeoCopy } from "@/lib/seo/seo-config";
+import { getRequestLocale, hasExplicitLocalePrefixInRequest } from "@/modules/localization/request";
 import {
   CredibilityMarkersSection,
   ExpectationSettingSection,
@@ -26,18 +28,26 @@ import {
   RevenuePathwaysCard,
 } from "@/modules/subscriptions/components/revenue-readiness-panels";
 
-export const metadata = buildPageMetadata({
-  title: "NAVAGRAHA AI",
-  description:
-    "NAVAGRAHA AI is your chart-aware astrology intelligence system for Kundli, compatibility, career, finance, and daily guidance.",
-  path: "/ai",
-  keywords: [
-    "vedi astrology ai",
-    "kundli ai",
-    "chart aware astrology assistant",
-    "navagraha ai",
-  ],
-});
+export async function generateMetadata() {
+  const locale = await getRequestLocale();
+  const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
+  const localized = getCoreSeoCopy("navagrahaAi", locale);
+
+  return createToolMetadata({
+    title: localized.title,
+    description: localized.description,
+    path: "/ai",
+    locale,
+    explicitLocalePrefix: hasExplicitLocalePrefix,
+    keywords: [
+      "navagraha ai",
+      "ai astrology guidance",
+      "kundli interpretation",
+      "vedic astrology ai",
+      "chart assistant",
+    ],
+  });
+}
 export const revalidate = 3600;
 
 const aiTools = [

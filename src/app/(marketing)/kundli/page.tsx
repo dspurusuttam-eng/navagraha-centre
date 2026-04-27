@@ -3,7 +3,9 @@ import { PageHero } from "@/components/site/page-hero";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
-import { buildPageMetadata } from "@/lib/metadata";
+import { createToolMetadata } from "@/lib/seo/metadata";
+import { getCoreSeoCopy } from "@/lib/seo/seo-config";
+import { getRequestLocale, hasExplicitLocalePrefixInRequest } from "@/modules/localization/request";
 import {
   CredibilityMarkersSection,
   ExpectationSettingSection,
@@ -12,19 +14,26 @@ import {
   TrustIndicatorStrip,
 } from "@/modules/marketing/components/trust-conversion-sections";
 
-export const metadata = buildPageMetadata({
-  title: "Kundli",
-  description:
-    "Generate your Kundli with validated birth context, structured chart output, and guided continuation into AI, reports, and consultation.",
-  path: "/kundli",
-  keywords: [
-    "kundli",
-    "vedic birth chart",
-    "sidereal kundli",
-    "lagna chart",
-    "kundli guidance",
-  ],
-});
+export async function generateMetadata() {
+  const locale = await getRequestLocale();
+  const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
+  const localized = getCoreSeoCopy("kundli", locale);
+
+  return createToolMetadata({
+    title: localized.title,
+    description: localized.description,
+    path: "/kundli",
+    locale,
+    explicitLocalePrefix: hasExplicitLocalePrefix,
+    keywords: [
+      "free kundli",
+      "AI birth chart analysis",
+      "lagna chart",
+      "vedic kundli",
+      "rashi and navamsa guidance",
+    ],
+  });
+}
 export const revalidate = 3600;
 
 const kundliTrustIndicators = [
@@ -148,4 +157,3 @@ export default function KundliPage() {
     </>
   );
 }
-

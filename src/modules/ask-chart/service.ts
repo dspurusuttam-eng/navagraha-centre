@@ -1,6 +1,17 @@
 import "server-only";
 
 import type { Prisma } from "@prisma/client";
+import {
+  calculatePredictionConfidence,
+  formatConfidenceLine,
+  getAstrologyDisclaimer,
+  getIncompleteDataFallback,
+  getMissingBirthDetailsFallback,
+  logAccuracyEvent,
+  resolvePredictionLocale,
+  validateAssistantQuestionInput,
+  validateKundliChartCompleteness,
+} from "@/lib/astrology/accuracy";
 import { getPrisma } from "@/lib/prisma";
 import { trackAssistantUsed } from "@/modules/conversion/events";
 import type { AiTaskKind } from "@/modules/ai/tasks";
@@ -51,7 +62,7 @@ const starterPrompts = [
 ] as const;
 
 const unsupportedScopePattern =
-  /\b(diagnose|medical advice|legal advice|financial advice|lottery|gambling|stock tip|sure shot|guaranteed result|guaranteed outcome)\b/i;
+  /\b(diagnose|medical advice|legal advice|financial advice|lottery|gambling|stock tip|sure shot|guaranteed result|guaranteed outcome|black magic|animal sacrifice|death prediction)\b/i;
 
 const planetaryKeywordMap = [
   { body: "SUN", patterns: [/\bsun\b/i, /\bsolar\b/i] },
@@ -766,14 +777,57 @@ function formatConfidenceLabel(value: AstrologyAssistantStructuredResponse["conf
   return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
-function formatStructuredReplyForConversation(
-  response: AstrologyAssistantStructuredResponse
+function toPredictionConfidenceLevel(
+  value: AstrologyAssistantStructuredResponse["confidence"]
 ) {
-  return [
+  if (value === "high") {
+    return "HIGH" as const;
+  }
+
+  if (value === "medium") {
+    return "MEDIUM" as const;
+  }
+
+  return "LOW" as const;
+}
+
+function toAssistantConfidenceFromPredictionLevel(
+  level: "HIGH" | "MEDIUM" | "LOW" | "INCOMPLETE"
+): AstrologyAssistantStructuredResponse["confidence"] {
+  if (level === "HIGH") {
+    return "high";
+  }
+
+  if (level === "MEDIUM") {
+    return "medium";
+  }
+
+  return "low";
+}
+
+function formatStructuredReplyForConversation(
+  response: AstrologyAssistantStructuredResponse,
+  options?: {
+    locale?: string | null;
+    includeDisclaimer?: boolean;
+  }
+) {
+  const locale = resolvePredictionLocale(options?.locale);
+  const lines = [
     response.answer,
     `Reasoning: ${response.reasoning}`,
     `Confidence: ${formatConfidenceLabel(response.confidence)}`,
-  ].join("\n\n");
+    formatConfidenceLine({
+      locale,
+      level: toPredictionConfidenceLevel(response.confidence),
+    }),
+  ];
+
+  if (options?.includeDisclaimer) {
+    lines.push(`Disclaimer: ${getAstrologyDisclaimer(locale)}`);
+  }
+
+  return lines.join("\n\n");
 }
 
 function applyFreePlanResponseGuardrailsNormalized(
@@ -949,6 +1003,29 @@ function buildFallbackStructuredReply(
   };
 }
 
+function buildAccuracyConfidence(input: {
+  birthProfile: ChartOverview["birthProfile"];
+  chartVerified: boolean;
+  astrologyDataComplete: boolean;
+}) {
+  const birthProfile = input.birthProfile;
+
+  return calculatePredictionConfidence({
+    hasBirthDate: Boolean(birthProfile?.birthDate),
+    hasBirthTime: Boolean(birthProfile?.birthTime),
+    hasBirthPlace: Boolean(birthProfile?.city && birthProfile?.country),
+    hasCoordinates: Boolean(
+      typeof birthProfile?.latitude === "number" &&
+        typeof birthProfile?.longitude === "number"
+    ),
+    hasTimezone: Boolean(birthProfile?.timezone),
+    isBirthTimeApproximate:
+      birthProfile?.birthTime === "00:00" || birthProfile?.birthTime === "12:00",
+    chartVerified: input.chartVerified,
+    astrologyDataComplete: input.astrologyDataComplete,
+  });
+}
+
 async function buildToolBundle(
   userId: string,
   question: string,
@@ -1025,15 +1102,23 @@ async function generateAssistantReply(
   overview: ChartOverview,
   toolBundle: AskMyChartToolBundle,
   chartContext: ChartAiContext,
-  planType: UserPlanType
+  planType: UserPlanType,
+  localeCode?: string | null,
+  localeLabel?: string | null
 ): Promise<AskMyChartReplyResult> {
+  const resolvedLocale = resolvePredictionLocale(
+    localeCode ?? localeLabel ?? overview.preferredLanguageLabel
+  );
   const classification = classifyQuestion(question);
 
   if (!classification.supported) {
     const structuredResponse = buildUnsupportedStructuredReply();
 
     return {
-      assistantMessage: formatStructuredReplyForConversation(structuredResponse),
+      assistantMessage: formatStructuredReplyForConversation(structuredResponse, {
+        locale: resolvedLocale,
+        includeDisclaimer: true,
+      }),
       structuredResponse,
       providerKey: "policy-refusal",
       model: null,
@@ -1056,7 +1141,8 @@ async function generateAssistantReply(
   const response = await generateAstrologyResponse({
     question,
     userName,
-    preferredLanguageLabel: overview.preferredLanguageLabel,
+    preferredLocaleCode: resolvedLocale,
+    preferredLanguageLabel: localeLabel ?? overview.preferredLanguageLabel,
     planType,
     groundedScope: classification.guidance,
     taskKind: classification.taskKind,
@@ -1070,7 +1156,10 @@ async function generateAssistantReply(
       : response.structured;
 
   return {
-    assistantMessage: formatStructuredReplyForConversation(structuredResponse),
+    assistantMessage: formatStructuredReplyForConversation(structuredResponse, {
+      locale: resolvedLocale,
+      includeDisclaimer: true,
+    }),
     structuredResponse,
     providerKey: response.providerKey,
     model: response.model,
@@ -1247,18 +1336,30 @@ export async function sendAskMyChartMessage(input: {
   userName: string;
   sessionId: string;
   message: string;
+  localeCode?: string | null;
+  localeLabel?: string | null;
 }): Promise<AskMyChartSendMessageResult> {
-  const question = normalizeQuestion(input.message);
+  const locale = resolvePredictionLocale(input.localeCode ?? input.localeLabel);
+  const questionValidation = validateAssistantQuestionInput({
+    question: input.message,
+    locale,
+    maxLength: maxQuestionLength,
+  });
 
-  if (!question) {
-    throw new Error("Enter a grounded chart question before sending.");
-  }
-
-  if (question.length > maxQuestionLength) {
+  if (!questionValidation.ok) {
     throw new Error(
-      `Keep each question within ${maxQuestionLength} characters for a focused response.`
+      questionValidation.issues[0]?.message ??
+        "Enter a grounded chart question before sending."
     );
   }
+
+  const question = questionValidation.data.question;
+
+  logAccuracyEvent("ask-chart-input-validated", {
+    locale,
+    questionLength: question.length,
+    warningCount: questionValidation.issues.length,
+  });
 
   const prisma = getPrisma();
   const [usageCheck, sessionRecord, savedChartResult] = await Promise.all([
@@ -1331,13 +1432,15 @@ export async function sendAskMyChartMessage(input: {
 
     if (!savedChartResult.success) {
       structuredResponse = {
-        answer:
-          "I could not load a verified chart context right now, so I am pausing grounded interpretation.",
+        answer: getMissingBirthDetailsFallback(locale),
         reasoning:
-          "The saved chart pipeline is currently unavailable for this account. Please review onboarding birth details and try again.",
+          "Saved chart data is unavailable, so the assistant cannot provide a grounded personalized prediction right now.",
         confidence: "low",
       };
-      assistantMessage = formatStructuredReplyForConversation(structuredResponse);
+      assistantMessage = formatStructuredReplyForConversation(structuredResponse, {
+        locale,
+        includeDisclaimer: true,
+      });
       providerKey = "chart-context-fallback";
       model = null;
       policyPassed = false;
@@ -1357,16 +1460,27 @@ export async function sendAskMyChartMessage(input: {
       const overview = await getChartOverview(input.userId, {
         preloadedSavedChartResult: savedChartResult,
       });
+      const chartCompleteness = validateKundliChartCompleteness(
+        savedChartResult.data.chart
+      );
+      const confidenceSnapshot = buildAccuracyConfidence({
+        birthProfile: overview.birthProfile,
+        chartVerified:
+          savedChartResult.data.chart.verification.is_verified_for_chart_logic,
+        astrologyDataComplete: chartCompleteness.isComplete,
+      });
 
       if (!overview.chart || !overview.chartRecord) {
         structuredResponse = {
-          answer:
-            "Your chart context is not fully ready yet, so I cannot answer safely from chart data.",
+          answer: getMissingBirthDetailsFallback(locale),
           reasoning:
-            "Complete birth onboarding and chart generation first, then ask again for a grounded interpretation.",
+            "Chart overview is not fully available, so the assistant is pausing personalized analysis.",
           confidence: "low",
         };
-        assistantMessage = formatStructuredReplyForConversation(structuredResponse);
+        assistantMessage = formatStructuredReplyForConversation(structuredResponse, {
+          locale,
+          includeDisclaimer: true,
+        });
         providerKey = "chart-context-fallback";
         model = null;
         policyPassed = false;
@@ -1380,6 +1494,39 @@ export async function sendAskMyChartMessage(input: {
         toolPayload = {
           source: "fallback",
           structuredResponse,
+          questionClassification: classification,
+          confidenceSnapshot,
+        };
+      } else if (!chartCompleteness.isComplete) {
+        const missingField = chartCompleteness.missingFields[0] ?? "chart.context";
+
+        structuredResponse = {
+          answer: getIncompleteDataFallback(locale),
+          reasoning: `Required chart field is incomplete: ${missingField}. Only validated sections can be discussed safely.`,
+          confidence: toAssistantConfidenceFromPredictionLevel(
+            confidenceSnapshot.level
+          ),
+        };
+        assistantMessage = formatStructuredReplyForConversation(structuredResponse, {
+          locale,
+          includeDisclaimer: true,
+        });
+        providerKey = "data-completeness-fallback";
+        model = null;
+        policyPassed = false;
+        policyViolations = [
+          {
+            rule: "INCOMPLETE_ASTROLOGY_DATA",
+            message:
+              chartCompleteness.issues[0]?.message ??
+              "Chart data completeness validation failed.",
+          },
+        ];
+        toolPayload = {
+          source: "data-completeness-fallback",
+          structuredResponse,
+          chartCompleteness,
+          confidenceSnapshot,
           questionClassification: classification,
         };
       } else {
@@ -1401,9 +1548,14 @@ export async function sendAskMyChartMessage(input: {
             reasoning:
               chartContext.warnings[0] ??
               "The chart verification layer marked this context as low confidence, so I am keeping guidance conservative.",
-            confidence: "low",
+            confidence: toAssistantConfidenceFromPredictionLevel(
+              confidenceSnapshot.level
+            ),
           };
-          assistantMessage = formatStructuredReplyForConversation(structuredResponse);
+          assistantMessage = formatStructuredReplyForConversation(structuredResponse, {
+            locale,
+            includeDisclaimer: true,
+          });
           providerKey = "verification-fallback";
           model = null;
           policyPassed = false;
@@ -1421,6 +1573,7 @@ export async function sendAskMyChartMessage(input: {
             chartContext,
             structuredResponse,
             questionClassification: classification,
+            confidenceSnapshot,
           };
         } else {
           const reply = await generateAssistantReply(
@@ -1429,7 +1582,9 @@ export async function sendAskMyChartMessage(input: {
             overview,
             toolBundle,
             chartContext,
-            planType
+            planType,
+            locale,
+            input.localeLabel
           );
 
           assistantMessage = reply.assistantMessage;
@@ -1456,6 +1611,7 @@ export async function sendAskMyChartMessage(input: {
             structuredResponse: reply.structuredResponse,
             refused: reply.refused,
             rawAnswer: reply.assistantMessage,
+            confidenceSnapshot,
           };
         }
       }

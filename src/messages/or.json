@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "languageName": "Odia",
+    "languageNativeName": "ଓଡ଼ିଆ"
+  },
+  "common": {
+    "language": "ଭାଷା",
+    "englishDefault": "ଇଂରାଜୀ (ଡିଫଲ୍ଟ)",
+    "live": "ସକ୍ରିୟ",
+    "planned": "ଯୋଜିତ",
+    "comingSoon": "ଶୀଘ୍ର ଆସୁଛି",
+    "defaultExperience": "ଡିଫଲ୍ଟ ଅନୁଭବ",
+    "futureLanguagesNote": "ଏବେ ଇଂରାଜୀ ଲାଇଭ୍ ଅନୁଭବ। ଅନ୍ୟାନ୍ୟ ଭାଷା ମୁକ୍ତି ପରେ ଏଠାରେ ଉପଲବ୍ଧ ହେବ।"
+  },
+  "cta": {
+    "generateKundli": "ଆପଣଙ୍କ କୁଣ୍ଡଳୀ ତିଆରି କରନ୍ତୁ",
+    "exploreAi": "NAVAGRAHA AI ପରୀକ୍ଷା କରନ୍ତୁ",
+    "bookConsultation": "ମାଗଣା ପରାମର୍ଶ ବୁକ୍ କରନ୍ତୁ",
+    "signInAccount": "ସାଇନ୍ ଇନ୍ / ଖାତା",
+    "unlockFullReport": "ମାଗଣା ରିପୋର୍ଟ ପାଆନ୍ତୁ"
+  },
+  "labels": {
+    "currencyCode": "INR",
+    "currencyNote": "ସୀମିତ ଲଞ୍ଚ ଅଭିଗମ୍ୟତା ସମୟରେ ସମସ୍ତ ଜ୍ୟୋତିଷ ସେବା ବର୍ତ୍ତମାନ ମାଗଣା।",
+    "limitedFreeAccessLabel": "ବର୍ତ୍ତମାନ ମାଗଣା (ସୀମିତ ଲଞ୍ଚ ଅଭିଗମ୍ୟତା)",
+    "limitedFreeBanner": "ସୀମିତ ଲଞ୍ଚ ଅଭିଗମ୍ୟତା: ସମସ୍ତ ଜ୍ୟୋତିଷ ସେବା ମାଗଣା",
+    "earlyAccessLabel": "ଆର୍ଲି ଆକ୍ସେସ ପ୍ରିମିୟମ ଅନୁଭବ",
+    "premiumExperienceLabel": "ପ୍ରିମିୟମ ଅନୁଭବ",
+    "timezoneHint": "IANA ସମୟ ମଣ୍ଡଳ ବ୍ୟବହାର କରନ୍ତୁ, ଉଦାହରଣ: Asia/Kolkata, Europe/London, କିମ୍ବା America/New_York.",
+    "dateHint": "ଜନ୍ମ ତାରିଖ ସ୍ଥାନୀୟ କ୍ୟାଲେଣ୍ଡର ଆକୃତିରେ ଦିଅନ୍ତୁ (YYYY-MM-DD)।",
+    "timeHint": "ଜନ୍ମ ସମୟ ସ୍ଥାନୀୟ ସମୟ ଆକୃତିରେ ଦିଅନ୍ତୁ (24-ଘଣ୍ଟିଆ ଫର୍ମାଟ୍)।"
+  },
+  "navigation": {
+    "home": "ହୋମ",
+    "kundli": "କୁଣ୍ଡଳୀ",
+    "compatibility": "ସୁସଙ୍ଗତି",
+    "rashifal": "ରାଶିଫଳ",
+    "ai": "NAVAGRAHA AI",
+    "reports": "ରିପୋର୍ଟଗୁଡ଼ିକ",
+    "tools": "ଟୁଲଗୁଡ଼ିକ",
+    "panchang": "ପଞ୍ଜିକା",
+    "consultation": "ପରାମର୍ଶ",
+    "shop": "ଦୋକାନ",
+    "insights": "ଇନସାଇଟ୍ସ",
+    "calculators": "କ୍ୟାଲ୍କୁଲେଟରଗୁଡ଼ିକ",
+    "timeTools": "ସମୟ ଟୁଲଗୁଡ଼ିକ",
+    "dailyRashifal": "ଦୈନିକ ରାଶିଫଳ",
+    "pricing": "ମୂଲ୍ୟ",
+    "plans": "ପ୍ଲାନ୍‌ଗୁଡ଼ିକ",
+    "services": "ସେବାଗୁଡ଼ିକ",
+    "account": "ଖାତା",
+    "menu": "ମେନୁ",
+    "dashboard": "ଡ୍ୟାଶବୋର୍ଡ",
+    "onboarding": "ଅନବୋର୍ଡିଂ",
+    "askMyChart": "Ask My Chart",
+    "consultations": "ପରାମର୍ଶଗୁଡ଼ିକ",
+    "orders": "ଅର୍ଡରଗୁଡ଼ିକ",
+    "chart": "ଚାର୍ଟ",
+    "report": "ରିପୋର୍ଟ",
+    "settings": "ସେଟିଂସ୍",
+    "admin": "ଆଡମିନ୍",
+    "styleGuide": "ଷ୍ଟାଇଲ୍ ଗାଇଡ୍",
+    "login": "ଲଗଇନ୍",
+    "passwordReset": "ପାସୱାର୍ଡ ରିସେଟ୍"
+  },
+  "footer": {
+    "columns": {
+      "centre": "କେନ୍ଦ୍ର",
+      "tools": "ଟୁଲଗୁଡ଼ିକ",
+      "services": "ସେବାଗୁଡ଼ିକ"
+    },
+    "links": {
+      "about": "ଆମ ବିଷୟରେ",
+      "contact": "ଯୋଗାଯୋଗ",
+      "astrologer": "ଜ୍ୟୋତିଷୀ",
+      "allTools": "ସମସ୍ତ ଟୁଲ",
+      "numerology": "ସଂଖ୍ୟାଶାସ୍ତ୍ର",
+      "muhurtaLite": "ମୁହୂର୍ତ୍ତ ଲାଇଟ୍",
+      "privacy": "ଗୋପନୀୟତା",
+      "terms": "ସର୍ତ୍ତାବଳୀ",
+      "disclaimer": "ଅସ୍ୱୀକରଣ",
+      "refundPolicy": "ରିଫଣ୍ଡ ନୀତି"
+    },
+    "languageLabel": "ଭାଷା",
+    "languageHelper": "ଆଜି ଇଂରାଜୀ ସକ୍ରିୟ ଅଛି। ଭାରତୀୟ ଓ ଆନ୍ତର୍ଜାତୀୟ ଭାଷାଗୁଡ଼ିକ ଏଠାରେ ଦେଖାଯାଉଛି ଏବଂ ସମ୍ପୂର୍ଣ୍ଣ ଅନୁବାଦ ପ୍ରସ୍ତୁତ ହେବା ପର୍ଯ୍ୟନ୍ତ ନିଷ୍କ୍ରିୟ ରହିବ।"
+  }
+}

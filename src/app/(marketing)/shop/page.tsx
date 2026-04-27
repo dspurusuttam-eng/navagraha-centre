@@ -2,12 +2,19 @@ import Link from "next/link";
 import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import { TrackedLink } from "@/components/analytics/tracked-link";
-import { buildPageMetadata } from "@/lib/metadata";
+import { JsonLd } from "@/components/seo/json-ld";
+import { createToolMetadata } from "@/lib/seo/metadata";
+import { getCoreSeoCopy } from "@/lib/seo/seo-config";
+import { createBreadcrumbSchema, createServiceSchema } from "@/lib/seo/schema";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
 import { EditorialPlaceholder } from "@/components/site/editorial-placeholder";
 import { PageHero } from "@/components/site/page-hero";
+import {
+  getRequestLocale,
+  hasExplicitLocalePrefixInRequest,
+} from "@/modules/localization/request";
 import { ProductCard } from "@/modules/shop/components/product-card";
 import {
   getShopCategorySummaries,
@@ -15,27 +22,56 @@ import {
   listFeaturedShopProducts,
 } from "@/modules/shop";
 
-export const metadata = buildPageMetadata({
-  title: "Spiritual Shop",
-  description:
-    "Browse NAVAGRAHA CENTRE's premium spiritual shop for Rudraksha, malas, gemstones, yantras, idols, and mantra practice companions.",
-  path: "/shop",
-  keywords: [
-    "spiritual shop",
-    "rudraksha shop",
-    "premium yantras",
-    "mantra practice products",
-    "astrology remedy products",
-  ],
-});
+export async function generateMetadata() {
+  const locale = await getRequestLocale();
+  const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
+  const localized = getCoreSeoCopy("shop", locale);
+
+  return createToolMetadata({
+    title: localized.title,
+    description: localized.description,
+    path: "/shop",
+    locale,
+    explicitLocalePrefix: hasExplicitLocalePrefix,
+    keywords: [
+      "astrology shop",
+      "gemstones",
+      "rudraksha",
+      "spiritual products",
+      "gemstone guidance",
+    ],
+  });
+}
 
 const featuredProducts = listFeaturedShopProducts();
 const categorySummaries = getShopCategorySummaries();
 const productsByCategory = getShopProductsByCategory();
 
-export default function ShopPage() {
+export default async function ShopPage() {
+  const locale = await getRequestLocale();
+  const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
+  const shopSchemas = [
+    createBreadcrumbSchema({
+      locale,
+      explicitLocalePrefix: hasExplicitLocalePrefix,
+      items: [
+        { name: "Home", path: "/" },
+        { name: "Shop", path: "/shop" },
+      ],
+    }),
+    createServiceSchema({
+      name: "Gemstone and Spiritual Product Guidance",
+      description:
+        "Explore gemstones, rudraksha, and spiritual products with calm, chart-aware guidance from NAVAGRAHA CENTRE.",
+      path: "/shop",
+      locale,
+      serviceType: "Spiritual Product Guidance",
+    }),
+  ];
+
   return (
     <>
+      <JsonLd id="shop-page-schema" data={shopSchemas} />
       <PageViewTracker page="/shop" feature="shop-page" />
       <AnalyticsEventTracker
         event="shop_interaction"

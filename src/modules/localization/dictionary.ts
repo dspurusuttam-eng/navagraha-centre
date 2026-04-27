@@ -1,9 +1,37 @@
 import enMessages from "@/messages/en.json";
+import asMessages from "@/messages/as.json";
+import bnMessages from "@/messages/bn.json";
+import deMessages from "@/messages/de.json";
+import esMessages from "@/messages/es.json";
+import frMessages from "@/messages/fr.json";
+import guMessages from "@/messages/gu.json";
+import hiMessages from "@/messages/hi.json";
+import idMessages from "@/messages/id.json";
+import itMessages from "@/messages/it.json";
+import jaMessages from "@/messages/ja.json";
+import knMessages from "@/messages/kn.json";
+import koMessages from "@/messages/ko.json";
+import mlMessages from "@/messages/ml.json";
+import mrMessages from "@/messages/mr.json";
+import neMessages from "@/messages/ne.json";
+import orMessages from "@/messages/or.json";
+import paMessages from "@/messages/pa.json";
+import ptMessages from "@/messages/pt.json";
+import ruMessages from "@/messages/ru.json";
+import saMessages from "@/messages/sa.json";
+import taMessages from "@/messages/ta.json";
+import teMessages from "@/messages/te.json";
+import urMessages from "@/messages/ur.json";
+import zhMessages from "@/messages/zh.json";
+import zhCnMessages from "@/messages/zh-CN.json";
+import zhTwMessages from "@/messages/zh-TW.json";
+import arMessages from "@/messages/ar.json";
 import {
   defaultLocale,
-  localePrefixingEnabled,
+  fallbackLocale,
+  getLocalizedPath as getLocalizedPathFromConfig,
   normalizeLocaleCode,
-  resolveLocale,
+  stripLocaleFromPathname,
   type SupportedLocale,
 } from "@/modules/localization/config";
 
@@ -23,6 +51,33 @@ const defaultDictionary = enMessages as LocaleDictionary;
 
 const dictionaryLoaders: Partial<Record<SupportedLocale, DictionaryLoader>> = {
   en: async () => defaultDictionary,
+  as: async () => asMessages,
+  hi: async () => hiMessages,
+  bn: async () => bnMessages,
+  gu: async () => guMessages,
+  mr: async () => mrMessages,
+  ta: async () => taMessages,
+  te: async () => teMessages,
+  kn: async () => knMessages,
+  ml: async () => mlMessages,
+  or: async () => orMessages,
+  pa: async () => paMessages,
+  ne: async () => neMessages,
+  ur: async () => urMessages,
+  sa: async () => saMessages,
+  es: async () => esMessages,
+  fr: async () => frMessages,
+  de: async () => deMessages,
+  pt: async () => ptMessages,
+  it: async () => itMessages,
+  ru: async () => ruMessages,
+  ar: async () => arMessages,
+  id: async () => idMessages,
+  ja: async () => jaMessages,
+  ko: async () => koMessages,
+  zh: async () => zhMessages,
+  "zh-CN": async () => zhCnMessages,
+  "zh-TW": async () => zhTwMessages,
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -101,13 +156,13 @@ export function getDictionaryValue(
 
 export async function loadLocaleDictionary(locale?: string | null) {
   const normalizedLocale = normalizeLocaleCode(locale);
-  const requestedLocale = normalizedLocale ?? defaultLocale;
+  const requestedLocale = normalizedLocale ?? fallbackLocale;
   const loader = dictionaryLoaders[requestedLocale];
 
   if (!loader) {
     return {
       requestedLocale,
-      resolvedLocale: defaultLocale,
+      resolvedLocale: fallbackLocale,
       dictionary: defaultDictionary,
       isFallback: true,
     };
@@ -127,31 +182,9 @@ export async function loadLocaleDictionary(locale?: string | null) {
 }
 
 export function getLocalizedPath(locale: string | null | undefined, pathname: string) {
-  const normalizedPath = pathname.startsWith("/") ? pathname : `/${pathname}`;
-
-  if (!localePrefixingEnabled) {
-    return normalizedPath;
-  }
-
-  const resolvedLocale = resolveLocale(locale);
-
-  if (resolvedLocale === defaultLocale) {
-    return normalizedPath;
-  }
-
-  return normalizedPath === "/" ? `/${resolvedLocale}` : `/${resolvedLocale}${normalizedPath}`;
+  return getLocalizedPathFromConfig(locale, pathname);
 }
 
 export function stripLocalePrefix(pathname: string) {
-  const normalizedPath = pathname.startsWith("/") ? pathname : `/${pathname}`;
-  const segments = normalizedPath.split("/");
-  const firstSegment = segments[1];
-  const rest = segments.slice(2);
-
-  if (firstSegment && resolveLocale(firstSegment) === firstSegment) {
-    const remainder = rest.join("/");
-    return remainder ? `/${remainder}` : "/";
-  }
-
-  return normalizedPath;
+  return stripLocaleFromPathname(pathname);
 }

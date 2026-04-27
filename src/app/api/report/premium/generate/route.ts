@@ -7,6 +7,8 @@ import { getSession } from "@/modules/auth/server";
 import { trackPremiumClicked } from "@/modules/conversion/events";
 import { generateUserReport } from "@/lib/ai/report-generator";
 import { generatePremiumReportForUser } from "@/modules/report";
+import { getLocaleDefinition } from "@/modules/localization/config";
+import { resolveLocaleFromRequest } from "@/modules/localization/request";
 
 export const dynamic = "force-dynamic";
 
@@ -54,7 +56,13 @@ export async function POST(request: Request) {
   }
 
   try {
-    const report = await generateUserReport(session.user.id, session.user.name);
+    const requestLocale = resolveLocaleFromRequest(request);
+    const report = await generateUserReport(
+      session.user.id,
+      session.user.name,
+      getLocaleDefinition(requestLocale).label,
+      requestLocale
+    );
     const premiumReport = await generatePremiumReportForUser({
       userId: session.user.id,
       reportType,

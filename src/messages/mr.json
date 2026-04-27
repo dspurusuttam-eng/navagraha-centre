@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "languageName": "Marathi",
+    "languageNativeName": "मराठी"
+  },
+  "common": {
+    "language": "भाषा",
+    "englishDefault": "इंग्रजी (डीफॉल्ट)",
+    "live": "सक्रिय",
+    "planned": "नियोजित",
+    "comingSoon": "लवकरच येत आहे",
+    "defaultExperience": "डीफॉल्ट अनुभव",
+    "futureLanguagesNote": "सध्या इंग्रजी हा लाइव्ह अनुभव आहे. इतर भाषा प्रकाशित झाल्यावर येथे उपलब्ध होतील."
+  },
+  "cta": {
+    "generateKundli": "तुमची कुंडली तयार करा",
+    "exploreAi": "NAVAGRAHA AI वापरून पाहा",
+    "bookConsultation": "मोफत सल्लामसलत बुक करा",
+    "signInAccount": "साइन इन / खाते",
+    "unlockFullReport": "मोफत अहवाल मिळवा"
+  },
+  "labels": {
+    "currencyCode": "INR",
+    "currencyNote": "मर्यादित लॉन्च प्रवेशासाठी सर्व ज्योतिष सेवा सध्या मोफत आहेत.",
+    "limitedFreeAccessLabel": "सध्या मोफत (मर्यादित लॉन्च प्रवेश)",
+    "limitedFreeBanner": "मर्यादित लॉन्च प्रवेश: सर्व ज्योतिष सेवा मोफत",
+    "earlyAccessLabel": "अर्ली ऍक्सेस प्रीमियम अनुभव",
+    "premiumExperienceLabel": "प्रीमियम अनुभव",
+    "timezoneHint": "IANA टाइमझोन वापरा, उदाहरण: Asia/Kolkata, Europe/London, किंवा America/New_York.",
+    "dateHint": "जन्मतारीख स्थानिक कॅलेंडर स्वरूपात द्या (YYYY-MM-DD).",
+    "timeHint": "जन्मवेळ स्थानिक वेळेत द्या (24-तास स्वरूप)."
+  },
+  "navigation": {
+    "home": "मुख्यपृष्ठ",
+    "kundli": "कुंडली",
+    "compatibility": "सुसंगती",
+    "rashifal": "राशिभविष्य",
+    "ai": "NAVAGRAHA AI",
+    "reports": "अहवाल",
+    "tools": "साधने",
+    "panchang": "पंचांग",
+    "consultation": "सल्लामसलत",
+    "shop": "दुकान",
+    "insights": "इन्साइट्स",
+    "calculators": "कॅल्क्युलेटर्स",
+    "timeTools": "टाइम टूल्स",
+    "dailyRashifal": "दैनंदिन राशिभविष्य",
+    "pricing": "किंमत",
+    "plans": "योजना",
+    "services": "सेवा",
+    "account": "खाते",
+    "menu": "मेनू",
+    "dashboard": "डॅशबोर्ड",
+    "onboarding": "ऑनबोर्डिंग",
+    "askMyChart": "Ask My Chart",
+    "consultations": "सल्लामसलती",
+    "orders": "ऑर्डर्स",
+    "chart": "चार्ट",
+    "report": "अहवाल",
+    "settings": "सेटिंग्ज",
+    "admin": "अॅडमिन",
+    "styleGuide": "स्टाइल गाईड",
+    "login": "लॉगिन",
+    "passwordReset": "पासवर्ड रीसेट"
+  },
+  "footer": {
+    "columns": {
+      "centre": "केंद्र",
+      "tools": "साधने",
+      "services": "सेवा"
+    },
+    "links": {
+      "about": "आमच्याबद्दल",
+      "contact": "संपर्क",
+      "astrologer": "ज्योतिषाचार्य",
+      "allTools": "सर्व साधने",
+      "numerology": "अंकशास्त्र",
+      "muhurtaLite": "मुहूर्त लाइट",
+      "privacy": "गोपनीयता",
+      "terms": "अटी",
+      "disclaimer": "अस्वीकरण",
+      "refundPolicy": "परतावा धोरण"
+    },
+    "languageLabel": "भाषा",
+    "languageHelper": "आज इंग्रजी सक्रिय आहे. भारतीय आणि आंतरराष्ट्रीय भाषा येथे सूचीबद्ध आहेत आणि पूर्ण भाषांतर तयार होईपर्यंत निष्क्रिय राहतील."
+  }
+}

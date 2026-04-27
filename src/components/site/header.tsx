@@ -1,29 +1,46 @@
 import Link from "next/link";
 import { TrackedLink } from "@/components/analytics/tracked-link";
+import { LanguageSwitcher } from "@/components/site/language-switcher";
 import { buttonStyles } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { siteConfig } from "@/config/site";
-import { globalCtaCopy, globalNavigationCopy } from "@/modules/localization/copy";
+import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
+import { getGlobalCopyBundleForLocale } from "@/modules/localization/copy";
+import {
+  getRequestLocale,
+  hasExplicitLocalePrefixInRequest,
+} from "@/modules/localization/request";
 
-const primaryNavigation = [
-  { href: "/kundli", label: globalNavigationCopy.kundli },
-  { href: "/compatibility", label: globalNavigationCopy.compatibility },
-  { href: "/rashifal", label: globalNavigationCopy.rashifal },
-  { href: "/ai", label: globalNavigationCopy.ai },
-  { href: "/reports", label: globalNavigationCopy.reports },
-] as const;
+export async function Header() {
+  const requestLocale = await getRequestLocale();
+  const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
+  const copy = await getGlobalCopyBundleForLocale(requestLocale);
 
-const secondaryNavigation = [
-  { href: "/tools", label: globalNavigationCopy.tools },
-  { href: "/consultation", label: globalNavigationCopy.consultation },
-  { href: "/shop", label: globalNavigationCopy.shop },
-  { href: "/insights", label: globalNavigationCopy.insights },
-  { href: "/calculators", label: globalNavigationCopy.calculators },
-  { href: "/muhurta", label: globalNavigationCopy.timeTools },
-  { href: "/pricing", label: globalNavigationCopy.pricing },
-] as const;
+  const localizeHref = (href: string) =>
+    getLocalizedPath(requestLocale, href, {
+      forcePrefix:
+        requestLocale !== defaultLocale ||
+        hasExplicitLocalePrefix,
+    });
 
-export function Header() {
+  const primaryNavigation = [
+    { href: localizeHref("/kundli"), label: copy.navigation.kundli },
+    { href: localizeHref("/compatibility"), label: copy.navigation.compatibility },
+    { href: localizeHref("/rashifal"), label: copy.navigation.rashifal },
+    { href: localizeHref("/ai"), label: copy.navigation.ai },
+    { href: localizeHref("/reports"), label: copy.navigation.reports },
+  ] as const;
+
+  const secondaryNavigation = [
+    { href: localizeHref("/tools"), label: copy.navigation.tools },
+    { href: localizeHref("/consultation"), label: copy.navigation.consultation },
+    { href: localizeHref("/shop"), label: copy.navigation.shop },
+    { href: localizeHref("/from-the-desk"), label: copy.navigation.insights },
+    { href: localizeHref("/calculators"), label: copy.navigation.calculators },
+    { href: localizeHref("/muhurta"), label: copy.navigation.timeTools },
+    { href: localizeHref("/pricing"), label: copy.navigation.pricing },
+  ] as const;
+
   return (
     <header
       data-nosnippet
@@ -32,7 +49,7 @@ export function Header() {
       <Container className="py-3">
         <div className="hidden items-center gap-6 lg:flex">
           <Link
-            href="/"
+            href={localizeHref("/")}
             className="shrink-0 font-[family-name:var(--font-display)] text-[1.55rem] text-[var(--color-ink-strong)] transition [transition-duration:var(--motion-duration-base)] hover:text-[var(--color-accent)]"
             style={{ letterSpacing: "0.1em" }}
           >
@@ -59,26 +76,27 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-2">
+            <LanguageSwitcher variant="compact" />
             <Link
-              href="/dashboard"
+              href={localizeHref("/dashboard")}
               className={buttonStyles({ tone: "tertiary", size: "sm" })}
             >
-              {globalNavigationCopy.account}
+              {copy.navigation.account}
             </Link>
             <TrackedLink
-              href="/kundli"
+              href={localizeHref("/kundli")}
               eventName="cta_click"
               eventPayload={{ page: "global-header", feature: "header-generate-kundli" }}
               className={buttonStyles({ size: "sm" })}
             >
-              {globalCtaCopy.generateKundli}
+              {copy.cta.generateKundli}
             </TrackedLink>
           </div>
         </div>
 
         <div className="flex items-center gap-2 lg:hidden">
           <Link
-            href="/"
+            href={localizeHref("/")}
             className="mr-auto font-[family-name:var(--font-display)] text-[1.2rem] text-[var(--color-ink-strong)]"
             style={{ letterSpacing: "0.08em" }}
           >
@@ -86,7 +104,7 @@ export function Header() {
           </Link>
 
           <TrackedLink
-            href="/kundli"
+            href={localizeHref("/kundli")}
             eventName="cta_click"
             eventPayload={{ page: "global-header-mobile", feature: "header-generate-kundli" }}
             className={buttonStyles({ size: "sm" })}
@@ -103,9 +121,9 @@ export function Header() {
                 className: "cursor-pointer list-none px-4 marker:content-none",
               })}
             >
-              {globalNavigationCopy.menu}
+              {copy.navigation.menu}
             </summary>
-            <div className="absolute right-0 top-[calc(100%+0.6rem)] w-[min(90vw,22rem)] rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,254,250,0.98)] p-3 shadow-[var(--shadow-md)]">
+            <div className="absolute top-[calc(100%+0.6rem)] w-[min(90vw,22rem)] rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,254,250,0.98)] p-3 shadow-[var(--shadow-md)] [inset-inline-end:0]">
               <nav aria-label="Mobile navigation" className="grid gap-2">
                 {primaryNavigation.map((item) => (
                   <Link
@@ -133,19 +151,22 @@ export function Header() {
                     {item.label}
                   </Link>
                 ))}
+                <div className="mt-1 border-t border-[color:var(--color-border)] pt-3">
+                  <LanguageSwitcher variant="compact" />
+                </div>
                 <div className="mt-1 grid gap-2 border-t border-[color:var(--color-border)] pt-3">
                   <Link
-                    href="/dashboard"
+                    href={localizeHref("/dashboard")}
                     className={buttonStyles({
                       tone: "tertiary",
                       size: "sm",
                       className: "w-full justify-center",
                     })}
                   >
-                    {globalNavigationCopy.account}
+                    {copy.navigation.account}
                   </Link>
                   <TrackedLink
-                    href="/kundli-ai"
+                    href={localizeHref("/kundli-ai")}
                     eventName="cta_click"
                     eventPayload={{ page: "global-header-mobile", feature: "header-try-ai" }}
                     className={buttonStyles({
@@ -154,10 +175,10 @@ export function Header() {
                       className: "w-full justify-center",
                     })}
                   >
-                    {globalCtaCopy.exploreAi}
+                    {copy.cta.exploreAi}
                   </TrackedLink>
                   <TrackedLink
-                    href="/reports"
+                    href={localizeHref("/reports")}
                     eventName="cta_click"
                     eventPayload={{ page: "global-header-mobile", feature: "header-get-report" }}
                     className={buttonStyles({
@@ -166,7 +187,7 @@ export function Header() {
                       className: "w-full justify-center",
                     })}
                   >
-                    {globalCtaCopy.unlockFullReport}
+                    {copy.cta.unlockFullReport}
                   </TrackedLink>
                 </div>
               </nav>

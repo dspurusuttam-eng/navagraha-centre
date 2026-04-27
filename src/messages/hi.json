@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "languageName": "Hindi",
+    "languageNativeName": "हिंदी"
+  },
+  "common": {
+    "language": "भाषा",
+    "englishDefault": "अंग्रेजी (डिफ़ॉल्ट)",
+    "live": "सक्रिय",
+    "planned": "योजना में",
+    "comingSoon": "जल्द आ रहा है",
+    "defaultExperience": "डिफ़ॉल्ट अनुभव",
+    "futureLanguagesNote": "अंग्रेजी, असमिया और हिंदी अब लाइव हैं। अन्य भाषाएँ चरणबद्ध रूप से यहाँ उपलब्ध होंगी।"
+  },
+  "cta": {
+    "generateKundli": "अपनी कुंडली बनाएं",
+    "exploreAi": "NAVAGRAHA AI आज़माएं",
+    "bookConsultation": "निःशुल्क परामर्श बुक करें",
+    "signInAccount": "साइन इन / अकाउंट",
+    "unlockFullReport": "निःशुल्क रिपोर्ट प्राप्त करें"
+  },
+  "labels": {
+    "currencyCode": "INR",
+    "currencyNote": "सभी ज्योतिष सेवाएँ सीमित लॉन्च अवधि में अभी निःशुल्क हैं।",
+    "limitedFreeAccessLabel": "अभी निःशुल्क (सीमित लॉन्च एक्सेस)",
+    "limitedFreeBanner": "सीमित लॉन्च एक्सेस: सभी ज्योतिष सेवाएँ निःशुल्क",
+    "earlyAccessLabel": "अर्ली एक्सेस प्रीमियम अनुभव",
+    "premiumExperienceLabel": "प्रीमियम अनुभव",
+    "timezoneHint": "IANA टाइमज़ोन का उपयोग करें, जैसे: Asia/Kolkata, Europe/London, या America/New_York.",
+    "dateHint": "अपनी जन्मतिथि स्थानीय कैलेंडर प्रारूप (YYYY-MM-DD) में दें।",
+    "timeHint": "अपना जन्म समय स्थानीय समय (24-घंटे प्रारूप) में दें।"
+  },
+  "navigation": {
+    "home": "होम",
+    "kundli": "कुंडली",
+    "compatibility": "संगतता",
+    "rashifal": "राशिफल",
+    "ai": "NAVAGRAHA AI",
+    "reports": "रिपोर्ट्स",
+    "tools": "उपकरण",
+    "panchang": "पंचांग",
+    "consultation": "परामर्श",
+    "shop": "शॉप",
+    "insights": "इनसाइट्स",
+    "calculators": "कैलकुलेटर्स",
+    "timeTools": "समय उपकरण",
+    "dailyRashifal": "दैनिक राशिफल",
+    "pricing": "मूल्य निर्धारण",
+    "plans": "योजनाएँ",
+    "services": "सेवाएँ",
+    "account": "अकाउंट",
+    "menu": "मेनू",
+    "dashboard": "डैशबोर्ड",
+    "onboarding": "ऑनबोर्डिंग",
+    "askMyChart": "Ask My Chart",
+    "consultations": "परामर्श सत्र",
+    "orders": "ऑर्डर्स",
+    "chart": "चार्ट",
+    "report": "रिपोर्ट",
+    "settings": "सेटिंग्स",
+    "admin": "एडमिन",
+    "styleGuide": "स्टाइल गाइड",
+    "login": "लॉगिन",
+    "passwordReset": "पासवर्ड रीसेट"
+  },
+  "footer": {
+    "columns": {
+      "centre": "केंद्र",
+      "tools": "उपकरण",
+      "services": "सेवाएँ"
+    },
+    "links": {
+      "about": "हमारे बारे में",
+      "contact": "संपर्क",
+      "astrologer": "ज्योतिषाचार्य",
+      "allTools": "सभी उपकरण",
+      "numerology": "अंक ज्योतिष",
+      "muhurtaLite": "मुहूर्त लाइट",
+      "privacy": "गोपनीयता",
+      "terms": "शर्तें",
+      "disclaimer": "अस्वीकरण",
+      "refundPolicy": "रिफंड नीति"
+    },
+    "languageLabel": "भाषा",
+    "languageHelper": "अंग्रेजी, असमिया और हिंदी अभी सक्रिय हैं। अन्य भारतीय और अंतरराष्ट्रीय भाषाएँ यहाँ सूचीबद्ध हैं और पूर्ण अनुवाद समीक्षा के बाद सक्रिय होंगी।"
+  }
+}

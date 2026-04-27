@@ -1,5 +1,8 @@
+import type { SupportedLocale } from "@/modules/localization/config";
+
 export type ContentType =
   | "BLOG_ARTICLE"
+  | "DAILY_RASHIFAL"
   | "DAILY_HOROSCOPE"
   | "MONTHLY_FORECAST"
   | "REMEDIES_ARTICLE"
@@ -7,6 +10,18 @@ export type ContentType =
   | "FAQ_PAGE";
 
 export type ContentStatus = "draft" | "review" | "published" | "archived";
+
+export type ContentCategory =
+  | "Daily Rashifal"
+  | "Panchang"
+  | "Vedic Astrology"
+  | "Remedies"
+  | "Numerology"
+  | "Compatibility"
+  | "Gemstones"
+  | "Festivals"
+  | "Spiritual Guidance"
+  | "NAVAGRAHA AI Updates";
 
 export type ContentPerson = {
   name: string;
@@ -24,18 +39,56 @@ export type ContentFaqItem = {
   answer: string;
 };
 
+export type RashifalZodiacSection = {
+  sign: string;
+  title: string;
+  overview: string;
+  love: string;
+  career: string;
+  business: string;
+  luckyColor: string;
+  luckyNumber: string;
+  luckyTime: string;
+  remedy: string;
+};
+
+export type DailyRashifalData = {
+  date: string;
+  zodiacSections: readonly RashifalZodiacSection[];
+  remedies: readonly string[];
+  brandFooter: string;
+};
+
 export type ContentEntry = {
+  id: string;
   slug: string;
+  localizedSlug?: string;
   path: string;
+  locale?: SupportedLocale;
+  translationGroup?: string;
+  category: ContentCategory;
+  tags: readonly string[];
   type: ContentType;
   status: ContentStatus;
   title: string;
   excerpt: string;
+  content: string;
   description: string;
+  seoTitle: string;
+  seoDescription: string;
+  canonicalUrl?: string;
+  featuredImage?: {
+    src: string;
+    alt: string;
+  };
+  isFeatured: boolean;
   keywords: readonly string[];
   publishedAt: string;
   updatedAt: string;
+  readingTime: string;
   readingTimeMinutes: number;
+  authorName: string;
+  authorTitle: string;
   heroEyebrow: string;
   heroHighlights: readonly string[];
   heroNote: string;
@@ -43,6 +96,7 @@ export type ContentEntry = {
   reviewer?: ContentPerson;
   sections: readonly ContentSection[];
   faqItems?: readonly ContentFaqItem[];
+  dailyRashifal?: DailyRashifalData;
   relatedSlugs?: readonly string[];
   aiDraftReady: boolean;
   autoPublish: false;
@@ -58,4 +112,6 @@ export type ContentListingGroup = {
 export type ContentSitemapEntry = {
   path: string;
   lastModified: string;
+  locale: SupportedLocale;
+  translationGroup: string;
 };

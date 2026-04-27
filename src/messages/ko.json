@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "languageName": "Korean",
+    "languageNativeName": "한국어"
+  },
+  "common": {
+    "language": "언어",
+    "englishDefault": "영어 (기본값)",
+    "live": "활성",
+    "planned": "예정",
+    "comingSoon": "곧 제공",
+    "defaultExperience": "기본 경험",
+    "futureLanguagesNote": "영어가 현재 활성 경험입니다. 추가 언어는 출시되면 여기에 표시됩니다."
+  },
+  "cta": {
+    "generateKundli": "나의 쿤들리 생성",
+    "exploreAi": "NAVAGRAHA AI 사용해보기",
+    "bookConsultation": "무료 상담 예약",
+    "signInAccount": "로그인 / 계정",
+    "unlockFullReport": "무료 리포트 받기"
+  },
+  "labels": {
+    "currencyCode": "INR",
+    "currencyNote": "모든 점성 서비스는 현재 한정 출시 접근 기간 동안 무료입니다.",
+    "limitedFreeAccessLabel": "현재 무료 (한정 출시 접근)",
+    "limitedFreeBanner": "한정 출시 접근: 모든 점성 서비스 무료",
+    "earlyAccessLabel": "얼리 액세스 프리미엄 경험",
+    "premiumExperienceLabel": "프리미엄 경험",
+    "timezoneHint": "IANA 시간대를 사용하세요. 예: Asia/Kolkata, Europe/London, America/New_York.",
+    "dateHint": "생년월일을 로컬 형식으로 입력하세요 (YYYY-MM-DD).",
+    "timeHint": "출생 시간을 로컬 형식으로 입력하세요 (24시간 형식)."
+  },
+  "navigation": {
+    "home": "홈",
+    "kundli": "쿤들리",
+    "compatibility": "궁합",
+    "rashifal": "라시팔",
+    "ai": "NAVAGRAHA AI",
+    "reports": "리포트",
+    "tools": "도구",
+    "panchang": "판창",
+    "consultation": "상담",
+    "shop": "상점",
+    "insights": "인사이트",
+    "calculators": "계산기",
+    "timeTools": "시간 도구",
+    "dailyRashifal": "일일 라시팔",
+    "pricing": "요금",
+    "plans": "플랜",
+    "services": "서비스",
+    "account": "계정",
+    "menu": "메뉴",
+    "dashboard": "대시보드",
+    "onboarding": "온보딩",
+    "askMyChart": "Ask My Chart",
+    "consultations": "상담",
+    "orders": "주문",
+    "chart": "차트",
+    "report": "리포트",
+    "settings": "설정",
+    "admin": "관리자",
+    "styleGuide": "스타일 가이드",
+    "login": "로그인",
+    "passwordReset": "비밀번호 재설정"
+  },
+  "footer": {
+    "columns": {
+      "centre": "센터",
+      "tools": "도구",
+      "services": "서비스"
+    },
+    "links": {
+      "about": "소개",
+      "contact": "문의",
+      "astrologer": "점성가",
+      "allTools": "모든 도구",
+      "numerology": "수비학",
+      "muhurtaLite": "무후르타 라이트",
+      "privacy": "개인정보 처리방침",
+      "terms": "이용약관",
+      "disclaimer": "면책 조항",
+      "refundPolicy": "환불 정책"
+    },
+    "languageLabel": "언어",
+    "languageHelper": "현재 영어가 활성 상태입니다. 인도 및 국제 언어는 여기에 등록되어 있으며 번역이 완료될 때까지 비활성 상태로 유지됩니다."
+  }
+}

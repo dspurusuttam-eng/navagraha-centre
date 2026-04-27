@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "languageName": "Assamese",
+    "languageNativeName": "অসমীয়া"
+  },
+  "common": {
+    "language": "ভাষা",
+    "englishDefault": "ইংৰাজী (ডিফ'ল্ট)",
+    "live": "সক্ৰিয়",
+    "planned": "পৰিকল্পিত",
+    "comingSoon": "শীঘ্ৰে আহিব",
+    "defaultExperience": "ডিফ'ল্ট অভিজ্ঞতা",
+    "futureLanguagesNote": "ইংৰাজী, অসমীয়া আৰু হিন্দী এতিয়া লাইভ। আন ভাষাসমূহ সম্পূৰ্ণ হলে ইয়াত উপলব্ধ হ'ব।"
+  },
+  "cta": {
+    "generateKundli": "আপোনাৰ কুণ্ডলী তৈয়াৰ কৰক",
+    "exploreAi": "NAVAGRAHA AI চেষ্টা কৰক",
+    "bookConsultation": "বিনামূলীয়া পৰামৰ্শ বুক কৰক",
+    "signInAccount": "ছাইন ইন / একাউণ্ট",
+    "unlockFullReport": "বিনামূলীয়া ৰিপ'ৰ্ট লাভ কৰক"
+  },
+  "labels": {
+    "currencyCode": "INR",
+    "currencyNote": "সকলো জ্যোতিষ সেৱা সীমিত লঞ্চ সময়ত বৰ্তমান বিনামূলীয়া।",
+    "limitedFreeAccessLabel": "বৰ্তমান বিনামূলীয়া (সীমিত লঞ্চ এক্সেছ)",
+    "limitedFreeBanner": "সীমিত লঞ্চ এক্সেছ: সকলো জ্যোতিষ সেৱা বিনামূলীয়া",
+    "earlyAccessLabel": "আৰ্লি এক্সেছ প্ৰিমিয়াম অভিজ্ঞতা",
+    "premiumExperienceLabel": "প্ৰিমিয়াম অভিজ্ঞতা",
+    "timezoneHint": "IANA টাইমজোন ব্যৱহাৰ কৰক, যেনে: Asia/Kolkata, Europe/London, বা America/New_York.",
+    "dateHint": "আপোনাৰ জন্ম তাৰিখ স্থানীয় কেলেণ্ডাৰ ফৰ্মেটত (YYYY-MM-DD) দিয়ক।",
+    "timeHint": "আপোনাৰ জন্ম সময় স্থানীয় সময়ত (24-ঘণ্টীয়া ফৰ্মেট) দিয়ক।"
+  },
+  "navigation": {
+    "home": "হোম",
+    "kundli": "কুণ্ডলী",
+    "compatibility": "সামঞ্জস্য",
+    "rashifal": "ৰাশিফল",
+    "ai": "NAVAGRAHA AI",
+    "reports": "ৰিপ'ৰ্টসমূহ",
+    "tools": "টুলসমূহ",
+    "panchang": "পঞ্জিকা",
+    "consultation": "পৰামৰ্শ",
+    "shop": "দোকান",
+    "insights": "ইনছাইটছ",
+    "calculators": "কেলকুলেটৰসমূহ",
+    "timeTools": "সময় টুলসমূহ",
+    "dailyRashifal": "দৈনিক ৰাশিফল",
+    "pricing": "মূল্য",
+    "plans": "প্লানসমূহ",
+    "services": "সেৱাসমূহ",
+    "account": "একাউণ্ট",
+    "menu": "মেনু",
+    "dashboard": "ডেশ্বব'ৰ্ড",
+    "onboarding": "অনব'ৰ্ডিং",
+    "askMyChart": "Ask My Chart",
+    "consultations": "পৰামৰ্শসমূহ",
+    "orders": "অৰ্ডাৰসমূহ",
+    "chart": "চাৰ্ট",
+    "report": "ৰিপ'ৰ্ট",
+    "settings": "ছেটিংছ",
+    "admin": "এডমিন",
+    "styleGuide": "ষ্টাইল গাইড",
+    "login": "লগইন",
+    "passwordReset": "পাছৱৰ্ড ৰিছেট"
+  },
+  "footer": {
+    "columns": {
+      "centre": "কেন্দ্ৰ",
+      "tools": "টুলসমূহ",
+      "services": "সেৱাসমূহ"
+    },
+    "links": {
+      "about": "আমাৰ বিষয়ে",
+      "contact": "যোগাযোগ",
+      "astrologer": "জ্যোতিষাচাৰ্য",
+      "allTools": "সকলো টুল",
+      "numerology": "সংখ্যা জ্যোতিষ",
+      "muhurtaLite": "মুহূৰ্ত লাইট",
+      "privacy": "গোপনীয়তা",
+      "terms": "চৰ্তসমূহ",
+      "disclaimer": "অস্বীকাৰোক্তি",
+      "refundPolicy": "ৰিফাণ্ড নীতি"
+    },
+    "languageLabel": "ভাষা",
+    "languageHelper": "ইংৰাজী, অসমীয়া আৰু হিন্দী এতিয়া সক্ৰিয়। আন ভাৰতীয় আৰু আন্তঃৰাষ্ট্ৰীয় ভাষাবোৰ ইয়াত আছে, সম্পূৰ্ণ অনুবাদ পৰ্যালোচনাৰ পিছত সক্ৰিয় হ'ব।"
+  }
+}

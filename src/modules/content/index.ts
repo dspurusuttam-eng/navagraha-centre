@@ -11,6 +11,7 @@ export {
   getRequiredContentHubBySlug,
   getRelatedContentHubs,
 } from "@/modules/content/hubs";
+export { toSeoSafeArticleSlug } from "@/modules/content/slug";
 export type {
   ContentEntry,
   ContentFaqItem,

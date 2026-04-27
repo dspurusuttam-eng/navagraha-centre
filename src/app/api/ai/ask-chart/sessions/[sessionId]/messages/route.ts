@@ -14,6 +14,8 @@ import {
   listAskMyChartSessions,
   sendAskMyChartMessage,
 } from "@/modules/ask-chart/service";
+import { getLocaleDefinition } from "@/modules/localization/config";
+import { resolveLocaleFromRequest } from "@/modules/localization/request";
 
 export const dynamic = "force-dynamic";
 const maxAssistantMessageLength = 700;
@@ -117,11 +119,15 @@ export async function POST(
   }
 
   try {
+    const requestLocale = resolveLocaleFromRequest(request);
+    const requestLocaleLabel = getLocaleDefinition(requestLocale).label;
     const result = await sendAskMyChartMessage({
       userId: session.user.id,
       userName: session.user.name,
       sessionId: normalizedSessionId,
       message: normalizedMessage,
+      localeCode: requestLocale,
+      localeLabel: requestLocaleLabel,
     });
 
     if (result.status === "LIMIT_REACHED") {

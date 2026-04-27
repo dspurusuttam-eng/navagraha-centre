@@ -1,5 +1,10 @@
 import "server-only";
 
+import {
+  buildPredictionPrompt,
+  resolvePredictionLocale,
+  validateAssistantStructuredOutput,
+} from "@/lib/astrology/accuracy";
 import { getAiGroundedTextService } from "@/modules/ai/server";
 import { resolvePromptVersionByTemplateKey } from "@/modules/ai/prompt-versioning";
 import type { AiTaskKind } from "@/modules/ai/tasks";
@@ -17,6 +22,7 @@ export type AstrologyAssistantStructuredResponse = {
 export type AstrologyAssistantEngineInput = {
   question: string;
   userName: string;
+  preferredLocaleCode?: string | null;
   preferredLanguageLabel: string;
   planType: "FREE" | "PREMIUM" | "PRO";
   groundedScope: string;
@@ -138,6 +144,43 @@ function getPlanTemperature(planType: AstrologyAssistantEngineInput["planType"])
   return 0.1;
 }
 
+function createPromptBundle(input: AstrologyAssistantEngineInput, stricter: boolean) {
+  const locale = resolvePredictionLocale(
+    input.preferredLocaleCode ?? input.preferredLanguageLabel
+  );
+
+  return buildPredictionPrompt({
+    toolType: "NAVAGRAHA_CHAT",
+    locale,
+    baseSystemPrompt: "",
+    planInstruction: buildPlanScopedInstructions(input.planType),
+    preferredLanguageLabel: input.preferredLanguageLabel,
+    astrologyDataSummary: {
+      userName: input.userName,
+      planType: input.planType,
+      userQuestion: input.question,
+      groundedScope: input.groundedScope,
+      chartContext: input.chartContext,
+      toolContext: input.toolContext,
+    },
+    missingDataWarnings: input.chartContext.warnings,
+    outputFormatRequirements: [
+      "Return only valid JSON. No markdown.",
+      'JSON schema: {"answer":"string","reasoning":"string","confidence":"high|medium|low"}.',
+      "Use confidence=high only when chart verification is VERIFIED and context is specific.",
+      "Use confidence=medium when context is partial or generalized.",
+      "Use confidence=low when context is weak or uncertain.",
+      "Keep answer and reasoning grounded strictly to supplied chart context and tools.",
+    ],
+    extraDirectives: stricter
+      ? [
+          "Strict retry mode: remove any certainty language and keep caution-forward phrasing.",
+          "Strict retry mode: avoid product or purchase pressure in any remedy mention.",
+        ]
+      : undefined,
+  });
+}
+
 export async function generateAstrologyResponse(
   input: AstrologyAssistantEngineInput
 ): Promise<AstrologyAssistantEngineResult> {
@@ -146,33 +189,46 @@ export async function generateAstrologyResponse(
   );
   const groundedTextService = getAiGroundedTextService();
   const fallbackText = JSON.stringify(input.fallback);
+  const locale = resolvePredictionLocale(
+    input.preferredLocaleCode ?? input.preferredLanguageLabel
+  );
 
-  const response = await groundedTextService.generateReply({
-    taskKind: input.taskKind,
-    promptTemplateKey: promptVersion.templateKey,
-    promptVersionLabel: promptVersion.label,
-    instructions: [
-      buildStructuredPromptInstructions(promptVersion.systemPrompt),
-      buildPlanScopedInstructions(input.planType),
-    ].join("\n"),
-    input: JSON.stringify(
-      {
-        userName: input.userName,
-        preferredLanguage: input.preferredLanguageLabel,
-        planType: input.planType,
-        userQuestion: input.question,
-        groundedScope: input.groundedScope,
-        chartContext: input.chartContext,
-        toolContext: input.toolContext,
-      },
-      null,
-      2
-    ),
-    fallbackText,
-    temperature: getPlanTemperature(input.planType),
+  const runGeneration = async (stricter: boolean) => {
+    const promptBundle = createPromptBundle(input, stricter);
+
+    return groundedTextService.generateReply({
+      taskKind: input.taskKind,
+      promptTemplateKey: promptVersion.templateKey,
+      promptVersionLabel: promptVersion.label,
+      instructions: [
+        buildStructuredPromptInstructions(promptVersion.systemPrompt),
+        promptBundle.instructions,
+      ].join("\n"),
+      input: promptBundle.input,
+      fallbackText,
+      temperature: getPlanTemperature(input.planType),
+    });
+  };
+
+  let response = await runGeneration(false);
+  let structured = parseStructuredResponse(response.text, input.fallback);
+  let validation = validateAssistantStructuredOutput({
+    output: structured,
+    locale,
   });
 
-  const structured = parseStructuredResponse(response.text, input.fallback);
+  if (!validation.valid) {
+    response = await runGeneration(true);
+    structured = parseStructuredResponse(response.text, input.fallback);
+    validation = validateAssistantStructuredOutput({
+      output: structured,
+      locale,
+    });
+
+    if (!validation.valid) {
+      structured = input.fallback;
+    }
+  }
 
   return {
     structured,

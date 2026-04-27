@@ -1,4 +1,8 @@
 import {
+  getIncompleteDataMessage,
+  validateKundliChartCompleteness,
+} from "@/lib/astrology/accuracy";
+import {
   apiErrorResponse,
   readJsonObjectBody,
 } from "@/lib/api/http";
@@ -136,12 +140,27 @@ export async function POST(request: Request) {
       headers: getRateLimitHeaders(limit),
     });
   }
+  const completeness = validateKundliChartCompleteness(result.data.chart);
+
+  if (!completeness.isComplete) {
+    return apiErrorResponse({
+      statusCode: 422,
+      code: "INCOMPLETE_CHART_DATA",
+      message: getIncompleteDataMessage({
+        context: "kundli",
+      }),
+      headers: getRateLimitHeaders(limit),
+    });
+  }
 
   return Response.json(
     {
       chart: result.data.chart,
       persistence: result.data.persistence,
       retrieval: result.data.retrieval,
+      accuracy: {
+        isComplete: true,
+      },
     },
     {
       headers: getRateLimitHeaders(limit),
