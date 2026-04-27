@@ -60,6 +60,16 @@ Safety:
 
 - Unsupported locale test `/zz/kundli` previously validated as `404` safe behavior.
 
+## 3A. Blog Route Naming Consistency
+
+- Canonical live blog route: `/from-the-desk`.
+- Legacy/alias route family `/insights` resolves to `/from-the-desk` for:
+  - `/insights` -> `/from-the-desk`
+  - `/en/insights` -> `/en/from-the-desk`
+  - `/as/insights` -> `/as/from-the-desk`
+  - `/hi/insights` -> `/hi/from-the-desk`
+- Documentation should use `/from-the-desk` as the primary route name.
+
 ## 4. Sitemap Status
 
 - `https://www.navagrahacentre.com/sitemap.xml` -> `200`

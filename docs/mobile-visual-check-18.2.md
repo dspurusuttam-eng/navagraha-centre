@@ -16,10 +16,15 @@ Run this checklist manually on real devices or browser responsive mode.
 3. Rashifal
 4. Panchang
 5. NAVAGRAHA AI
-6. Blog landing: From the Desk of J P Sarmah
+6. Blog landing: From the Desk of J P Sarmah (`/from-the-desk`)
 7. Article page (sample published article)
 8. Shop
 9. Consultation
+
+Route naming note:
+
+1. `/insights` and locale variants may redirect to `/from-the-desk`.
+2. Perform visual checks on the final resolved canonical URL.
 
 ## Visual and UX Checks
 

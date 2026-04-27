@@ -10,8 +10,9 @@ Do not add fake verification tokens in code.
 
 ## 2. Add Property
 
-1. Add property: `https://www.navagrahacentre.com`
-2. Use URL-prefix property mode (recommended for immediate operational checks).
+1. Preferred: add **Domain property** `navagrahacentre.com` (DNS verification).
+2. Fast operational fallback: add **URL-prefix property** `https://www.navagrahacentre.com`.
+3. Keep `https://www.navagrahacentre.com` as the primary canonical host in checks.
 
 ## 3. Verify Ownership
 
@@ -37,6 +38,12 @@ Use URL Inspection and request indexing for:
 3. `https://www.navagrahacentre.com/as/rashifal`
 4. `https://www.navagrahacentre.com/hi/rashifal`
 5. `https://www.navagrahacentre.com/en/from-the-desk`
+
+Route naming note:
+
+1. Blog canonical route is `/from-the-desk`.
+2. `/insights` and locale variants currently resolve to `/from-the-desk` equivalents.
+3. Request indexing using final canonical URLs.
 
 ## 6. Monitor Initial Indexing (24-72 Hours)
 

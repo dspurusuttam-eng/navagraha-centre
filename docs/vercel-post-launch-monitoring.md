@@ -10,15 +10,19 @@ Use this checklist after every production push to `main`.
 
 ## 2. Domain and TLS
 
-1. Confirm domain is attached: `www.navagrahacentre.com`.
-2. Confirm HTTPS certificate is valid and active.
-3. Confirm no mixed-content warnings on core pages.
+1. Confirm domain aliases are attached:
+   - `https://www.navagrahacentre.com`
+   - `https://navagrahacentre.com`
+2. Confirm apex redirects cleanly to `www` (single hop preferred).
+3. Confirm HTTPS certificate is valid and active.
+4. Confirm no mixed-content warnings on core pages.
 
 ## 3. Build and Runtime Logs
 
 1. Review build output for warnings/errors.
-2. Confirm environment variable resolution has no missing critical secrets.
+2. Confirm environment variable resolution has no production warnings for required vars.
 3. Review function logs for spikes in `4xx`/`5xx`.
+4. Confirm no recent unexplained `500` errors on the latest production deployment.
 
 ## 4. Route and Redirect Verification
 
@@ -27,6 +31,7 @@ Use this checklist after every production push to `main`.
 3. Check redirect behavior for aliases:
    - `/en|as|hi/compatibility` -> locale-safe destination.
    - `/en|as|hi/navagraha-ai` -> locale-safe destination.
+4. Confirm canonical redirects do not create loops (`apex -> www`, `/insights -> /from-the-desk`).
 
 ## 5. API and Error Monitoring
 
