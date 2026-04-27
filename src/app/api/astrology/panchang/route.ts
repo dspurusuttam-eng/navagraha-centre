@@ -8,6 +8,14 @@ import {
 } from "@/lib/astrology/accuracy";
 import { apiErrorResponse, readJsonObjectBody } from "@/lib/api/http";
 import { captureException } from "@/lib/observability";
+import {
+  checkSecurityRateLimit,
+  guardOptionalHoneypotAndTiming,
+  guardPayloadByteLength,
+  guardTurnstileForPayload,
+  guardTrustedOrigin,
+  securityConfig,
+} from "@/lib/security";
 import { calculateDailyPanchangContext } from "@/modules/panchang";
 
 export const dynamic = "force-dynamic";
@@ -15,6 +23,7 @@ export const dynamic = "force-dynamic";
 type PanchangPayload = {
   date?: unknown;
   place?: unknown;
+  [key: string]: unknown;
 };
 
 function readText(value: unknown) {
@@ -53,6 +62,34 @@ function getPanchangErrorStatus(code: string) {
 }
 
 export async function POST(request: Request) {
+  const originGuard = guardTrustedOrigin(request, {
+    allowMissingOrigin: true,
+  });
+
+  if (originGuard) {
+    return originGuard;
+  }
+
+  const payloadGuard = guardPayloadByteLength(request);
+
+  if (payloadGuard) {
+    return payloadGuard;
+  }
+
+  const rateLimit = checkSecurityRateLimit({
+    request,
+    policyKey: "panchang-public",
+  });
+
+  if (!rateLimit.allowed) {
+    return apiErrorResponse({
+      statusCode: 429,
+      code: "RATE_LIMITED",
+      message: "Too many Panchang requests. Please retry shortly.",
+      headers: rateLimit.headers,
+    });
+  }
+
   const payload = (await readJsonObjectBody(request)) as PanchangPayload | null;
 
   if (!payload) {
@@ -60,7 +97,33 @@ export async function POST(request: Request) {
       statusCode: 400,
       code: "INVALID_REQUEST",
       message: "Panchang payload must be a JSON object.",
+      headers: rateLimit.headers,
     });
+  }
+
+  const spamCheck = guardOptionalHoneypotAndTiming({
+    honeypotValue: payload[securityConfig.spamProtection.honeypotField],
+    startedAtValue: payload[securityConfig.spamProtection.startedAtField],
+  });
+
+  if (!spamCheck.ok) {
+    return apiErrorResponse({
+      statusCode: 400,
+      code: spamCheck.issue.code,
+      message: spamCheck.issue.message,
+      headers: rateLimit.headers,
+    });
+  }
+
+  const turnstileGuard = await guardTurnstileForPayload({
+    request,
+    payload,
+    route: "api.astrology.panchang",
+    headers: rateLimit.headers,
+  });
+
+  if (turnstileGuard) {
+    return turnstileGuard;
   }
 
   const date = readText(payload.date);
@@ -78,6 +141,7 @@ export async function POST(request: Request) {
         validatedInput.issues,
         "Date and place are required."
       ),
+      headers: rateLimit.headers,
     });
   }
 
@@ -94,6 +158,7 @@ export async function POST(request: Request) {
       message:
         normalized.issues[0]?.message ??
         "Date/place normalization failed for Panchang calculation.",
+      headers: rateLimit.headers,
     });
   }
 
@@ -119,6 +184,7 @@ export async function POST(request: Request) {
       statusCode: 422,
       code: resolved.issue.code,
       message: getResolutionErrorMessage(resolved.issue.code),
+      headers: rateLimit.headers,
     });
   }
 
@@ -141,6 +207,7 @@ export async function POST(request: Request) {
       statusCode: getPanchangErrorStatus(panchang.error.code),
       code: panchang.error.code,
       message: panchang.error.message,
+      headers: rateLimit.headers,
     });
   }
   const completeness = validatePanchangOutputCompleteness(panchang.data);
@@ -152,14 +219,20 @@ export async function POST(request: Request) {
       message: getIncompleteDataMessage({
         context: "panchang",
       }),
+      headers: rateLimit.headers,
     });
   }
 
-  return Response.json({
-    data: panchang.data,
-    accuracy: {
-      isComplete: true,
-      missingFields: [],
+  return Response.json(
+    {
+      data: panchang.data,
+      accuracy: {
+        isComplete: true,
+        missingFields: [],
+      },
     },
-  });
+    {
+      headers: rateLimit.headers,
+    }
+  );
 }

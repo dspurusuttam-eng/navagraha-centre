@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
+import { GemstoneGuidanceCTA } from "@/components/monetization/GemstoneGuidanceCTA";
+import { SponsoredDisclosure } from "@/components/monetization/SponsoredDisclosure";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import { TrackedLink } from "@/components/analytics/tracked-link";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -204,6 +206,10 @@ export default async function ShopPage() {
         </Section>
       ))}
 
+      <Section className="pt-0" tone="transparent">
+        <GemstoneGuidanceCTA pagePath="/shop" placement="shop_pre_checkout" />
+      </Section>
+
       <Section
         eyebrow="Order Requests"
         title="The cart lets visitors review selections and request a follow-up."
@@ -234,6 +240,7 @@ export default async function ShopPage() {
               Ask For Guidance
             </TrackedLink>
           </div>
+          <SponsoredDisclosure />
         </Card>
       </Section>
     </>

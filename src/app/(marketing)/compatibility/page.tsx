@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createToolMetadata } from "@/lib/seo/metadata";
 import { getCoreSeoCopy } from "@/lib/seo/seo-config";
+import { getLocalizedPath } from "@/modules/localization/config";
 import {
   getRequestLocale,
   hasExplicitLocalePrefixInRequest,
@@ -26,6 +27,13 @@ export async function generateMetadata() {
   });
 }
 
-export default function CompatibilityEntryPage() {
-  redirect("/marriage-compatibility");
+export default async function CompatibilityEntryPage() {
+  const locale = await getRequestLocale();
+  const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
+
+  redirect(
+    getLocalizedPath(locale, "/marriage-compatibility", {
+      forcePrefix: hasExplicitLocalePrefix,
+    })
+  );
 }

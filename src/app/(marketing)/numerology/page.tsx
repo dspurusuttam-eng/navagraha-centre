@@ -1,4 +1,7 @@
 import { TrackedLink } from "@/components/analytics/tracked-link";
+import { AdSlot } from "@/components/monetization/AdSlot";
+import { ConsultationCTA } from "@/components/monetization/ConsultationCTA";
+import { ReportCTA } from "@/components/monetization/ReportCTA";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import { PageHero } from "@/components/site/page-hero";
 import { Badge } from "@/components/ui/badge";
@@ -76,6 +79,9 @@ export default function NumerologyPage() {
       >
         <div id="numerology-tool">
           <NumerologyToolPanel />
+        </div>
+        <div className="mt-6">
+          <AdSlot placement="tool_result_bottom" />
         </div>
       </Section>
 
@@ -177,6 +183,13 @@ export default function NumerologyPage() {
               </TrackedLink>
             </Card>
           ))}
+        </div>
+      </Section>
+
+      <Section className="pt-0" tone="transparent">
+        <div className="grid gap-4 lg:grid-cols-2">
+          <ConsultationCTA pagePath="/numerology" placement="numerology_footer" />
+          <ReportCTA pagePath="/numerology" placement="numerology_footer" />
         </div>
       </Section>
 

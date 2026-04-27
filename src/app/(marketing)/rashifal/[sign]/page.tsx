@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
+import { AdSlot } from "@/components/monetization/AdSlot";
+import { ConsultationCTA } from "@/components/monetization/ConsultationCTA";
+import { ReportCTA } from "@/components/monetization/ReportCTA";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import { TrackedLink } from "@/components/analytics/tracked-link";
 import { Badge } from "@/components/ui/badge";
@@ -154,6 +157,10 @@ export default async function RashifalSignPage({
         </Container>
       </section>
 
+      <Section className="pt-6" tone="transparent">
+        <AdSlot placement="rashifal_after_intro" />
+      </Section>
+
       <Section
         tone="light"
         eyebrow="Full Rashifal"
@@ -206,6 +213,9 @@ export default async function RashifalSignPage({
         title="Explore other sign pages"
         description="Use internal sign links for complete daily coverage."
       >
+        <div className="mb-6">
+          <AdSlot placement="rashifal_mid_content" />
+        </div>
         <Card className="mb-6 border-[rgba(184,137,67,0.2)] bg-[rgba(255,255,255,0.9)]">
           <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
             This sign follows the same daily structure as all others, making
@@ -278,6 +288,19 @@ export default async function RashifalSignPage({
           >
             Get Personalized Rashifal
           </TrackedLink>
+        </div>
+      </Section>
+
+      <Section className="pt-0" tone="transparent">
+        <div className="grid gap-4 lg:grid-cols-2">
+          <ConsultationCTA
+            pagePath={`/rashifal/${signData.slug}`}
+            placement="sign_page_footer"
+          />
+          <ReportCTA
+            pagePath={`/rashifal/${signData.slug}`}
+            placement="sign_page_footer"
+          />
         </div>
       </Section>
     </>

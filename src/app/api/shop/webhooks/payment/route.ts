@@ -1,5 +1,6 @@
 import { apiErrorResponse } from "@/lib/api/http";
 import { captureException } from "@/lib/observability";
+import { normalizeSafeText } from "@/lib/security";
 import { processShopPaymentWebhook } from "@/modules/shop/webhook-core";
 
 export const dynamic = "force-dynamic";
@@ -8,8 +9,12 @@ function resolveProviderKey(request: Request) {
   const url = new URL(request.url);
   const fromQuery = url.searchParams.get("provider");
   const fromHeader = request.headers.get("x-shop-provider");
+  const normalized = normalizeSafeText(fromQuery ?? fromHeader ?? "draft-order", {
+    fieldName: "Provider key",
+    maxLength: 40,
+  });
 
-  return fromQuery ?? fromHeader ?? "draft-order";
+  return normalized.ok ? normalized.data : "draft-order";
 }
 
 function resolveSignature(request: Request) {
@@ -21,6 +26,16 @@ function resolveSignature(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const contentLength = Number(request.headers.get("content-length") ?? 0);
+
+  if (Number.isFinite(contentLength) && contentLength > 512_000) {
+    return apiErrorResponse({
+      statusCode: 413,
+      code: "PAYLOAD_TOO_LARGE",
+      message: "Webhook payload exceeds the accepted size limit.",
+    });
+  }
+
   const rawBody = await request.text();
   let result;
 

@@ -1,10 +1,9 @@
 import { apiErrorResponse } from "@/lib/api/http";
 import {
-  buildRateLimitKey,
-  checkRateLimit,
-  getClientAddress,
-  getRateLimitHeaders,
-} from "@/lib/rate-limit";
+  checkSecurityRateLimit,
+  guardPayloadByteLength,
+  guardTrustedOrigin,
+} from "@/lib/security";
 import { captureException, trackServerEvent } from "@/lib/observability";
 import { getSession } from "@/modules/auth/server";
 import {
@@ -14,7 +13,7 @@ import {
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(request: Request) {
   const session = await getSession().catch((error) => {
     captureException(error, {
       route: "api.ai.ask-chart.sessions",
@@ -33,12 +32,32 @@ export async function GET() {
     });
   }
 
+  const readLimit = checkSecurityRateLimit({
+    request,
+    policyKey: "ai-session-read",
+    identityParts: [session.user.id],
+  });
+
+  if (!readLimit.allowed) {
+    return apiErrorResponse({
+      statusCode: 429,
+      code: "RATE_LIMITED",
+      message: "Too many session read requests. Please retry shortly.",
+      headers: readLimit.headers,
+    });
+  }
+
   try {
     const sessions = await listAskMyChartSessions(session.user.id);
 
-    return Response.json({
-      sessions,
-    });
+    return Response.json(
+      {
+        sessions,
+      },
+      {
+        headers: readLimit.headers,
+      }
+    );
   } catch (error) {
     captureException(error, {
       route: "api.ai.ask-chart.sessions",
@@ -73,14 +92,24 @@ export async function POST(request: Request) {
     });
   }
 
-  const limit = checkRateLimit({
-    key: buildRateLimitKey([
-      "api-ask-chart-create-session",
-      session.user.id,
-      getClientAddress(request),
-    ]),
-    limit: 20,
-    windowMs: 10 * 60 * 1_000,
+  const originGuard = guardTrustedOrigin(request, {
+    allowMissingOrigin: true,
+  });
+
+  if (originGuard) {
+    return originGuard;
+  }
+
+  const payloadGuard = guardPayloadByteLength(request);
+
+  if (payloadGuard) {
+    return payloadGuard;
+  }
+
+  const limit = checkSecurityRateLimit({
+    request,
+    policyKey: "ai-session-create",
+    identityParts: [session.user.id],
   });
 
   if (!limit.allowed) {
@@ -97,7 +126,7 @@ export async function POST(request: Request) {
       statusCode: 429,
       code: "RATE_LIMITED",
       message: "Too many session requests. Please wait and try again.",
-      headers: getRateLimitHeaders(limit),
+      headers: limit.headers,
     });
   }
 
@@ -110,7 +139,7 @@ export async function POST(request: Request) {
       },
       {
         status: 201,
-        headers: getRateLimitHeaders(limit),
+        headers: limit.headers,
       }
     );
   } catch (error) {
@@ -124,7 +153,7 @@ export async function POST(request: Request) {
       statusCode: 500,
       code: "SESSION_CREATE_FAILED",
       message: "A new Ask My Chart session could not be created.",
-      headers: getRateLimitHeaders(limit),
+      headers: limit.headers,
     });
   }
 }

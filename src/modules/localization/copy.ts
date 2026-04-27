@@ -11,6 +11,7 @@ type GlobalCopyBundle = {
   navigation: typeof globalNavigationCopy;
   footer: typeof globalFooterCopy;
   locale: typeof globalLocaleCopy;
+  monetization: typeof globalMonetizationCopy;
 };
 
 function createGlobalCopyBundle(dictionary: LocaleDictionary) {
@@ -200,12 +201,68 @@ function createGlobalCopyBundle(dictionary: LocaleDictionary) {
     ),
   } as const;
 
+  const monetization = {
+    bookConsultation: getDictionaryValue(
+      dictionary,
+      "monetization.bookConsultation",
+      "Book Consultation"
+    ),
+    getDetailedReport: getDictionaryValue(
+      dictionary,
+      "monetization.getDetailedReport",
+      "Get Detailed Report"
+    ),
+    exploreShop: getDictionaryValue(
+      dictionary,
+      "monetization.exploreShop",
+      "Explore Shop"
+    ),
+    gemstoneGuidance: getDictionaryValue(
+      dictionary,
+      "monetization.gemstoneGuidance",
+      "Gemstone Guidance"
+    ),
+    comingSoon: getDictionaryValue(
+      dictionary,
+      "monetization.comingSoon",
+      "Coming Soon"
+    ),
+    premiumAi: getDictionaryValue(dictionary, "monetization.premiumAi", "Premium AI"),
+    sponsored: getDictionaryValue(dictionary, "monetization.sponsored", "Sponsored"),
+    advertisement: getDictionaryValue(
+      dictionary,
+      "monetization.advertisement",
+      "Advertisement"
+    ),
+    relatedGuidance: getDictionaryValue(
+      dictionary,
+      "monetization.relatedGuidance",
+      "Related Guidance"
+    ),
+    talkToAstrologer: getDictionaryValue(
+      dictionary,
+      "monetization.talkToAstrologer",
+      "Talk to Astrologer"
+    ),
+    viewReports: getDictionaryValue(
+      dictionary,
+      "monetization.viewReports",
+      "View Reports"
+    ),
+    continueReading: getDictionaryValue(
+      dictionary,
+      "monetization.continueReading",
+      "Continue Reading"
+    ),
+  } as const;
+
   return {
     cta,
     label,
     navigation,
     footer,
     locale,
+    monetization,
   } as const;
 }
 
@@ -216,6 +273,7 @@ export const globalLabelCopy = defaultBundle.label;
 export const globalNavigationCopy = defaultBundle.navigation;
 export const globalFooterCopy = defaultBundle.footer;
 export const globalLocaleCopy = defaultBundle.locale;
+export const globalMonetizationCopy = defaultBundle.monetization;
 
 export async function getGlobalCopyBundleForLocale(locale?: string | null): Promise<GlobalCopyBundle> {
   const loaded = await loadLocaleDictionary(locale);

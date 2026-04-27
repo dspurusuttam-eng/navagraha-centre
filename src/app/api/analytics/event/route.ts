@@ -4,11 +4,10 @@ import {
   readJsonObjectBody,
 } from "@/lib/api/http";
 import {
-  buildRateLimitKey,
-  checkRateLimit,
-  getClientAddress,
-  getRateLimitHeaders,
-} from "@/lib/rate-limit";
+  checkSecurityRateLimit,
+  guardPayloadByteLength,
+  guardTrustedOrigin,
+} from "@/lib/security";
 import { captureException } from "@/lib/observability";
 import { getSession } from "@/modules/auth/server";
 import {
@@ -67,13 +66,23 @@ function toUserId(
 }
 
 export async function POST(request: Request) {
-  const limit = checkRateLimit({
-    key: buildRateLimitKey([
-      "api-analytics-event",
-      getClientAddress(request),
-    ]),
-    limit: 180,
-    windowMs: 5 * 60 * 1_000,
+  const originGuard = guardTrustedOrigin(request, {
+    allowMissingOrigin: true,
+  });
+
+  if (originGuard) {
+    return originGuard;
+  }
+
+  const payloadGuard = guardPayloadByteLength(request);
+
+  if (payloadGuard) {
+    return payloadGuard;
+  }
+
+  const limit = checkSecurityRateLimit({
+    request,
+    policyKey: "analytics-event",
   });
 
   if (!limit.allowed) {
@@ -81,7 +90,7 @@ export async function POST(request: Request) {
       statusCode: 429,
       code: "RATE_LIMITED",
       message: "Too many analytics events. Please retry later.",
-      headers: getRateLimitHeaders(limit),
+      headers: limit.headers,
     });
   }
 
@@ -92,7 +101,7 @@ export async function POST(request: Request) {
       statusCode: 400,
       code: "INVALID_REQUEST",
       message: "Analytics payload must be a JSON object.",
-      headers: getRateLimitHeaders(limit),
+      headers: limit.headers,
     });
   }
 
@@ -104,7 +113,7 @@ export async function POST(request: Request) {
       statusCode: 400,
       code: "INVALID_EVENT_NAME",
       message: "Invalid analytics event name.",
-      headers: getRateLimitHeaders(limit),
+      headers: limit.headers,
     });
   }
 
@@ -131,7 +140,7 @@ export async function POST(request: Request) {
       },
       {
         status: 202,
-        headers: getRateLimitHeaders(limit),
+        headers: limit.headers,
       }
     );
   }
@@ -145,7 +154,7 @@ export async function POST(request: Request) {
     },
     {
       status: 201,
-      headers: getRateLimitHeaders(limit),
+      headers: limit.headers,
     }
   );
 }

@@ -5,6 +5,14 @@ import {
   validateNumerologyRequestInput,
   validatePanchangRequestInput,
 } from "@/lib/astrology/accuracy";
+import {
+  checkSecurityRateLimit,
+  guardOptionalHoneypotAndTiming,
+  guardPayloadByteLength,
+  guardTurnstileForPayload,
+  guardTrustedOrigin,
+  securityConfig,
+} from "@/lib/security";
 import { runAstrologyCalculator } from "@/modules/calculators/service";
 
 export const dynamic = "force-dynamic";
@@ -12,6 +20,7 @@ export const dynamic = "force-dynamic";
 type CalculatorPayload = {
   calculator?: unknown;
   input?: unknown;
+  [key: string]: unknown;
 };
 
 function readText(value: unknown) {
@@ -25,6 +34,34 @@ function asObject(value: unknown) {
 }
 
 export async function POST(request: Request) {
+  const originGuard = guardTrustedOrigin(request, {
+    allowMissingOrigin: true,
+  });
+
+  if (originGuard) {
+    return originGuard;
+  }
+
+  const payloadGuard = guardPayloadByteLength(request);
+
+  if (payloadGuard) {
+    return payloadGuard;
+  }
+
+  const limit = checkSecurityRateLimit({
+    request,
+    policyKey: "calculators-public",
+  });
+
+  if (!limit.allowed) {
+    return apiErrorResponse({
+      statusCode: 429,
+      code: "RATE_LIMITED",
+      message: "Too many calculator requests. Please retry shortly.",
+      headers: limit.headers,
+    });
+  }
+
   const payload = (await readJsonObjectBody(request)) as CalculatorPayload | null;
 
   if (!payload) {
@@ -32,7 +69,33 @@ export async function POST(request: Request) {
       statusCode: 400,
       code: "INVALID_REQUEST",
       message: "Calculator payload must be a JSON object.",
+      headers: limit.headers,
     });
+  }
+
+  const spamCheck = guardOptionalHoneypotAndTiming({
+    honeypotValue: payload[securityConfig.spamProtection.honeypotField],
+    startedAtValue: payload[securityConfig.spamProtection.startedAtField],
+  });
+
+  if (!spamCheck.ok) {
+    return apiErrorResponse({
+      statusCode: 400,
+      code: spamCheck.issue.code,
+      message: spamCheck.issue.message,
+      headers: limit.headers,
+    });
+  }
+
+  const turnstileGuard = await guardTurnstileForPayload({
+    request,
+    payload,
+    route: "api.astrology.calculators",
+    headers: limit.headers,
+  });
+
+  if (turnstileGuard) {
+    return turnstileGuard;
   }
 
   const calculator = readText(payload.calculator);
@@ -43,6 +106,7 @@ export async function POST(request: Request) {
       statusCode: 400,
       code: "MISSING_REQUIRED_FIELDS",
       message: "Calculator and input object are required.",
+      headers: limit.headers,
     });
   }
 
@@ -75,6 +139,7 @@ export async function POST(request: Request) {
             validation.issues,
             "Date of birth is required."
           ),
+          headers: limit.headers,
         });
       }
 
@@ -101,6 +166,7 @@ export async function POST(request: Request) {
             validation.issues,
             "Both birth dates are required."
           ),
+          headers: limit.headers,
         });
       }
 
@@ -128,6 +194,7 @@ export async function POST(request: Request) {
             validation.issues,
             "Date and place are required."
           ),
+          headers: limit.headers,
         });
       }
 
@@ -145,6 +212,7 @@ export async function POST(request: Request) {
         statusCode: 400,
         code: "INVALID_CALCULATOR",
         message: "Unsupported calculator type.",
+        headers: limit.headers,
       });
   }
 
@@ -154,10 +222,16 @@ export async function POST(request: Request) {
         result.error.code === "CALCULATION_FAILED" ? 500 : 422,
       code: result.error.code,
       message: result.error.message,
+      headers: limit.headers,
     });
   }
 
-  return Response.json({
-    data: result.data,
-  });
+  return Response.json(
+    {
+      data: result.data,
+    },
+    {
+      headers: limit.headers,
+    }
+  );
 }

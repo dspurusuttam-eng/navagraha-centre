@@ -1,4 +1,5 @@
 import { sendOpsAlert } from "@/lib/ops-alerts";
+import { buildSafeLogContext } from "@/lib/security/safe-logger";
 
 export type ObservabilityLevel = "info" | "warning" | "error";
 
@@ -40,11 +41,13 @@ export function trackServerEvent(
 ) {
   const logger = getConsoleMethod(level);
 
+  const safeContext = buildSafeLogContext(context);
+
   logger(
     `[observability:${level}] ${event}`,
     serializeContext({
       timestamp: new Date().toISOString(),
-      ...context,
+      ...safeContext,
     })
   );
 
@@ -56,7 +59,7 @@ export function trackServerEvent(
       source: "observability",
       dedupeKey: `observability:${level}:${event}`,
       cooldownMs: 2 * 60 * 1_000,
-      context,
+      context: safeContext,
     });
   }
 }

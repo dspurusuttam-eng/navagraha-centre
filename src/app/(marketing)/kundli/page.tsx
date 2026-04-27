@@ -1,4 +1,7 @@
 import { TrackedLink } from "@/components/analytics/tracked-link";
+import { ConsultationCTA } from "@/components/monetization/ConsultationCTA";
+import { PremiumAICTA } from "@/components/monetization/PremiumAICTA";
+import { ReportCTA } from "@/components/monetization/ReportCTA";
 import { PageHero } from "@/components/site/page-hero";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -135,6 +138,12 @@ export default function KundliPage() {
       />
 
       <Section className="pt-0" tone="transparent">
+        <div className="mb-4 grid gap-4 lg:grid-cols-3">
+          <ConsultationCTA pagePath="/kundli" placement="kundli_footer" />
+          <ReportCTA pagePath="/kundli" placement="kundli_footer" />
+          <PremiumAICTA pagePath="/kundli" placement="kundli_footer" />
+        </div>
+
         <Card tone="accent" className="flex flex-wrap items-center gap-3">
           <TrackedLink
             href="/sign-up"

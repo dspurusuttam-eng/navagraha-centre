@@ -7,6 +7,14 @@ import {
 } from "@/lib/astrology/accuracy";
 import { apiErrorResponse, readJsonObjectBody } from "@/lib/api/http";
 import { captureException } from "@/lib/observability";
+import {
+  checkSecurityRateLimit,
+  guardOptionalHoneypotAndTiming,
+  guardPayloadByteLength,
+  guardTurnstileForPayload,
+  guardTrustedOrigin,
+  securityConfig,
+} from "@/lib/security";
 import { calculateMuhurtaLiteContext } from "@/modules/muhurta-lite";
 
 export const dynamic = "force-dynamic";
@@ -14,6 +22,7 @@ export const dynamic = "force-dynamic";
 type MuhurtaLitePayload = {
   date?: unknown;
   place?: unknown;
+  [key: string]: unknown;
 };
 
 function readText(value: unknown) {
@@ -48,6 +57,34 @@ function getMuhurtaLiteErrorStatus(code: string) {
 }
 
 export async function POST(request: Request) {
+  const originGuard = guardTrustedOrigin(request, {
+    allowMissingOrigin: true,
+  });
+
+  if (originGuard) {
+    return originGuard;
+  }
+
+  const payloadGuard = guardPayloadByteLength(request);
+
+  if (payloadGuard) {
+    return payloadGuard;
+  }
+
+  const rateLimit = checkSecurityRateLimit({
+    request,
+    policyKey: "muhurta-public",
+  });
+
+  if (!rateLimit.allowed) {
+    return apiErrorResponse({
+      statusCode: 429,
+      code: "RATE_LIMITED",
+      message: "Too many Muhurta requests. Please retry shortly.",
+      headers: rateLimit.headers,
+    });
+  }
+
   const payload = (await readJsonObjectBody(request)) as MuhurtaLitePayload | null;
 
   if (!payload) {
@@ -55,7 +92,33 @@ export async function POST(request: Request) {
       statusCode: 400,
       code: "INVALID_REQUEST",
       message: "Muhurta-lite payload must be a JSON object.",
+      headers: rateLimit.headers,
     });
+  }
+
+  const spamCheck = guardOptionalHoneypotAndTiming({
+    honeypotValue: payload[securityConfig.spamProtection.honeypotField],
+    startedAtValue: payload[securityConfig.spamProtection.startedAtField],
+  });
+
+  if (!spamCheck.ok) {
+    return apiErrorResponse({
+      statusCode: 400,
+      code: spamCheck.issue.code,
+      message: spamCheck.issue.message,
+      headers: rateLimit.headers,
+    });
+  }
+
+  const turnstileGuard = await guardTurnstileForPayload({
+    request,
+    payload,
+    route: "api.astrology.muhurta-lite",
+    headers: rateLimit.headers,
+  });
+
+  if (turnstileGuard) {
+    return turnstileGuard;
   }
 
   const date = readText(payload.date);
@@ -73,6 +136,7 @@ export async function POST(request: Request) {
         validatedInput.issues,
         "Date and place are required."
       ),
+      headers: rateLimit.headers,
     });
   }
 
@@ -89,6 +153,7 @@ export async function POST(request: Request) {
       message:
         normalized.issues[0]?.message ??
         "Date/place normalization failed for Muhurta-lite calculation.",
+      headers: rateLimit.headers,
     });
   }
 
@@ -114,6 +179,7 @@ export async function POST(request: Request) {
       statusCode: 422,
       code: resolved.issue.code,
       message: getResolutionErrorMessage(resolved.issue.code),
+      headers: rateLimit.headers,
     });
   }
 
@@ -136,6 +202,7 @@ export async function POST(request: Request) {
       statusCode: getMuhurtaLiteErrorStatus(muhurtaLite.error.code),
       code: muhurtaLite.error.code,
       message: muhurtaLite.error.message,
+      headers: rateLimit.headers,
     });
   }
   const completeness = validateMuhurtaLiteOutputCompleteness(muhurtaLite.data);
@@ -146,14 +213,20 @@ export async function POST(request: Request) {
       code: "INCOMPLETE_MUHURTA_DATA",
       message:
         "Daily timing data is incomplete for this date and location. Please try again.",
+      headers: rateLimit.headers,
     });
   }
 
-  return Response.json({
-    data: muhurtaLite.data,
-    accuracy: {
-      isComplete: true,
-      missingFields: [],
+  return Response.json(
+    {
+      data: muhurtaLite.data,
+      accuracy: {
+        isComplete: true,
+        missingFields: [],
+      },
     },
-  });
+    {
+      headers: rateLimit.headers,
+    }
+  );
 }

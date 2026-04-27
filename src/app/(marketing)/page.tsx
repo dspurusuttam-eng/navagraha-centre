@@ -1,5 +1,6 @@
 import { TrackedLink } from "@/components/analytics/tracked-link";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
+import { AdSlot } from "@/components/monetization/AdSlot";
 import {
   CalculatorIcon,
   ConsultationIcon,
@@ -455,6 +456,10 @@ export default function HomePage() {
       </section>
 
       <TrustIndicatorStrip items={trustItems} />
+
+      <Section className="pt-6" tone="transparent">
+        <AdSlot placement="homepage_soft_slot" />
+      </Section>
 
       <Section
         tone="light"

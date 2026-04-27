@@ -2,6 +2,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
+import { ConsultationCTA } from "@/components/monetization/ConsultationCTA";
+import { GemstoneGuidanceCTA } from "@/components/monetization/GemstoneGuidanceCTA";
+import { ReportCTA } from "@/components/monetization/ReportCTA";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -404,6 +407,24 @@ export default async function DeskArticleDetailPage({
                 </Link>
               </div>
             </Card>
+
+            <div className="grid gap-4 lg:grid-cols-2">
+              <ConsultationCTA
+                pagePath={`/from-the-desk/${entry.slug}`}
+                placement="article_end"
+              />
+              <ReportCTA
+                pagePath={`/from-the-desk/${entry.slug}`}
+                placement="article_end"
+              />
+            </div>
+
+            {entry.category === "Gemstones" ? (
+              <GemstoneGuidanceCTA
+                pagePath={`/from-the-desk/${entry.slug}`}
+                placement="article_end"
+              />
+            ) : null}
 
             <Card className="space-y-3">
               <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">

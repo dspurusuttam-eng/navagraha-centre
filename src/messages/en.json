@@ -83,5 +83,19 @@
     },
     "languageLabel": "Language",
     "languageHelper": "English, Assamese, and Hindi are active now. Additional Indian and international languages are listed here and will unlock as full translations are reviewed."
+  },
+  "monetization": {
+    "bookConsultation": "Book Consultation",
+    "getDetailedReport": "Get Detailed Report",
+    "exploreShop": "Explore Shop",
+    "gemstoneGuidance": "Gemstone Guidance",
+    "comingSoon": "Coming Soon",
+    "premiumAi": "Premium AI",
+    "sponsored": "Sponsored",
+    "advertisement": "Advertisement",
+    "relatedGuidance": "Related Guidance",
+    "talkToAstrologer": "Talk to Astrologer",
+    "viewReports": "View Reports",
+    "continueReading": "Continue Reading"
   }
 }

@@ -83,5 +83,19 @@
     },
     "languageLabel": "ভাষা",
     "languageHelper": "ইংৰাজী, অসমীয়া আৰু হিন্দী এতিয়া সক্ৰিয়। আন ভাৰতীয় আৰু আন্তঃৰাষ্ট্ৰীয় ভাষাবোৰ ইয়াত আছে, সম্পূৰ্ণ অনুবাদ পৰ্যালোচনাৰ পিছত সক্ৰিয় হ'ব।"
+  },
+  "monetization": {
+    "bookConsultation": "পৰামৰ্শ বুক কৰক",
+    "getDetailedReport": "বিস্তৃত প্ৰতিবেদন লাভ কৰক",
+    "exploreShop": "দোকান অন্বেষণ কৰক",
+    "gemstoneGuidance": "ৰত্ন পৰামৰ্শ",
+    "comingSoon": "শীঘ্ৰেই আহিব",
+    "premiumAi": "প্ৰিমিয়াম AI",
+    "sponsored": "পৃষ্ঠপোষিত",
+    "advertisement": "বিজ্ঞাপন",
+    "relatedGuidance": "সম্পৰ্কিত পথনির্দেশ",
+    "talkToAstrologer": "জ্যোতিষীৰ সৈতে কথা পাতক",
+    "viewReports": "প্ৰতিবেদনসমূহ চাওক",
+    "continueReading": "পঢ়া অব্যাহত ৰাখক"
   }
 }

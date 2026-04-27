@@ -83,5 +83,19 @@
     },
     "languageLabel": "भाषा",
     "languageHelper": "अंग्रेजी, असमिया और हिंदी अभी सक्रिय हैं। अन्य भारतीय और अंतरराष्ट्रीय भाषाएँ यहाँ सूचीबद्ध हैं और पूर्ण अनुवाद समीक्षा के बाद सक्रिय होंगी।"
+  },
+  "monetization": {
+    "bookConsultation": "परामर्श बुक करें",
+    "getDetailedReport": "विस्तृत रिपोर्ट प्राप्त करें",
+    "exploreShop": "शॉप देखें",
+    "gemstoneGuidance": "रत्न मार्गदर्शन",
+    "comingSoon": "जल्द आ रहा है",
+    "premiumAi": "प्रीमियम AI",
+    "sponsored": "प्रायोजित",
+    "advertisement": "विज्ञापन",
+    "relatedGuidance": "संबंधित मार्गदर्शन",
+    "talkToAstrologer": "ज्योतिषी से बात करें",
+    "viewReports": "रिपोर्ट्स देखें",
+    "continueReading": "पढ़ना जारी रखें"
   }
 }

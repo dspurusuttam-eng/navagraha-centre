@@ -1,6 +1,7 @@
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
+import { getLiveLocales } from "../src/modules/localization/config";
 
 type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
 
@@ -51,6 +52,9 @@ async function main() {
   const basePath = path.join(messagesDirectory, "en.json");
   const baseDictionary = await readJsonFile(basePath);
   const baseMap = collectKeyTypes(baseDictionary);
+  const liveLocaleSet: Set<string> = new Set(
+    getLiveLocales().map((locale) => locale.code)
+  );
 
   const messageFiles = (await readdir(messagesDirectory))
     .filter((fileName) => fileName.endsWith(".json") && fileName !== "en.json")
@@ -61,7 +65,8 @@ async function main() {
     return;
   }
 
-  let hasIssues = false;
+  let hasBlockingIssues = false;
+  let hasWarnings = false;
 
   for (const fileName of messageFiles) {
     const locale = fileName.replace(/\.json$/, "");
@@ -93,13 +98,22 @@ async function main() {
         }
       }
 
-      if (!missingKeys.length && !extraKeys.length && !typeMismatches.length) {
+      const hasIssuesForLocale =
+        missingKeys.length > 0 || extraKeys.length > 0 || typeMismatches.length > 0;
+      const isLiveLocale = liveLocaleSet.has(locale);
+
+      if (!hasIssuesForLocale) {
         console.log(`✔ ${locale}: key structure matches en.json`);
         continue;
       }
 
-      hasIssues = true;
-      console.log(`✘ ${locale}: key issues detected`);
+      if (isLiveLocale) {
+        hasBlockingIssues = true;
+        console.log(`✘ ${locale}: key issues detected (live locale)`);
+      } else {
+        hasWarnings = true;
+        console.log(`⚠ ${locale}: key issues detected (planned locale, fallback allowed)`);
+      }
 
       if (missingKeys.length) {
         console.log(`  Missing (${missingKeys.length}): ${missingKeys.join(", ")}`);
@@ -113,15 +127,23 @@ async function main() {
         console.log(`  Type mismatches (${typeMismatches.length}): ${typeMismatches.join(", ")}`);
       }
     } catch (error) {
-      hasIssues = true;
+      if (liveLocaleSet.has(locale)) {
+        hasBlockingIssues = true;
+      } else {
+        hasWarnings = true;
+      }
       const message = error instanceof Error ? error.message : String(error);
       console.log(`✘ ${locale}: invalid JSON or unreadable file (${message})`);
     }
   }
 
-  if (hasIssues) {
+  if (hasBlockingIssues) {
     process.exitCode = 1;
     return;
+  }
+
+  if (hasWarnings) {
+    console.log("Planned locale warnings detected. Live locale parity remains valid.");
   }
 
   console.log("All locale dictionaries passed key parity checks against en.json.");

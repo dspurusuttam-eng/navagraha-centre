@@ -3,6 +3,11 @@ import {
   readJsonObjectBody,
 } from "@/lib/api/http";
 import { captureException } from "@/lib/observability";
+import {
+  checkSecurityRateLimit,
+  guardPayloadByteLength,
+  guardTrustedOrigin,
+} from "@/lib/security";
 import { getSession } from "@/modules/auth/server";
 import { normalizeBirthContextInput } from "@/lib/astrology/birth-input-normalizer";
 import { resolveAstronomyReadyBirthContext } from "@/lib/astrology/birth-context-engine";
@@ -41,6 +46,20 @@ function getResolutionErrorMessage(code: string, message: string) {
 }
 
 export async function POST(request: Request) {
+  const originGuard = guardTrustedOrigin(request, {
+    allowMissingOrigin: true,
+  });
+
+  if (originGuard) {
+    return originGuard;
+  }
+
+  const payloadGuard = guardPayloadByteLength(request);
+
+  if (payloadGuard) {
+    return payloadGuard;
+  }
+
   const session = await getSession().catch((error) => {
     captureException(error, {
       route: "api.astrology.birth-context.resolve",
@@ -58,6 +77,21 @@ export async function POST(request: Request) {
     });
   }
 
+  const limit = checkSecurityRateLimit({
+    request,
+    policyKey: "birth-context-resolve",
+    identityParts: [session.user.id],
+  });
+
+  if (!limit.allowed) {
+    return apiErrorResponse({
+      statusCode: 429,
+      code: "RATE_LIMITED",
+      message: "Too many birthplace resolution requests. Please retry shortly.",
+      headers: limit.headers,
+    });
+  }
+
   const payload = (await readJsonObjectBody(request)) as
     | ResolveBirthContextPayload
     | null;
@@ -67,6 +101,7 @@ export async function POST(request: Request) {
       statusCode: 400,
       code: "INVALID_REQUEST",
       message: "Birthplace resolve payload must be a JSON object.",
+      headers: limit.headers,
     });
   }
 
@@ -82,6 +117,7 @@ export async function POST(request: Request) {
         statusCode: 400,
         code: "MISSING_REQUIRED_FIELDS",
         message: "Birth date, birth time, city, and country are required.",
+        headers: limit.headers,
       });
     }
 
@@ -96,6 +132,7 @@ export async function POST(request: Request) {
         statusCode: 400,
         code: "INVALID_FIELD_LENGTH",
         message: "One or more birthplace fields exceed the allowed length.",
+        headers: limit.headers,
       });
     }
 
@@ -116,6 +153,7 @@ export async function POST(request: Request) {
         message:
           normalized.issues[0]?.message ??
           "Birth input normalization failed.",
+        headers: limit.headers,
       });
     }
 
@@ -145,31 +183,37 @@ export async function POST(request: Request) {
           resolved.issue.code,
           resolved.issue.message
         ),
+        headers: limit.headers,
       });
     }
 
     const validation = validateBirthContextResolutionResult(resolved);
 
-    return Response.json({
-      resolved: {
-        displayName: resolved.data.normalized_place.display_name,
-        latitude: resolved.data.normalized_place.latitude,
-        longitude: resolved.data.normalized_place.longitude,
-        countryCode: resolved.data.normalized_place.country_code,
-        countryName: resolved.data.normalized_place.country_name,
-        region: resolved.data.normalized_place.region,
-        city: resolved.data.normalized_place.city,
-        timezoneIana: resolved.data.timezone.iana,
-        utcOffsetAtBirth: resolved.data.timezone.utc_offset_at_birth,
-        locationConfidence: resolved.data.quality.location_confidence,
-        birthUtc: resolved.data.birth_utc,
-        validation: {
-          isValidForChart: validation.is_valid_for_chart,
-          overallConfidence: validation.overall_confidence,
-          warnings: validation.warnings.map((warning) => warning.message),
+    return Response.json(
+      {
+        resolved: {
+          displayName: resolved.data.normalized_place.display_name,
+          latitude: resolved.data.normalized_place.latitude,
+          longitude: resolved.data.normalized_place.longitude,
+          countryCode: resolved.data.normalized_place.country_code,
+          countryName: resolved.data.normalized_place.country_name,
+          region: resolved.data.normalized_place.region,
+          city: resolved.data.normalized_place.city,
+          timezoneIana: resolved.data.timezone.iana,
+          utcOffsetAtBirth: resolved.data.timezone.utc_offset_at_birth,
+          locationConfidence: resolved.data.quality.location_confidence,
+          birthUtc: resolved.data.birth_utc,
+          validation: {
+            isValidForChart: validation.is_valid_for_chart,
+            overallConfidence: validation.overall_confidence,
+            warnings: validation.warnings.map((warning) => warning.message),
+          },
         },
       },
-    });
+      {
+        headers: limit.headers,
+      }
+    );
   } catch (error) {
     captureException(error, {
       route: "api.astrology.birth-context.resolve",
@@ -182,6 +226,7 @@ export async function POST(request: Request) {
       code: "BIRTH_CONTEXT_RESOLVE_FAILED",
       message:
         "Birthplace resolution failed unexpectedly. You can continue with manual timezone and coordinates.",
+      headers: limit.headers,
     });
   }
 }

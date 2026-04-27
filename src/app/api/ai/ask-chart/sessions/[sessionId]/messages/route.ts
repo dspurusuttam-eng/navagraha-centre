@@ -3,11 +3,11 @@ import {
   readJsonObjectBody,
 } from "@/lib/api/http";
 import {
-  buildRateLimitKey,
-  checkRateLimit,
-  getClientAddress,
-  getRateLimitHeaders,
-} from "@/lib/rate-limit";
+  checkSecurityRateLimit,
+  getAiTemporarilyUnavailableMessage,
+  guardPayloadByteLength,
+  guardTrustedOrigin,
+} from "@/lib/security";
 import { captureException, trackServerEvent } from "@/lib/observability";
 import { getSession } from "@/modules/auth/server";
 import {
@@ -28,6 +28,20 @@ export async function POST(
     }>;
   }
 ) {
+  const originGuard = guardTrustedOrigin(request, {
+    allowMissingOrigin: true,
+  });
+
+  if (originGuard) {
+    return originGuard;
+  }
+
+  const payloadGuard = guardPayloadByteLength(request);
+
+  if (payloadGuard) {
+    return payloadGuard;
+  }
+
   const session = await getSession().catch((error) => {
     captureException(error, {
       route: "api.ai.ask-chart.messages",
@@ -45,14 +59,10 @@ export async function POST(
     });
   }
 
-  const limit = checkRateLimit({
-    key: buildRateLimitKey([
-      "api-ask-chart-send-message",
-      session.user.id,
-      getClientAddress(request),
-    ]),
-    limit: 24,
-    windowMs: 10 * 60 * 1_000,
+  const limit = checkSecurityRateLimit({
+    request,
+    policyKey: "ai-message",
+    identityParts: [session.user.id],
   });
 
   if (!limit.allowed) {
@@ -70,7 +80,7 @@ export async function POST(
       code: "RATE_LIMITED",
       message:
         "Too many assistant requests. Please wait briefly and try again.",
-      headers: getRateLimitHeaders(limit),
+      headers: limit.headers,
     });
   }
 
@@ -81,7 +91,7 @@ export async function POST(
       statusCode: 400,
       code: "INVALID_REQUEST",
       message: "Assistant request payload must be a JSON object.",
-      headers: getRateLimitHeaders(limit),
+      headers: limit.headers,
     });
   }
 
@@ -93,7 +103,7 @@ export async function POST(
       statusCode: 400,
       code: "INVALID_MESSAGE",
       message: "Enter a chart question before sending.",
-      headers: getRateLimitHeaders(limit),
+      headers: limit.headers,
     });
   }
 
@@ -102,7 +112,7 @@ export async function POST(
       statusCode: 400,
       code: "MESSAGE_TOO_LONG",
       message: `Keep each question within ${maxAssistantMessageLength} characters.`,
-      headers: getRateLimitHeaders(limit),
+      headers: limit.headers,
     });
   }
 
@@ -114,7 +124,7 @@ export async function POST(
       statusCode: 400,
       code: "INVALID_SESSION",
       message: "Session id is required.",
-      headers: getRateLimitHeaders(limit),
+      headers: limit.headers,
     });
   }
 
@@ -133,7 +143,7 @@ export async function POST(
     if (result.status === "LIMIT_REACHED") {
       return Response.json(result, {
         status: 200,
-        headers: getRateLimitHeaders(limit),
+        headers: limit.headers,
       });
     }
 
@@ -144,7 +154,7 @@ export async function POST(
         statusCode: 500,
         code: "CONVERSATION_UNAVAILABLE",
         message: "Conversation could not be loaded after sending.",
-        headers: getRateLimitHeaders(limit),
+        headers: limit.headers,
       });
     }
 
@@ -160,7 +170,7 @@ export async function POST(
       aiQuestionsRemainingToday: result.aiQuestionsRemainingToday,
       premiumNudge: result.premiumNudge,
     }, {
-      headers: getRateLimitHeaders(limit),
+      headers: limit.headers,
     });
   } catch (error) {
     captureException(error, {
@@ -172,8 +182,8 @@ export async function POST(
     return apiErrorResponse({
       statusCode: 500,
       code: "ASSISTANT_RESPONSE_FAILED",
-      message: "The assistant could not complete this response. Please retry.",
-      headers: getRateLimitHeaders(limit),
+      message: getAiTemporarilyUnavailableMessage(resolveLocaleFromRequest(request)),
+      headers: limit.headers,
     });
   }
 }

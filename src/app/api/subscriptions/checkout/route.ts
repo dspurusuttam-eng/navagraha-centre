@@ -3,11 +3,11 @@ import {
   readJsonObjectBody,
 } from "@/lib/api/http";
 import {
-  buildRateLimitKey,
-  checkRateLimit,
-  getClientAddress,
-  getRateLimitHeaders,
-} from "@/lib/rate-limit";
+  checkSecurityRateLimit,
+  guardPayloadByteLength,
+  guardTrustedOrigin,
+  normalizeSafeText,
+} from "@/lib/security";
 import { captureException, trackServerEvent } from "@/lib/observability";
 import { getSession } from "@/modules/auth/server";
 import { trackPremiumClicked } from "@/modules/conversion/events";
@@ -24,14 +24,29 @@ type SubscriptionCheckoutPayload = {
 };
 
 function readPlanType(payload: SubscriptionCheckoutPayload | null) {
-  if (!payload || typeof payload.planType !== "string") {
-    return "";
-  }
+  const normalized = normalizeSafeText(payload?.planType ?? "", {
+    fieldName: "Plan type",
+    maxLength: 20,
+  });
 
-  return payload.planType.trim().toUpperCase();
+  return normalized.ok ? normalized.data.toUpperCase() : "";
 }
 
 export async function POST(request: Request) {
+  const originGuard = guardTrustedOrigin(request, {
+    allowMissingOrigin: true,
+  });
+
+  if (originGuard) {
+    return originGuard;
+  }
+
+  const payloadGuard = guardPayloadByteLength(request);
+
+  if (payloadGuard) {
+    return payloadGuard;
+  }
+
   const session = await getSession().catch((error) => {
     captureException(error, {
       route: "api.subscriptions.checkout",
@@ -49,14 +64,10 @@ export async function POST(request: Request) {
     });
   }
 
-  const limit = checkRateLimit({
-    key: buildRateLimitKey([
-      "api-subscriptions-checkout",
-      session.user.id,
-      getClientAddress(request),
-    ]),
-    limit: 10,
-    windowMs: 10 * 60 * 1_000,
+  const limit = checkSecurityRateLimit({
+    request,
+    policyKey: "subscriptions-checkout",
+    identityParts: [session.user.id],
   });
 
   if (!limit.allowed) {
@@ -73,7 +84,7 @@ export async function POST(request: Request) {
       code: "RATE_LIMITED",
       message:
         "Too many subscription checkout attempts. Please wait and try again.",
-      headers: getRateLimitHeaders(limit),
+      headers: limit.headers,
     });
   }
 
@@ -86,7 +97,7 @@ export async function POST(request: Request) {
       statusCode: 400,
       code: "INVALID_REQUEST",
       message: "Checkout payload must be a JSON object.",
-      headers: getRateLimitHeaders(limit),
+      headers: limit.headers,
     });
   }
 
@@ -97,7 +108,7 @@ export async function POST(request: Request) {
       statusCode: 400,
       code: "INVALID_PLAN_TYPE",
       message: "A payable planType is required. Use PREMIUM or PRO.",
-      headers: getRateLimitHeaders(limit),
+      headers: limit.headers,
     });
   }
 
@@ -155,7 +166,7 @@ export async function POST(request: Request) {
       },
       {
         status: 201,
-        headers: getRateLimitHeaders(limit),
+        headers: limit.headers,
       }
     );
   } catch (error) {
@@ -169,7 +180,7 @@ export async function POST(request: Request) {
       statusCode: 500,
       code: "CHECKOUT_INIT_FAILED",
       message: "Subscription checkout initialization failed.",
-      headers: getRateLimitHeaders(limit),
+      headers: limit.headers,
     });
   }
 }

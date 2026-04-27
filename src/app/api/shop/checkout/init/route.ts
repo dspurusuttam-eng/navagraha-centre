@@ -1,6 +1,14 @@
 import { apiErrorResponse, readJsonObjectBody } from "@/lib/api/http";
 import { captureException } from "@/lib/observability";
 import { assertRateLimit, buildRateLimitKey } from "@/lib/rate-limit";
+import {
+  checkSecurityRateLimit,
+  guardTurnstileForPayload,
+  guardPayloadByteLength,
+  guardTrustedOrigin,
+  isValidEmail,
+  normalizeSafeText,
+} from "@/lib/security";
 import { getSession } from "@/modules/auth/server";
 import { initializeShopCheckout } from "@/modules/shop/checkout";
 import { resolveShopCheckoutErrorState } from "@/modules/shop/error-states";
@@ -54,11 +62,50 @@ function parseCartLines(payload: CheckoutInitPayload): ShopCartLineInput[] {
     .filter((item): item is ShopCartLineInput => item !== null);
 }
 
-function readString(value: unknown) {
-  return typeof value === "string" ? value.trim() : "";
+function readSafeString(
+  value: unknown,
+  fieldName: string,
+  maxLength: number,
+  allowEmpty = true
+) {
+  const normalized = normalizeSafeText(value ?? "", {
+    fieldName,
+    maxLength,
+    allowEmpty,
+  });
+
+  return normalized.ok ? normalized.data : "";
 }
 
 export async function POST(request: Request) {
+  const originGuard = guardTrustedOrigin(request, {
+    allowMissingOrigin: true,
+  });
+
+  if (originGuard) {
+    return originGuard;
+  }
+
+  const payloadGuard = guardPayloadByteLength(request);
+
+  if (payloadGuard) {
+    return payloadGuard;
+  }
+
+  const routeLimit = checkSecurityRateLimit({
+    request,
+    policyKey: "shop-checkout-init",
+  });
+
+  if (!routeLimit.allowed) {
+    return apiErrorResponse({
+      statusCode: 429,
+      code: "RATE_LIMITED",
+      message: "Too many checkout requests. Please retry shortly.",
+      headers: routeLimit.headers,
+    });
+  }
+
   const payload = (await readJsonObjectBody(request)) as
     | CheckoutInitPayload
     | null;
@@ -68,18 +115,35 @@ export async function POST(request: Request) {
       statusCode: 400,
       code: "INVALID_REQUEST",
       message: "Invalid checkout payload.",
+      headers: routeLimit.headers,
     });
   }
 
-  const billingName = readString(payload.billingName);
-  const customerEmail = readString(payload.customerEmail);
-  const customerPhone = readString(payload.customerPhone);
-  const billingTimezone = readString(payload.billingTimezone) || "Asia/Kolkata";
-  const notes = readString(payload.notes);
-  const subscriptionPlanId = readString(payload.subscriptionPlanId);
+  const turnstileGuard = await guardTurnstileForPayload({
+    request,
+    payload: payload as Record<string, unknown>,
+    route: "api.shop.checkout.init",
+    headers: routeLimit.headers,
+  });
+
+  if (turnstileGuard) {
+    return turnstileGuard;
+  }
+
+  const billingName = readSafeString(payload.billingName, "Billing name", 120, false);
+  const customerEmail = readSafeString(payload.customerEmail, "Customer email", 160, false);
+  const customerPhone = readSafeString(payload.customerPhone, "Customer phone", 30);
+  const billingTimezone =
+    readSafeString(payload.billingTimezone, "Billing timezone", 120) || "Asia/Kolkata";
+  const notes = readSafeString(payload.notes, "Notes", 800);
+  const subscriptionPlanId = readSafeString(
+    payload.subscriptionPlanId,
+    "Subscription plan",
+    80
+  );
   const idempotencyKey =
-    readString(payload.idempotencyKey) ||
-    readString(request.headers.get("x-idempotency-key"));
+    readSafeString(payload.idempotencyKey, "Idempotency key", 128) ||
+    readSafeString(request.headers.get("x-idempotency-key"), "Idempotency key", 128);
   const items = parseCartLines(payload);
 
   if (!billingName) {
@@ -87,14 +151,16 @@ export async function POST(request: Request) {
       statusCode: 400,
       code: "BILLING_NAME_REQUIRED",
       message: "Billing name is required.",
+      headers: routeLimit.headers,
     });
   }
 
-  if (!customerEmail || !customerEmail.includes("@")) {
+  if (!customerEmail || !isValidEmail(customerEmail)) {
     return apiErrorResponse({
       statusCode: 400,
       code: "INVALID_CUSTOMER_EMAIL",
       message: "A valid customer email is required.",
+      headers: routeLimit.headers,
     });
   }
 
@@ -102,7 +168,7 @@ export async function POST(request: Request) {
     assertRateLimit({
       key: buildRateLimitKey([
         "api-shop-checkout-init",
-        customerEmail || billingName,
+        customerEmail || billingName || "anonymous",
       ]),
       limit: 8,
       windowMs: 10 * 60 * 1_000,
@@ -129,6 +195,7 @@ export async function POST(request: Request) {
       },
       {
         status: 201,
+        headers: routeLimit.headers,
       }
     );
   } catch (error) {
@@ -147,6 +214,7 @@ export async function POST(request: Request) {
         title: checkoutError.title,
         recoveryActions: checkoutError.recoveryActions,
       },
+      headers: routeLimit.headers,
     });
   }
 }

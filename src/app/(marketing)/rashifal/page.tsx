@@ -1,5 +1,8 @@
 import { TrackedLink } from "@/components/analytics/tracked-link";
 import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
+import { AdSlot } from "@/components/monetization/AdSlot";
+import { ConsultationCTA } from "@/components/monetization/ConsultationCTA";
+import { ReportCTA } from "@/components/monetization/ReportCTA";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
@@ -33,6 +36,8 @@ export async function generateMetadata() {
   });
 }
 export const revalidate = 3600;
+const topSixSigns = rashifalSigns.slice(0, 6);
+const bottomSixSigns = rashifalSigns.slice(6);
 
 export default function RashifalPage() {
   return (
@@ -96,6 +101,10 @@ export default function RashifalPage() {
         </Container>
       </section>
 
+      <Section className="pt-6" tone="transparent">
+        <AdSlot placement="rashifal_after_intro" />
+      </Section>
+
       <Section
         tone="light"
         eyebrow="12 Zodiac Signs"
@@ -155,11 +164,11 @@ export default function RashifalPage() {
             lucky indicators for quick readability.
           </p>
         </Card>
-        <div className="grid gap-4 lg:grid-cols-2">
-          {rashifalSigns.map((sign) => (
-            <Card
-              key={`full-${sign.slug}`}
-              tone="light"
+          <div className="grid gap-4 lg:grid-cols-2">
+            {topSixSigns.map((sign) => (
+              <Card
+                key={`full-${sign.slug}`}
+                tone="light"
               className="space-y-4 border-[rgba(184,137,67,0.24)]"
             >
               <div className="flex items-center justify-between gap-3">
@@ -227,9 +236,95 @@ export default function RashifalPage() {
                   </span>{" "}
                   {sign.luckyTime}
                 </p>
-              </div>
-            </Card>
-          ))}
+                </div>
+              </Card>
+            ))}
+
+            <div className="lg:col-span-2">
+              <AdSlot placement="rashifal_mid_content" />
+            </div>
+
+            {bottomSixSigns.map((sign) => (
+              <Card
+                key={`full-${sign.slug}`}
+                tone="light"
+                className="space-y-4 border-[rgba(184,137,67,0.24)]"
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
+                    {sign.name} Rashifal
+                  </h2>
+                  <TrackedLink
+                    href={`/rashifal/${sign.slug}`}
+                    eventName="cta_click"
+                    eventPayload={{
+                      page: "/rashifal",
+                      feature: `rashifal-sign-page-${sign.slug}`,
+                    }}
+                    className={buttonStyles({ tone: "ghost", size: "sm" })}
+                  >
+                    Open Sign Page
+                  </TrackedLink>
+                </div>
+
+                <ul className="space-y-2">
+                  {sign.fullDescription.map((line) => (
+                    <li
+                      key={line}
+                      className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]"
+                    >
+                      - {line}
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="grid gap-2 text-[length:var(--font-size-body-sm)] text-[var(--color-ink-body)] sm:grid-cols-2">
+                  <p>
+                    <span className="font-medium text-[var(--color-ink-strong)]">
+                      Love:
+                    </span>{" "}
+                    {sign.love}
+                  </p>
+                  <p>
+                    <span className="font-medium text-[var(--color-ink-strong)]">
+                      Career:
+                    </span>{" "}
+                    {sign.career}
+                  </p>
+                  <p>
+                    <span className="font-medium text-[var(--color-ink-strong)]">
+                      Business:
+                    </span>{" "}
+                    {sign.business}
+                  </p>
+                  <p>
+                    <span className="font-medium text-[var(--color-ink-strong)]">
+                      Lucky Color:
+                    </span>{" "}
+                    {sign.luckyColor}
+                  </p>
+                  <p>
+                    <span className="font-medium text-[var(--color-ink-strong)]">
+                      Lucky Number:
+                    </span>{" "}
+                    {sign.luckyNumber}
+                  </p>
+                  <p>
+                    <span className="font-medium text-[var(--color-ink-strong)]">
+                      Lucky Time:
+                    </span>{" "}
+                    {sign.luckyTime}
+                  </p>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </Section>
+
+      <Section className="pt-0" tone="transparent">
+        <div className="grid gap-4 lg:grid-cols-2">
+          <ConsultationCTA pagePath="/rashifal" placement="rashifal_summary" />
+          <ReportCTA pagePath="/rashifal" placement="rashifal_summary" />
         </div>
       </Section>
 

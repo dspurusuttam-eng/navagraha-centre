@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { TrackedLink } from "@/components/analytics/tracked-link";
+import { ConsultationCTA } from "@/components/monetization/ConsultationCTA";
+import { ReportCTA } from "@/components/monetization/ReportCTA";
 import { PageHero } from "@/components/site/page-hero";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
@@ -219,6 +221,13 @@ export function ToolPageTemplate({
             )}
           </div>
         </Card>
+      </Section>
+
+      <Section className="pt-0" tone="transparent">
+        <div className="grid gap-4 lg:grid-cols-2">
+          <ConsultationCTA pagePath={entry.path} placement={`seo-${entry.key}`} />
+          <ReportCTA pagePath={entry.path} placement={`seo-${entry.key}`} />
+        </div>
       </Section>
 
       <Section

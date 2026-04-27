@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
+import { TrustNote } from "@/components/monetization/TrustNote";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import { TrackedLink } from "@/components/analytics/tracked-link";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -306,6 +307,11 @@ export default async function ConsultationPage({
         description="Consultation guidance is framed through Vedic sidereal chart context, then interpreted with AI support and human review where needed."
         tone="muted"
       >
+        <TrustNote
+          title="Guidance-first monetization policy"
+          description="Consultation booking is optional and trust-based. No fear-led urgency, no guaranteed outcomes, and no pressure to purchase add-ons."
+          className="mb-4"
+        />
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <Card className="space-y-3">
             <Badge tone="neutral">Calculation Base</Badge>

@@ -6,6 +6,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   const validation = validateLaunchEnvironment();
+  const isProduction = process.env.NODE_ENV === "production";
 
   if (!validation.valid) {
     await sendOpsAlert({
@@ -25,11 +26,17 @@ export async function GET() {
     {
       ok: validation.valid,
       timestamp: new Date().toISOString(),
-      issues: validation.issues.map((issue) => ({
-        key: issue.key,
-        severity: issue.severity,
-        message: issue.message,
-      })),
+      issues: isProduction
+        ? validation.issues.map((issue) => ({
+            key: issue.key,
+            severity: issue.severity,
+            message: "Configuration issue detected.",
+          }))
+        : validation.issues.map((issue) => ({
+            key: issue.key,
+            severity: issue.severity,
+            message: issue.message,
+          })),
     },
     {
       status: validation.valid ? 200 : 503,

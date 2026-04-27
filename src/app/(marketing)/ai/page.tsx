@@ -1,5 +1,6 @@
 import { TrackedLink } from "@/components/analytics/tracked-link";
 import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
+import { PremiumAICTA } from "@/components/monetization/PremiumAICTA";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import {
   ConsultationIcon,
@@ -414,6 +415,10 @@ export default function AiPage() {
       />
 
       <AiMonetizationPrepSection pagePath="/ai" tone="muted" />
+
+      <Section className="pt-0" tone="transparent">
+        <PremiumAICTA pagePath="/ai" placement="ai_page_mid" />
+      </Section>
 
       <section className="border-y border-[color:var(--color-border)] bg-[linear-gradient(180deg,rgba(255,249,239,0.94)_0%,rgba(245,231,204,0.9)_100%)]">
         <Container className="py-5 text-center">

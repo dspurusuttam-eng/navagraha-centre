@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Manrope } from "next/font/google";
 import { WebVitalsReporter } from "@/components/analytics/web-vitals-reporter";
+import { AdSenseScript } from "@/components/monetization/AdSenseScript";
 import { JsonLd } from "@/components/seo/json-ld";
 import { Footer } from "@/components/site/footer";
 import { Header } from "@/components/site/header";
@@ -82,6 +83,7 @@ export default async function RootLayout({
         <Header />
         <main className="content-fade-in flex-1">{children}</main>
         <Footer />
+        <AdSenseScript />
         <WebVitalsReporter />
       </body>
     </html>

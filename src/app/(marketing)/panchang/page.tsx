@@ -1,5 +1,8 @@
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import { TrackedLink } from "@/components/analytics/tracked-link";
+import { AdSlot } from "@/components/monetization/AdSlot";
+import { ConsultationCTA } from "@/components/monetization/ConsultationCTA";
+import { ReportCTA } from "@/components/monetization/ReportCTA";
 import { PageHero } from "@/components/site/page-hero";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
@@ -121,6 +124,9 @@ export default function PanchangPage() {
         <div id="panchang-tool">
           <PanchangToolPanel />
         </div>
+        <div className="mt-6">
+          <AdSlot placement="tool_result_bottom" />
+        </div>
       </Section>
 
       <Section
@@ -194,6 +200,13 @@ export default function PanchangPage() {
               Continue into Kundli, NAVAGRAHA AI, and consultation when you need chart-level interpretation beyond daily timing.
             </p>
           </Card>
+        </div>
+      </Section>
+
+      <Section className="pt-0" tone="transparent">
+        <div className="grid gap-4 lg:grid-cols-2">
+          <AdSlot placement="panchang_after_summary" />
+          <ConsultationCTA pagePath="/panchang" placement="panchang_summary" />
         </div>
       </Section>
 
@@ -300,6 +313,10 @@ export default function PanchangPage() {
             </Card>
           ))}
         </div>
+      </Section>
+
+      <Section className="pt-0" tone="transparent">
+        <ReportCTA pagePath="/panchang" placement="panchang_footer" />
       </Section>
 
       <Section className="pt-0" tone="transparent">

@@ -3,6 +3,13 @@ import {
   readJsonObjectBody,
 } from "@/lib/api/http";
 import { captureException } from "@/lib/observability";
+import {
+  checkSecurityRateLimit,
+  getInvalidInputSafeMessage,
+  guardPayloadByteLength,
+  guardTrustedOrigin,
+  normalizeSafeText,
+} from "@/lib/security";
 import { getSession } from "@/modules/auth/server";
 import { trackPremiumClicked } from "@/modules/conversion/events";
 import { generateUserReport } from "@/lib/ai/report-generator";
@@ -17,14 +24,29 @@ type PremiumReportRequestPayload = {
 };
 
 function readReportType(payload: PremiumReportRequestPayload | null) {
-  if (!payload || typeof payload.reportType !== "string") {
-    return "";
-  }
+  const validated = normalizeSafeText(payload?.reportType ?? "", {
+    fieldName: "Report type",
+    maxLength: 80,
+  });
 
-  return payload.reportType.trim();
+  return validated.ok ? validated.data : "";
 }
 
 export async function POST(request: Request) {
+  const originGuard = guardTrustedOrigin(request, {
+    allowMissingOrigin: true,
+  });
+
+  if (originGuard) {
+    return originGuard;
+  }
+
+  const payloadGuard = guardPayloadByteLength(request);
+
+  if (payloadGuard) {
+    return payloadGuard;
+  }
+
   const session = await getSession().catch((error) => {
     captureException(error, {
       route: "api.report.premium.generate",
@@ -42,6 +64,21 @@ export async function POST(request: Request) {
     });
   }
 
+  const limit = checkSecurityRateLimit({
+    request,
+    policyKey: "premium-report-generate",
+    identityParts: [session.user.id],
+  });
+
+  if (!limit.allowed) {
+    return apiErrorResponse({
+      statusCode: 429,
+      code: "RATE_LIMITED",
+      message: "Too many premium report requests. Please retry shortly.",
+      headers: limit.headers,
+    });
+  }
+
   const payload = (await readJsonObjectBody(request)) as
     | PremiumReportRequestPayload
     | null;
@@ -51,7 +88,8 @@ export async function POST(request: Request) {
     return apiErrorResponse({
       statusCode: 400,
       code: "REPORT_TYPE_REQUIRED",
-      message: "Report type is required.",
+      message: getInvalidInputSafeMessage(resolveLocaleFromRequest(request)),
+      headers: limit.headers,
     });
   }
 
@@ -84,7 +122,10 @@ export async function POST(request: Request) {
         status: "ok",
         premiumReport,
       },
-      { status: 200 }
+      {
+        status: 200,
+        headers: limit.headers,
+      }
     );
   } catch (error) {
     captureException(error, {
@@ -97,6 +138,7 @@ export async function POST(request: Request) {
       statusCode: 500,
       code: "PREMIUM_REPORT_FAILED",
       message: "Premium report generation failed. Please try again.",
+      headers: limit.headers,
     });
   }
 }

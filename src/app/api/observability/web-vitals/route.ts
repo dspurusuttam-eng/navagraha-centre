@@ -1,20 +1,24 @@
 import { NextResponse } from "next/server";
 import {
-  buildRateLimitKey,
-  checkRateLimit,
-  getClientAddress,
-  getRateLimitHeaders,
-} from "@/lib/rate-limit";
+  checkSecurityRateLimit,
+  guardPayloadByteLength,
+} from "@/lib/security";
 import { trackServerEvent } from "@/lib/observability";
+import { getClientAddress } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
+  const payloadGuard = guardPayloadByteLength(request);
+
+  if (payloadGuard) {
+    return payloadGuard;
+  }
+
   const clientAddress = getClientAddress(request);
-  const limit = checkRateLimit({
-    key: buildRateLimitKey(["web-vitals", clientAddress]),
-    limit: 120,
-    windowMs: 5 * 60 * 1_000,
+  const limit = checkSecurityRateLimit({
+    request,
+    policyKey: "web-vitals",
   });
 
   if (!limit.allowed) {
@@ -25,7 +29,7 @@ export async function POST(request: Request) {
       },
       {
         status: 429,
-        headers: getRateLimitHeaders(limit),
+        headers: limit.headers,
       }
     );
   }
@@ -47,9 +51,17 @@ export async function POST(request: Request) {
     );
   }
 
+  const metricName =
+    typeof payload.name === "string" ? payload.name : "unknown";
+  const metricId = typeof payload.id === "string" ? payload.id : "unknown";
+  const metricRating =
+    typeof payload.rating === "string" ? payload.rating : "unknown";
+
   trackServerEvent("web-vitals.received", {
     clientAddress,
-    ...payload,
+    metricName,
+    metricId,
+    metricRating,
   });
 
   return NextResponse.json(
@@ -57,7 +69,7 @@ export async function POST(request: Request) {
       ok: true,
     },
     {
-      headers: getRateLimitHeaders(limit),
+      headers: limit.headers,
     }
   );
 }

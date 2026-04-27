@@ -1,5 +1,7 @@
 import { TrackedLink } from "@/components/analytics/tracked-link";
 import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
+import { ConsultationCTA } from "@/components/monetization/ConsultationCTA";
+import { ReportCTA } from "@/components/monetization/ReportCTA";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import { PageHero } from "@/components/site/page-hero";
 import { Badge } from "@/components/ui/badge";
@@ -197,6 +199,25 @@ export default function ReportsPage() {
         updatedOn="April 22, 2026"
         tone="transparent"
       />
+
+      <Section className="pt-0" tone="transparent">
+        <div className="grid gap-4 lg:grid-cols-2">
+          <ReportCTA
+            pagePath="/reports"
+            placement="reports_mid"
+            title="Need a focused report package?"
+            description="Compare report categories, then start with the package that matches your current life decision."
+            ctaLabel="Get Detailed Report"
+            startingPrice="Free launch access active"
+          />
+          <ConsultationCTA
+            pagePath="/reports"
+            placement="reports_mid"
+            title="Need help choosing the right report?"
+            description="Talk to an astrologer first if you need a clear report direction before committing."
+          />
+        </div>
+      </Section>
 
       <Section className="pt-0" tone="transparent">
         <Card

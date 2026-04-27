@@ -47,6 +47,7 @@
     "debug:planetary": "tsx scripts/debug-planetary-pipeline.ts",
     "i18n:check": "tsx scripts/check-message-keys.ts",
     "seo:check": "node scripts/seo-check.mjs",
+    "security:check": "tsx scripts/security-check.ts",
     "env:check": "tsx scripts/validate-env.ts",
     "env:audit": "tsx scripts/audit-env-secrets.ts",
     "setup:swisseph:windows": "node scripts/setup-swisseph-windows.js",
