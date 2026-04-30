@@ -2,10 +2,12 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/cn";
 
-type PlaceholderTone = "gold" | "midnight";
+type PlaceholderTone = "gold" | "pearl" | "midnight";
 
 const toneStyles: Record<PlaceholderTone, string> = {
   gold: "bg-[radial-gradient(circle_at_top_left,rgba(215,187,131,0.2),transparent_36%),linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(247,236,216,0.94)_100%)]",
+  pearl:
+    "bg-[radial-gradient(circle_at_bottom_right,rgba(215,187,131,0.16),transparent_30%),linear-gradient(180deg,rgba(255,252,246,0.98)_0%,rgba(244,232,219,0.94)_100%)]",
   midnight:
     "bg-[radial-gradient(circle_at_bottom_right,rgba(215,187,131,0.16),transparent_30%),linear-gradient(180deg,rgba(255,252,246,0.98)_0%,rgba(244,232,219,0.94)_100%)]",
 };

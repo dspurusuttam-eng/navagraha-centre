@@ -67,7 +67,7 @@ export async function Header() {
                 className={buttonStyles({
                   tone: "ghost",
                   size: "sm",
-                  className: "min-h-11 px-4 text-[0.69rem]",
+                  className: "min-h-11 px-4 text-[0.69rem] whitespace-nowrap",
                 })}
               >
                 {item.label}
@@ -79,7 +79,11 @@ export async function Header() {
             <LanguageSwitcher variant="compact" />
             <Link
               href={localizeHref("/dashboard")}
-              className={buttonStyles({ tone: "tertiary", size: "sm" })}
+              className={buttonStyles({
+                tone: "tertiary",
+                size: "sm",
+                className: "whitespace-nowrap",
+              })}
             >
               {copy.navigation.account}
             </Link>
@@ -87,7 +91,7 @@ export async function Header() {
               href={localizeHref("/kundli")}
               eventName="cta_click"
               eventPayload={{ page: "global-header", feature: "header-generate-kundli" }}
-              className={buttonStyles({ size: "sm" })}
+              className={buttonStyles({ size: "sm", className: "whitespace-nowrap" })}
             >
               {copy.cta.generateKundli}
             </TrackedLink>
@@ -118,7 +122,7 @@ export async function Header() {
               className={buttonStyles({
                 tone: "tertiary",
                 size: "sm",
-                className: "cursor-pointer list-none px-4 marker:content-none",
+                className: "cursor-pointer list-none px-4 marker:content-none whitespace-nowrap",
               })}
             >
               {copy.navigation.menu}

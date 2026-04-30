@@ -26,7 +26,7 @@ export function PremiumAICTA({
   }
 
   return (
-    <Card tone="light" className={cn("space-y-4 border-[rgba(184,137,67,0.24)]", className)}>
+    <Card tone="light" className={cn("cta-block space-y-4", className)}>
       <div className="flex flex-wrap items-center gap-2">
         <Badge tone="accent">{globalMonetizationCopy.premiumAi}</Badge>
         <Badge tone="outline">{globalMonetizationCopy.comingSoon}</Badge>

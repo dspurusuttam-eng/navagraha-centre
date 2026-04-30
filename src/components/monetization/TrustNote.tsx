@@ -13,7 +13,7 @@ export function TrustNote({
   className,
 }: Readonly<TrustNoteProps>) {
   return (
-    <Card tone="light" className={cn("space-y-2 border-[rgba(184,137,67,0.2)]", className)}>
+    <Card tone="light" className={cn("trust-strip-item space-y-2", className)}>
       <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
         {title}
       </p>
@@ -23,4 +23,3 @@ export function TrustNote({
     </Card>
   );
 }
-

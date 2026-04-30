@@ -27,7 +27,7 @@ export function GemstoneGuidanceCTA({
   }
 
   return (
-    <Card tone="light" className={cn("space-y-4 border-[rgba(184,137,67,0.24)]", className)}>
+    <Card tone="light" className={cn("cta-block space-y-4", className)}>
       <Badge tone="trust">{globalMonetizationCopy.gemstoneGuidance}</Badge>
       <h3 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
         {title}

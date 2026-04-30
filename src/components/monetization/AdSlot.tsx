@@ -116,7 +116,7 @@ export function AdSlot({
     <Card
       tone="light"
       className={cn(
-        "space-y-3 border-[rgba(184,137,67,0.24)] bg-[rgba(255,255,255,0.92)]",
+        "tool-card space-y-3 bg-[rgba(255,255,255,0.92)]",
         className
       )}
       style={{ minHeight: `${resolvedMinHeight}px` }}
@@ -160,4 +160,3 @@ export function AdSlot({
     </Card>
   );
 }
-

@@ -16,7 +16,7 @@ export function AdReadyZone({
   return (
     <Card
       className={cn(
-        "border-dashed border-[color:var(--color-border)] bg-[rgba(255,255,255,0.58)]",
+        "tool-card border-dashed border-[color:var(--color-border)] bg-[rgba(255,255,255,0.58)]",
         className
       )}
     >
