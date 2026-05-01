@@ -122,7 +122,7 @@ function CalculatorResultView({
   data,
 }: Readonly<{ data: CalculatorExecutionData }>) {
   return (
-    <div className="space-y-3 rounded-[var(--radius-xl)] border border-[rgba(184,137,67,0.24)] bg-[rgba(255,255,255,0.9)] p-4">
+    <div className="utility-result-card space-y-3 rounded-[var(--radius-xl)] border p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <Badge tone="accent">Result</Badge>
         <span className="text-[0.64rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
@@ -243,7 +243,7 @@ export function CalculatorsBundlePanel() {
     return (
       <p
         aria-live="polite"
-        className="rounded-[var(--radius-md)] border border-[rgba(188,104,104,0.34)] bg-[rgba(244,231,231,0.86)] px-3 py-2 text-[length:var(--font-size-body-sm)] text-[var(--color-ink-strong)]"
+        className="utility-error rounded-[var(--radius-md)] border px-3 py-2 text-[length:var(--font-size-body-sm)]"
       >
         {message}
       </p>
@@ -251,9 +251,9 @@ export function CalculatorsBundlePanel() {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="utility-page-flow space-y-5">
       <div className="grid gap-4 xl:grid-cols-2">
-        <Card tone="light" className="space-y-4 border-[rgba(184,137,67,0.24)]">
+        <Card tone="light" className="utility-form-card space-y-4">
           <Badge tone="trust">Nakshatra Calculator</Badge>
           <p className="text-[length:var(--font-size-body-sm)] text-[var(--color-ink-body)]">
             Get Moon Nakshatra and Pada from date, time, and place.
@@ -266,6 +266,7 @@ export function CalculatorsBundlePanel() {
             }}
           >
             <Input
+              aria-label="Nakshatra birth date"
               type="date"
               value={nakshatraForm.date}
               onChange={(event) =>
@@ -274,6 +275,7 @@ export function CalculatorsBundlePanel() {
               required
             />
             <Input
+              aria-label="Nakshatra birth time"
               type="time"
               value={nakshatraForm.time}
               onChange={(event) =>
@@ -282,6 +284,7 @@ export function CalculatorsBundlePanel() {
               required
             />
             <Input
+              aria-label="Nakshatra birth place"
               placeholder="City, Region/State, Country"
               value={nakshatraForm.place}
               onChange={(event) =>
@@ -297,7 +300,7 @@ export function CalculatorsBundlePanel() {
           {results["nakshatra"] ? <CalculatorResultView data={results["nakshatra"]} /> : null}
         </Card>
 
-        <Card tone="light" className="space-y-4 border-[rgba(184,137,67,0.24)]">
+        <Card tone="light" className="utility-form-card space-y-4">
           <Badge tone="trust">Moon Sign Calculator</Badge>
           <p className="text-[length:var(--font-size-body-sm)] text-[var(--color-ink-body)]">
             Resolve your sidereal Moon sign (Rashi) in one step.
@@ -310,6 +313,7 @@ export function CalculatorsBundlePanel() {
             }}
           >
             <Input
+              aria-label="Moon sign birth date"
               type="date"
               value={moonSignForm.date}
               onChange={(event) =>
@@ -318,6 +322,7 @@ export function CalculatorsBundlePanel() {
               required
             />
             <Input
+              aria-label="Moon sign birth time"
               type="time"
               value={moonSignForm.time}
               onChange={(event) =>
@@ -326,6 +331,7 @@ export function CalculatorsBundlePanel() {
               required
             />
             <Input
+              aria-label="Moon sign birth place"
               placeholder="City, Region/State, Country"
               value={moonSignForm.place}
               onChange={(event) =>
@@ -341,7 +347,7 @@ export function CalculatorsBundlePanel() {
           {results["moon-sign"] ? <CalculatorResultView data={results["moon-sign"]} /> : null}
         </Card>
 
-        <Card tone="light" className="space-y-4 border-[rgba(184,137,67,0.24)]">
+        <Card tone="light" className="utility-form-card space-y-4">
           <Badge tone="trust">Ascendant / Lagna Calculator</Badge>
           <p className="text-[length:var(--font-size-body-sm)] text-[var(--color-ink-body)]">
             Calculate Lagna sign and degree from exact birth context.
@@ -354,6 +360,7 @@ export function CalculatorsBundlePanel() {
             }}
           >
             <Input
+              aria-label="Lagna birth date"
               type="date"
               value={lagnaForm.date}
               onChange={(event) =>
@@ -362,6 +369,7 @@ export function CalculatorsBundlePanel() {
               required
             />
             <Input
+              aria-label="Lagna birth time"
               type="time"
               value={lagnaForm.time}
               onChange={(event) =>
@@ -370,6 +378,7 @@ export function CalculatorsBundlePanel() {
               required
             />
             <Input
+              aria-label="Lagna birth place"
               placeholder="City, Region/State, Country"
               value={lagnaForm.place}
               onChange={(event) =>
@@ -385,7 +394,7 @@ export function CalculatorsBundlePanel() {
           {results["lagna"] ? <CalculatorResultView data={results["lagna"]} /> : null}
         </Card>
 
-        <Card tone="light" className="space-y-4 border-[rgba(184,137,67,0.24)]">
+        <Card tone="light" className="utility-form-card space-y-4">
           <Badge tone="trust">Birth Number Quick Calculator</Badge>
           <p className="text-[length:var(--font-size-body-sm)] text-[var(--color-ink-body)]">
             Get Birth and Destiny numbers quickly using the numerology engine.
@@ -398,6 +407,7 @@ export function CalculatorsBundlePanel() {
             }}
           >
             <Input
+              aria-label="Birth number date of birth"
               type="date"
               value={birthNumberForm.dateOfBirth}
               onChange={(event) =>
@@ -415,7 +425,7 @@ export function CalculatorsBundlePanel() {
           {results["birth-number"] ? <CalculatorResultView data={results["birth-number"]} /> : null}
         </Card>
 
-        <Card tone="light" className="space-y-4 border-[rgba(184,137,67,0.24)]">
+        <Card tone="light" className="utility-form-card space-y-4">
           <Badge tone="trust">Compatibility Quick Score</Badge>
           <p className="text-[length:var(--font-size-body-sm)] text-[var(--color-ink-body)]">
             Lightweight compatibility signal using two DOB inputs.
@@ -428,6 +438,7 @@ export function CalculatorsBundlePanel() {
             }}
           >
             <Input
+              aria-label="First person date of birth"
               type="date"
               value={compatibilityForm.firstDateOfBirth}
               onChange={(event) =>
@@ -439,6 +450,7 @@ export function CalculatorsBundlePanel() {
               required
             />
             <Input
+              aria-label="Second person date of birth"
               type="date"
               value={compatibilityForm.secondDateOfBirth}
               onChange={(event) =>
@@ -497,7 +509,7 @@ export function CalculatorsBundlePanel() {
           ) : null}
         </Card>
 
-        <Card tone="light" className="space-y-4 border-[rgba(184,137,67,0.24)]">
+        <Card tone="light" className="utility-form-card space-y-4">
           <Badge tone="trust">Basic Date Check Utility</Badge>
           <p className="text-[length:var(--font-size-body-sm)] text-[var(--color-ink-body)]">
             Daily suitability summary using Panchang context.
@@ -510,6 +522,7 @@ export function CalculatorsBundlePanel() {
             }}
           >
             <Input
+              aria-label="Date check date"
               type="date"
               value={dateCheckForm.date}
               onChange={(event) =>
@@ -518,6 +531,7 @@ export function CalculatorsBundlePanel() {
               required
             />
             <Input
+              aria-label="Date check place"
               placeholder="City, Region/State, Country"
               value={dateCheckForm.place}
               onChange={(event) =>

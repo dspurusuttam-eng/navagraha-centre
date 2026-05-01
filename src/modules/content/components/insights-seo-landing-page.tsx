@@ -17,17 +17,18 @@ export function InsightsSeoLandingPage({
   return (
     <>
       <Section
+        category="content"
         eyebrow={landing.eyebrow}
         title={landing.title}
         description={landing.description}
       >
-        <Card tone="accent" className="space-y-4">
-          <Badge tone="accent">SEO Authority Surface</Badge>
+        <Card tone="accent" className="content-card space-y-4">
+          <Badge tone="accent">From the Desk of J P Sarmah</Badge>
           <ul className="space-y-2">
             {landing.highlightPoints.map((point) => (
               <li
                 key={point}
-                className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]"
+                className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]"
               >
                 - {point}
               </li>
@@ -55,6 +56,7 @@ export function InsightsSeoLandingPage({
 
       <Section
         tone="light"
+        category="content"
         eyebrow="Recommended Reading"
         title="Guides connected to this SEO surface."
         description="Read trusted insight entries and continue into chart-aware product flows."

@@ -10,17 +10,17 @@ function PersonaBlock({
   person: ContentPerson;
 }>) {
   return (
-    <Card className="space-y-4">
+    <Card className="content-card space-y-4">
       <Badge tone="neutral">{eyebrow}</Badge>
       <div className="space-y-2">
         <p className="text-[length:var(--font-size-body-lg)] text-[var(--color-ink-strong)]">
           {person.name}
         </p>
-        <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+        <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
           {person.title}
         </p>
       </div>
-      <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+      <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
         {person.bio}
       </p>
     </Card>

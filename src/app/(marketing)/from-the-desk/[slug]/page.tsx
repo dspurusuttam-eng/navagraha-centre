@@ -129,7 +129,7 @@ export async function generateMetadata({ params }: DeskArticleDetailPageProps) {
         status: "published",
         title: "From the Desk",
         excerpt: "NAVAGRAHA CENTRE editorial content.",
-        content: "Editorial content placeholder",
+        content: "NAVAGRAHA CENTRE editorial content.",
         description: "NAVAGRAHA CENTRE editorial content.",
         seoTitle: "From the Desk of J P Sarmah",
         seoDescription: "NAVAGRAHA CENTRE editorial content page.",
@@ -225,7 +225,7 @@ export default async function DeskArticleDetailPage({
         />
       ))}
 
-      <Section className="pb-0">
+      <Section className="pb-0" category="content">
         <nav className="mb-4 flex flex-wrap items-center gap-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
           <Link href={localizeHref("/")} className="hover:text-[var(--color-ink-strong)]">
             Home
@@ -240,7 +240,7 @@ export default async function DeskArticleDetailPage({
           <span>/</span>
           <span className="text-[var(--color-ink-strong)]">{entry.title}</span>
         </nav>
-        <Card className="space-y-5">
+        <Card className="content-card space-y-5">
           <div className="flex flex-wrap items-center gap-3">
             <Badge tone="accent">{entry.category}</Badge>
             <Badge tone="neutral">{contentTypeLabels[entry.type]}</Badge>
@@ -255,7 +255,7 @@ export default async function DeskArticleDetailPage({
           <p className="text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
             {entry.excerpt}
           </p>
-          <div className="grid gap-3 rounded-[var(--radius-lg)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.76)] p-4 sm:grid-cols-2">
+          <div className="grid gap-3 rounded-[var(--radius-lg)] border content-meta-chip p-4 sm:grid-cols-2">
             <p className="text-[length:var(--font-size-body-sm)] text-[var(--color-ink-body)]">
               Published: {formatDate(entry.publishedAt, locale)}
             </p>
@@ -283,25 +283,22 @@ export default async function DeskArticleDetailPage({
         </Card>
       </Section>
 
-      <Section className="pt-6" tone="light">
+      <Section className="pt-6" tone="light" category="content">
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(310px,0.8fr)]">
           <article className="space-y-6">
             <AdSlot placement="after-intro" />
 
             {entry.sections.map((section) => (
-              <Card key={section.title} className="space-y-4">
+              <Card key={section.title} className="content-article-shell space-y-4">
                 <h2
                   className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[var(--color-ink-strong)]"
                   style={{ letterSpacing: "var(--tracking-display)" }}
                 >
                   {section.title}
                 </h2>
-                <div className="space-y-3">
+                <div className="content-body space-y-3">
                   {section.paragraphs.map((paragraph) => (
-                    <p
-                      key={paragraph}
-                      className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]"
-                    >
+                    <p key={paragraph}>
                       {paragraph}
                     </p>
                   ))}
@@ -310,7 +307,7 @@ export default async function DeskArticleDetailPage({
             ))}
 
             {entry.dailyRashifal ? (
-              <Card className="space-y-4">
+              <Card className="content-article-shell space-y-4">
                 <h2
                   className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[var(--color-ink-strong)]"
                   style={{ letterSpacing: "var(--tracking-display)" }}
@@ -321,7 +318,7 @@ export default async function DeskArticleDetailPage({
                   {entry.dailyRashifal.zodiacSections.map((section) => (
                     <div
                       key={section.sign}
-                      className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.78)] p-4"
+                      className="rashifal-section-card rounded-[var(--radius-xl)] border p-4"
                     >
                       <h3 className="text-[length:var(--font-size-body-lg)] text-[var(--color-ink-strong)]">
                         {section.title}
@@ -329,13 +326,36 @@ export default async function DeskArticleDetailPage({
                       <p className="mt-2 text-[length:var(--font-size-body-sm)] text-[var(--color-ink-body)]">
                         {section.overview}
                       </p>
-                      <div className="mt-3 grid gap-2 text-[length:var(--font-size-body-sm)] text-[var(--color-ink-body)] sm:grid-cols-2">
-                        <p>Love: {section.love}</p>
-                        <p>Career: {section.career}</p>
-                        <p>Business: {section.business}</p>
-                        <p>Lucky Color: {section.luckyColor}</p>
-                        <p>Lucky Number: {section.luckyNumber}</p>
-                        <p>Lucky Time: {section.luckyTime}</p>
+                      <div className="mt-3 grid gap-3 text-[length:var(--font-size-body-sm)] sm:grid-cols-3">
+                        {[
+                          ["Love", section.love],
+                          ["Career", section.career],
+                          ["Business", section.business],
+                        ].map(([label, value]) => (
+                          <div
+                            key={label}
+                            className="rounded-[var(--radius-lg)] border border-[rgba(184,137,67,0.18)] bg-[rgba(255,255,255,0.84)] p-3"
+                          >
+                            <p className="text-[0.7rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
+                              {label}
+                            </p>
+                            <p className="mt-1 leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+                              {value}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="mt-3 grid gap-2 text-[length:var(--font-size-body-sm)] sm:grid-cols-3">
+                        {[
+                          ["Lucky Color", section.luckyColor],
+                          ["Lucky Number", section.luckyNumber],
+                          ["Lucky Time", section.luckyTime],
+                        ].map(([label, value]) => (
+                          <p key={label} className="rashifal-lucky-chip rounded-[var(--radius-lg)] border px-3 py-2">
+                            <span className="font-medium">{label}:</span>{" "}
+                            {value}
+                          </p>
+                        ))}
                       </div>
                       <p className="mt-2 text-[length:var(--font-size-body-sm)] text-[var(--color-ink-body)]">
                         Remedy: {section.remedy}
@@ -344,7 +364,7 @@ export default async function DeskArticleDetailPage({
                   ))}
                 </div>
                 {entry.dailyRashifal.remedies.length ? (
-                  <div className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.74)] p-4">
+                  <div className="content-meta-chip rounded-[var(--radius-xl)] border p-4">
                     <h3 className="text-[length:var(--font-size-body-md)] text-[var(--color-ink-strong)]">
                       Daily Remedy Notes
                     </h3>
@@ -361,19 +381,16 @@ export default async function DeskArticleDetailPage({
               </Card>
             ) : null}
 
-            <Card className="space-y-4">
+            <Card className="content-article-shell space-y-4">
               <h2
                 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[var(--color-ink-strong)]"
                 style={{ letterSpacing: "var(--tracking-display)" }}
               >
                 Practical Guidance
               </h2>
-              <div className="space-y-3">
+              <div className="content-body space-y-3">
                 {practicalGuidance.map((item) => (
-                  <p
-                    key={item}
-                    className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]"
-                  >
+                  <p key={item}>
                     - {item}
                   </p>
                 ))}
@@ -382,7 +399,7 @@ export default async function DeskArticleDetailPage({
 
             <AdSlot placement="mid-article" />
 
-            <Card tone="accent" className="space-y-4">
+            <Card tone="accent" className="content-card space-y-4">
               <h2
                 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[var(--color-ink-strong)]"
                 style={{ letterSpacing: "var(--tracking-display)" }}
@@ -426,7 +443,7 @@ export default async function DeskArticleDetailPage({
               />
             ) : null}
 
-            <Card className="space-y-3">
+            <Card className="content-card space-y-3">
               <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
                 Share
               </p>
@@ -454,7 +471,7 @@ export default async function DeskArticleDetailPage({
         </div>
       </Section>
 
-      <Section tone="muted">
+      <Section tone="muted" category="content">
         <AdSlot placement="before-related" />
         {relatedEntries.length ? (
           <div className="mt-6 space-y-5">

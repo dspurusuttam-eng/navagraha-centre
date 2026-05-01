@@ -45,9 +45,11 @@ Activation safety:
 
 ## 5. ads.txt Handling
 
-1. Keep `public/ads.txt` placeholder comments until publisher onboarding is complete.
-2. Replace placeholder publisher line only with the real Google AdSense publisher ID.
-3. Do not publish guessed or temporary publisher IDs.
+1. Keep `public/ads.txt` seller-free until publisher onboarding is complete.
+2. Add a Google seller record only when AdSense provides the real publisher ID.
+3. Do not publish guessed, temporary, example, or replacement publisher IDs.
+4. Expected final format after approval:
+   `google.com, pub-REAL_PUBLISHER_ID, DIRECT, f08c47fec0942fa0`
 
 ## 6. Placement Safety Rules
 

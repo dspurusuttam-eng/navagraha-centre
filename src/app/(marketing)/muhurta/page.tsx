@@ -62,6 +62,7 @@ export default function MuhurtaLitePage() {
 
       <Section
         tone="light"
+        category="utilities"
         eyebrow="Time Tools"
         title="Generate daily timing windows in seconds."
         description="Muhurta-lite keeps output concise and useful without turning into a complex ritual portal."
@@ -73,6 +74,7 @@ export default function MuhurtaLitePage() {
 
       <Section
         tone="muted"
+        category="utilities"
         eyebrow="How To Use"
         title="A practical three-step daily timing flow."
         description="Check time windows quickly, then continue into deeper chart-aware layers only when needed."
@@ -110,6 +112,7 @@ export default function MuhurtaLitePage() {
 
       <Section
         tone="light"
+        category="utilities"
         eyebrow="Related Tools"
         title="Pair Muhurta-lite with complementary utilities."
         description="Use the right tool combination for timing, personalization, and deeper interpretation."

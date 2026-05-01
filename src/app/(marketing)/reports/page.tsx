@@ -84,24 +84,25 @@ export default function ReportsPage() {
       />
 
       <PageHero
-        eyebrow="Report Hub"
-        title="Premium report architecture prepared for launch conversion."
-        description="The report system is structured into Essential, Advanced, and Premium value layers while all services remain free during limited launch access."
+        eyebrow="Premium Reports"
+        title="Structured astrology reports for deeper chart-based guidance."
+        description="Choose report depth by decision context: focused preview, expanded analysis, or premium synthesis that can continue into AI follow-up or consultation."
         highlights={[
-          "Future-ready package hierarchy without activating payments.",
-          "Clear progression from report preview to deeper interpretation.",
-          "Direct path into consultation and AI follow-up when needed.",
+          "Chart-based analysis grounded in deterministic astrology outputs.",
+          "Predictive intelligence context for timing, themes, and next steps.",
+          "Private report paths with consultation follow-up when nuance is needed.",
         ]}
-        note="Use this hub to compare report depth quickly, then continue with the report that fits your current decision context."
-        primaryAction={{ href: "/career-report", label: "Get Free Report" }}
-        secondaryAction={{ href: "/ai", label: "Start Free Analysis" }}
-        supportTitle="Launch Offer Structure"
+        note="Start with a useful preview first. Deeper report and consultation pathways are positioned as optional next steps, not pressure."
+        primaryAction={{ href: "/career-report", label: "Get Free Preview" }}
+        secondaryAction={{ href: "/kundli", label: "Generate Kundli", tone: "secondary" }}
+        supportTitle="Report Trust Markers"
       />
 
       <TrustIndicatorStrip items={reportTrustIndicators} />
 
       <ThreeStepProcessSection
         tone="light"
+        eyebrow="How Reports Work"
         title="How reports move from preview to guided clarity."
         description="The report system keeps one simple three-step progression for users."
         steps={[
@@ -127,6 +128,7 @@ export default function ReportsPage() {
 
       <Section
         tone="muted"
+        category="services"
         eyebrow="Report Entry Paths"
         title="Choose your report focus"
         description="Each entry page routes into the same report architecture and protected continuity layers."
@@ -154,12 +156,17 @@ export default function ReportsPage() {
               description: "Wellbeing pacing and reflective guidance with clear safety framing.",
             },
           ].map((item) => (
-            <Card key={item.title} interactive className="space-y-3">
+            <Card
+              key={item.title}
+              tone="light"
+              interactive
+              className="service-offering-card flex h-full flex-col space-y-3"
+            >
               <Badge tone="trust">Currently Free</Badge>
               <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
                 {item.title}
               </h2>
-              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
                 {item.description}
               </p>
               <TrackedLink
@@ -169,7 +176,7 @@ export default function ReportsPage() {
                 className={buttonStyles({
                   size: "sm",
                   tone: "secondary",
-                  className: "w-full justify-center",
+                  className: "mt-auto w-full justify-center",
                 })}
               >
                 Open Report
@@ -219,17 +226,49 @@ export default function ReportsPage() {
         </div>
       </Section>
 
+      <Section
+        className="pt-0"
+        tone="transparent"
+        category="services"
+        eyebrow="Trust + Terms"
+        title="Report access stays clear, private, and non-pressure."
+        description="Reports are guidance tools. They do not guarantee outcomes or replace professional medical, legal, or financial advice."
+      >
+        <Card tone="light" className="service-offering-card grid gap-4 md:grid-cols-3">
+          {[
+            { href: "/privacy", label: "Privacy Policy", text: "How user data and account context are handled." },
+            { href: "/terms", label: "Terms", text: "Service expectations and platform usage boundaries." },
+            { href: "/refund-cancellation", label: "Refund Policy", text: "Refund and cancellation guidance for paid flows when active." },
+          ].map((item) => (
+            <div key={item.href} className="space-y-2">
+              <Badge tone="trust">{item.label}</Badge>
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+                {item.text}
+              </p>
+              <TrackedLink
+                href={item.href}
+                eventName="cta_click"
+                eventPayload={{ page: "/reports", feature: `reports-trust-${item.label}` }}
+                className={buttonStyles({ size: "sm", tone: "ghost" })}
+              >
+                Read {item.label}
+              </TrackedLink>
+            </div>
+          ))}
+        </Card>
+      </Section>
+
       <Section className="pt-0" tone="transparent">
         <Card
           tone="accent"
-          className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
+          className="service-card grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
         >
           <div className="space-y-3">
             <Badge tone="accent">Premium Experience</Badge>
             <h2 className="text-[length:var(--font-size-title-sm)] text-[var(--color-ink-strong)]">
               Continue from report insight to guided interpretation.
             </h2>
-            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
               Start with reports, ask deeper follow-up in NAVAGRAHA AI, then move into consultation when high-context decisions need human guidance.
             </p>
           </div>

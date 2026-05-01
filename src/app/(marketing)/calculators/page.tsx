@@ -62,6 +62,7 @@ export default function CalculatorsPage() {
 
       <Section
         tone="light"
+        category="utilities"
         eyebrow="Calculator Bundle"
         title="A clean first-pass suite for quick astrological clarity."
         description="Each calculator is lightweight, deterministic, and built for immediate utility without portal clutter."
@@ -73,6 +74,7 @@ export default function CalculatorsPage() {
 
       <Section
         tone="muted"
+        category="utilities"
         eyebrow="Related Time Utility"
         title="Need focused daily timing windows?"
         description="Open Muhurta-lite for Rahu Kaal, Gulika Kaal, Yamaganda, and Abhijit Muhurta with date and place input."
@@ -124,6 +126,7 @@ export default function CalculatorsPage() {
 
       <Section
         tone="muted"
+        category="utilities"
         eyebrow="How To Use"
         title="Move from quick checks to deeper interpretation when needed."
         description="Use calculators as fast utility layers, then continue into chart, AI, report, or consultation surfaces."

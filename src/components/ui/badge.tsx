@@ -26,7 +26,7 @@ export function Badge({
   return (
     <span
       className={cn(
-        "section-label inline-flex items-center gap-2 rounded-[var(--radius-pill)] border px-3 py-1 font-medium transition [transition-duration:var(--motion-duration-fast)]",
+        "section-label inline-flex min-w-0 max-w-full items-center gap-2 rounded-[var(--radius-pill)] border px-3 py-1 text-center font-medium leading-[1.2] whitespace-normal break-words transition [transition-duration:var(--motion-duration-fast)]",
         toneStyles[tone],
         className
       )}

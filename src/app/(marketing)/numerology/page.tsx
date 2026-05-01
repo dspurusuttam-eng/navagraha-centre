@@ -73,6 +73,7 @@ export default function NumerologyPage() {
 
       <Section
         tone="light"
+        category="utilities"
         eyebrow="Numerology Tool"
         title="Enter your details once and generate a premium numerology profile."
         description="The result is organized for immediate use today and future expansion into report and assistant intelligence layers."
@@ -87,6 +88,7 @@ export default function NumerologyPage() {
 
       <Section
         tone="muted"
+        category="utilities"
         eyebrow="How It Works"
         title="Three clean steps behind the calculation."
         description="The upgraded flow keeps numerology accurate, deterministic, and ready for deeper interpretation surfaces."
@@ -124,6 +126,7 @@ export default function NumerologyPage() {
 
       <Section
         tone="light"
+        category="utilities"
         eyebrow="Related Tools"
         title="Move from numerology into complementary utilities and guidance."
         description="Use these linked tools to continue from number patterns into timing, chart context, and deeper interpretation."

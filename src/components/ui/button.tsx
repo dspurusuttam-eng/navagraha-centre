@@ -12,7 +12,7 @@ type ButtonStyleOptions = {
 };
 
 const baseStyles =
-  "inline-flex items-center justify-center gap-2 rounded-[var(--radius-pill)] border text-sm font-medium uppercase tracking-[var(--tracking-label)] whitespace-normal text-center leading-[1.2] break-words transition [transition-duration:var(--motion-duration-base)] [transition-timing-function:var(--ease-emphasized)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--color-bg-ivory)] disabled:pointer-events-none disabled:opacity-40";
+  "inline-flex min-w-0 max-w-full items-center justify-center gap-2 rounded-[var(--radius-pill)] border text-sm font-medium uppercase tracking-[var(--tracking-label)] whitespace-normal text-center leading-[1.2] break-words transition [transition-duration:var(--motion-duration-base)] [transition-timing-function:var(--ease-emphasized)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--color-bg-ivory)] disabled:pointer-events-none disabled:opacity-40";
 
 const toneStyles: Record<ButtonTone, string> = {
   accent:

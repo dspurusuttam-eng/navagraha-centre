@@ -35,8 +35,7 @@ export function AdSlot({
       placement={placementMap[placement]}
       format={format}
       className={className}
-      showPlaceholder
+      showPlaceholder={false}
     />
   );
 }
-

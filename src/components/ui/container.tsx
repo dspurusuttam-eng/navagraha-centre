@@ -8,7 +8,7 @@ export function Container({
   return (
     <div
       className={cn(
-        "mx-auto w-full max-w-[var(--container-max)] px-5 sm:px-8 lg:px-10",
+        "mx-auto w-full min-w-0 max-w-[var(--container-max)] px-4 sm:px-8 lg:px-10",
         className
       )}
       {...props}

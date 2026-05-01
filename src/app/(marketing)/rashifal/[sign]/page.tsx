@@ -131,22 +131,22 @@ export default async function RashifalSignPage({
             </div>
           </div>
 
-          <Card className="space-y-4 border-[rgba(184,137,67,0.28)] bg-[linear-gradient(165deg,rgba(255,255,255,0.96)_0%,rgba(248,236,216,0.9)_100%)]">
+          <Card className="content-card space-y-4 border-[rgba(184,137,67,0.28)] bg-[linear-gradient(165deg,rgba(255,255,255,0.96)_0%,rgba(248,236,216,0.9)_100%)]">
             <Badge tone="trust">Lucky Indicators</Badge>
-            <div className="grid gap-2 text-[length:var(--font-size-body-sm)] text-[var(--color-ink-body)]">
-              <p>
+            <div className="grid gap-2 text-[length:var(--font-size-body-sm)]">
+              <p className="rashifal-lucky-chip rounded-[var(--radius-lg)] border px-3 py-2">
                 <span className="font-medium text-[var(--color-ink-strong)]">
                   Lucky Color:
                 </span>{" "}
                 {signData.luckyColor}
               </p>
-              <p>
+              <p className="rashifal-lucky-chip rounded-[var(--radius-lg)] border px-3 py-2">
                 <span className="font-medium text-[var(--color-ink-strong)]">
                   Lucky Number:
                 </span>{" "}
                 {signData.luckyNumber}
               </p>
-              <p>
+              <p className="rashifal-lucky-chip rounded-[var(--radius-lg)] border px-3 py-2">
                 <span className="font-medium text-[var(--color-ink-strong)]">
                   Lucky Time:
                 </span>{" "}
@@ -163,6 +163,7 @@ export default async function RashifalSignPage({
 
       <Section
         tone="light"
+        category="utilities"
         eyebrow="Full Rashifal"
         title={`${signData.name} today in detail`}
         description="Complete sign-level guidance for love, career, business, and daily focus."
@@ -170,7 +171,7 @@ export default async function RashifalSignPage({
       >
         <Card
           tone="light"
-          className="space-y-7 border-[rgba(184,137,67,0.24)] bg-[rgba(255,255,255,0.94)] p-5 sm:space-y-8 sm:p-6"
+          className="content-article-shell space-y-7 border-[rgba(184,137,67,0.24)] bg-[rgba(255,255,255,0.94)] p-5 sm:space-y-8 sm:p-6"
         >
           <ul className="space-y-4 sm:space-y-5">
             {signData.fullDescription.map((line) => (
@@ -192,7 +193,7 @@ export default async function RashifalSignPage({
               ].map((entry) => (
                 <div
                   key={entry.label}
-                  className="rounded-[var(--radius-lg)] border border-[rgba(184,137,67,0.22)] bg-[rgba(255,255,255,0.9)] px-4 py-3"
+                  className="rashifal-section-card rounded-[var(--radius-lg)] border px-4 py-3"
                 >
                   <p className="text-[0.7rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
                     {entry.label}
@@ -203,12 +204,28 @@ export default async function RashifalSignPage({
                 </div>
               ))}
             </div>
+            <div className="grid gap-3 sm:grid-cols-3">
+              {[
+                { label: "Lucky Color", value: signData.luckyColor },
+                { label: "Lucky Number", value: signData.luckyNumber },
+                { label: "Lucky Time", value: signData.luckyTime },
+              ].map((entry) => (
+                <p
+                  key={entry.label}
+                  className="rashifal-lucky-chip rounded-[var(--radius-lg)] border px-4 py-3 text-[length:var(--font-size-body-sm)]"
+                >
+                  <span className="font-medium">{entry.label}:</span>{" "}
+                  {entry.value}
+                </p>
+              ))}
+            </div>
           </div>
         </Card>
       </Section>
 
       <Section
         tone="light"
+        category="utilities"
         eyebrow="All Zodiac Signs"
         title="Explore other sign pages"
         description="Use internal sign links for complete daily coverage."
@@ -216,7 +233,7 @@ export default async function RashifalSignPage({
         <div className="mb-6">
           <AdSlot placement="rashifal_mid_content" />
         </div>
-        <Card className="mb-6 border-[rgba(184,137,67,0.2)] bg-[rgba(255,255,255,0.9)]">
+        <Card className="content-card mb-6 border-[rgba(184,137,67,0.2)] bg-[rgba(255,255,255,0.9)]">
           <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
             This sign follows the same daily structure as all others, making
             cross-sign comparisons easy without changing the reading format.

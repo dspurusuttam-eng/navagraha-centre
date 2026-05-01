@@ -24,32 +24,37 @@ export function ContentCard({
   });
 
   return (
-    <Card interactive className="space-y-5">
+    <Card interactive className="content-card flex h-full flex-col space-y-5">
       <div className="flex flex-wrap items-center gap-3">
         <Badge tone="accent">{contentTypeLabels[entry.type]}</Badge>
+        <Badge tone="neutral">{entry.category}</Badge>
         <Badge tone="neutral">{entry.readingTimeMinutes} min read</Badge>
       </div>
 
-      <div className="space-y-3">
+      <div className="flex-1 space-y-3">
         <h3
           className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[var(--color-ink-strong)]"
           style={{ letterSpacing: "var(--tracking-display)" }}
         >
           {entry.title}
         </h3>
-        <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+        <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
           {entry.excerpt}
         </p>
       </div>
 
-      <div className="space-y-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+      <div className="space-y-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
         <p>Published {formatPublishedDate(entry.publishedAt, locale)}</p>
-        <p>Reviewed for tone and safety before publication</p>
+        <p>From the Desk of J P Sarmah</p>
       </div>
 
       <Link
         href={localizedPath}
-        className={buttonStyles({ tone: "secondary", size: "sm" })}
+        className={buttonStyles({
+          tone: "secondary",
+          size: "sm",
+          className: "w-full justify-center sm:w-auto",
+        })}
       >
         Read Article
       </Link>

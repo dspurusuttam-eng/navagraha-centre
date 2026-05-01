@@ -92,6 +92,7 @@ export default function KundliPage() {
 
       <Section
         tone="muted"
+        category="utilities"
         eyebrow="Kundli Value"
         title="What you receive immediately after chart generation."
         description="The output is structured for clarity and continuation, not one-time generic reading."

@@ -1,5 +1,5 @@
 # NAVAGRAHA CENTRE ads.txt
-# Replace the placeholder line below with your real AdSense publisher record before enabling live ads.
-# Format example:
-# google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
-# google.com, pub-REPLACE_WITH_REAL_PUBLISHER_ID, DIRECT, f08c47fec0942fa0
+# No authorized digital advertising sellers are configured yet.
+# Add the Google-provided AdSense seller record only after publisher approval.
+# Required format after approval:
+# google.com, pub-REAL_PUBLISHER_ID, DIRECT, f08c47fec0942fa0

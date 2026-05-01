@@ -55,52 +55,74 @@ const aiTools = [
   {
     icon: "kundli",
     title: "Kundli AI",
-    description: "Chart-first AI reading with planetary and house emphasis.",
+    description:
+      "Chart-first interpretation that explains placements, houses, and life themes from verified birth data.",
+    bestFor: "Birth chart clarity",
     href: "/kundli-ai?tool=kundli-ai",
-    ctaLabel: "Try Free",
+    ctaLabel: "Open Kundli AI",
   },
   {
     icon: "numerology",
     title: "Numerology AI",
     description:
-      "Discover your core numbers, personality patterns, strengths, growth and life direction through premium numerology insights.",
+      "Core number interpretation connected to personality patterns, strengths, and practical timing themes.",
+    bestFor: "Name and date insight",
     href: "/numerology",
     ctaLabel: "Explore Numerology",
   },
   {
     icon: "consultation",
     title: "Marriage Compatibility AI",
-    description: "Relationship dynamics interpreted through structured chart context.",
+    description:
+      "Relationship guidance framed through compatibility signals, communication themes, and next-step clarity.",
+    bestFor: "Relationship questions",
     href: "/kundli-ai?tool=marriage-compatibility-ai",
-    ctaLabel: "Try Free",
+    ctaLabel: "Explore Compatibility",
   },
   {
     icon: "reports",
     title: "Career Guidance AI",
-    description: "Decision-focused career insight from your chart baseline.",
+    description:
+      "Career direction and timing themes explained from chart context, not generic motivation text.",
+    bestFor: "Career decisions",
     href: "/kundli-ai?tool=career-guidance-ai",
-    ctaLabel: "Try Free",
+    ctaLabel: "Open Career AI",
   },
   {
     icon: "reports",
     title: "Finance AI",
-    description: "Financial timing and caution themes in a clear AI summary.",
+    description:
+      "Financial caution, planning, and stability themes presented as reflective guidance, not guarantees.",
+    bestFor: "Money planning",
     href: "/kundli-ai?tool=finance-ai",
-    ctaLabel: "Try Free",
+    ctaLabel: "Open Finance AI",
   },
   {
     icon: "consultation",
     title: "Health AI",
-    description: "Wellness-oriented guidance signals framed responsibly.",
+    description:
+      "Wellness-oriented astrology signals with clear safety boundaries and no medical certainty claims.",
+    bestFor: "Wellbeing reflection",
     href: "/kundli-ai?tool=health-ai",
-    ctaLabel: "Try Free",
+    ctaLabel: "Open Health AI",
   },
   {
     icon: "rashifal",
     title: "Daily Prediction AI",
-    description: "Daily chart-aware prompts for calm and practical action.",
+    description:
+      "Daily guidance that connects current themes with practical action and calm caution areas.",
+    bestFor: "Daily decisions",
     href: "/kundli-ai?tool=daily-prediction-ai",
-    ctaLabel: "Try Free",
+    ctaLabel: "Open Daily AI",
+  },
+  {
+    icon: "ai",
+    title: "Ask My Chart",
+    description:
+      "Protected assistant surface for direct chart-aware questions after your chart foundation is ready.",
+    bestFor: "Follow-up questions",
+    href: "/dashboard/ask-my-chart",
+    ctaLabel: "Ask My Chart",
   },
 ] as const;
 
@@ -121,11 +143,80 @@ function getAiToolIcon(icon: (typeof aiTools)[number]["icon"]) {
   }
 }
 
+const predictiveStack = [
+  {
+    label: "Birth Chart",
+    description: "Validated birth context creates the chart foundation.",
+  },
+  {
+    label: "Dasha Timing",
+    description: "Periods help frame what kind of themes may be active.",
+  },
+  {
+    label: "Transit Context",
+    description: "Current planetary movement adds timing awareness.",
+  },
+  {
+    label: "Yoga / Rule Signals",
+    description: "Structured rule checks keep interpretation grounded.",
+  },
+  {
+    label: "Predictive Synthesis",
+    description: "Signals are combined before AI wording is shown.",
+  },
+  {
+    label: "AI Guidance",
+    description: "The final response stays practical, safe, and structured.",
+  },
+] as const;
+
 const differentiationPoints = [
-  "Chart-based AI, not generic prompt output.",
+  "Chart-aware interpretation, not generic chatbot output.",
   "Structured around Vedic sidereal chart rules and verified pipeline layers.",
-  "Context-aware insights from your saved chart and profile state.",
-  "Human-guided continuity through consultation when deeper interpretation is required.",
+  "Dasha, transit, yoga, and synthesis context can support deeper guidance when available.",
+  "Human-guided continuity through consultation when decisions require nuanced review.",
+] as const;
+
+const sampleResponseSections = [
+  {
+    label: "Active Period",
+    value: "The response identifies the timing layer available for interpretation when that context is present.",
+  },
+  {
+    label: "Focus Areas",
+    value: "Career rhythm, relationship communication, daily discipline, or planning priorities.",
+  },
+  {
+    label: "Supportive Factors",
+    value: "Signals are explained as tendencies and opportunities, not fixed outcomes.",
+  },
+  {
+    label: "Caution Areas",
+    value: "The system highlights careful choices without fear-based language.",
+  },
+] as const;
+
+const aiFaqs = [
+  {
+    question: "Is NAVAGRAHA AI a generic chatbot?",
+    answer:
+      "No. The flagship flow is designed around chart context, calculation outputs, and safety rules before guidance is shown.",
+  },
+  {
+    question: "Can AI replace consultation?",
+    answer:
+      "No. AI is useful for structured self-guidance, while important personal decisions should be reviewed through human consultation.",
+  },
+  {
+    question: "Is my birth data private?",
+    answer:
+      "Protected Ask My Chart flows use saved account context. Public discovery pages do not expose private birth details.",
+  },
+  {
+    question: "What is free vs premium?",
+    answer:
+      "Free paths provide entry-level guidance. Premium-ready reports and consultation paths support deeper structured analysis when needed.",
+  },
 ] as const;
 
 const aiTrustIndicators = [
@@ -179,42 +270,68 @@ export default function AiPage() {
                   lineHeight: "var(--line-height-tight)",
                 }}
               >
-                NAVAGRAHA AI - Your Personal Astrology Intelligence System
+              NAVAGRAHA AI - chart-aware Vedic astrology intelligence.
               </h1>
               <p className="max-w-[44rem] text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-                NAVAGRAHA AI combines Kundli structure, Vedic astrology rules, and intelligent interpretation to deliver clear personal guidance across life decisions.
+                NAVAGRAHA AI connects Kundli context, Dasha timing, transit signals, rule-based checks, and safe interpretation into one calm guidance layer.
               </p>
             </div>
 
-            <TrackedLink
-              href="/kundli-ai"
-              eventName="cta_click"
-              eventPayload={{ page: "/ai", feature: "ai-hero-primary-cta" }}
-              className={buttonStyles({
-                size: "lg",
-                className: "w-full justify-center sm:w-auto",
-              })}
-            >
-              Start Free AI Analysis
-            </TrackedLink>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <TrackedLink
+                href="/dashboard/ask-my-chart"
+                eventName="cta_click"
+                eventPayload={{ page: "/ai", feature: "ai-hero-ask-my-chart" }}
+                className={buttonStyles({
+                  size: "lg",
+                  className: "w-full justify-center sm:w-auto",
+                })}
+              >
+                Ask My Chart
+              </TrackedLink>
+              <TrackedLink
+                href="/kundli"
+                eventName="cta_click"
+                eventPayload={{ page: "/ai", feature: "ai-hero-generate-kundli" }}
+                className={buttonStyles({
+                  size: "lg",
+                  tone: "secondary",
+                  className: "w-full justify-center sm:w-auto",
+                })}
+              >
+                Generate Kundli First
+              </TrackedLink>
+              <TrackedLink
+                href="#ai-tool-family"
+                eventName="cta_click"
+                eventPayload={{ page: "/ai", feature: "ai-hero-explore-tools" }}
+                className={buttonStyles({
+                  size: "lg",
+                  tone: "ghost",
+                  className: "w-full justify-center sm:w-auto",
+                })}
+              >
+                Explore AI Tools
+              </TrackedLink>
+            </div>
           </div>
 
           <Card className="space-y-4 border-[rgba(184,137,67,0.28)] bg-[linear-gradient(165deg,rgba(255,255,255,0.96)_0%,rgba(248,237,218,0.9)_100%)]">
             <Badge tone="trust">Astrology Intelligence Preview</Badge>
             <div className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.86)] p-4">
               <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
-                Current Chart Context
+                Chart-Aware Context
               </p>
               <p className="mt-2 text-[length:var(--font-size-body-sm)] text-[var(--color-ink-body)]">
-                Lagna: Leo | Moon: Pisces | Saturn in 7th house emphasis
+                Validated birth context, available Dasha period, transit context, and rule signals are checked before guidance is shown.
               </p>
             </div>
             <div className="grid gap-2 sm:grid-cols-2">
               {[
-                "Priority: communication rhythm",
-                "Career signal: disciplined growth",
-                "Compatibility: calm response needed",
-                "Daily cue: avoid rushed decisions",
+                "Chart foundation",
+                "Timing context",
+                "Safety policy",
+                "Structured guidance",
               ].map((item) => (
                 <div
                   key={item}
@@ -232,32 +349,43 @@ export default function AiPage() {
 
       <Section
         tone="light"
+        category="ai"
         eyebrow="How It Works"
-        title="Three steps from chart setup to AI insight."
-        description="The flow is deterministic at the chart layer and intelligent at the interpretation layer."
+        title="From chart setup to structured AI guidance."
+        description="The flow is deterministic at the calculation layer and careful at the interpretation layer."
       >
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {[
             {
               step: "Step 1",
-              title: "Generate Kundli",
+              title: "Generate or load chart",
               description:
                 "Create your chart foundation with validated birth context and sidereal settings.",
             },
             {
               step: "Step 2",
-              title: "AI reads planetary data",
+              title: "Understand chart context",
               description:
-                "NAVAGRAHA AI consumes your chart context and structured planetary placements.",
+                "NAVAGRAHA AI reads only the available chart, Dasha, transit, and rule context.",
             },
             {
               step: "Step 3",
-              title: "Get insights",
+              title: "Apply predictive layers",
               description:
-                "Receive clear, chart-grounded guidance with premium depth options when needed.",
+                "Timing and rule signals are combined before guidance is presented.",
+            },
+            {
+              step: "Step 4",
+              title: "Receive structured guidance",
+              description:
+                "Outputs are framed as practical guidance with safety boundaries and next steps.",
             },
           ].map((item) => (
-            <Card key={item.title} tone="light" className="space-y-3">
+            <Card
+              key={item.title}
+              tone="light"
+              className="space-y-3 border-[rgba(184,137,67,0.2)]"
+            >
               <Badge tone="trust">{item.step}</Badge>
               <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
                 {item.title}
@@ -271,14 +399,21 @@ export default function AiPage() {
       </Section>
 
       <Section
+        id="ai-tool-family"
         tone="light"
+        category="ai"
         eyebrow="AI Tools"
         title="Choose the AI tool that matches your current question."
-        description="Each tool starts free and routes into the same chart-aware intelligence system."
+        description="Each card has a clear job and routes to an existing public or protected NAVAGRAHA path."
       >
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {aiTools.map((tool) => (
-            <Card key={tool.title} tone="light" interactive className="space-y-4">
+            <Card
+              key={tool.title}
+              tone="light"
+              interactive
+              className="flex h-full flex-col space-y-4 border-[rgba(184,137,67,0.22)]"
+            >
               <div className="flex items-center justify-between">
                 {getAiToolIcon(tool.icon)}
                 <Badge tone="neutral">AI Tool</Badge>
@@ -286,6 +421,9 @@ export default function AiPage() {
               <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
                 {tool.title}
               </h2>
+              <div className="rounded-[var(--radius-pill)] border border-[rgba(184,137,67,0.2)] bg-[rgba(255,250,240,0.82)] px-3 py-2 text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
+                Best for: {tool.bestFor}
+              </div>
               <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
                 {tool.description}
               </p>
@@ -296,7 +434,7 @@ export default function AiPage() {
                 className={buttonStyles({
                   tone: "tertiary",
                   size: "sm",
-                  className: "w-full justify-center",
+                  className: "mt-auto w-full justify-center",
                 })}
               >
                 {tool.ctaLabel}
@@ -330,10 +468,42 @@ export default function AiPage() {
       </Section>
 
       <Section
+        tone="light"
+        category="ai"
+        eyebrow="Predictive Intelligence"
+        title="The intelligence stack behind NAVAGRAHA AI."
+        description="This visual layer explains why the experience is different from a generic chatbot without exposing technical clutter."
+      >
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-6">
+          {predictiveStack.map((item, index) => (
+            <Card
+              key={item.label}
+              tone="light"
+              className="relative min-h-full border-[rgba(184,137,67,0.22)] p-4"
+            >
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[rgba(184,137,67,0.28)] bg-[rgba(255,248,235,0.9)] text-[0.72rem] font-semibold text-[var(--color-trust-text)]">
+                  {index + 1}
+                </span>
+                <span className="hidden h-px flex-1 bg-[linear-gradient(90deg,rgba(184,137,67,0.36),rgba(184,137,67,0))] xl:block" />
+              </div>
+              <h2 className="text-[length:var(--font-size-body-md)] font-medium text-[var(--color-ink-strong)]">
+                {item.label}
+              </h2>
+              <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+                {item.description}
+              </p>
+            </Card>
+          ))}
+        </div>
+      </Section>
+
+      <Section
         tone="contrast"
-        eyebrow="Interactive Preview"
-        title="A quick view of how NAVAGRAHA AI responds."
-        description="This is a UI preview of the interaction structure."
+        category="ai"
+        eyebrow="Sample Output"
+        title="A safe preview of the response structure."
+        description="This is generic sample copy. It does not represent a real user chart or fabricated planetary placement."
       >
         <Card
           tone="accent"
@@ -349,7 +519,7 @@ export default function AiPage() {
                   Sample query:
                 </p>
                 <p className="mt-2 text-[length:var(--font-size-body-md)] text-[var(--color-ink-strong)]">
-                  Why is my career progress feeling slow this year?
+                  Which area needs the most attention right now?
                 </p>
               </div>
             </div>
@@ -358,22 +528,20 @@ export default function AiPage() {
               <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
                 Structured AI Response
               </p>
-              <div className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.9)] p-4">
-                <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
-                  Answer
-                </p>
-                <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-                  Your chart shows a Saturn timing phase, which rewards consistency over short-term speed.
-                </p>
-                <p className="mt-3 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
-                  Reasoning
-                </p>
-                <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-                  Saturn influence in career houses often delays visible outcomes while strengthening long-term stability.
-                </p>
-                <p className="mt-3 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
-                  Confidence: Medium
-                </p>
+              <div className="grid gap-3">
+                {sampleResponseSections.map((item) => (
+                  <div
+                    key={item.label}
+                    className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.9)] p-4"
+                  >
+                    <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
+                      {item.label}
+                    </p>
+                    <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+                      {item.value}
+                    </p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -382,6 +550,7 @@ export default function AiPage() {
 
       <Section
         tone="light"
+        category="ai"
         eyebrow="Differentiation"
         title="Why NAVAGRAHA AI is different"
         description="The intelligence layer is built on chart context, Vedic structure, and human-guided continuity."
@@ -391,6 +560,116 @@ export default function AiPage() {
             <Card key={item} tone="light" className="p-4">
               <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
                 {item}
+              </p>
+            </Card>
+          ))}
+        </div>
+      </Section>
+
+      <Section
+        tone="light"
+        category="ai"
+        eyebrow="Free vs Premium AI"
+        title="Clear depth levels without aggressive paywalls."
+        description="The AI experience stays useful at entry level and gives users honest next steps when they need deeper structure."
+      >
+        <div className="grid gap-4 md:grid-cols-3">
+          {[
+            {
+              title: "Free Guidance",
+              description:
+                "Basic chart-aware orientation, utility pathways, and safe first-pass interpretation.",
+              cta: "Generate Kundli",
+              href: "/kundli",
+            },
+            {
+              title: "Premium-Ready AI",
+              description:
+                "Deeper follow-up questions, saved chart continuity, and report-oriented interpretation paths.",
+              cta: "Ask My Chart",
+              href: "/dashboard/ask-my-chart",
+            },
+            {
+              title: "Report / Consultation Depth",
+              description:
+                "Structured predictive reports and human review for important career, marriage, finance, or life decisions.",
+              cta: "View Reports",
+              href: "/reports",
+            },
+          ].map((item) => (
+            <Card
+              key={item.title}
+              tone="light"
+              className="flex h-full flex-col gap-4 border-[rgba(184,137,67,0.22)]"
+            >
+              <Badge tone="trust">{item.title}</Badge>
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+                {item.description}
+              </p>
+              <TrackedLink
+                href={item.href}
+                eventName="cta_click"
+                eventPayload={{ page: "/ai", feature: `ai-depth-${item.title}` }}
+                className={buttonStyles({
+                  tone: "tertiary",
+                  size: "sm",
+                  className: "mt-auto w-full justify-center",
+                })}
+              >
+                {item.cta}
+              </TrackedLink>
+            </Card>
+          ))}
+        </div>
+      </Section>
+
+      <Section
+        tone="muted"
+        category="ai"
+        eyebrow="Human Consultation Bridge"
+        title="Use AI for clarity. Use consultation for high-context decisions."
+        description="NAVAGRAHA AI can prepare better questions, but sensitive decisions deserve careful human interpretation."
+      >
+        <Card
+          tone="light"
+          className="grid gap-5 border-[rgba(184,137,67,0.24)] lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
+        >
+          <div className="space-y-3">
+            <Badge tone="trust">Joy Prakash Sarmah</Badge>
+            <p className="max-w-3xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+              For marriage, career, finance, health-sensitive concerns, or major life timing, continue from AI guidance into a calm human review with chart context.
+            </p>
+          </div>
+          <TrackedLink
+            href="/consultation"
+            eventName="cta_click"
+            eventPayload={{ page: "/ai", feature: "ai-consultation-bridge" }}
+            className={buttonStyles({
+              size: "lg",
+              tone: "secondary",
+              className: "w-full justify-center lg:w-auto",
+            })}
+          >
+            Book Consultation
+          </TrackedLink>
+        </Card>
+      </Section>
+
+      <Section
+        tone="light"
+        category="ai"
+        eyebrow="FAQ + Safety"
+        title="Clear expectations before using AI guidance."
+        description="The flagship AI experience is designed to be helpful, non-fear-based, and honest about its limits."
+      >
+        <div className="grid gap-4 md:grid-cols-2">
+          {aiFaqs.map((item) => (
+            <Card key={item.question} tone="light" className="space-y-3">
+              <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
+                {item.question}
+              </h2>
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+                {item.answer}
               </p>
             </Card>
           ))}
@@ -445,21 +724,21 @@ export default function AiPage() {
               Continue with NAVAGRAHA AI Intelligence
             </h2>
             <p className="max-w-2xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-              Start with free AI analysis now, or generate your Kundli first to unlock deeper chart-grounded guidance.
+              Start with your Kundli foundation, then continue into Ask My Chart for structured, chart-aware guidance.
             </p>
           </div>
 
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
             <TrackedLink
-              href="/kundli-ai"
+              href="/dashboard/ask-my-chart"
               eventName="cta_click"
-              eventPayload={{ page: "/ai", feature: "ai-final-cta-start-free-ai" }}
+              eventPayload={{ page: "/ai", feature: "ai-final-cta-ask-my-chart" }}
               className={buttonStyles({
                 size: "lg",
                 className: "w-full justify-center sm:w-auto",
               })}
             >
-              Start Free AI
+              Ask My Chart
             </TrackedLink>
             <TrackedLink
               href="/kundli"

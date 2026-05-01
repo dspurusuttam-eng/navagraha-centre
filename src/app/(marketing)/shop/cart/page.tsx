@@ -37,6 +37,7 @@ export default function ShopCartRoutePage() {
       />
 
       <Section
+        category="services"
         eyebrow="Order Request"
         title="Review the cart and request a manual follow-up."
         description="The order is recorded clearly here so confirmation and payment can be handled with care."

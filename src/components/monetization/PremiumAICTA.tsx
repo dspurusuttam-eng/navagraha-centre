@@ -17,8 +17,8 @@ type PremiumAICTAProps = {
 export function PremiumAICTA({
   pagePath,
   placement,
-  title = "Premium AI pathways are being prepared",
-  description = "Deep Kundli analysis, yearly prediction, and advanced AI guidance are available as premium-ready pathways while core tools remain accessible.",
+  title = "Premium AI pathways for deeper guidance",
+  description = "Deep Kundli analysis, yearly prediction, and advanced AI guidance can connect free tools with report and consultation pathways when more depth is needed.",
   className,
 }: Readonly<PremiumAICTAProps>) {
   if (!monetizationConfig.enablePremiumAICTA) {
@@ -29,7 +29,7 @@ export function PremiumAICTA({
     <Card tone="light" className={cn("cta-block space-y-4", className)}>
       <div className="flex flex-wrap items-center gap-2">
         <Badge tone="accent">{globalMonetizationCopy.premiumAi}</Badge>
-        <Badge tone="outline">{globalMonetizationCopy.comingSoon}</Badge>
+        <Badge tone="outline">Premium Pathway</Badge>
       </div>
       <h3 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
         {title}

@@ -51,7 +51,7 @@ export default async function AskMyChartPage({
         />
 
         <Card className="space-y-5">
-          <p className="max-w-2xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+          <p className="max-w-2xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
             NAVAGRAHA CENTRE kept this route stable instead of surfacing a hard
             error. Once the chart context reconnects, the assistant will return
             to grounded replies from your stored data.
@@ -79,8 +79,8 @@ export default async function AskMyChartPage({
     return (
       <Section
         eyebrow="Ask My Chart"
-        title="Complete your chart onboarding before starting the copilot."
-        description="The assistant only responds from stored chart data, approved remedies, and grounded context already attached to your account."
+        title="Generate your Kundli before asking chart-aware questions."
+        description="Ask My Chart works best after birth details and chart context are saved. This keeps answers grounded instead of generic."
         tone="transparent"
         className="pt-0"
       >
@@ -91,7 +91,7 @@ export default async function AskMyChartPage({
         />
 
         <Card className="space-y-5">
-          <p className="max-w-2xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+          <p className="max-w-2xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
             Once your birth profile and initial chart are saved, Ask My Chart
             will be able to explain placements, aspects, themes, remedies, and
             current cycle context without drifting into unsupported answers.
@@ -125,8 +125,8 @@ export default async function AskMyChartPage({
 
       <Section
         eyebrow="Ask My Chart"
-        title="A private copilot for grounded chart questions."
-        description="This assistant stays inside your stored chart context, approved remedies, and available transit or consultation context. It does not improvise chart math or unsupported advice."
+        title="A private assistant for grounded chart questions."
+        description="Ask My Chart stays inside your stored chart context, available predictive layers, approved remedies, and safe guidance policy. It does not improvise chart math."
         tone="transparent"
         className="pt-0"
       >

@@ -6,6 +6,9 @@ export type AiProductFamilyItem = {
     | "ai-numerology-insights"
     | "ai-compatibility"
     | "ai-career-insights"
+    | "ai-finance-guidance"
+    | "ai-health-guidance"
+    | "ai-daily-prediction"
     | "ai-remedy-guidance"
     | "ask-my-chart";
   title: string;
@@ -70,7 +73,7 @@ const aiProductFamilyItems: readonly AiProductFamilyItem[] = [
   },
   {
     key: "ai-compatibility",
-    title: "AI Compatibility",
+    title: "Marriage Compatibility AI",
     description:
       "Compatibility guidance with a calm structure for relationship questions and practical next steps.",
     helpsWith: [
@@ -110,6 +113,72 @@ const aiProductFamilyItems: readonly AiProductFamilyItem[] = [
     relatedTools: [
       { label: "Career Report", href: "/career-report" },
       { label: "Ask My Chart", href: "/dashboard/ask-my-chart" },
+    ],
+  },
+  {
+    key: "ai-finance-guidance",
+    title: "Finance AI",
+    description:
+      "Financial planning themes explained through chart context with no guarantee-based language.",
+    helpsWith: [
+      "Money caution and planning themes",
+      "Report-oriented follow-up for deeper financial timing review",
+    ],
+    premiumDepth:
+      "Currently free under limited launch access with deeper report continuity when needed.",
+    trustNote:
+      "Finance guidance is reflective support and is not professional financial advice.",
+    publicHref: "/kundli-ai?tool=finance-ai",
+    protectedHref: "/dashboard/report",
+    ctaLabelPublic: "Open Finance AI",
+    ctaLabelProtected: "Open Finance Report Layer",
+    relatedTools: [
+      { label: "Finance Report", href: "/finance-report" },
+      { label: "Ask My Chart", href: "/dashboard/ask-my-chart" },
+    ],
+  },
+  {
+    key: "ai-health-guidance",
+    title: "Health AI",
+    description:
+      "Wellness-oriented astrology themes presented responsibly with explicit safety boundaries.",
+    helpsWith: [
+      "Lifestyle reflection through astrology context",
+      "Safe next steps without medical certainty claims",
+    ],
+    premiumDepth:
+      "Currently free under limited launch access with consultation handoff for sensitive concerns.",
+    trustNote:
+      "Health guidance is not medical advice and should never replace professional care.",
+    publicHref: "/kundli-ai?tool=health-ai",
+    protectedHref: "/dashboard/report",
+    ctaLabelPublic: "Open Health AI",
+    ctaLabelProtected: "Open Health Report Layer",
+    relatedTools: [
+      { label: "Health Report", href: "/health-report" },
+      { label: "Book Consultation", href: "/consultation" },
+    ],
+  },
+  {
+    key: "ai-daily-prediction",
+    title: "Daily Prediction AI",
+    description:
+      "Daily chart-aware guidance for practical focus, supportive factors, and caution areas.",
+    helpsWith: [
+      "Daily guidance connected to broader chart context",
+      "Calm next-step orientation without fear-based predictions",
+    ],
+    premiumDepth:
+      "Currently free under limited launch access with Ask My Chart follow-up when a day needs more context.",
+    trustNote:
+      "Daily guidance is for reflection and should be used with practical judgment.",
+    publicHref: "/daily-rashifal",
+    protectedHref: "/dashboard/ask-my-chart",
+    ctaLabelPublic: "Open Daily Guidance",
+    ctaLabelProtected: "Ask About Today",
+    relatedTools: [
+      { label: "Daily Rashifal", href: "/rashifal" },
+      { label: "Panchang", href: "/panchang" },
     ],
   },
   {

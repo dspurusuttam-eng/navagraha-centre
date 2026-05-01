@@ -76,7 +76,7 @@ export function ToolPageTemplate({
         >
           <div className="space-y-3">
             <Badge tone="accent">Primary next step</Badge>
-            <p className="max-w-2xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            <p className="max-w-2xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
               {memberFlowLinks[0]?.description}
             </p>
           </div>
@@ -100,7 +100,7 @@ export function ToolPageTemplate({
               <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
                 {card.title}
               </h2>
-              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
                 {card.description}
               </p>
             </Card>
@@ -121,7 +121,7 @@ export function ToolPageTemplate({
               <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
                 {card.title}
               </h2>
-              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
                 {card.description}
               </p>
             </Card>
@@ -132,7 +132,7 @@ export function ToolPageTemplate({
           {memberFlowLinks.map((link) => (
             <Card key={link.href} interactive className="space-y-3">
               <Badge tone="accent">{link.label}</Badge>
-              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
                 {link.description}
               </p>
               <TrackedLink
@@ -171,10 +171,10 @@ export function ToolPageTemplate({
             >
               {entry.premiumTeaser.title}
             </h2>
-            <p className="text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            <p className="text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
               {entry.premiumTeaser.description}
             </p>
-            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
               Premium access remains optional and contextual. Your core chart workflow stays available first.
             </p>
           </div>
@@ -241,7 +241,7 @@ export function ToolPageTemplate({
               <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
                 {item.question}
               </h2>
-              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
                 {item.answer}
               </p>
             </Card>
@@ -255,7 +255,7 @@ export function ToolPageTemplate({
               <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
                 {page.hero.title}
               </h2>
-              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
                 {page.metadata.description}
               </p>
               <Link

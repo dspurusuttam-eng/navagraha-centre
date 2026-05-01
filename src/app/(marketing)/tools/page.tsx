@@ -131,25 +131,6 @@ const toolGroups: readonly ToolGroup[] = [
         feature: "tools-hub-rashifal",
         icon: "rashifal",
       },
-      {
-        title: "Muhurta-lite / Time Tools",
-        description: "Check Rahu Kaal, Gulika, Yamaganda, and Abhijit Muhurta.",
-        href: "/muhurta",
-        ctaLabel: "Open Time Tools",
-        eventName: "muhurta_tool_click",
-        feature: "tools-hub-muhurta",
-        icon: "panchang",
-      },
-      {
-        title: "Auspicious Date Check",
-        description:
-          "Run a quick date suitability signal powered by Panchang context.",
-        href: "/calculators",
-        ctaLabel: "Check Date",
-        eventName: "calculator_tool_click",
-        feature: "tools-hub-date-check",
-        icon: "calculator",
-      },
     ],
   },
   {
@@ -204,6 +185,44 @@ const toolGroups: readonly ToolGroup[] = [
         eventName: "calculator_tool_click",
         feature: "tools-hub-birth-destiny",
         icon: "calculator",
+      },
+    ],
+  },
+  {
+    eyebrow: "Time / Muhurta Tools",
+    title: "Use practical timing tools without ritual overbuild",
+    description:
+      "Check daily time windows, date suitability, and Panchang context for planning support.",
+    cards: [
+      {
+        title: "Muhurta-lite / Time Tools",
+        description:
+          "Focused Rahu Kaal, Gulika Kaal, Yamaganda, and Abhijit Muhurta windows.",
+        href: "/muhurta",
+        ctaLabel: "Open Time Tools",
+        eventName: "muhurta_tool_click",
+        feature: "tools-hub-time-muhurta",
+        icon: "panchang",
+      },
+      {
+        title: "Auspicious Date Check",
+        description:
+          "Run a quick date suitability signal powered by Panchang context.",
+        href: "/calculators",
+        ctaLabel: "Check Date",
+        eventName: "calculator_tool_click",
+        feature: "tools-hub-date-check",
+        icon: "calculator",
+      },
+      {
+        title: "Panchang Timing Context",
+        description:
+          "Use Tithi, Nakshatra, Yoga, Karana, and transition timings before deeper review.",
+        href: "/panchang",
+        ctaLabel: "Open Panchang",
+        eventName: "panchang_tool_click",
+        feature: "tools-hub-time-panchang",
+        icon: "panchang",
       },
     ],
   },
@@ -361,6 +380,7 @@ export default function ToolsHubPage() {
         <Section
           key={group.title}
           tone="light"
+          category={group.eyebrow === "Premium + AI Tools" ? "ai" : "utilities"}
           eyebrow={group.eyebrow}
           title={group.title}
           description={group.description}

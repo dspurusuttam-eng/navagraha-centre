@@ -136,14 +136,14 @@ export default async function ConsultationPage({
 
       <PageHero
         eyebrow="Consultations"
-        title="Reserve a calm, premium consultation with Joy Prakash Sarmah."
-        description="This booking flow is designed to feel explicit and composed: choose the right format, reserve a slot with clear timezone handling, and keep intake context protected inside the member dashboard."
+        title="Human-led Vedic astrology consultation with Joy Prakash Sarmah."
+        description="Choose a calm consultation format for chart interpretation, timing questions, relationship guidance, remedies, and practical next steps."
         highlights={[
-          "Service packages shaped around distinct consultation needs",
-          "Explicit timezone handling for both client and astrologer calendar views",
-          "Manual workflow centered on Joy Prakash Sarmah rather than generic automation",
+          "Session formats shaped around distinct consultation needs",
+          "Explicit timezone handling for client and astrologer calendar views",
+          "Human guidance that complements NAVAGRAHA AI instead of replacing it",
         ]}
-        note={`Recommended path: ${conversion.intentLabel}. Sign in before reserving a time. The private dashboard holds the booking form, confirmation, and consultation history.`}
+        note={`Recommended path: ${conversion.intentLabel}. Sign in before reserving a time. The private dashboard keeps booking, intake, confirmation, and consultation history together.`}
         primaryAction={{
           href: conversion.bestNextAction.href,
           label: conversion.bestNextAction.label,
@@ -153,27 +153,28 @@ export default async function ConsultationPage({
           label: conversion.alternateAction.label,
           tone: "secondary",
         }}
-        supportTitle="Recommended Next Step"
+        supportTitle="Consultation Trust Markers"
       />
 
       <TrustIndicatorStrip items={consultationTrustIndicators} />
 
       <Section
+        category="services"
         eyebrow="Service Packages"
         title="Session formats currently open under limited launch free access."
         description={conversion.guidanceLine}
       >
-        <p className="mb-4 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+        <p className="mb-4 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
           This consultation is currently free under limited launch access.
         </p>
-        <Card className="mb-5 flex flex-col gap-3" tone="accent">
+        <Card className="service-card mb-5 flex flex-col gap-3" tone="accent">
           <div className="flex flex-wrap gap-2">
             <Badge tone="accent">{conversion.intentLabel}</Badge>
             <Badge tone="outline">
               Confidence: {conversion.classification.confidence}
             </Badge>
           </div>
-          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
             {conversion.bestNextAction.description}
           </p>
           <div className="flex flex-wrap gap-3">
@@ -194,7 +195,12 @@ export default async function ConsultationPage({
 
         <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
           {consultationPackages.map((item) => (
-            <Card key={item.slug} interactive className="flex flex-col gap-5">
+            <Card
+              key={item.slug}
+              tone="light"
+              interactive
+              className="service-offering-card flex flex-col gap-5"
+            >
               <div className="flex flex-wrap items-center gap-3">
                 <Badge tone={item.isFeatured ? "accent" : "neutral"}>
                   {item.durationMinutes} min
@@ -203,15 +209,15 @@ export default async function ConsultationPage({
               </div>
 
               <div className="space-y-3">
-                <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[color:var(--color-foreground)]">
+                <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
                   {item.title}
                 </h2>
-                <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
                   {item.summary}
                 </p>
               </div>
 
-              <div className="space-y-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              <div className="space-y-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
                 {item.idealFor.map((line) => (
                   <p key={line}>- {line}</p>
                 ))}
@@ -263,6 +269,7 @@ export default async function ConsultationPage({
       <ConsultationReassuranceSection tone="light" />
 
       <Section
+        category="services"
         eyebrow="Timezone Clarity"
         title="Calendar handling is explicit by design."
         description="Slots are stored in UTC, shown back in the client's selected timezone, and always anchored to Joy Prakash Sarmah's operating calendar timezone."
@@ -270,18 +277,18 @@ export default async function ConsultationPage({
       >
         <Card
           tone="accent"
-          className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
+          className="service-card grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
         >
           <div className="space-y-4">
-            <p className="text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            <p className="text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
               Joy Prakash Sarmah&apos;s calendar is managed in{" "}
-              <span className="text-[color:var(--color-foreground)]">
+              <span className="text-[var(--color-ink-strong)]">
                 {consultationHost.timezone}
               </span>
               . Clients confirm their own timezone during booking so both views
               remain visible in the confirmation experience.
             </p>
-            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
               {globalLabelCopy.timezoneHint}
             </p>
           </div>
@@ -302,6 +309,7 @@ export default async function ConsultationPage({
       </Section>
 
       <Section
+        category="services"
         eyebrow="Methodology + Trust"
         title="A clear approach before booking improves confidence."
         description="Consultation guidance is framed through Vedic sidereal chart context, then interpreted with AI support and human review where needed."
@@ -313,27 +321,27 @@ export default async function ConsultationPage({
           className="mb-4"
         />
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <Card className="space-y-3">
+          <Card tone="light" className="service-offering-card space-y-3">
             <Badge tone="neutral">Calculation Base</Badge>
-            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
               Chart foundations are aligned to Vedic sidereal methodology with Lahiri ayanamsha context.
             </p>
           </Card>
-          <Card className="space-y-3">
+          <Card tone="light" className="service-offering-card space-y-3">
             <Badge tone="neutral">AI + Jyotish</Badge>
-            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
               AI helps organize and explain chart context, while consultation preserves nuanced human interpretation.
             </p>
           </Card>
-          <Card className="space-y-3">
+          <Card tone="light" className="service-offering-card space-y-3">
             <Badge tone="neutral">Authority</Badge>
-            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
               Joy Prakash Sarmah leads the consultation experience and remains the visible authority behind guidance quality.
             </p>
           </Card>
-          <Card className="space-y-3">
+          <Card tone="light" className="service-offering-card space-y-3">
             <Badge tone="neutral">Data Safety</Badge>
-            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
               Birth details, booking intake, and consultation records remain in protected account surfaces with explicit user flow.
             </p>
           </Card>
@@ -346,6 +354,47 @@ export default async function ConsultationPage({
         ctaHref="/dashboard/consultations/book"
         ctaLabel="Continue To Booking"
       />
+
+      <Section
+        tone="muted"
+        category="services"
+        eyebrow="Trust + Confidentiality"
+        title="Consultation is guidance-first, private, and non-fear-based."
+        description="Booking is optional. Sessions support reflection and practical planning without guaranteed claims or pressure to buy products."
+      >
+        <Card tone="light" className="service-offering-card grid gap-4 md:grid-cols-3">
+          {[
+            {
+              title: "Private Intake",
+              text: "Birth details, intent, and booking context stay inside protected account surfaces.",
+              href: "/privacy",
+              label: "Privacy Policy",
+            },
+            {
+              title: "Clear Expectations",
+              text: "Consultation offers astrology guidance and reflection, not medical, legal, or financial certainty.",
+              href: "/disclaimer",
+              label: "Disclaimer",
+            },
+            {
+              title: "Terms + Support",
+              text: "Service terms, refunds, and contact paths remain available before future paid flows are activated.",
+              href: "/terms",
+              label: "Terms",
+            },
+          ].map((item) => (
+            <div key={item.title} className="space-y-3">
+              <Badge tone="trust">{item.title}</Badge>
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+                {item.text}
+              </p>
+              <Link href={item.href} className={buttonStyles({ size: "sm", tone: "ghost" })}>
+                {item.label}
+              </Link>
+            </div>
+          ))}
+        </Card>
+      </Section>
 
       <TestimonialsSection
         pagePath="/consultation"

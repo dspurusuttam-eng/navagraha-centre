@@ -24,13 +24,14 @@ export function RevenueValueLevelsSection({
   return (
     <Section
       tone={tone}
+      category="services"
       eyebrow="Free To Premium Architecture"
       title="Three value levels are already structured for future monetization."
       description="Payments remain inactive now, while the offer hierarchy and user journey are prepared for a clean free-to-paid transition."
     >
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         {levels.map((level) => (
-          <Card key={level.level} className="space-y-4">
+          <Card key={level.level} tone="light" className="service-offering-card space-y-4">
             <div className="flex flex-wrap items-center gap-2">
               <Badge tone={level.level === "MID_TIER" ? "accent" : "neutral"}>
                 {level.title}
@@ -39,14 +40,14 @@ export function RevenueValueLevelsSection({
                 <Badge tone="outline">Most Popular</Badge>
               ) : null}
             </div>
-            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
               {level.positioning}
             </p>
             <div className="space-y-2">
               {level.includes.map((item) => (
                 <p
                   key={`${level.level}-${item}`}
-                  className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]"
+                  className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]"
                 >
                   {item}
                 </p>
@@ -92,27 +93,28 @@ export function ReportPackagesSection({
   return (
     <Section
       tone={tone}
+      category="services"
       eyebrow="Report Packaging"
       title="Future-ready report packages with clear value hierarchy."
       description="Essential, Advanced, and Premium packaging is prepared now and remains open under limited launch access."
     >
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         {packages.map((pkg) => (
-          <Card key={pkg.tier} className="space-y-4">
+          <Card key={pkg.tier} tone="light" className="service-offering-card space-y-4">
             <div className="flex flex-wrap items-center gap-2">
               <Badge tone={pkg.tier === "ADVANCED" ? "accent" : "neutral"}>
                 {pkg.title}
               </Badge>
               {pkg.tier === "ADVANCED" ? <Badge tone="outline">Most Popular</Badge> : null}
             </div>
-            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
               {pkg.positioning}
             </p>
             <div className="space-y-2">
               {pkg.includes.map((item) => (
                 <p
                   key={`${pkg.tier}-${item}`}
-                  className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]"
+                  className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]"
                 >
                   {item}
                 </p>
@@ -158,27 +160,28 @@ export function ConsultationTiersSection({
   return (
     <Section
       tone={tone}
+      category="services"
       eyebrow="Consultation Packaging"
       title="Future consultation tiers are now structured."
       description="Session hierarchy is clear for launch and future pricing activation, while consultations remain free right now."
     >
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         {tiers.map((tier) => (
-          <Card key={tier.tier} className="space-y-4">
+          <Card key={tier.tier} tone="light" className="service-offering-card space-y-4">
             <div className="flex flex-wrap items-center gap-2">
               <Badge tone={tier.tier === "DETAILED" ? "accent" : "neutral"}>
                 {tier.title}
               </Badge>
               <Badge tone="outline">{tier.duration}</Badge>
             </div>
-            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
               {tier.description}
             </p>
             <div className="space-y-2">
               {tier.includes.map((item) => (
                 <p
                   key={`${tier.tier}-${item}`}
-                  className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]"
+                  className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]"
                 >
                   {item}
                 </p>
@@ -216,13 +219,14 @@ export function AiMonetizationPrepSection({
   return (
     <Section
       tone={tone}
+      category="ai"
       eyebrow="AI Monetization Preparation"
       title="Free and Premium AI layers are prepared without locking access."
       description="Members can use all core AI flows now, while UX messaging already supports future free-to-premium rollout."
     >
       <div className="grid gap-5 lg:grid-cols-2">
         {layers.map((layer) => (
-          <Card key={layer.title} className="space-y-4">
+          <Card key={layer.title} tone="light" className="space-y-4 border-[rgba(184,137,67,0.22)]">
             <div className="flex flex-wrap items-center gap-2">
               <Badge tone={layer.title.includes("Premium") ? "accent" : "neutral"}>
                 {layer.title}
@@ -231,14 +235,14 @@ export function AiMonetizationPrepSection({
                 <Badge tone="outline">Early Access</Badge>
               ) : null}
             </div>
-            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
               {layer.description}
             </p>
             <div className="space-y-2">
               {layer.includes.map((item) => (
                 <p
                   key={`${layer.title}-${item}`}
-                  className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]"
+                  className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]"
                 >
                   {item}
                 </p>
@@ -274,13 +278,13 @@ export function RevenuePathwaysCard({
   description?: string;
 }>) {
   return (
-    <Card tone="accent" className="space-y-5">
+    <Card tone="accent" className="service-card space-y-5">
       <div className="space-y-2">
         <Badge tone="accent">{getLaunchAccessBadge()}</Badge>
         <h3 className="text-[length:var(--font-size-title-sm)] text-[var(--color-ink-strong)]">
           {title}
         </h3>
-        <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+        <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
           {description}
         </p>
       </div>

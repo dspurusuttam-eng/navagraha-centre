@@ -65,7 +65,7 @@ export function Section({
         {eyebrow || title || description ? (
           <div
             className={cn(
-              "mb-8 flex max-w-3xl flex-col gap-4 sm:mb-10",
+              "mb-8 flex min-w-0 max-w-3xl flex-col gap-4 sm:mb-10",
               align === "center" && "mx-auto items-center text-center"
             )}
           >
@@ -73,7 +73,7 @@ export function Section({
             {title ? (
                 <h2
                 className={cn(
-                  "card-heading text-[length:var(--font-size-title-lg)]",
+                  "card-heading mobile-safe-text text-[length:var(--font-size-title-lg)]",
                   usesInkPalette
                     ? "text-[var(--color-text-primary)]"
                     : "text-[color:var(--color-foreground)]"
@@ -88,7 +88,7 @@ export function Section({
             {description ? (
                 <p
                 className={cn(
-                  "max-w-2xl text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)]",
+                  "mobile-safe-text max-w-2xl text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)]",
                   usesInkPalette
                     ? "text-[var(--color-text-secondary)]"
                     : "text-[color:var(--color-muted)]"

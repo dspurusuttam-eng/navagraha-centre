@@ -68,12 +68,14 @@ export default async function ShopProductPage({
         primaryAction={{ href: "/shop/cart", label: "Review Cart" }}
         secondaryAction={{
           href: "/consultation",
-          label: "Book Free Consultation",
+          label: "Book Consultation for Guidance",
+          tone: "secondary",
         }}
         supportTitle="Product Positioning"
       />
 
       <Section
+        category="services"
         eyebrow="Product Overview"
         title="Merchandising detail without hard claims."
         description="The product page keeps sourcing language, spiritual framing, and operational intent explicit so browsing stays calm and informed."
@@ -90,37 +92,37 @@ export default async function ShopProductPage({
             tone={product.imageTone}
           />
 
-          <Card className="space-y-5">
+          <Card tone="light" className="service-offering-card space-y-5">
             <div className="flex flex-wrap items-center gap-3">
               <Badge tone="accent">{product.categoryLabel}</Badge>
               <Badge tone="neutral">{product.typeLabel}</Badge>
             </div>
 
             <div className="space-y-3">
-              <p className="text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]">
+              <p className="service-price-label text-[length:var(--font-size-title-sm)]">
                 {product.priceLabel}
               </p>
-              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
                 {product.description}
               </p>
             </div>
 
-            <div className="space-y-3 rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.84)] px-4 py-4 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            <div className="service-trust-chip space-y-3 rounded-[var(--radius-xl)] border px-4 py-4 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)]">
               <p>
                 Material:{" "}
-                <span className="text-[color:var(--color-foreground)]">
+                <span className="text-[var(--color-ink-strong)]">
                   {product.materialLabel}
                 </span>
               </p>
               <p>
                 Focus:{" "}
-                <span className="text-[color:var(--color-foreground)]">
+                <span className="text-[var(--color-ink-strong)]">
                   {product.ritualFocus}
                 </span>
               </p>
               <p>
                 Framing:{" "}
-                <span className="text-[color:var(--color-foreground)]">
+                <span className="text-[var(--color-ink-strong)]">
                   Presented as an optional support product only
                 </span>
               </p>
@@ -140,6 +142,7 @@ export default async function ShopProductPage({
       </Section>
 
       <Section
+        category="services"
         eyebrow="Approach"
         title="How this record should be approached."
         description="The notes stay transparent so the product sits inside a calm spiritual context rather than a transactional promise."
@@ -147,11 +150,11 @@ export default async function ShopProductPage({
       >
         <div className="grid gap-6 lg:grid-cols-2">
           {product.notes.map((note) => (
-            <Card key={note} className="space-y-3">
+            <Card key={note} tone="light" className="service-offering-card space-y-3">
               <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
                 Product Note
               </p>
-              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
                 {note}
               </p>
             </Card>
@@ -160,22 +163,23 @@ export default async function ShopProductPage({
       </Section>
 
       <Section
+        category="services"
         eyebrow="Approved Remedy Context"
         title="Where this product can appear alongside approved remedy records."
         description="Related remedy contexts remain optional and transparent. They help connect the report layer to the catalog without turning product links into unsupported claims."
       >
         <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
           {product.relatedRemedies.map((remedy) => (
-            <Card key={remedy.slug} className="space-y-4">
+            <Card key={remedy.slug} tone="light" className="service-offering-card space-y-4">
               <div className="flex flex-wrap items-center gap-3">
                 <Badge tone="accent">{remedy.typeLabel}</Badge>
                 <Badge tone="neutral">Approved Remedy</Badge>
               </div>
               <div className="space-y-3">
-                <p className="text-[length:var(--font-size-body-lg)] text-[color:var(--color-foreground)]">
+                <p className="text-[length:var(--font-size-body-lg)] text-[var(--color-ink-strong)]">
                   {remedy.title}
                 </p>
-                <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
                   {remedy.summary}
                 </p>
               </div>

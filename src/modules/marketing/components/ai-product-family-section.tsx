@@ -26,8 +26,8 @@ export function AiProductFamilySection({
   surface,
   pagePath,
   eyebrow = "NAVAGRAHA AI (Free Access)",
-  title = "One intelligence ecosystem across Kundli, compatibility, reports, remedies, and assistant guidance.",
-  description = "Each tool keeps a distinct job while sharing the same chart-grounded foundation and limited-time free launch access.",
+  title = "One chart-aware intelligence ecosystem across Kundli, compatibility, reports, remedies, and assistant guidance.",
+  description = "Each tool has a distinct job while sharing the same Vedic chart foundation, safety rules, and calm guidance style.",
   tone = "contrast",
 }: Readonly<AiProductFamilySectionProps>) {
   const items = listAiProductFamilyItems();
@@ -36,7 +36,13 @@ export function AiProductFamilySection({
     surface === "protected" ? "Try NAVAGRAHA AI" : "Start Free Analysis";
 
   return (
-    <Section eyebrow={eyebrow} title={title} description={description} tone={tone}>
+    <Section
+      eyebrow={eyebrow}
+      title={title}
+      description={description}
+      tone={tone}
+      category="ai"
+    >
       <AnalyticsEventTracker
         event="upgrade_prompt_view"
         payload={{
@@ -52,8 +58,8 @@ export function AiProductFamilySection({
       >
         <div className="space-y-3">
           <Badge tone="accent">NAVAGRAHA AI (Free Access)</Badge>
-          <p className="max-w-2xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-            All AI astrology services are currently free for limited launch access.
+          <p className="max-w-2xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+            Start with useful AI guidance, then move into reports or consultation when a question needs deeper chart review.
           </p>
         </div>
         <TrackedLink
@@ -76,7 +82,12 @@ export function AiProductFamilySection({
 
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         {items.map((item) => (
-          <Card key={item.key} interactive className="flex h-full flex-col gap-4">
+          <Card
+            key={item.key}
+            tone="light"
+            interactive
+            className="flex h-full flex-col gap-4 border-[rgba(184,137,67,0.22)]"
+          >
             <div className="flex flex-wrap items-center gap-2">
               <Badge tone="neutral">AI Tool</Badge>
               <Badge tone="outline">
@@ -86,26 +97,26 @@ export function AiProductFamilySection({
             <h3 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
               {item.title}
             </h3>
-            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
               {item.description}
             </p>
-            <div className="space-y-2 rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.74)] px-4 py-4">
+            <div className="space-y-2 rounded-[var(--radius-xl)] border border-[rgba(184,137,67,0.18)] bg-[rgba(255,250,240,0.78)] px-4 py-4">
               <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-                Helps with
+                Best for
               </p>
               {item.helpsWith.map((line) => (
                 <p
                   key={`${item.key}-${line}`}
-                  className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]"
+                  className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]"
                 >
                   {line}
                 </p>
               ))}
             </div>
-            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
               {item.premiumDepth}
             </p>
-            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
               {item.trustNote}
             </p>
             <div className="mt-auto flex flex-col gap-3">
@@ -140,12 +151,15 @@ export function AiProductFamilySection({
         ))}
       </div>
 
-      <Card className="mt-6 grid gap-5 lg:grid-cols-3">
+      <Card
+        tone="light"
+        className="mt-6 grid gap-5 border-[rgba(184,137,67,0.22)] lg:grid-cols-3"
+      >
         <div className="space-y-2">
           <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
             Methodology
           </p>
-          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
             NAVAGRAHA AI uses chart context built from Vedic sidereal calculations aligned to Lahiri ayanamsha, then adds interpretation layers.
           </p>
         </div>
@@ -153,7 +167,7 @@ export function AiProductFamilySection({
           <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
             Authority
           </p>
-          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
             Joy Prakash Sarmah remains the visible consultation authority for cases that require nuanced human interpretation.
           </p>
         </div>
@@ -161,7 +175,7 @@ export function AiProductFamilySection({
           <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
             Privacy
           </p>
-          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
             Birth details and account records are handled inside protected member flows. Guidance remains optional and non-pressure.
           </p>
         </div>

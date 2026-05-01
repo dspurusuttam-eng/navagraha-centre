@@ -81,24 +81,34 @@ export function ShopCartPage() {
 
   if (!items.length) {
     return (
-      <Card className="space-y-5">
+      <Card tone="light" className="service-offering-card space-y-5">
         <Badge tone="neutral">Empty Cart</Badge>
         <div className="space-y-3">
-          <p className="text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]">
+          <p className="text-[length:var(--font-size-title-sm)] text-[var(--color-ink-strong)]">
             The cart is ready when you are.
           </p>
-          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
             Browse the catalog, add spiritual support records thoughtfully, and
             return here when you want to prepare an order request.
           </p>
         </div>
-        <div className="flex flex-wrap gap-3">
-          <Link href="/shop" className={buttonStyles({ size: "lg" })}>
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <Link
+            href="/shop"
+            className={buttonStyles({
+              size: "lg",
+              className: "w-full justify-center sm:w-auto",
+            })}
+          >
             Browse The Shop
           </Link>
           <Link
             href="/consultation"
-            className={buttonStyles({ tone: "secondary", size: "lg" })}
+            className={buttonStyles({
+              tone: "secondary",
+              size: "lg",
+              className: "w-full justify-center sm:w-auto",
+            })}
           >
             Book Free Consultation
           </Link>
@@ -110,13 +120,13 @@ export function ShopCartPage() {
   return (
     <div className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)]">
       <div className="space-y-6">
-        <Card className="space-y-5">
+        <Card tone="light" className="service-offering-card space-y-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="space-y-2">
               <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
                 Cart Lines
               </p>
-              <p className="text-[length:var(--font-size-body-md)] text-[color:var(--color-muted)]">
+              <p className="text-[length:var(--font-size-body-md)] text-[var(--color-ink-body)]">
                 Adjust quantities, remove records, or continue into the order
                 request step.
               </p>
@@ -130,17 +140,17 @@ export function ShopCartPage() {
             {items.map((item) => (
               <div
                 key={item.slug}
-                className="rounded-[var(--radius-2xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.86)] px-5 py-5"
+                className="service-offering-card rounded-[var(--radius-2xl)] border px-5 py-5"
               >
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div className="space-y-2">
                     <Link
                       href={item.href}
-                      className="text-[length:var(--font-size-body-lg)] text-[color:var(--color-foreground)] transition hover:text-[color:var(--color-accent)]"
+                      className="text-[length:var(--font-size-body-lg)] text-[var(--color-ink-strong)] transition hover:text-[color:var(--color-accent)]"
                     >
                       {item.name}
                     </Link>
-                    <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                    <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
                       {item.summary}
                     </p>
                     <div className="flex flex-wrap items-center gap-3">
@@ -149,7 +159,7 @@ export function ShopCartPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex w-full flex-wrap items-center gap-3 sm:w-auto">
                     <label
                       htmlFor={`cart-quantity-${item.slug}`}
                       className="sr-only"
@@ -171,7 +181,7 @@ export function ShopCartPage() {
 
                         updateQuantity(item.slug, safeValue);
                       }}
-                      className="w-20"
+                      className="w-24"
                     />
                     <Button
                       type="button"
@@ -193,12 +203,12 @@ export function ShopCartPage() {
           </div>
         </Card>
 
-        <Card className="space-y-5">
+        <Card tone="light" className="service-offering-card space-y-5">
           <div className="space-y-2">
             <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
               Order Request
             </p>
-            <p className="text-[length:var(--font-size-body-md)] text-[color:var(--color-muted)]">
+            <p className="text-[length:var(--font-size-body-md)] text-[var(--color-ink-body)]">
               Share your details so the centre can review the order and confirm
               the next step without pushing you into a rushed checkout.
             </p>
@@ -334,7 +344,12 @@ export function ShopCartPage() {
               </div>
             ) : null}
 
-            <Button type="submit" size="lg" disabled={isPending}>
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full justify-center sm:w-auto"
+              disabled={isPending}
+            >
               {isPending ? "Saving Request..." : "Submit Order Request"}
             </Button>
           </form>
@@ -342,38 +357,38 @@ export function ShopCartPage() {
       </div>
 
       <div className="space-y-6">
-        <Card tone="accent" className="space-y-5">
+        <Card tone="accent" className="service-card space-y-5">
           <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
             Cart Summary
           </p>
-          <div className="space-y-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+          <div className="space-y-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
             <p>
               Items:{" "}
-              <span className="text-[color:var(--color-foreground)]">
+              <span className="text-[var(--color-ink-strong)]">
                 {itemCount}
               </span>
             </p>
             <p>
               Subtotal:{" "}
-              <span className="text-[color:var(--color-foreground)]">
+              <span className="text-[var(--color-ink-strong)]">
                 {subtotalLabel}
               </span>
             </p>
             <p>
               Payment handling:{" "}
-              <span className="text-[color:var(--color-foreground)]">
+              <span className="text-[var(--color-ink-strong)]">
                 Confirmed separately
               </span>
             </p>
           </div>
-          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
             The order request is recorded here first so confirmation,
             availability, and payment can be handled with clarity.
           </p>
         </Card>
 
         {state.checkout ? (
-          <Card className="space-y-5">
+          <Card tone="light" className="service-offering-card space-y-5">
             {(() => {
               const recoveryState = getPreparedOrderRecoveryState(state.checkout);
 

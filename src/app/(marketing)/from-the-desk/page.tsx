@@ -146,6 +146,7 @@ export default async function FromTheDeskPage({
       />
 
       <Section
+        category="content"
         eyebrow={copy.categoriesTitle}
         title="Discover by category and intent."
         description="Filter by topic and quickly move from reading into the right astrology tool or consultation path."
@@ -206,11 +207,12 @@ export default async function FromTheDeskPage({
       {featuredRashifal ? (
         <Section
           tone="light"
+          category="content"
           eyebrow={copy.featuredRashifalTitle}
           title={featuredRashifal.title}
           description={featuredRashifal.excerpt}
         >
-          <Card className="space-y-5">
+          <Card className="content-card space-y-5">
             <div className="flex flex-wrap items-center gap-3">
               <Badge tone="accent">{featuredRashifal.category}</Badge>
               <Badge tone="neutral">{featuredRashifal.readingTime}</Badge>
@@ -245,6 +247,7 @@ export default async function FromTheDeskPage({
 
       <Section
         tone="muted"
+        category="content"
         eyebrow={copy.latestArticlesTitle}
         title="Editorial publishing stream"
         description="Daily utility content plus long-form authority articles from the official desk."
@@ -264,8 +267,21 @@ export default async function FromTheDeskPage({
         )}
       </Section>
 
-      <Section tone="transparent" className="pt-0">
-        <AuthorAuthorityBlock consultationHref={localizeHref("/consultation")} />
+      <Section tone="transparent" category="content" className="pt-0">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.72fr)]">
+          <AuthorAuthorityBlock consultationHref={localizeHref("/consultation")} />
+          <Card className="content-card space-y-3">
+            <Badge tone="outline">Editorial Trust</Badge>
+            <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
+              Published for practical guidance, not fear.
+            </h2>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+              From the Desk of J P Sarmah keeps Daily Rashifal, Panchang notes,
+              remedies, and astrology guidance readable, non-alarming, and connected
+              to the right NAVAGRAHA CENTRE tools for deeper personal context.
+            </p>
+          </Card>
+        </div>
       </Section>
     </>
   );

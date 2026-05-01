@@ -22,13 +22,14 @@ export function InsightsCategoryPage({
   return (
     <>
       <Section
+        category="content"
         eyebrow={category.eyebrow}
         title={category.title}
         description={category.description}
       >
-        <Card tone="accent" className="space-y-4">
-          <Badge tone="accent">Category Focus</Badge>
-          <p className="text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+        <Card tone="accent" className="content-card space-y-4">
+          <Badge tone="accent">From the Desk of J P Sarmah</Badge>
+          <p className="text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
             Explore this category, then continue into personalized chart workflows when you need deeper context.
           </p>
           <div className="flex flex-wrap gap-3">
@@ -53,6 +54,7 @@ export function InsightsCategoryPage({
 
       <Section
         tone="light"
+        category="content"
         eyebrow="Featured Articles"
         title={`${category.title} for authority and practical guidance.`}
         description="Curated entries in this category support discoverability and trust while routing into product flows."
@@ -66,18 +68,19 @@ export function InsightsCategoryPage({
 
       <Section
         tone="muted"
+        category="content"
         eyebrow="Related Categories"
         title="Continue through related insights categories."
         description="Use internal category links to discover relevant topics without leaving the insights ecosystem."
       >
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {relatedCategories.map((item) => (
-            <Card key={item.slug} interactive className="space-y-3">
+            <Card key={item.slug} interactive className="content-card space-y-3">
               <Badge tone="neutral">{item.eyebrow}</Badge>
               <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
                 {item.title}
               </h2>
-              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
                 {item.description}
               </p>
               <Link

@@ -120,10 +120,10 @@ export function NumerologyToolPanel() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="utility-page-flow space-y-6">
       <Card
         tone="light"
-        className="space-y-4 border-[rgba(184,137,67,0.24)] bg-[rgba(255,255,255,0.95)]"
+        className="utility-form-card space-y-4"
       >
         <div className="space-y-2">
           <Badge tone="trust">Numerology Input</Badge>
@@ -176,7 +176,7 @@ export function NumerologyToolPanel() {
           {errorMessage ? (
             <p
               aria-live="polite"
-              className="rounded-[var(--radius-lg)] border border-[rgba(188,104,104,0.34)] bg-[rgba(244,231,231,0.86)] px-4 py-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-strong)]"
+              className="utility-error rounded-[var(--radius-lg)] border px-4 py-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)]"
             >
               {errorMessage}
             </p>
@@ -203,17 +203,17 @@ export function NumerologyToolPanel() {
         <div className="space-y-5">
           <Card
             tone="accent"
-            className="space-y-5 border-[rgba(184,137,67,0.34)] bg-[linear-gradient(160deg,rgba(255,252,246,0.98)_0%,rgba(246,232,206,0.94)_58%,rgba(239,222,193,0.96)_100%)]"
+            className="utility-result-card space-y-5"
           >
             <div className="flex flex-wrap items-center justify-between gap-3">
               <Badge tone="accent">Premium Numerology Summary</Badge>
-              <p className="rounded-[var(--radius-pill)] border border-[rgba(184,137,67,0.28)] bg-[rgba(255,255,255,0.86)] px-3 py-1 text-[0.7rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
+              <p className="utility-data-chip rounded-[var(--radius-pill)] border px-3 py-1 text-[0.7rem] uppercase tracking-[var(--tracking-label)]">
                 Dominant Number: {result.premiumSummary.dominantNumber.number}
               </p>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
-              <div className="rounded-[var(--radius-lg)] border border-[rgba(184,137,67,0.22)] bg-[rgba(255,255,255,0.88)] p-4">
+              <div className="utility-time-block rounded-[var(--radius-lg)] border p-4">
                 <p className="text-[0.7rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
                   Core Numbers
                 </p>
@@ -221,7 +221,7 @@ export function NumerologyToolPanel() {
                   {coreNumbersDisplay}
                 </p>
               </div>
-              <div className="rounded-[var(--radius-lg)] border border-[rgba(184,137,67,0.22)] bg-[rgba(255,255,255,0.88)] p-4">
+              <div className="utility-time-block rounded-[var(--radius-lg)] border p-4">
                 <p className="text-[0.7rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
                   Compound Numbers
                 </p>
@@ -252,7 +252,7 @@ export function NumerologyToolPanel() {
                 <Card
                   key={`${insight.label}-${insight.number}-${insight.keyLabel}`}
                   tone="light"
-                  className="space-y-4 border-[rgba(184,137,67,0.24)]"
+                  className="utility-panel-card space-y-4"
                 >
                   <div className="space-y-2">
                     <Badge tone="trust">{insight.keyLabel}</Badge>
@@ -296,7 +296,7 @@ export function NumerologyToolPanel() {
               ))}
           </div>
 
-          <Card tone="light" className="space-y-4 border-[rgba(184,137,67,0.24)]">
+          <Card tone="light" className="utility-panel-card space-y-4">
             <Badge tone="neutral">Interpretation Layers</Badge>
             <div className="grid gap-4 md:grid-cols-2">
               <InsightList
@@ -326,7 +326,7 @@ export function NumerologyToolPanel() {
             </div>
           </Card>
 
-          <Card tone="light" className="space-y-4 border-[rgba(184,137,67,0.24)]">
+          <Card tone="light" className="utility-panel-card space-y-4">
             <Badge tone="accent">Premium Guidance Notes</Badge>
             <div className="grid gap-4 md:grid-cols-2">
               <InsightList

@@ -107,6 +107,7 @@ export default function RashifalPage() {
 
       <Section
         tone="light"
+        category="utilities"
         eyebrow="12 Zodiac Signs"
         title="Choose your sign and read today&apos;s forecast."
         description="Each sign includes a compact daily prediction and a full detail page."
@@ -153,11 +154,12 @@ export default function RashifalPage() {
 
       <Section
         tone="light"
+        category="utilities"
         eyebrow="Full Rashifal"
         title="Complete daily Rashifal details for all zodiac signs."
         description="Love, career, business, and lucky indicators are provided for each sign."
       >
-        <Card className="mb-6 border-[rgba(184,137,67,0.2)] bg-[rgba(255,255,255,0.9)]">
+        <Card className="content-card mb-6 border-[rgba(184,137,67,0.2)] bg-[rgba(255,255,255,0.9)]">
           <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
             Every sign below follows the same structured daily format: five
             descriptive lines, dedicated love/career/business guidance, and
@@ -169,7 +171,7 @@ export default function RashifalPage() {
               <Card
                 key={`full-${sign.slug}`}
                 tone="light"
-              className="space-y-4 border-[rgba(184,137,67,0.24)]"
+                className="rashifal-section-card space-y-4"
             >
               <div className="flex items-center justify-between gap-3">
                 <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
@@ -192,14 +194,14 @@ export default function RashifalPage() {
                 {sign.fullDescription.map((line) => (
                   <li
                     key={line}
-                    className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]"
+                    className="rounded-[var(--radius-md)] border border-[rgba(184,137,67,0.14)] bg-[rgba(255,255,255,0.84)] px-3 py-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-strong)]"
                   >
-                    - {line}
+                    {line}
                   </li>
                 ))}
               </ul>
 
-              <div className="grid gap-2 text-[length:var(--font-size-body-sm)] text-[var(--color-ink-body)] sm:grid-cols-2">
+              <div className="grid gap-3 text-[length:var(--font-size-body-sm)] sm:grid-cols-3">
                 <p>
                   <span className="font-medium text-[var(--color-ink-strong)]">
                     Love:
@@ -218,19 +220,21 @@ export default function RashifalPage() {
                   </span>{" "}
                   {sign.business}
                 </p>
-                <p>
+                </div>
+                <div className="grid gap-2 text-[length:var(--font-size-body-sm)] sm:grid-cols-3">
+                <p className="rashifal-lucky-chip rounded-[var(--radius-lg)] border px-3 py-2">
                   <span className="font-medium text-[var(--color-ink-strong)]">
                     Lucky Color:
                   </span>{" "}
                   {sign.luckyColor}
                 </p>
-                <p>
+                <p className="rashifal-lucky-chip rounded-[var(--radius-lg)] border px-3 py-2">
                   <span className="font-medium text-[var(--color-ink-strong)]">
                     Lucky Number:
                   </span>{" "}
                   {sign.luckyNumber}
                 </p>
-                <p>
+                <p className="rashifal-lucky-chip rounded-[var(--radius-lg)] border px-3 py-2">
                   <span className="font-medium text-[var(--color-ink-strong)]">
                     Lucky Time:
                   </span>{" "}
@@ -248,7 +252,7 @@ export default function RashifalPage() {
               <Card
                 key={`full-${sign.slug}`}
                 tone="light"
-                className="space-y-4 border-[rgba(184,137,67,0.24)]"
+                className="rashifal-section-card space-y-4"
               >
                 <div className="flex items-center justify-between gap-3">
                   <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
@@ -268,17 +272,17 @@ export default function RashifalPage() {
                 </div>
 
                 <ul className="space-y-2">
-                  {sign.fullDescription.map((line) => (
-                    <li
-                      key={line}
-                      className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]"
-                    >
-                      - {line}
-                    </li>
-                  ))}
-                </ul>
+                {sign.fullDescription.map((line) => (
+                  <li
+                    key={line}
+                    className="rounded-[var(--radius-md)] border border-[rgba(184,137,67,0.14)] bg-[rgba(255,255,255,0.84)] px-3 py-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-strong)]"
+                  >
+                    {line}
+                  </li>
+                ))}
+              </ul>
 
-                <div className="grid gap-2 text-[length:var(--font-size-body-sm)] text-[var(--color-ink-body)] sm:grid-cols-2">
+                <div className="grid gap-3 text-[length:var(--font-size-body-sm)] sm:grid-cols-3">
                   <p>
                     <span className="font-medium text-[var(--color-ink-strong)]">
                       Love:
@@ -297,19 +301,21 @@ export default function RashifalPage() {
                     </span>{" "}
                     {sign.business}
                   </p>
-                  <p>
+                </div>
+                <div className="grid gap-2 text-[length:var(--font-size-body-sm)] sm:grid-cols-3">
+                  <p className="rashifal-lucky-chip rounded-[var(--radius-lg)] border px-3 py-2">
                     <span className="font-medium text-[var(--color-ink-strong)]">
                       Lucky Color:
                     </span>{" "}
                     {sign.luckyColor}
                   </p>
-                  <p>
+                  <p className="rashifal-lucky-chip rounded-[var(--radius-lg)] border px-3 py-2">
                     <span className="font-medium text-[var(--color-ink-strong)]">
                       Lucky Number:
                     </span>{" "}
                     {sign.luckyNumber}
                   </p>
-                  <p>
+                  <p className="rashifal-lucky-chip rounded-[var(--radius-lg)] border px-3 py-2">
                     <span className="font-medium text-[var(--color-ink-strong)]">
                       Lucky Time:
                     </span>{" "}

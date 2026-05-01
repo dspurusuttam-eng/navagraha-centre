@@ -263,10 +263,10 @@ export function PanchangToolPanel() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="utility-page-flow space-y-6">
       <Card
         tone="light"
-        className="space-y-4 border-[rgba(184,137,67,0.24)] bg-[rgba(255,255,255,0.95)]"
+        className="utility-form-card space-y-4"
       >
         <div className="space-y-2">
           <Badge tone="trust">Panchang Input</Badge>
@@ -334,7 +334,7 @@ export function PanchangToolPanel() {
           {errorMessage ? (
             <p
               aria-live="polite"
-              className="rounded-[var(--radius-lg)] border border-[rgba(188,104,104,0.34)] bg-[rgba(244,231,231,0.86)] px-4 py-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-strong)]"
+              className="utility-error rounded-[var(--radius-lg)] border px-4 py-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)]"
             >
               {errorMessage}
             </p>
@@ -372,26 +372,26 @@ export function PanchangToolPanel() {
         <div className="space-y-5">
           <Card
             tone="accent"
-            className="space-y-5 border-[rgba(184,137,67,0.34)] bg-[linear-gradient(160deg,rgba(255,252,246,0.98)_0%,rgba(246,232,206,0.94)_58%,rgba(239,222,193,0.96)_100%)]"
+            className="utility-result-card space-y-5"
           >
             <div className="space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <Badge tone="accent">Daily Panchang</Badge>
-                <p className="rounded-[var(--radius-pill)] border border-[rgba(184,137,67,0.28)] bg-[rgba(255,255,255,0.86)] px-3 py-1 text-[0.7rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
+                <p className="utility-data-chip rounded-[var(--radius-pill)] border px-3 py-1 text-[0.7rem] uppercase tracking-[var(--tracking-label)]">
                   {result.location.display_name}
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
-                <p className="rounded-[var(--radius-pill)] border border-[rgba(184,137,67,0.2)] bg-[rgba(255,255,255,0.9)] px-3 py-1 text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
+                <p className="utility-data-chip rounded-[var(--radius-pill)] border px-3 py-1 text-[0.68rem] uppercase tracking-[var(--tracking-label)]">
                   Date: {result.as_of_date}
                 </p>
-                <p className="rounded-[var(--radius-pill)] border border-[rgba(184,137,67,0.2)] bg-[rgba(255,255,255,0.9)] px-3 py-1 text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
+                <p className="utility-data-chip rounded-[var(--radius-pill)] border px-3 py-1 text-[0.68rem] uppercase tracking-[var(--tracking-label)]">
                   Timezone: {result.location.timezone_iana}
                 </p>
               </div>
             </div>
             <div className="grid gap-4 md:grid-cols-3">
-              <div className="rounded-[var(--radius-lg)] border border-[rgba(184,137,67,0.22)] bg-[rgba(255,255,255,0.88)] p-4">
+              <div className="utility-time-block rounded-[var(--radius-lg)] border p-4">
                 <p className="text-[0.7rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
                   Sunrise
                 </p>
@@ -399,7 +399,7 @@ export function PanchangToolPanel() {
                   {result.sunrise.local_time}
                 </p>
               </div>
-              <div className="rounded-[var(--radius-lg)] border border-[rgba(184,137,67,0.22)] bg-[rgba(255,255,255,0.88)] p-4">
+              <div className="utility-time-block rounded-[var(--radius-lg)] border p-4">
                 <p className="text-[0.7rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
                   Sunset
                 </p>
@@ -407,7 +407,7 @@ export function PanchangToolPanel() {
                   {result.sunset.local_time}
                 </p>
               </div>
-              <div className="rounded-[var(--radius-lg)] border border-[rgba(184,137,67,0.22)] bg-[rgba(255,255,255,0.88)] p-4">
+              <div className="utility-time-block rounded-[var(--radius-lg)] border p-4">
                 <p className="text-[0.7rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
                   Moon Sign
                 </p>
@@ -418,14 +418,14 @@ export function PanchangToolPanel() {
             </div>
           </Card>
 
-          <Card tone="light" className="space-y-4 border-[rgba(184,137,67,0.24)]">
+          <Card tone="light" className="utility-panel-card space-y-4">
             <SectionHeading
               badge="Core Panchang Values"
               title="Current daily factors"
               description="Core Panchang values are shown in one clear grid for quick interpretation."
             />
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
-              <Card tone="light" className="space-y-2 border-[rgba(184,137,67,0.24)]">
+              <Card tone="light" className="utility-time-block space-y-2 border">
                 <Badge tone="trust">Tithi</Badge>
                 <p className="text-[length:var(--font-size-body-md)] font-medium text-[var(--color-ink-strong)]">
                   {result.tithi.name}
@@ -434,19 +434,19 @@ export function PanchangToolPanel() {
                   Progress {result.tithi.progress_percent}%
                 </p>
               </Card>
-              <Card tone="light" className="space-y-2 border-[rgba(184,137,67,0.24)]">
+              <Card tone="light" className="utility-time-block space-y-2 border">
                 <Badge tone="trust">Paksha</Badge>
                 <p className="text-[length:var(--font-size-body-md)] font-medium text-[var(--color-ink-strong)]">
                   {result.paksha}
                 </p>
               </Card>
-              <Card tone="light" className="space-y-2 border-[rgba(184,137,67,0.24)]">
+              <Card tone="light" className="utility-time-block space-y-2 border">
                 <Badge tone="trust">Vara</Badge>
                 <p className="text-[length:var(--font-size-body-md)] font-medium text-[var(--color-ink-strong)]">
                   {result.vara}
                 </p>
               </Card>
-              <Card tone="light" className="space-y-2 border-[rgba(184,137,67,0.24)]">
+              <Card tone="light" className="utility-time-block space-y-2 border">
                 <Badge tone="trust">Nakshatra</Badge>
                 <p className="text-[length:var(--font-size-body-md)] font-medium text-[var(--color-ink-strong)]">
                   {result.nakshatra.name}
@@ -455,7 +455,7 @@ export function PanchangToolPanel() {
                   Pada {result.nakshatra.pada} ({result.nakshatra.progress_percent}%)
                 </p>
               </Card>
-              <Card tone="light" className="space-y-2 border-[rgba(184,137,67,0.24)]">
+              <Card tone="light" className="utility-time-block space-y-2 border">
                 <Badge tone="trust">Yoga</Badge>
                 <p className="text-[length:var(--font-size-body-md)] font-medium text-[var(--color-ink-strong)]">
                   {result.yoga.name}
@@ -464,7 +464,7 @@ export function PanchangToolPanel() {
                   Progress {result.yoga.progress_percent}%
                 </p>
               </Card>
-              <Card tone="light" className="space-y-2 border-[rgba(184,137,67,0.24)]">
+              <Card tone="light" className="utility-time-block space-y-2 border">
                 <Badge tone="trust">Karana</Badge>
                 <p className="text-[length:var(--font-size-body-md)] font-medium text-[var(--color-ink-strong)]">
                   {result.karana.name}
@@ -473,7 +473,7 @@ export function PanchangToolPanel() {
             </div>
           </Card>
 
-          <Card tone="light" className="space-y-4 border-[rgba(184,137,67,0.24)]">
+          <Card tone="light" className="utility-panel-card space-y-4">
             <SectionHeading
               badge="Transitions"
               title="Next Panchang transitions"
@@ -505,7 +505,7 @@ export function PanchangToolPanel() {
                 <Card
                   key={transition.label}
                   tone="light"
-                  className="space-y-2 border-[rgba(184,137,67,0.24)] bg-[rgba(255,255,255,0.86)]"
+                  className="utility-time-block space-y-2 border"
                 >
                   <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
                     {transition.label}
@@ -522,7 +522,7 @@ export function PanchangToolPanel() {
           </Card>
 
           {advancedTimings ? (
-            <Card tone="light" className="space-y-4 border-[rgba(184,137,67,0.24)]">
+            <Card tone="light" className="utility-panel-card space-y-4">
               <SectionHeading
                 badge="Advanced Timings"
                 title="Daily spiritual timing windows"
@@ -550,7 +550,7 @@ export function PanchangToolPanel() {
                   <Card
                     key={item.label}
                     tone="light"
-                    className="space-y-2 border-[rgba(184,137,67,0.24)] bg-[rgba(255,255,255,0.86)]"
+                    className="utility-time-block space-y-2 border"
                   >
                     <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
                       {item.label}
@@ -580,14 +580,14 @@ export function PanchangToolPanel() {
             </Card>
           ) : null}
 
-          <Card tone="light" className="space-y-4 border-[rgba(184,137,67,0.24)]">
+          <Card tone="light" className="utility-panel-card space-y-4">
             <SectionHeading
               badge="Daily Guidance"
               title="Structured daily guidance"
               description="Conservative guidance based on the current Panchang state and transitions."
             />
             <div className="grid gap-4 sm:grid-cols-2">
-              <Card tone="light" className="space-y-2 border-[rgba(184,137,67,0.24)]">
+              <Card tone="light" className="utility-time-block space-y-2 border">
                 <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
                   Day Feel
                 </p>
@@ -595,7 +595,7 @@ export function PanchangToolPanel() {
                   {guidance?.day_feel}
                 </p>
               </Card>
-              <Card tone="light" className="space-y-2 border-[rgba(184,137,67,0.24)]">
+              <Card tone="light" className="utility-time-block space-y-2 border">
                 <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
                   Overall Daily Quality
                 </p>

@@ -117,6 +117,7 @@ export default function PanchangPage() {
 
       <Section
         tone="light"
+        category="utilities"
         eyebrow="Panchang Tool"
         title="Generate a complete daily Panchang profile with transitions and guidance."
         description="Enter date and place once to view core values, next transitions, and structured daily guidance in one clean result flow."
@@ -131,6 +132,7 @@ export default function PanchangPage() {
 
       <Section
         tone="muted"
+        category="utilities"
         eyebrow="How It Works"
         title="Three focused steps behind this Panchang engine."
         description="The flow is lightweight, deterministic, and aligned with current astrology engine conventions."
@@ -168,6 +170,7 @@ export default function PanchangPage() {
 
       <Section
         tone="light"
+        category="utilities"
         eyebrow="Daily Use"
         title="Use Panchang as a practical daily timing layer."
         description="Keep the flow simple: check the core factors, note transition windows, then continue into deeper chart-aware tools when needed."
@@ -232,6 +235,7 @@ export default function PanchangPage() {
 
       <Section
         tone="light"
+        category="utilities"
         eyebrow="Related Tools"
         title="Continue from Panchang into complementary guidance surfaces."
         description="Internal links are kept focused so you can move into the right next tool without clutter."

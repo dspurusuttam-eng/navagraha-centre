@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { TrackedLink } from "@/components/analytics/tracked-link";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
@@ -27,6 +28,16 @@ type CredibilityMarkersProps = {
   reviewedBy?: string;
   tone?: TrustTone;
   className?: string;
+};
+
+const astrologerProfileAsset: {
+  imageSrc: string | null;
+  alt: string;
+  monogram: string;
+} = {
+  imageSrc: null,
+  alt: "Astrologer profile portrait placeholder",
+  monogram: "JPS",
 };
 
 function getInitials(name: string) {
@@ -135,21 +146,65 @@ export function AstrologerAuthoritySection({
       title="Joy Prakash Sarmah leads a chart-first and human-guided practice."
       description="Technology organizes chart context. Human review and consultation protect interpretive quality."
     >
-      <Card tone="accent" className="space-y-5">
-        <div className="grid gap-3 md:grid-cols-2">
-          {[
-            "Vedic chart-first approach with sidereal Lahiri foundation.",
-            "Calm, human-guided interpretation for nuanced life questions.",
-            "Relationship and remedy guidance framed as supportive pathways.",
-            "Human review remains central over fully automated outputs.",
-          ].map((line) => (
-            <p
-              key={line}
-              className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]"
-            >
-              {line}
-            </p>
-          ))}
+      <Card tone="accent" className="service-card space-y-6">
+        <div className="grid gap-6 lg:grid-cols-[minmax(220px,0.42fr)_minmax(0,1fr)] lg:items-center">
+          <div
+            className="service-portrait-frame mx-auto flex aspect-[4/5] w-full max-w-[18rem] items-center justify-center overflow-hidden rounded-[var(--radius-2xl)] border"
+            role={astrologerProfileAsset.imageSrc ? undefined : "img"}
+            aria-label={astrologerProfileAsset.imageSrc ? undefined : astrologerProfileAsset.alt}
+          >
+            {astrologerProfileAsset.imageSrc ? (
+              <Image
+                src={astrologerProfileAsset.imageSrc}
+                alt={astrologerProfileAsset.alt}
+                width={360}
+                height={450}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <div className="flex h-full w-full flex-col items-center justify-center gap-4 p-6 text-center">
+                <div className="flex h-24 w-24 items-center justify-center rounded-full border border-[rgba(184,137,67,0.34)] bg-[rgba(255,255,255,0.78)] text-[1.2rem] font-medium tracking-[0.18em] text-[var(--color-trust-text)]">
+                  {astrologerProfileAsset.monogram}
+                </div>
+                <div className="space-y-2">
+                  <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
+                    Portrait Placeholder
+                  </p>
+                  <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+                    Replaceable profile area for an approved future astrologer portrait.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="space-y-5">
+            <div className="space-y-3">
+              <Badge tone="trust">J P Sarmah</Badge>
+              <h3 className="text-[length:var(--font-size-title-sm)] text-[var(--color-ink-strong)]">
+                Vedic Astrologer and Spiritual Guide
+              </h3>
+              <p className="text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+                Joy Prakash Sarmah leads human consultation where chart context, timing, and sensitive decisions need careful interpretation.
+              </p>
+            </div>
+
+            <div className="grid gap-3 md:grid-cols-2">
+              {[
+                "Vedic chart-first approach with sidereal Lahiri foundation.",
+                "Calm, human-guided interpretation for nuanced life questions.",
+                "Relationship and remedy guidance framed as supportive pathways.",
+                "Human review remains central over fully automated outputs.",
+              ].map((line) => (
+                <p
+                  key={line}
+                  className="service-trust-chip rounded-[var(--radius-lg)] border px-4 py-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)]"
+                >
+                  {line}
+                </p>
+              ))}
+            </div>
+          </div>
         </div>
         <div className="flex flex-wrap gap-3">
           <TrackedLink
@@ -445,4 +500,3 @@ export function CredibilityMarkersSection({
     </Section>
   );
 }
-

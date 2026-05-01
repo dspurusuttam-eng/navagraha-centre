@@ -70,16 +70,19 @@ function LanguageSwitcherCompact({
       onToggle={(event) => setOpen((event.target as HTMLDetailsElement).open)}
     >
       <summary
+        aria-label={globalFooterCopy.languageLabel}
         className={buttonStyles({
           tone: "tertiary",
           size: "sm",
           className:
-            "cursor-pointer list-none pr-3 marker:content-none [&::-webkit-details-marker]:hidden",
+            "max-w-[8.75rem] cursor-pointer list-none overflow-hidden text-ellipsis pr-3 marker:content-none sm:max-w-[11rem] [&::-webkit-details-marker]:hidden",
         })}
+        dir={activeDefinition.dir}
+        lang={activeDefinition.code}
       >
         {activeDefinition.nativeLabel}
       </summary>
-      <div className="absolute top-[calc(100%+0.5rem)] z-30 w-[min(90vw,18rem)] rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,254,250,0.98)] p-3 shadow-[var(--shadow-md)] [inset-inline-end:0]">
+      <div className="absolute top-[calc(100%+0.5rem)] z-30 max-h-[min(72vh,28rem)] w-[min(calc(100vw-2rem),20rem)] overflow-y-auto rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,254,250,0.98)] p-3 shadow-[var(--shadow-md)] [inset-inline-end:0]">
         <div className="grid gap-2">
           {allLocales.map((locale) => {
             const selectable = isLocaleSelectable(locale.code);
@@ -94,12 +97,16 @@ function LanguageSwitcherCompact({
                 className={buttonStyles({
                   tone: "ghost",
                   size: "sm",
-                  className: "w-full justify-start",
+                  className: "w-full justify-start text-start",
                 })}
+                dir={locale.dir}
+                lang={locale.code}
                 onClick={() => setOpen(false)}
               >
-                {locale.nativeLabel}
-                <span className="text-[0.62rem] text-[var(--color-ink-muted)] [margin-inline-start:auto]">
+                <span className="min-w-0 flex-1 overflow-hidden text-ellipsis">
+                  {locale.nativeLabel}
+                </span>
+                <span className="shrink-0 text-[0.62rem] text-[var(--color-ink-muted)] [margin-inline-start:auto]">
                   {availabilityLabel}
                 </span>
               </Link>
@@ -110,13 +117,17 @@ function LanguageSwitcherCompact({
                   tone: "ghost",
                   size: "sm",
                   className:
-                    "w-full cursor-not-allowed justify-start text-[var(--color-ink-muted)]",
+                    "w-full cursor-not-allowed justify-start text-start text-[var(--color-ink-muted)]",
                 })}
                 aria-disabled="true"
-                title={globalLocaleCopy.comingSoon}
+                dir={locale.dir}
+                lang={locale.code}
+                title={globalLocaleCopy.planned}
               >
-                {locale.nativeLabel}
-                <span className="text-[0.62rem] text-[var(--color-ink-muted)] [margin-inline-start:auto]">
+                <span className="min-w-0 flex-1 overflow-hidden text-ellipsis">
+                  {locale.nativeLabel}
+                </span>
+                <span className="shrink-0 text-[0.62rem] text-[var(--color-ink-muted)] [margin-inline-start:auto]">
                   {availabilityLabel}
                 </span>
               </span>
@@ -165,12 +176,17 @@ export function LanguageSwitcher({
           className={buttonStyles({
             tone: "secondary",
             size: "sm",
-            className: "cursor-default border-[rgba(185,139,70,0.4)] pr-3",
+            className:
+              "cursor-default border-[rgba(185,139,70,0.4)] pr-3 text-start",
           })}
           aria-current="true"
+          dir={activeDefinition.dir}
+          lang={activeDefinition.code}
         >
-          {activeDefinition.nativeLabel}
-          <span className="rounded-full bg-[rgba(185,139,70,0.14)] px-2 py-1 text-[0.62rem] text-[var(--color-accent-strong)]">
+          <span className="min-w-0 max-w-full overflow-hidden text-ellipsis">
+            {activeDefinition.nativeLabel}
+          </span>
+          <span className="shrink-0 rounded-full bg-[rgba(185,139,70,0.14)] px-2 py-1 text-[0.62rem] text-[var(--color-accent-strong)]">
             {globalLocaleCopy.live}
           </span>
         </span>
@@ -200,11 +216,15 @@ export function LanguageSwitcher({
                     tone: "tertiary",
                     size: "sm",
                     className:
-                      "border-[rgba(185,139,70,0.34)] bg-[rgba(255,252,246,0.92)] text-[var(--color-ink-body)]",
+                      "border-[rgba(185,139,70,0.34)] bg-[rgba(255,252,246,0.92)] text-start text-[var(--color-ink-body)]",
                   })}
+                  dir={locale.dir}
+                  lang={locale.code}
                 >
-                  {locale.nativeLabel}
-                  <span className="text-[0.62rem] text-[var(--color-ink-muted)]">
+                  <span className="min-w-0 max-w-full overflow-hidden text-ellipsis">
+                    {locale.nativeLabel}
+                  </span>
+                  <span className="shrink-0 text-[0.62rem] text-[var(--color-ink-muted)]">
                     {availabilityLabel}
                   </span>
                 </Link>
@@ -215,13 +235,17 @@ export function LanguageSwitcher({
                     tone: "tertiary",
                     size: "sm",
                     className:
-                      "cursor-not-allowed border-[rgba(185,139,70,0.34)] bg-[rgba(255,252,246,0.92)] text-[var(--color-ink-body)]",
+                      "cursor-not-allowed border-[rgba(185,139,70,0.34)] bg-[rgba(255,252,246,0.92)] text-start text-[var(--color-ink-body)]",
                   })}
                   aria-disabled="true"
-                  title={globalLocaleCopy.comingSoon}
+                  dir={locale.dir}
+                  lang={locale.code}
+                  title={globalLocaleCopy.planned}
                 >
-                  {locale.nativeLabel}
-                  <span className="text-[0.62rem] text-[var(--color-ink-muted)]">
+                  <span className="min-w-0 max-w-full overflow-hidden text-ellipsis">
+                    {locale.nativeLabel}
+                  </span>
+                  <span className="shrink-0 text-[0.62rem] text-[var(--color-ink-muted)]">
                     {availabilityLabel}
                   </span>
                 </span>
@@ -249,11 +273,15 @@ export function LanguageSwitcher({
                     tone: "tertiary",
                     size: "sm",
                     className:
-                      "border-dashed border-[rgba(185,139,70,0.24)] bg-[rgba(255,252,245,0.9)] text-[var(--color-ink-muted)]",
+                      "border-dashed border-[rgba(185,139,70,0.24)] bg-[rgba(255,252,245,0.9)] text-start text-[var(--color-ink-muted)]",
                   })}
+                  dir={locale.dir}
+                  lang={locale.code}
                 >
-                  {locale.nativeLabel}
-                  <span className="text-[0.62rem] text-[var(--color-ink-muted)]">
+                  <span className="min-w-0 max-w-full overflow-hidden text-ellipsis">
+                    {locale.nativeLabel}
+                  </span>
+                  <span className="shrink-0 text-[0.62rem] text-[var(--color-ink-muted)]">
                     {availabilityLabel}
                   </span>
                 </Link>
@@ -264,13 +292,17 @@ export function LanguageSwitcher({
                     tone: "tertiary",
                     size: "sm",
                     className:
-                      "cursor-not-allowed border-dashed border-[rgba(185,139,70,0.24)] bg-[rgba(255,252,245,0.9)] text-[var(--color-ink-muted)]",
+                      "cursor-not-allowed border-dashed border-[rgba(185,139,70,0.24)] bg-[rgba(255,252,245,0.9)] text-start text-[var(--color-ink-muted)]",
                   })}
                   aria-disabled="true"
-                  title={globalLocaleCopy.comingSoon}
+                  dir={locale.dir}
+                  lang={locale.code}
+                  title={globalLocaleCopy.planned}
                 >
-                  {locale.nativeLabel}
-                  <span className="text-[0.62rem] text-[var(--color-ink-muted)]">
+                  <span className="min-w-0 max-w-full overflow-hidden text-ellipsis">
+                    {locale.nativeLabel}
+                  </span>
+                  <span className="shrink-0 text-[0.62rem] text-[var(--color-ink-muted)]">
                     {availabilityLabel}
                   </span>
                 </span>

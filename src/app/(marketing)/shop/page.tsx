@@ -8,6 +8,7 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { createToolMetadata } from "@/lib/seo/metadata";
 import { getCoreSeoCopy } from "@/lib/seo/seo-config";
 import { createBreadcrumbSchema, createServiceSchema } from "@/lib/seo/schema";
+import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
@@ -82,30 +83,32 @@ export default async function ShopPage() {
 
       <PageHero
         eyebrow="Spiritual Shop"
-        title="A premium catalog of spiritual supports, merchandised with restraint."
-        description="The NAVAGRAHA CENTRE shop is designed to feel composed, editorial, and calm. Every record is framed as a thoughtful support product rather than a hard claim, urgency trigger, or guaranteed result."
+        title="Optional spiritual products, presented with care and restraint."
+        description="Explore Rudraksha, gemstones, yantras, malas, idols, and practice companions as supportive spiritual products, never as fear-based remedies or guaranteed outcomes."
         highlights={[
-          "Curated categories for Rudraksha, malas, gemstones, yantras, idols, and mantra remedies",
-          "A clear order-request path without rushed or noisy checkout language",
-          "Remedy records can point to related products without turning them into prescriptions",
+          "Curated categories with calm product education and clear pricing",
+          "Secure order-request path without rushed or noisy checkout language",
+          "Gemstone and remedy products positioned as consultation-led support",
         ]}
         note="The catalog language stays transparent on purpose: spiritual products can support a practice, but they do not replace discernment, consultation, or practical judgment."
-        primaryAction={{ href: "/shop/cart", label: "Review Cart" }}
+        primaryAction={{ href: "#featured-edit", label: "Explore Spiritual Shop" }}
         secondaryAction={{
           href: "/consultation",
-          label: "Book Free Consultation",
+          label: "Book Consultation for Guidance",
+          tone: "secondary",
         }}
-        supportTitle="Commerce Principles"
+        supportTitle="Shop Trust Markers"
       />
 
       <Section
+        category="services"
         eyebrow="Service Separation"
         title="Shop products remain separate from astrology service access."
         description="Reports, consultations, and NAVAGRAHA AI remain currently free under limited launch access. The shop is intentionally positioned as an optional spiritual add-on layer."
         tone="light"
       >
-        <Card className="space-y-4">
-          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+        <Card tone="light" className="service-card space-y-4">
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
             Start with your chart and guidance journey first. Add spiritual products only when they align with your practice and personal intent.
           </p>
           <div className="flex flex-wrap gap-3">
@@ -138,6 +141,7 @@ export default async function ShopPage() {
       </Section>
 
       <Section
+        category="services"
         eyebrow="Categories"
         title="Browse by spiritual format, not by urgency."
         description="Each category has its own tone, material logic, and role within a disciplined practice. The merchandising stays calm so clients can move with clarity."
@@ -147,12 +151,12 @@ export default async function ShopPage() {
             <Link
               key={category.key}
               href={`#${category.anchorId}`}
-              className="rounded-[var(--radius-2xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.86)] px-5 py-5 transition [transition-duration:var(--motion-duration-base)] hover:border-[color:var(--color-border-strong)] hover:bg-[rgba(255,255,255,0.96)]"
+              className="service-offering-card rounded-[var(--radius-2xl)] border px-5 py-5 transition [transition-duration:var(--motion-duration-base)] hover:border-[color:var(--color-border-strong)] hover:bg-[rgba(255,255,255,0.96)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--color-bg-ivory)]"
             >
               <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
                 {category.label}
               </p>
-              <p className="mt-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              <p className="mt-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
                 {category.description}
               </p>
             </Link>
@@ -161,6 +165,7 @@ export default async function ShopPage() {
       </Section>
 
       <Section
+        category="services"
         eyebrow="Featured Edit"
         title="A first premium edit for careful spiritual commerce."
         description="The featured selection keeps the catalog focused, polished, and easy to understand."
@@ -193,6 +198,7 @@ export default async function ShopPage() {
       {productsByCategory.map((section) => (
         <Section
           key={section.category}
+          category="services"
           eyebrow={section.summary.label}
           title={`${section.summary.label} presented with calm, premium detail.`}
           description={section.summary.description}
@@ -211,13 +217,61 @@ export default async function ShopPage() {
       </Section>
 
       <Section
+        className="pt-0"
+        tone="transparent"
+        category="services"
+        eyebrow="Ethical Product Guidance"
+        title="Products are optional supports, not mandatory remedies."
+        description="Gemstones, Rudraksha, yantras, and devotional items should be selected with discernment and proper chart review where needed."
+      >
+        <Card tone="light" className="service-offering-card grid gap-4 md:grid-cols-3">
+          {[
+            {
+              title: "Gemstone Safety",
+              text: "Gemstones should be selected only after proper chart analysis and budget consideration.",
+              href: "/consultation",
+              label: "Book Guidance",
+            },
+            {
+              title: "Checkout Clarity",
+              text: "Order requests stay separate from astrology service access and do not create fake urgency.",
+              href: "/terms",
+              label: "Read Terms",
+            },
+            {
+              title: "Support",
+              text: "Use Contact for order questions, availability, and future shipping or fulfillment details.",
+              href: "/contact",
+              label: "Contact",
+            },
+          ].map((item) => (
+            <div key={item.title} className="space-y-3">
+              <Badge tone="trust">{item.title}</Badge>
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+                {item.text}
+              </p>
+              <TrackedLink
+                href={item.href}
+                eventName="shop_interaction"
+                eventPayload={{ page: "/shop", feature: `shop-guidance-${item.title}` }}
+                className={buttonStyles({ size: "sm", tone: "ghost" })}
+              >
+                {item.label}
+              </TrackedLink>
+            </div>
+          ))}
+        </Card>
+      </Section>
+
+      <Section
+        category="services"
         eyebrow="Order Requests"
         title="The cart lets visitors review selections and request a follow-up."
         description="Browsing, product detail, saved cart state, and order preparation are all kept explicit so the public commerce surface stays calm and honest."
         tone="muted"
       >
-        <Card tone="accent" className="space-y-5">
-          <p className="text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+        <Card tone="accent" className="service-card space-y-5">
+          <p className="text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
             Orders are captured as structured requests so availability,
             confirmation, and payment can be handled with care through a
             deliberate order-confirmation process.
@@ -237,7 +291,7 @@ export default async function ShopPage() {
               eventPayload={{ page: "/shop", feature: "shop-ask-guidance" }}
               className={buttonStyles({ tone: "secondary", size: "lg" })}
             >
-              Ask For Guidance
+              Book Consultation For Guidance
             </TrackedLink>
           </div>
           <SponsoredDisclosure />

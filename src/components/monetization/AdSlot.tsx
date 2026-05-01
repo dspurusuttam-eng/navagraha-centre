@@ -71,6 +71,8 @@ export function AdSlot({
   const hasRenderedAdRef = useRef(false);
   const isPlacementAllowed = shouldRenderMonetizationPlacement(placement);
   const shouldRenderRealAd = isPlacementAllowed && isAdSenseReady();
+  const shouldRenderDeveloperPlaceholder =
+    showPlaceholder && process.env.NODE_ENV !== "production";
   const resolvedMinHeight = getMinHeight(format, minHeight);
 
   useEffect(() => {
@@ -108,7 +110,7 @@ export function AdSlot({
     return null;
   }
 
-  if (!shouldRenderRealAd && !showPlaceholder) {
+  if (!shouldRenderRealAd && !shouldRenderDeveloperPlaceholder) {
     return null;
   }
 
@@ -152,8 +154,7 @@ export function AdSlot({
           style={{ minHeight: `${resolvedMinHeight - 48}px` }}
         >
           <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-            Ad-safe placeholder. Real AdSense will activate after publisher and slot
-            environment variables are configured.
+            Advertising space preview for development QA.
           </p>
         </div>
       )}
