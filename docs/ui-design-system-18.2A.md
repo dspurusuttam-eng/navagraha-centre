@@ -492,3 +492,42 @@ Final 18.2A public QA rules:
 5. `/from-the-desk` is the primary editorial route; `/insights` remains an alias/category discovery path where supported.
 6. Google Search Console submission should use canonical final URLs and the generated sitemap.
 7. Manual mobile and browser visual sign-off remains required after production deployment.
+
+## 31. Approved Homepage Demo Implementation
+
+Homepage visual target:
+
+1. Root `/` and English `/en` must render the same shared refined homepage component.
+2. Approved order: Header, Premium Hero, Hero Trust Icons, Authority / Legacy Strip, Core Astrology Utilities, NAVAGRAHA AI light panel, Premium Services Cards, Credibility Strip, Final CTA, Footer.
+3. The homepage uses ivory, white, warm cream, charcoal text, antique gold, champagne, and muted saffron only.
+4. Do not reintroduce dark cosmic panels, neon glow, blue tech gradients, robot imagery, or highly colorful icon systems.
+5. Homepage decorative visuals should use CSS/SVG-style gold line art when approved local assets are not available.
+
+Hero graphics rules:
+
+1. Use golden zodiac wheel, sun mandala, sacred geometry, open scripture, or chart-line motifs.
+2. Decorative chart visuals must not show fake planetary positions, fake birth data, or fake predictions.
+3. The hero CTA hierarchy is Generate Your Kundli, Explore NAVAGRAHA AI, then Book Consultation only as a softer tertiary action.
+4. Hero trust icons should use concise labels such as accurate calculations, privacy, available tools, and guidance tradition without hard-number claims.
+
+Authority strip rules:
+
+1. The authority strip may mention Joy Prakash Sarmah and the legacy of Hemeswar Sarmah when used as brand/editorial context.
+2. Astrologer portraits remain replaceable assets. If no approved local portrait exists, use monogram or premium silhouette placeholders.
+3. Placeholder alt text must stay generic, for example "Astrologer profile portrait placeholder".
+4. Do not use random external portraits, generated identity imagery, or final-photo assumptions.
+
+Homepage section separation rules:
+
+1. Core Astrology Utilities contains only free/practical tools: Kundli, Compatibility, Rashifal, Panchang, Numerology, Calculators, and Muhurta / Time Tools.
+2. NAVAGRAHA AI appears as a light premium intelligence panel, not as a dark chatbot or tech block.
+3. Premium Services Cards contain Reports, Consultation, From the Desk, and Spiritual Support Shop.
+4. Services, content, and shop must not appear inside the utility section.
+5. Shop copy must stay optional and non-fear-based.
+
+Final CTA rules:
+
+1. The closing action should return users to Kundli generation first.
+2. Consultation can be offered as the second CTA.
+3. NAVAGRAHA AI may remain as a tertiary text-style path.
+4. Keep CTA groups stacked and tap-friendly on mobile.
