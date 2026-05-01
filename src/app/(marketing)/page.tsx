@@ -10,6 +10,14 @@ import {
   RashifalIcon,
   ReportIcon,
 } from "@/components/icons/astrology-icons";
+import {
+  AiMandalaGraphic,
+  ConsultationPlaceholderGraphic,
+  FinalCtaOrnament,
+  SacredGeometryPattern,
+  ServiceVisualGraphic,
+  VedicHeroIllustration,
+} from "@/components/graphics/premium-vedic-graphics";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -76,6 +84,7 @@ type TrustItem = {
 
 type ServiceCard = HomeCardItem & {
   label: string;
+  visualVariant: "report" | "consultation" | "editorial" | "shop";
 };
 
 function getHomeIcon(icon: HomeIcon, className?: string) {
@@ -200,6 +209,7 @@ const serviceCards: readonly ServiceCard[] = [
     href: "/reports",
     ctaLabel: "Explore Reports",
     feature: "home-service-reports",
+    visualVariant: "report",
   },
   {
     icon: "consultation",
@@ -209,6 +219,7 @@ const serviceCards: readonly ServiceCard[] = [
     href: "/consultation",
     ctaLabel: "Book Consultation",
     feature: "home-service-consultation",
+    visualVariant: "consultation",
   },
   {
     icon: "reports",
@@ -218,6 +229,7 @@ const serviceCards: readonly ServiceCard[] = [
     href: "/from-the-desk",
     ctaLabel: "Read Insights",
     feature: "home-service-content",
+    visualVariant: "editorial",
   },
   {
     icon: "kundli",
@@ -227,6 +239,7 @@ const serviceCards: readonly ServiceCard[] = [
     href: "/shop",
     ctaLabel: "Visit Shop",
     feature: "home-service-shop",
+    visualVariant: "shop",
   },
 ] as const;
 
@@ -302,6 +315,7 @@ export default async function HomePage() {
       />
 
       <section className="relative overflow-hidden border-b border-[color:var(--color-border)] bg-[linear-gradient(180deg,#fffefb_0%,#fff8ea_50%,#f7ead2_100%)]">
+        <SacredGeometryPattern className="opacity-60" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(185,139,70,0.2),transparent_32%),radial-gradient(circle_at_82%_10%,rgba(232,198,135,0.2),transparent_30%),radial-gradient(circle_at_72%_88%,rgba(185,139,70,0.14),transparent_36%)]" />
         <Container className="relative grid gap-10 py-12 sm:py-16 lg:grid-cols-[minmax(0,1.02fr)_minmax(320px,0.98fr)] lg:items-center lg:py-20">
           <div className="home-reveal home-reveal-delay-1 space-y-7">
@@ -361,31 +375,7 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <Card className="home-reveal home-reveal-delay-2 border-[rgba(184,137,67,0.3)] bg-[linear-gradient(160deg,rgba(255,255,255,0.97)_0%,rgba(252,244,232,0.95)_56%,rgba(245,229,199,0.94)_100%)] shadow-[0_26px_60px_rgba(95,67,28,0.14)]">
-            <div className="relative mx-auto flex min-h-[24rem] max-w-[30rem] items-center justify-center">
-              <div className="absolute inset-6 rounded-full border border-[rgba(184,137,67,0.22)]" />
-              <div className="absolute inset-12 rounded-full border border-[rgba(184,137,67,0.28)]" />
-              <div className="absolute inset-20 rotate-45 border border-[rgba(184,137,67,0.26)]" />
-              <div className="absolute left-1/2 top-1/2 h-[19rem] w-px -translate-x-1/2 -translate-y-1/2 bg-[rgba(184,137,67,0.16)]" />
-              <div className="absolute left-1/2 top-1/2 h-px w-[19rem] -translate-x-1/2 -translate-y-1/2 bg-[rgba(184,137,67,0.16)]" />
-              <div className="relative z-10 flex h-48 w-48 items-center justify-center rounded-full border border-[rgba(184,137,67,0.4)] bg-[radial-gradient(circle_at_center,#fffdf8_0%,#f9ecd2_62%,rgba(232,198,135,0.45)_100%)] shadow-[0_18px_42px_rgba(113,81,33,0.18)]">
-                <div className="flex h-32 w-32 flex-col items-center justify-center rounded-full border border-[rgba(184,137,67,0.38)] text-center">
-                  <span className="text-[0.62rem] uppercase tracking-[0.24em] text-[var(--color-trust-text)]">
-                    NAVAGRAHA
-                  </span>
-                  <span className="mt-2 h-px w-12 bg-[rgba(184,137,67,0.45)]" />
-                  <span className="mt-2 text-[0.58rem] uppercase tracking-[0.18em] text-[var(--color-ink-muted)]">
-                    Vedic Chart
-                  </span>
-                </div>
-              </div>
-              <div className="absolute bottom-4 left-4 right-4 rounded-[var(--radius-xl)] border border-[rgba(184,137,67,0.24)] bg-[rgba(255,253,248,0.82)] p-4 text-center shadow-[var(--shadow-sm)] backdrop-blur-sm">
-                <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
-                  Golden zodiac wheel, sacred geometry, and chart-line motif.
-                </p>
-              </div>
-            </div>
-          </Card>
+          <VedicHeroIllustration />
         </Container>
       </section>
 
@@ -414,23 +404,17 @@ export default async function HomePage() {
 
       <Section tone="light" category="content" contentClassName="py-0">
         <Card tone="accent" className="grid gap-6 border-[rgba(184,137,67,0.32)] lg:grid-cols-[auto_minmax(0,1fr)] lg:items-center">
-          <div className="flex items-center justify-center gap-4 sm:justify-start">
-            {[
-              { monogram: "JPS", label: "Joy Prakash Sarmah" },
-              { monogram: "HS", label: "Hemeswar Sarmah legacy" },
-            ].map((profile) => (
-              <div key={profile.monogram} className="text-center">
-                <div
-                  aria-label="Astrologer profile portrait placeholder"
-                  className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-[rgba(184,137,67,0.38)] bg-[radial-gradient(circle_at_center,#fffdf7_0%,#f5e4c2_100%)] font-[family-name:var(--font-display)] text-[1rem] tracking-[0.16em] text-[var(--color-trust-text)] shadow-[var(--shadow-sm)]"
-                >
-                  {profile.monogram}
-                </div>
-                <p className="mt-2 max-w-28 text-[0.62rem] uppercase tracking-[0.12em] text-[var(--color-ink-muted)]">
-                  {profile.label}
-                </p>
-              </div>
-            ))}
+          <div className="flex items-center justify-center gap-5 sm:justify-start">
+            <ConsultationPlaceholderGraphic
+              monogram="JPS"
+              label="Joy Prakash Sarmah"
+              ariaLabel="Astrologer profile portrait placeholder"
+            />
+            <ConsultationPlaceholderGraphic
+              monogram="HS"
+              label="Hemeswar Sarmah legacy"
+              ariaLabel="Legacy portrait placeholder"
+            />
           </div>
           <div className="space-y-3 text-center lg:text-left">
             <Badge tone="trust">Authority / Legacy</Badge>
@@ -459,8 +443,9 @@ export default async function HomePage() {
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {utilities.map((tool) => (
             <Card key={tool.title} tone="light" interactive className="flex h-full flex-col gap-4">
+              <SacredGeometryPattern className="opacity-45" />
               <div className="flex items-center justify-between gap-3">
-                {getHomeIcon(tool.icon)}
+                {getHomeIcon(tool.icon, "h-12 w-12")}
                 <Badge tone="neutral">Utility</Badge>
               </div>
               <h3 className="mobile-safe-text text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
@@ -553,20 +538,7 @@ export default async function HomePage() {
               </div>
             </div>
 
-            <div className="relative mx-auto flex min-h-[18rem] w-full max-w-[22rem] items-center justify-center">
-              <div className="absolute inset-3 rounded-full border border-[rgba(184,137,67,0.2)]" />
-              <div className="absolute inset-10 rounded-full border border-dashed border-[rgba(184,137,67,0.34)]" />
-              <div className="absolute left-8 top-8 h-3 w-3 rounded-full bg-[rgba(184,137,67,0.75)]" />
-              <div className="absolute right-10 top-14 h-3 w-3 rounded-full bg-[rgba(184,137,67,0.58)]" />
-              <div className="absolute bottom-12 left-12 h-3 w-3 rounded-full bg-[rgba(184,137,67,0.52)]" />
-              <div className="absolute bottom-8 right-14 h-3 w-3 rounded-full bg-[rgba(184,137,67,0.68)]" />
-              <div className="relative z-10 flex h-36 w-36 flex-col items-center justify-center rounded-full border border-[rgba(184,137,67,0.42)] bg-[rgba(255,253,247,0.92)] text-center shadow-[0_16px_40px_rgba(113,81,33,0.16)]">
-                <NavagrahaAiIcon className="h-12 w-12" />
-                <span className="mt-3 text-[0.62rem] uppercase tracking-[0.2em] text-[var(--color-trust-text)]">
-                  Chart AI
-                </span>
-              </div>
-            </div>
+            <AiMandalaGraphic />
           </div>
         </Card>
       </Section>
@@ -582,9 +554,10 @@ export default async function HomePage() {
           {serviceCards.map((service) => (
             <Card key={service.title} tone="light" interactive className="flex h-full flex-col gap-4">
               <div className="flex items-center justify-between gap-3">
-                {getHomeIcon(service.icon)}
+                {getHomeIcon(service.icon, "h-12 w-12")}
                 <Badge tone="trust">{service.label}</Badge>
               </div>
+              <ServiceVisualGraphic variant={service.visualVariant} />
               <h3 className="mobile-safe-text text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
                 {service.title}
               </h3>
@@ -626,8 +599,9 @@ export default async function HomePage() {
       <Section className="pt-0" tone="transparent">
         <Card
           tone="accent"
-          className="border-[rgba(184,137,67,0.35)] bg-[linear-gradient(160deg,rgba(255,252,246,0.98)_0%,rgba(246,232,206,0.94)_58%,rgba(239,222,193,0.96)_100%)] shadow-[var(--shadow-md)] lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8"
+          className="relative border-[rgba(184,137,67,0.35)] bg-[linear-gradient(160deg,rgba(255,252,246,0.98)_0%,rgba(246,232,206,0.94)_58%,rgba(239,222,193,0.96)_100%)] shadow-[var(--shadow-md)] lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8"
         >
+          <FinalCtaOrnament />
           <div className="space-y-4">
             <Badge tone="trust">Begin Your Journey</Badge>
             <h2

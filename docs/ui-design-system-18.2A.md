@@ -531,3 +531,89 @@ Final CTA rules:
 2. Consultation can be offered as the second CTA.
 3. NAVAGRAHA AI may remain as a tertiary text-style path.
 4. Keep CTA groups stacked and tap-friendly on mobile.
+
+## 32. Homepage Premium Graphics Refinement
+
+Homepage graphics implementation notes:
+
+1. The hero graphic should be visual, not explanatory. Do not show public design-note text such as "golden zodiac wheel", "motif", "demo", or "placeholder" inside the graphic.
+2. Use CSS/SVG-safe line art for the homepage unless approved local images are available.
+3. Preferred visual elements: gold zodiac or sun mandala, sacred geometry, North Indian chart-line structure, open scripture/book forms, gold particles, and soft parchment-like ivory depth.
+4. Do not use random external images, fake astrologer/product photos, black cosmic imagery, blue/purple cyber panels, neon effects, or robot graphics.
+5. Decorative visuals must stay mobile-safe at 360px, 390px, 430px, 768px, and desktop widths.
+
+Hero visual asset rules:
+
+1. The hero may use an abstract NAVAGRAHA CENTRE monogram or chart emblem.
+2. Decorative chart art must not imply real calculated positions until a user generates a chart.
+3. Open-book/scripture shapes may be CSS/SVG line art and should not contain fake text content.
+4. Future approved assets should be introduced through a replaceable local asset path, not external URLs.
+
+Authority and service visual rules:
+
+1. Authority portraits remain replaceable monogram/silhouette frames until approved real photos exist.
+2. Service cards may use report, consultation, editorial desk, and spiritual product line-art motifs.
+3. Consultation visuals must not use fake human photos.
+4. Shop visuals must not imply guaranteed remedy outcomes or final product certification beyond current product data.
+
+Locale consistency rules:
+
+1. English pages should use coherent English labels for footer and navigation groups.
+2. Assamese and Hindi pages may use their localized labels where dictionaries are complete.
+3. Do not duplicate "From the Desk" and "Insights" labels in English unless they intentionally point to different editorial concepts.
+4. Language switcher labels may use native language names, but navigation/footer labels should follow the active page locale.
+
+## 33. Premium Graphics System (18.2A-10C)
+
+Approved reusable graphics primitives:
+
+1. `GoldZodiacWheel`: gold SVG zodiac/sun mandala line art for hero and decorative astrology surfaces.
+2. `SacredGeometryPattern`: faint responsive geometry accents for section and card backgrounds.
+3. `VedicHeroIllustration`: composed hero visual with mandala, manuscript/book shapes, diya glow, and warm parchment depth.
+4. `AiMandalaGraphic`: light gold chart-node and predictive-flow visual for NAVAGRAHA AI.
+5. `ConsultationPlaceholderGraphic`: replaceable monogram portrait frame for astrologer and legacy profiles.
+6. `ServiceVisualGraphic`: report book, consultation, editorial desk, and shop/product line-art variants.
+7. `FinalCtaOrnament`: lotus/diya/sacred-geometry corner accents for the closing CTA.
+
+Hero visual rules:
+
+1. Keep the hero image-rich but CSS/SVG-first for performance.
+2. Hero art must not contain explanatory placeholder text.
+3. The hero should stack below copy on mobile and stay within its card boundary at 360px.
+4. Do not add large raster images unless they are optimized, local, and approved.
+
+AI visual rules:
+
+1. AI graphics remain light, gold, and chart-aware.
+2. The predictive flow may show generic system stages such as Birth Chart, Dasha, Transit, Yoga / Rules, and AI Guidance.
+3. Do not show robots, blue/purple cyber effects, fabricated personal outputs, or fake chart data.
+
+Service card visual rules:
+
+1. Reports use document/book line art.
+2. Consultation uses profile/authority line art or approved replaceable portrait assets only.
+3. From the Desk uses notebook, pen, or manuscript-style visuals.
+4. Shop uses rudraksha, yantra, diya, or product-style line art without guaranteed remedy claims.
+
+Mobile graphics/action rules:
+
+1. Graphics should enrich the mobile experience without adding sticky UI that covers content.
+2. Bottom quick navigation remains a future follow-up unless it can be tested across key pages without overlap.
+3. Homepage CTA groups should remain full-width stacked on narrow screens.
+4. Decorative graphics should be `aria-hidden` unless they communicate meaningful content.
+
+Performance and accessibility rules:
+
+1. Prefer inline SVG/CSS over heavy raster assets.
+2. Avoid external image hotlinking.
+3. Keep decorative graphics pointer-event safe and non-interactive.
+4. Maintain strong text contrast over all patterned backgrounds.
+5. Respect reduced-motion settings already defined in global CSS.
+
+Prohibited graphics:
+
+1. Blue/neon/cosmic-dark graphics.
+2. Fake human or astrologer photos.
+3. Random external stock images.
+4. Visible placeholder or demo text.
+5. Product visuals that imply guaranteed outcomes.
