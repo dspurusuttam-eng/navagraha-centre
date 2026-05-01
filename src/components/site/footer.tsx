@@ -87,23 +87,23 @@ export async function Footer() {
   return (
     <footer
       data-nosnippet
-      className="border-t border-[color:var(--color-border)] bg-[linear-gradient(180deg,var(--color-base-0)_0%,var(--color-base-1)_78%,#f6ecd9_100%)]"
+      className="border-t border-[rgba(212,175,55,0.24)] bg-[radial-gradient(circle_at_18%_0%,rgba(212,175,55,0.12),transparent_28%),linear-gradient(180deg,#17110d_0%,#100c09_72%,#090705_100%)] text-[#f9efd3]"
     >
       <Container className="space-y-8 py-[var(--space-10)] sm:py-[var(--space-12)]">
         <div className="grid gap-8 lg:grid-cols-[1.15fr_2fr] lg:gap-10">
           <div className="space-y-4">
             <Link
               href={localizeHref("/")}
-              className="inline-block font-[family-name:var(--font-display)] text-[1.45rem] text-[var(--color-ink-strong)] transition [transition-duration:var(--motion-duration-base)] hover:text-[var(--color-accent)]"
+              className="inline-block font-[family-name:var(--font-display)] text-[1.45rem] text-[#fff7e5] transition [transition-duration:var(--motion-duration-base)] hover:text-[#f4d58f]"
               style={{ letterSpacing: "0.1em" }}
             >
               {siteConfig.name}
             </Link>
-            <p className="max-w-sm text-[length:var(--font-size-body-sm)] leading-relaxed text-[var(--color-ink-body)]">
+            <p className="max-w-sm text-[length:var(--font-size-body-sm)] leading-relaxed text-[#dfceb0]">
               Premium Vedic astrology, daily guidance, AI tools, reports, consultation,
               and spiritual products from NAVAGRAHA CENTRE.
             </p>
-            <p className="section-label inline-flex rounded-full border border-[color:var(--color-border)] bg-[color:var(--color-surface-cream)] px-3 py-2 text-[var(--color-trust-text)]">
+            <p className="section-label inline-flex rounded-full border border-[rgba(212,175,55,0.26)] bg-[rgba(255,255,255,0.06)] px-3 py-2 text-[#f4d58f]">
               Guidance-first. No guaranteed outcomes.
             </p>
           </div>
@@ -111,7 +111,7 @@ export async function Footer() {
           <div className="grid min-w-0 gap-8 sm:grid-cols-2 xl:grid-cols-5">
             {footerColumns.map((column) => (
               <div key={column.title} className="space-y-4">
-                <h2 className="text-[0.74rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
+                <h2 className="text-[0.74rem] uppercase tracking-[var(--tracking-label)] text-[#f4d58f]">
                   {column.title}
                 </h2>
                 <ul className="space-y-3">
@@ -119,7 +119,7 @@ export async function Footer() {
                     <li key={`${column.title}-${link.href}-${link.label}`}>
                       <Link
                         href={link.href}
-                        className="mobile-safe-text inline-block max-w-full text-[length:var(--font-size-body-sm)] text-[var(--color-ink-body)] transition [transition-duration:var(--motion-duration-base)] hover:text-[var(--color-ink-strong)]"
+                        className="mobile-safe-text inline-block max-w-full text-[length:var(--font-size-body-sm)] text-[#dfceb0] transition [transition-duration:var(--motion-duration-base)] hover:text-[#fff7e5]"
                       >
                         {link.label}
                       </Link>
@@ -131,28 +131,28 @@ export async function Footer() {
           </div>
         </div>
 
-        <div className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,254,250,0.72)] p-4 shadow-[var(--shadow-sm)]">
-          <div className="mb-3 text-[0.74rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
+        <div className="rounded-[var(--radius-xl)] border border-[rgba(212,175,55,0.2)] bg-[rgba(255,255,255,0.05)] p-4 shadow-[0_18px_42px_rgba(0,0,0,0.18)]">
+          <div className="mb-3 text-[0.74rem] uppercase tracking-[var(--tracking-label)] text-[#f4d58f]">
             {copy.footer.languageLabel}
           </div>
-          <LanguageSwitcher />
+          <LanguageSwitcher variant="compact" />
         </div>
 
-        <div className="flex min-w-0 flex-col gap-3 border-t border-[color:var(--color-border)] pt-5 text-[0.74rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-ink-muted)] sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex min-w-0 flex-col gap-3 border-t border-[rgba(212,175,55,0.18)] pt-5 text-[0.74rem] uppercase tracking-[var(--tracking-label)] text-[#b8a98c] sm:flex-row sm:items-center sm:justify-between">
           <p>&copy; {new Date().getFullYear()} {siteConfig.name}</p>
           <div className="flex min-w-0 flex-wrap items-center gap-4">
-            <Link href={localizeHref("/privacy")} className="mobile-safe-text hover:text-[var(--color-ink-strong)]">
+            <Link href={localizeHref("/privacy")} className="mobile-safe-text hover:text-[#fff7e5]">
               {copy.footer.links.privacy}
             </Link>
-            <Link href={localizeHref("/terms")} className="mobile-safe-text hover:text-[var(--color-ink-strong)]">
+            <Link href={localizeHref("/terms")} className="mobile-safe-text hover:text-[#fff7e5]">
               {copy.footer.links.terms}
             </Link>
-            <Link href={localizeHref("/disclaimer")} className="mobile-safe-text hover:text-[var(--color-ink-strong)]">
+            <Link href={localizeHref("/disclaimer")} className="mobile-safe-text hover:text-[#fff7e5]">
               {copy.footer.links.disclaimer}
             </Link>
             <Link
               href={localizeHref("/refund-cancellation")}
-              className="mobile-safe-text hover:text-[var(--color-ink-strong)]"
+              className="mobile-safe-text hover:text-[#fff7e5]"
             >
               {copy.footer.links.refundPolicy}
             </Link>

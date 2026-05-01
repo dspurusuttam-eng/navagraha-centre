@@ -11,7 +11,7 @@ type PortraitPlaceholderProps = {
   ariaLabel: string;
 };
 
-type ServiceVisualVariant = "report" | "consultation" | "editorial" | "shop";
+export type ServiceVisualVariant = "report" | "consultation" | "editorial" | "shop";
 
 const orbitDots = [
   "left-[50%] top-[6%]",
@@ -186,6 +186,67 @@ export function AiMandalaGraphic() {
               {index + 1}
             </span>
             <span className="mobile-safe-text text-[0.68rem] uppercase tracking-[0.12em] text-[var(--color-trust-text)]">
+              {step}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function DarkAiCosmicGraphic() {
+  return (
+    <div className="relative mx-auto min-h-[22rem] w-full max-w-[27rem] overflow-hidden rounded-[var(--radius-card)] border border-[rgba(212,175,55,0.28)] bg-[radial-gradient(circle_at_50%_18%,rgba(138,92,246,0.26),transparent_30%),radial-gradient(circle_at_22%_78%,rgba(212,175,55,0.2),transparent_32%),linear-gradient(145deg,#151026_0%,#090d1f_46%,#1b1029_100%)] p-5 shadow-[0_28px_70px_rgba(9,13,31,0.34)]">
+      <div aria-hidden="true" className="absolute inset-0 opacity-80">
+        <span className="absolute left-1/2 top-[42%] h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[rgba(212,175,55,0.22)]" />
+        <span className="absolute left-1/2 top-[42%] h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-[rgba(212,175,55,0.24)]" />
+        <span className="absolute left-1/2 top-[42%] h-40 w-40 -translate-x-1/2 -translate-y-1/2 rotate-45 border border-[rgba(212,175,55,0.2)]" />
+        <span className="absolute left-1/2 top-[42%] h-px w-[88%] -translate-x-1/2 bg-[rgba(212,175,55,0.16)]" />
+        <span className="absolute left-1/2 top-[42%] h-[82%] w-px -translate-y-1/2 bg-[rgba(212,175,55,0.16)]" />
+      </div>
+      <svg
+        aria-hidden="true"
+        className="absolute inset-0 h-full w-full text-[rgba(244,213,143,0.72)]"
+        viewBox="0 0 432 352"
+        fill="none"
+      >
+        <circle cx="216" cy="148" r="96" stroke="currentColor" strokeWidth="1.2" opacity="0.52" />
+        <circle cx="216" cy="148" r="68" stroke="currentColor" strokeWidth="1" opacity="0.38" />
+        <path
+          d="M216 46 L237 126 L320 126 L253 174 L278 254 L216 204 L154 254 L179 174 L112 126 L195 126 Z"
+          stroke="currentColor"
+          strokeWidth="1.2"
+          opacity="0.42"
+        />
+        <path
+          d="M134 236 C168 210 264 210 298 236 M154 258 C184 242 248 242 278 258"
+          stroke="currentColor"
+          strokeWidth="1.4"
+          opacity="0.38"
+        />
+        <path
+          d="M120 82 C158 52 274 52 312 82 M94 172 C138 206 294 206 338 172"
+          stroke="currentColor"
+          strokeWidth="1"
+          opacity="0.22"
+        />
+      </svg>
+      <div className="relative z-10 mx-auto mb-5 flex h-32 w-32 items-center justify-center rounded-full border border-[rgba(244,213,143,0.42)] bg-[radial-gradient(circle_at_center,rgba(255,244,202,0.18)_0%,rgba(138,92,246,0.14)_46%,rgba(255,255,255,0.04)_100%)] shadow-[0_0_48px_rgba(212,175,55,0.28)]">
+        <span className="absolute h-24 w-24 rounded-full border border-dashed border-[rgba(244,213,143,0.42)]" />
+        <span className="absolute h-16 w-16 rotate-45 border border-[rgba(244,213,143,0.3)]" />
+        <NavagrahaAiIcon className="relative h-14 w-14 text-[rgba(255,244,202,0.94)]" />
+      </div>
+      <div className="relative z-10 grid gap-2">
+        {intelligenceSteps.map((step, index) => (
+          <div
+            key={step}
+            className="flex items-center gap-3 rounded-[var(--radius-xl)] border border-[rgba(244,213,143,0.18)] bg-[rgba(255,255,255,0.07)] px-3 py-2 shadow-[0_10px_24px_rgba(0,0,0,0.18)] backdrop-blur"
+          >
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[rgba(244,213,143,0.34)] bg-[rgba(212,175,55,0.14)] text-[0.66rem] text-[#f8e4a8]">
+              {index + 1}
+            </span>
+            <span className="mobile-safe-text text-[0.68rem] uppercase tracking-[0.14em] text-[#f9efd3]">
               {step}
             </span>
           </div>

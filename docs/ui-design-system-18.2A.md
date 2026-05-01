@@ -617,3 +617,39 @@ Prohibited graphics:
 3. Random external stock images.
 4. Visible placeholder or demo text.
 5. Product visuals that imply guaranteed outcomes.
+
+## 34. Approved Demo Homepage Refinement
+
+Homepage structure for the approved visual direction:
+
+1. Header.
+2. Premium hero.
+3. Authority / legacy strip.
+4. Core Astrology Utilities.
+5. NAVAGRAHA AI dark premium section.
+6. Reports + Consultation.
+7. From the Desk + Spiritual Shop.
+8. Trust / credibility strip.
+9. Final CTA.
+10. Footer.
+
+Approved exceptions for the homepage demo:
+
+1. The NAVAGRAHA AI homepage block may use a dark cosmic, deep navy, or purple-glow treatment when it remains premium, readable, and isolated to that section.
+2. The footer may use a dark premium treatment when link contrast remains strong and columns remain clean.
+3. Utility icons may use richer visual energy when icon style remains polished and consistent.
+
+Homepage graphics rules:
+
+1. Hero visuals must be actual SVG/CSS graphics, not public descriptive text.
+2. Use local SVG/CSS motifs for zodiac wheel, sun mandala, sacred geometry, open scripture, rudraksha, diya, and gold mist.
+3. Consultation and legacy portraits use replaceable monogram placeholders unless approved local portrait assets exist.
+4. Service visuals must remain ethical: reports, consultation, editorial content, and shop are visually separated from free utilities.
+5. The shop can present optional spiritual support tools, but must not imply guaranteed outcomes or fear-based remedy pressure.
+
+Mobile and footer rules:
+
+1. Header navigation may collapse before desktop width to prevent overflow.
+2. Homepage CTA groups should remain stacked and tap-friendly at 360px, 390px, and 430px.
+3. Dark footer links must use warm ivory/champagne text, gold headings, and visible hover/focus contrast.
+4. Decorative dark AI graphics remain `aria-hidden` unless they communicate meaningful content.

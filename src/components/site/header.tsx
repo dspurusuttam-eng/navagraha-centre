@@ -35,12 +35,17 @@ export async function Header() {
     });
 
   const primaryNavigation: readonly NavigationItem[] = [
+    { href: localizeHref("/"), label: copy.navigation.home },
     { href: localizeHref("/kundli"), label: copy.navigation.kundli },
+    { href: localizeHref("/compatibility"), label: copy.navigation.compatibility },
     { href: localizeHref("/rashifal"), label: copy.navigation.rashifal },
     { href: localizeHref("/panchang"), label: copy.navigation.panchang },
+    { href: localizeHref("/numerology"), label: copy.footer.links.numerology },
     { href: localizeHref("/ai"), label: copy.navigation.ai },
     { href: localizeHref("/reports"), label: copy.navigation.reports },
     { href: localizeHref("/consultation"), label: copy.navigation.consultation },
+    { href: localizeHref("/insights"), label: copy.navigation.insights },
+    { href: localizeHref("/shop"), label: copy.navigation.shop },
   ] as const;
 
   const utilityNavigation: readonly NavigationItem[] = [
@@ -85,24 +90,31 @@ export async function Header() {
       className="sticky top-0 z-50 border-b border-[color:var(--color-border)] bg-[rgba(255,254,250,0.95)] shadow-[0_8px_24px_rgba(96,74,45,0.08)] backdrop-blur-xl"
     >
       <Container className="py-3">
-        <div className="hidden items-center gap-6 lg:flex">
+        <div className="hidden items-center gap-4 xl:flex">
           <Link
             href={localizeHref("/")}
-            className="min-w-0 shrink-0 font-[family-name:var(--font-display)] text-[1.55rem] text-[var(--color-ink-strong)] transition [transition-duration:var(--motion-duration-base)] hover:text-[var(--color-accent)]"
-            style={{ letterSpacing: "0.1em" }}
+            className="min-w-0 shrink-0 transition [transition-duration:var(--motion-duration-base)] hover:text-[var(--color-accent)]"
           >
-            {siteConfig.name}
+            <span
+              className="block font-[family-name:var(--font-display)] text-[1.42rem] leading-none text-[var(--color-ink-strong)]"
+              style={{ letterSpacing: "0.1em" }}
+            >
+              {siteConfig.name}
+            </span>
+            <span className="mt-1 block text-[0.6rem] uppercase tracking-[0.12em] text-[var(--color-trust-text)]">
+              ভাগ্য গণনা কাৰ্যালয় Since 1950
+            </span>
           </Link>
 
           <nav
             aria-label="Primary navigation"
-            className="flex flex-1 items-center justify-center gap-1"
+            className="flex flex-1 items-center justify-center gap-0.5"
           >
             {primaryNavigation.map((item) => (
               <NavigationLink
                 key={item.href}
                 href={item.href}
-                className="min-h-11 max-w-[9.25rem] px-3 text-[0.69rem] xl:px-4"
+                className="min-h-10 max-w-[8.5rem] px-2.5 text-[0.64rem] 2xl:px-3"
               >
                 {item.label}
               </NavigationLink>
@@ -110,64 +122,6 @@ export async function Header() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <details className="group relative">
-              <summary
-                aria-label={copy.navigation.tools}
-                className={buttonStyles({
-                  tone: "tertiary",
-                  size: "sm",
-                  className:
-                    "cursor-pointer list-none px-4 whitespace-nowrap marker:content-none [&::-webkit-details-marker]:hidden",
-                })}
-              >
-                {copy.navigation.tools}
-              </summary>
-              <div className="absolute top-[calc(100%+0.55rem)] z-40 max-h-[min(72vh,28rem)] w-[min(calc(100vw-2rem),18rem)] overflow-y-auto rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,254,250,0.98)] p-3 shadow-[var(--shadow-md)] [inset-inline-end:0]">
-                <div className="grid gap-1" role="list">
-                  {utilityNavigation.map((item) => (
-                    <NavigationLink
-                      key={item.href}
-                      href={item.href}
-                      className="w-full justify-start"
-                    >
-                      {item.label}
-                    </NavigationLink>
-                  ))}
-                </div>
-              </div>
-            </details>
-            <details className="group relative">
-              <summary
-                aria-label="Content navigation"
-                className={buttonStyles({
-                  tone: "tertiary",
-                  size: "sm",
-                  className:
-                    "cursor-pointer list-none px-4 whitespace-nowrap marker:content-none [&::-webkit-details-marker]:hidden",
-                })}
-              >
-                Content
-              </summary>
-              <div className="absolute top-[calc(100%+0.55rem)] z-40 max-h-[min(72vh,28rem)] w-[min(calc(100vw-2rem),18rem)] overflow-y-auto rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,254,250,0.98)] p-3 shadow-[var(--shadow-md)] [inset-inline-end:0]">
-                <div className="grid gap-1" role="list">
-                  {contentNavigation.map((item) => (
-                    <NavigationLink
-                      key={item.href}
-                      href={item.href}
-                      className="w-full justify-start"
-                    >
-                      {item.label}
-                    </NavigationLink>
-                  ))}
-                </div>
-              </div>
-            </details>
-            <NavigationLink
-              href={localizeHref("/shop")}
-              className="whitespace-nowrap px-4"
-            >
-              {copy.navigation.shop}
-            </NavigationLink>
             <LanguageSwitcher variant="compact" />
             <Link
               href={localizeHref("/dashboard")}
@@ -177,7 +131,7 @@ export async function Header() {
                 className: "whitespace-nowrap",
               })}
             >
-              {copy.navigation.account}
+              Login / Sign Up
             </Link>
             <TrackedLink
               href={localizeHref("/kundli")}
@@ -190,13 +144,20 @@ export async function Header() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2 lg:hidden">
+        <div className="flex items-center gap-2 xl:hidden">
           <Link
             href={localizeHref("/")}
-            className="mobile-safe-text mr-auto min-w-0 max-w-[9.25rem] truncate font-[family-name:var(--font-display)] text-[1.2rem] text-[var(--color-ink-strong)] sm:max-w-none"
-            style={{ letterSpacing: "0.08em" }}
+            className="mobile-safe-text mr-auto min-w-0 max-w-[10rem] sm:max-w-none"
           >
-            NAVAGRAHA
+            <span
+              className="block truncate font-[family-name:var(--font-display)] text-[1.08rem] leading-none text-[var(--color-ink-strong)]"
+              style={{ letterSpacing: "0.08em" }}
+            >
+              NAVAGRAHA
+            </span>
+            <span className="mt-1 hidden text-[0.54rem] uppercase tracking-[0.1em] text-[var(--color-trust-text)] sm:block">
+              ভাগ্য গণনা কাৰ্যালয় Since 1950
+            </span>
           </Link>
 
           <TrackedLink
