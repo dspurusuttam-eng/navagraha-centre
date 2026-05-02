@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { NavagrahaLogo } from "@/components/brand/navagraha-logo";
 import { LanguageSwitcher } from "@/components/site/language-switcher";
 import { Container } from "@/components/ui/container";
 import { siteConfig } from "@/config/site";
@@ -94,10 +95,9 @@ export async function Footer() {
           <div className="space-y-4">
             <Link
               href={localizeHref("/")}
-              className="inline-block font-[family-name:var(--font-display)] text-[1.45rem] text-[#fff7e5] transition [transition-duration:var(--motion-duration-base)] hover:text-[#f4d58f]"
-              style={{ letterSpacing: "0.1em" }}
+              className="inline-block transition [transition-duration:var(--motion-duration-base)] hover:opacity-90"
             >
-              {siteConfig.name}
+              <NavagrahaLogo dark />
             </Link>
             <p className="max-w-sm text-[length:var(--font-size-body-sm)] leading-relaxed text-[#dfceb0]">
               Premium Vedic astrology, daily guidance, AI tools, reports, consultation,

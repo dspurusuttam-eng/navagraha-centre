@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8e6b4"/>
+      <stop offset="45%" stop-color="#d4af37"/>
+      <stop offset="100%" stop-color="#b9871f"/>
+    </linearGradient>
+    <radialGradient id="core" cx="50%" cy="45%" r="60%">
+      <stop offset="0%" stop-color="#fffdf5"/>
+      <stop offset="100%" stop-color="#f0d89f"/>
+    </radialGradient>
+    <path id="ray" d="M128 20 L116 70 L140 70 Z"/>
+  </defs>
+
+  <rect width="256" height="256" rx="48" fill="#fffdf8"/>
+
+  <g opacity="0.95">
+    <use href="#ray" fill="url(#gold)"/>
+    <use href="#ray" fill="url(#gold)" transform="rotate(45 128 128)"/>
+    <use href="#ray" fill="url(#gold)" transform="rotate(90 128 128)"/>
+    <use href="#ray" fill="url(#gold)" transform="rotate(135 128 128)"/>
+    <use href="#ray" fill="url(#gold)" transform="rotate(180 128 128)"/>
+    <use href="#ray" fill="url(#gold)" transform="rotate(225 128 128)"/>
+    <use href="#ray" fill="url(#gold)" transform="rotate(270 128 128)"/>
+    <use href="#ray" fill="url(#gold)" transform="rotate(315 128 128)"/>
+  </g>
+
+  <circle cx="128" cy="128" r="88" fill="none" stroke="url(#gold)" stroke-width="10"/>
+  <circle cx="128" cy="128" r="58" fill="url(#core)" stroke="url(#gold)" stroke-width="6"/>
+  <text
+    x="128"
+    y="148"
+    text-anchor="middle"
+    font-size="74"
+    font-family="'Noto Serif Devanagari', 'Mangal', 'Kohinoor Devanagari', serif"
+    fill="url(#gold)"
+    stroke="#a46b12"
+    stroke-width="1.2"
+    paint-order="stroke fill"
+  >ॐ</text>
+</svg>

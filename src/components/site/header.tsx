@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { TrackedLink } from "@/components/analytics/tracked-link";
+import { NavagrahaLogo } from "@/components/brand/navagraha-logo";
 import { LanguageSwitcher } from "@/components/site/language-switcher";
 import { NavigationLink } from "@/components/site/navigation-link";
 import { buttonStyles } from "@/components/ui/button";
@@ -101,15 +102,7 @@ export async function Header() {
             href={localizeHref("/")}
             className="min-w-0 shrink-0 transition [transition-duration:var(--motion-duration-base)] hover:text-[var(--color-accent)]"
           >
-            <span
-              className="block font-[family-name:var(--font-display)] text-[1.42rem] leading-none text-[var(--color-ink-strong)]"
-              style={{ letterSpacing: "0.1em" }}
-            >
-              NAVAGRAHA CENTRE
-            </span>
-            <span className="mt-1 block text-[0.6rem] uppercase tracking-[0.12em] text-[var(--color-trust-text)]">
-              {"Vedic Astrology \u2022 AI Guidance"}
-            </span>
+            <NavagrahaLogo />
           </Link>
 
           <nav
@@ -189,17 +182,9 @@ export async function Header() {
         <div className="flex items-center gap-2 xl:hidden">
           <Link
             href={localizeHref("/")}
-            className="mobile-safe-text mr-auto min-w-0 max-w-[9.75rem] sm:max-w-[12rem]"
+            className="mr-auto"
           >
-            <span
-              className="block truncate font-[family-name:var(--font-display)] text-[1.08rem] leading-none text-[var(--color-ink-strong)]"
-              style={{ letterSpacing: "0.08em" }}
-            >
-              NAVAGRAHA CENTRE
-            </span>
-            <span className="mt-1 hidden text-[0.54rem] uppercase tracking-[0.1em] text-[var(--color-trust-text)] sm:block">
-              {"Vedic Astrology \u2022 AI Guidance"}
-            </span>
+            <NavagrahaLogo compact />
           </Link>
 
           <TrackedLink
