@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 220" role="img" aria-labelledby="title desc">
+  <title id="title">NAVAGRAHA CENTRE Horizontal Logo</title>
+  <desc id="desc">Golden Om mandala emblem with NAVAGRAHA CENTRE wordmark and Vedic Astrology AI Guidance subtitle.</desc>
+  <defs>
+    <linearGradient id="goldStroke" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8e6b4"/>
+      <stop offset="44%" stop-color="#d4af37"/>
+      <stop offset="100%" stop-color="#b9871f"/>
+    </linearGradient>
+    <radialGradient id="coreGlow" cx="50%" cy="45%" r="62%">
+      <stop offset="0%" stop-color="#fffdf4"/>
+      <stop offset="100%" stop-color="#f2e0b1"/>
+    </radialGradient>
+    <path id="ray" d="M110 12 L100 56 L120 56 Z"/>
+  </defs>
+
+  <g transform="translate(0 0)">
+    <g opacity="0.92">
+      <use href="#ray" fill="url(#goldStroke)"/>
+      <use href="#ray" fill="url(#goldStroke)" transform="rotate(45 110 110)"/>
+      <use href="#ray" fill="url(#goldStroke)" transform="rotate(90 110 110)"/>
+      <use href="#ray" fill="url(#goldStroke)" transform="rotate(135 110 110)"/>
+      <use href="#ray" fill="url(#goldStroke)" transform="rotate(180 110 110)"/>
+      <use href="#ray" fill="url(#goldStroke)" transform="rotate(225 110 110)"/>
+      <use href="#ray" fill="url(#goldStroke)" transform="rotate(270 110 110)"/>
+      <use href="#ray" fill="url(#goldStroke)" transform="rotate(315 110 110)"/>
+    </g>
+    <circle cx="110" cy="110" r="84" fill="none" stroke="url(#goldStroke)" stroke-width="8"/>
+    <circle cx="110" cy="110" r="62" fill="none" stroke="url(#goldStroke)" stroke-width="5"/>
+    <circle cx="110" cy="110" r="46" fill="url(#coreGlow)" stroke="url(#goldStroke)" stroke-width="4"/>
+    <text
+      x="110"
+      y="129"
+      text-anchor="middle"
+      font-size="60"
+      font-family="'Noto Serif Devanagari', 'Mangal', 'Kohinoor Devanagari', serif"
+      fill="url(#goldStroke)"
+      stroke="#a46b12"
+      stroke-width="1"
+      paint-order="stroke fill"
+    >&#x0950;</text>
+  </g>
+
+  <g transform="translate(238 64)">
+    <text
+      x="0"
+      y="52"
+      font-family="'Cormorant Garamond', 'Times New Roman', serif"
+      font-size="72"
+      font-weight="600"
+      letter-spacing="8"
+      fill="#2f261e"
+    >NAVAGRAHA CENTRE</text>
+    <text
+      x="4"
+      y="104"
+      font-family="'Manrope', 'Segoe UI', sans-serif"
+      font-size="25"
+      font-weight="600"
+      letter-spacing="4.5"
+      fill="#7f6232"
+    >VEDIC ASTROLOGY &#x2022; AI GUIDANCE</text>
+  </g>
+</svg>

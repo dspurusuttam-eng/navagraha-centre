@@ -12,12 +12,27 @@ import {
 } from "@/components/icons/astrology-icons";
 import {
   ConsultationPlaceholderGraphic,
-  DarkAiCosmicGraphic,
   FinalCtaOrnament,
   SacredGeometryPattern,
-  ServiceVisualGraphic,
-  VedicHeroIllustration,
 } from "@/components/graphics/premium-vedic-graphics";
+import { HomepageHeroArt } from "@/components/graphics/homepage-hero-art";
+import { NavagrahaAiGraphic } from "@/components/graphics/navagraha-ai-graphic";
+import {
+  CornerFlourish,
+  GoldSectionDivider,
+  OmMandalaWatermark,
+  ParchmentTextureLayer,
+  SacredGeometryPattern as SectionSacredGeometryPattern,
+  SoftIvoryGlow,
+} from "@/components/graphics/section-patterns";
+import {
+  ConsultationGraphic,
+  EditorialDeskGraphic,
+  PremiumReportsGraphic,
+  SpiritualShopGraphic,
+} from "@/components/graphics/service-graphics";
+import type { UtilityIconName } from "@/components/graphics/utility-icons";
+import { UtilityIcon } from "@/components/graphics/utility-icons";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -67,6 +82,8 @@ type HomeIcon =
   | "panchang"
   | "calculators";
 
+type HomeUtilityCardIcon = UtilityIconName;
+
 type HomeCardItem = {
   icon: HomeIcon;
   title: string;
@@ -74,6 +91,10 @@ type HomeCardItem = {
   href: string;
   ctaLabel: string;
   feature: string;
+};
+
+type HomeUtilityCardItem = Omit<HomeCardItem, "icon"> & {
+  icon: HomeUtilityCardIcon;
 };
 
 type TrustItem = {
@@ -128,7 +149,7 @@ const heroTrustItems: readonly TrustItem[] = [
   },
 ] as const;
 
-const utilities: readonly HomeCardItem[] = [
+const utilities: readonly HomeUtilityCardItem[] = [
   {
     icon: "kundli",
     title: "Kundli",
@@ -138,7 +159,7 @@ const utilities: readonly HomeCardItem[] = [
     feature: "home-utility-kundli",
   },
   {
-    icon: "consultation",
+    icon: "compatibility",
     title: "Compatibility",
     description: "Review relationship and marriage matching through structured Vedic signals.",
     href: "/compatibility",
@@ -154,7 +175,7 @@ const utilities: readonly HomeCardItem[] = [
     feature: "home-utility-rashifal",
   },
   {
-    icon: "panchang",
+    icon: "muhurta",
     title: "Panchang",
     description: "Check Tithi, Nakshatra, Yoga, Karana, sunrise, sunset, and day context.",
     href: "/panchang",
@@ -186,6 +207,10 @@ const utilities: readonly HomeCardItem[] = [
     feature: "home-utility-muhurta",
   },
 ] as const;
+
+function getUtilityIcon(icon: HomeUtilityCardIcon, className?: string) {
+  return <UtilityIcon name={icon} className={className} />;
+}
 
 const aiFeatureChips = [
   "Deep Chart Analysis",
@@ -301,7 +326,11 @@ export default async function HomePage() {
       />
 
       <section className="relative overflow-hidden border-b border-[color:var(--color-border)] bg-[linear-gradient(180deg,#fffefb_0%,#fff8ea_50%,#f7ead2_100%)]">
-        <SacredGeometryPattern className="opacity-60" />
+        <ParchmentTextureLayer className="opacity-[var(--pattern-opacity-parchment)]" />
+        <SoftIvoryGlow className="opacity-[var(--pattern-opacity-glow)]" />
+        <SectionSacredGeometryPattern className="opacity-[var(--pattern-opacity-geometry)]" />
+        <OmMandalaWatermark className="right-[-4rem] top-10 h-64 w-64 opacity-[var(--pattern-opacity-watermark)]" />
+        <CornerFlourish position="top-left" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(185,139,70,0.2),transparent_32%),radial-gradient(circle_at_82%_10%,rgba(232,198,135,0.2),transparent_30%),radial-gradient(circle_at_72%_88%,rgba(185,139,70,0.14),transparent_36%)]" />
         <Container className="relative grid gap-10 py-12 sm:py-16 lg:grid-cols-[minmax(0,1.02fr)_minmax(320px,0.98fr)] lg:items-center lg:py-20">
           <div className="home-reveal home-reveal-delay-1 space-y-7">
@@ -369,12 +398,18 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <VedicHeroIllustration />
+          <HomepageHeroArt />
         </Container>
       </section>
 
+      <GoldSectionDivider />
+
       <Section tone="light" category="content" contentClassName="py-0">
         <Card tone="accent" className="grid gap-6 border-[rgba(184,137,67,0.32)] lg:grid-cols-[auto_minmax(0,1fr)] lg:items-center">
+          <ParchmentTextureLayer className="opacity-[var(--pattern-opacity-parchment)]" />
+          <SectionSacredGeometryPattern className="opacity-[0.22]" />
+          <OmMandalaWatermark className="right-0 top-1/2 h-44 w-44 -translate-y-1/2 opacity-[0.1]" />
+          <CornerFlourish position="top-right" className="opacity-70" />
           <div className="flex items-center justify-center gap-5 sm:justify-start">
             <ConsultationPlaceholderGraphic
               monogram="JPS"
@@ -405,6 +440,8 @@ export default async function HomePage() {
         </Card>
       </Section>
 
+      <GoldSectionDivider />
+
       <Section
         tone="light"
         category="utilities"
@@ -412,51 +449,61 @@ export default async function HomePage() {
         title="Practical Vedic astrology tools, clearly separated from premium services."
         description="Start with free utility paths for chart generation, daily guidance, timing, numerology, compatibility, and quick calculators."
       >
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {utilities.map((tool) => (
-            <Card key={tool.title} tone="light" interactive className="flex h-full flex-col gap-4">
-              <SacredGeometryPattern className="opacity-45" />
-              <div className="flex items-center justify-between gap-3">
-                {getHomeIcon(tool.icon, "h-12 w-12")}
-                <Badge tone="neutral">Utility</Badge>
-              </div>
-              <h3 className="mobile-safe-text text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
-                {tool.title}
-              </h3>
-              <p className="flex-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-                {tool.description}
-              </p>
-              <TrackedLink
-                href={localizeHref(tool.href)}
-                eventName={mapFeatureToEvent(tool.feature)}
-                eventPayload={{ page: "/", feature: tool.feature }}
-                className={buttonStyles({
-                  size: "sm",
-                  tone: "tertiary",
-                  className: "w-full justify-center",
-                })}
-              >
-                {tool.ctaLabel}
-              </TrackedLink>
-            </Card>
-          ))}
-        </div>
+        <div className="relative overflow-hidden rounded-[var(--radius-2xl)] border border-[rgba(184,137,67,0.2)] bg-[rgba(255,255,255,0.52)] p-4 sm:p-5">
+          <ParchmentTextureLayer className="opacity-[0.2]" />
+          <SectionSacredGeometryPattern className="opacity-[0.2]" />
+          <SoftIvoryGlow className="opacity-[0.7]" />
+          <CornerFlourish position="bottom-right" className="opacity-60" />
+          <OmMandalaWatermark className="left-[-3.5rem] top-1/2 h-40 w-40 -translate-y-1/2 opacity-[0.08]" />
 
-        <div className="mt-6">
-          <TrackedLink
-            href={localizeHref("/tools")}
-            eventName="cta_click"
-            eventPayload={{ page: "/", feature: "home-view-all-utilities" }}
-            className={buttonStyles({
-              size: "sm",
-              tone: "secondary",
-              className: "w-full justify-center sm:w-auto",
-            })}
-          >
-            View All Utilities
-          </TrackedLink>
+          <div className="relative grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {utilities.map((tool) => (
+              <Card key={tool.title} tone="light" interactive className="flex h-full flex-col gap-4">
+                <SacredGeometryPattern className="opacity-45" />
+                <div className="flex items-center justify-between gap-3">
+                  {getUtilityIcon(tool.icon, "h-12 w-12")}
+                  <Badge tone="neutral">Utility</Badge>
+                </div>
+                <h3 className="mobile-safe-text text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
+                  {tool.title}
+                </h3>
+                <p className="flex-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+                  {tool.description}
+                </p>
+                <TrackedLink
+                  href={localizeHref(tool.href)}
+                  eventName={mapFeatureToEvent(tool.feature)}
+                  eventPayload={{ page: "/", feature: tool.feature }}
+                  className={buttonStyles({
+                    size: "sm",
+                    tone: "tertiary",
+                    className: "w-full justify-center",
+                  })}
+                >
+                  {tool.ctaLabel}
+                </TrackedLink>
+              </Card>
+            ))}
+          </div>
+
+          <div className="relative mt-6">
+            <TrackedLink
+              href={localizeHref("/tools")}
+              eventName="cta_click"
+              eventPayload={{ page: "/", feature: "home-view-all-utilities" }}
+              className={buttonStyles({
+                size: "sm",
+                tone: "secondary",
+                className: "w-full justify-center sm:w-auto",
+              })}
+            >
+              View All Utilities
+            </TrackedLink>
+          </div>
         </div>
       </Section>
+
+      <GoldSectionDivider />
 
       <section className="relative overflow-hidden bg-[linear-gradient(180deg,#100d1f_0%,#090d1f_52%,#1b1029_100%)] py-[var(--space-12)] text-white sm:py-[var(--space-14)]">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(138,92,246,0.26),transparent_32%),radial-gradient(circle_at_78%_34%,rgba(212,175,55,0.18),transparent_30%),radial-gradient(circle_at_50%_95%,rgba(212,175,55,0.1),transparent_34%)]" />
@@ -519,9 +566,11 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <DarkAiCosmicGraphic />
+          <NavagrahaAiGraphic mode="banner" />
         </Container>
       </section>
+
+      <GoldSectionDivider tone="light" />
 
       <Section
         tone="light"
@@ -530,13 +579,19 @@ export default async function HomePage() {
         title="Premium guidance paths for deeper life questions."
         description="Choose a structured report or a human consultation without mixing these service paths into the free utility tools."
       >
-        <div className="grid gap-5 lg:grid-cols-2">
-          <Card tone="light" interactive className="flex h-full flex-col gap-5">
+        <div className="relative overflow-hidden rounded-[var(--radius-2xl)] border border-[rgba(184,137,67,0.2)] bg-[rgba(255,255,255,0.52)] p-4 sm:p-5">
+          <ParchmentTextureLayer className="opacity-[0.2]" />
+          <SectionSacredGeometryPattern className="opacity-[0.18]" />
+          <SoftIvoryGlow className="opacity-[0.66]" />
+          <CornerFlourish position="top-left" className="opacity-60" />
+
+          <div className="relative grid gap-5 lg:grid-cols-2">
+            <Card tone="light" interactive className="flex h-full flex-col gap-5">
             <div className="flex items-center justify-between gap-3">
               <ReportIcon className="h-12 w-12" />
               <Badge tone="trust">Premium Reports</Badge>
             </div>
-            <ServiceVisualGraphic variant="report" />
+            <PremiumReportsGraphic />
             <div className="space-y-3">
               <h3 className="mobile-safe-text text-[length:var(--font-size-title-sm)] font-medium text-[var(--color-ink-strong)]">
                 Premium Reports
@@ -568,53 +623,49 @@ export default async function HomePage() {
             >
               Explore Reports
             </TrackedLink>
-          </Card>
+            </Card>
 
-          <Card tone="accent" interactive className="flex h-full flex-col gap-5 border-[rgba(184,137,67,0.34)]">
-            <div className="grid gap-5 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-center">
-              <ConsultationPlaceholderGraphic
-                monogram="JPS"
-                label="Future portrait ready"
-                ariaLabel="Astrologer profile portrait placeholder"
-              />
-              <div className="space-y-2 text-center sm:text-left">
-                <Badge tone="trust">Consultation</Badge>
-                <h3 className="mobile-safe-text text-[length:var(--font-size-title-sm)] font-medium text-[var(--color-ink-strong)]">
-                  Joy Prakash Sarmah
-                </h3>
-                <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-                  Chief Astrologer, NAVAGRAHA CENTRE
-                </p>
+            <Card tone="accent" interactive className="flex h-full flex-col gap-5 border-[rgba(184,137,67,0.34)]">
+              <div className="grid gap-5 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-center">
+                <ConsultationGraphic className="h-28" />
+                <div className="space-y-2 text-center sm:text-left">
+                  <Badge tone="trust">Consultation</Badge>
+                  <h3 className="mobile-safe-text text-[length:var(--font-size-title-sm)] font-medium text-[var(--color-ink-strong)]">
+                    Joy Prakash Sarmah
+                  </h3>
+                  <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+                    Chief Astrologer, NAVAGRAHA CENTRE
+                  </p>
+                </div>
               </div>
-            </div>
-            <ServiceVisualGraphic variant="consultation" />
-            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-              Personal guidance for nuanced questions, chart interpretation,
-              timing, remedies, and decisions that benefit from human review.
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {consultationBadges.map((badge) => (
-                <span
-                  key={badge}
-                  className="rounded-[var(--radius-pill)] border border-[rgba(184,137,67,0.24)] bg-[rgba(255,255,255,0.7)] px-3 py-2 text-[0.66rem] uppercase tracking-[0.14em] text-[var(--color-trust-text)]"
-                >
-                  {badge}
-                </span>
-              ))}
-            </div>
-            <TrackedLink
-              href={localizeHref("/consultation")}
-              eventName="consultation_cta_click"
-              eventPayload={{ page: "/", feature: "home-consultation-premium-card" }}
-              className={buttonStyles({
-                size: "sm",
-                tone: "accent",
-                className: "mt-auto w-full justify-center",
-              })}
-            >
-              Book Consultation
-            </TrackedLink>
-          </Card>
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+                Personal guidance for nuanced questions, chart interpretation,
+                timing, remedies, and decisions that benefit from human review.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {consultationBadges.map((badge) => (
+                  <span
+                    key={badge}
+                    className="rounded-[var(--radius-pill)] border border-[rgba(184,137,67,0.24)] bg-[rgba(255,255,255,0.7)] px-3 py-2 text-[0.66rem] uppercase tracking-[0.14em] text-[var(--color-trust-text)]"
+                  >
+                    {badge}
+                  </span>
+                ))}
+              </div>
+              <TrackedLink
+                href={localizeHref("/consultation")}
+                eventName="consultation_cta_click"
+                eventPayload={{ page: "/", feature: "home-consultation-premium-card" }}
+                className={buttonStyles({
+                  size: "sm",
+                  tone: "accent",
+                  className: "mt-auto w-full justify-center",
+                })}
+              >
+                Book Consultation
+              </TrackedLink>
+            </Card>
+          </div>
         </div>
       </Section>
 
@@ -625,43 +676,55 @@ export default async function HomePage() {
         title="Editorial guidance and optional spiritual support stay in their own lane."
         description="Read expert-led content or explore spiritual products as optional support, never as fear-based remedy pressure."
       >
-        <div className="grid gap-5 lg:grid-cols-2">
-          {contentCommerceCards.map((service) => (
-            <Card key={service.title} tone="light" interactive className="flex h-full flex-col gap-4">
-              <div className="flex items-center justify-between gap-3">
-                {getHomeIcon(service.icon, "h-12 w-12")}
-                <Badge tone="trust">{service.label}</Badge>
-              </div>
-              <ServiceVisualGraphic variant={service.visualVariant} />
-              <h3 className="mobile-safe-text text-[length:var(--font-size-title-sm)] font-medium text-[var(--color-ink-strong)]">
-                {service.title}
-              </h3>
-              <p className="flex-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-                {service.description}
-              </p>
-              {service.visualVariant === "shop" ? (
-                <p className="rounded-[var(--radius-lg)] border border-[rgba(184,137,67,0.2)] bg-[rgba(255,253,248,0.72)] px-3 py-2 text-[length:var(--font-size-body-xs)] text-[var(--color-trust-text)]">
-                  Optional spiritual support tools
+        <div className="relative overflow-hidden rounded-[var(--radius-2xl)] border border-[rgba(184,137,67,0.2)] bg-[rgba(255,255,255,0.52)] p-4 sm:p-5">
+          <ParchmentTextureLayer className="opacity-[0.18]" />
+          <SectionSacredGeometryPattern className="opacity-[0.16]" />
+          <SoftIvoryGlow className="opacity-[0.64]" />
+          <OmMandalaWatermark className="right-[-2.8rem] bottom-[-2.8rem] h-40 w-40 opacity-[0.08]" />
+          <CornerFlourish position="bottom-left" className="opacity-60" />
+
+          <div className="relative grid gap-5 lg:grid-cols-2">
+            {contentCommerceCards.map((service) => (
+              <Card key={service.title} tone="light" interactive className="flex h-full flex-col gap-4">
+                <div className="flex items-center justify-between gap-3">
+                  {getHomeIcon(service.icon, "h-12 w-12")}
+                  <Badge tone="trust">{service.label}</Badge>
+                </div>
+                {service.visualVariant === "editorial" ? <EditorialDeskGraphic /> : null}
+                {service.visualVariant === "shop" ? <SpiritualShopGraphic /> : null}
+                <h3 className="mobile-safe-text text-[length:var(--font-size-title-sm)] font-medium text-[var(--color-ink-strong)]">
+                  {service.title}
+                </h3>
+                <p className="flex-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+                  {service.description}
                 </p>
-              ) : null}
-              <TrackedLink
-                href={localizeHref(service.href)}
-                eventName={mapServiceToEvent(service.feature)}
-                eventPayload={{ page: "/", feature: service.feature }}
-                className={buttonStyles({
-                  size: "sm",
-                  tone: "tertiary",
-                  className: "w-full justify-center",
-                })}
-              >
-                {service.ctaLabel}
-              </TrackedLink>
-            </Card>
-          ))}
+                {service.visualVariant === "shop" ? (
+                  <p className="rounded-[var(--radius-lg)] border border-[rgba(184,137,67,0.2)] bg-[rgba(255,253,248,0.72)] px-3 py-2 text-[length:var(--font-size-body-xs)] text-[var(--color-trust-text)]">
+                    Optional spiritual support tools
+                  </p>
+                ) : null}
+                <TrackedLink
+                  href={localizeHref(service.href)}
+                  eventName={mapServiceToEvent(service.feature)}
+                  eventPayload={{ page: "/", feature: service.feature }}
+                  className={buttonStyles({
+                    size: "sm",
+                    tone: "tertiary",
+                    className: "w-full justify-center",
+                  })}
+                >
+                  {service.ctaLabel}
+                </TrackedLink>
+              </Card>
+            ))}
+          </div>
         </div>
       </Section>
 
-      <section className="border-y border-[color:var(--color-border)] bg-[rgba(255,253,248,0.94)] py-6">
+      <GoldSectionDivider />
+
+      <section className="relative border-y border-[color:var(--color-border)] bg-[rgba(255,253,248,0.94)] py-6">
+        <ParchmentTextureLayer className="opacity-[0.16]" />
         <Container>
           <div className="flex flex-wrap items-center justify-center gap-3">
             {credibilityItems.map((item) => (
@@ -676,11 +739,18 @@ export default async function HomePage() {
         </Container>
       </section>
 
+      <GoldSectionDivider />
+
       <Section className="pt-0" tone="transparent">
         <Card
           tone="accent"
           className="relative border-[rgba(184,137,67,0.35)] bg-[linear-gradient(160deg,rgba(255,252,246,0.98)_0%,rgba(246,232,206,0.94)_58%,rgba(239,222,193,0.96)_100%)] shadow-[var(--shadow-md)] lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8"
         >
+          <ParchmentTextureLayer className="opacity-[var(--pattern-opacity-parchment)]" />
+          <SectionSacredGeometryPattern className="opacity-[0.18]" />
+          <SoftIvoryGlow className="opacity-[0.75]" />
+          <OmMandalaWatermark className="right-[-1.5rem] top-[-1.5rem] h-36 w-36 opacity-[0.11]" />
+          <CornerFlourish position="bottom-right" className="opacity-70" />
           <FinalCtaOrnament />
           <div className="space-y-4">
             <Badge tone="trust">Begin Your Journey</Badge>

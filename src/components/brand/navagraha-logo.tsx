@@ -1,74 +1,91 @@
 import Image from "next/image";
 import { cn } from "@/lib/cn";
 
+export type NavagrahaLogoVariant =
+  | "header"
+  | "mobile"
+  | "footer-light"
+  | "footer-dark"
+  | "emblem-only"
+  | "watermark";
+
 type NavagrahaLogoProps = {
-  compact?: boolean;
-  dark?: boolean;
+  variant?: NavagrahaLogoVariant;
   className?: string;
-  subtitle?: string;
+  priority?: boolean;
 };
 
-type NavagrahaEmblemProps = {
-  size?: number;
-  className?: string;
+type VariantConfig = {
+  src: string;
+  width: number;
+  height: number;
+  alt: string;
 };
 
-export function NavagrahaEmblem({
-  size = 36,
-  className,
-}: Readonly<NavagrahaEmblemProps>) {
-  return (
-    <Image
-      src="/brand/navagraha-emblem.svg"
-      alt="NAVAGRAHA CENTRE emblem"
-      width={size}
-      height={size}
-      className={cn("shrink-0", className)}
-      priority
-    />
-  );
-}
+const variantMap: Record<NavagrahaLogoVariant, VariantConfig> = {
+  header: {
+    src: "/brand/navagraha-logo-horizontal.svg",
+    width: 312,
+    height: 84,
+    alt: "NAVAGRAHA CENTRE logo",
+  },
+  mobile: {
+    src: "/brand/navagraha-emblem.svg",
+    width: 36,
+    height: 36,
+    alt: "NAVAGRAHA CENTRE emblem",
+  },
+  "footer-light": {
+    src: "/brand/navagraha-logo-horizontal.svg",
+    width: 288,
+    height: 76,
+    alt: "NAVAGRAHA CENTRE logo",
+  },
+  "footer-dark": {
+    src: "/brand/navagraha-logo-stacked.svg",
+    width: 240,
+    height: 220,
+    alt: "NAVAGRAHA CENTRE logo",
+  },
+  "emblem-only": {
+    src: "/brand/navagraha-emblem.svg",
+    width: 42,
+    height: 42,
+    alt: "NAVAGRAHA CENTRE emblem",
+  },
+  watermark: {
+    src: "/brand/navagraha-watermark.svg",
+    width: 420,
+    height: 420,
+    alt: "NAVAGRAHA watermark",
+  },
+};
+
+const variantSizes: Record<NavagrahaLogoVariant, string> = {
+  header: "(max-width: 1280px) 0px, 312px",
+  mobile: "36px",
+  "footer-light": "(max-width: 640px) 180px, 288px",
+  "footer-dark": "(max-width: 640px) 152px, 184px",
+  "emblem-only": "42px",
+  watermark: "(max-width: 768px) 220px, 420px",
+};
 
 export function NavagrahaLogo({
-  compact = false,
-  dark = false,
+  variant = "header",
   className,
-  subtitle = "Vedic Astrology \u2022 AI Guidance",
+  priority = false,
 }: Readonly<NavagrahaLogoProps>) {
-  if (compact) {
-    return (
-      <span className={cn("inline-flex items-center", className)}>
-        <NavagrahaEmblem size={34} />
-        <span className="sr-only">NAVAGRAHA CENTRE</span>
-      </span>
-    );
-  }
+  const config = variantMap[variant];
 
   return (
-    <span className={cn("inline-flex items-center gap-2.5", className)}>
-      <NavagrahaEmblem
-        size={40}
-        className={dark ? "drop-shadow-[0_0_10px_rgba(244,213,143,0.22)]" : "drop-shadow-[0_0_8px_rgba(185,139,70,0.18)]"}
-      />
-      <span className="min-w-0">
-        <span
-          className={cn(
-            "block font-[family-name:var(--font-display)] text-[1.34rem] leading-none",
-            dark ? "text-[#fff7e5]" : "text-[var(--color-ink-strong)]"
-          )}
-          style={{ letterSpacing: "0.1em" }}
-        >
-          NAVAGRAHA CENTRE
-        </span>
-        <span
-          className={cn(
-            "mt-1 block text-[0.58rem] uppercase tracking-[0.12em]",
-            dark ? "text-[#f4d58f]" : "text-[var(--color-trust-text)]"
-          )}
-        >
-          {subtitle}
-        </span>
-      </span>
-    </span>
+    <Image
+      src={config.src}
+      alt={config.alt}
+      width={config.width}
+      height={config.height}
+      priority={priority}
+      className={cn("h-auto max-w-full shrink-0", className)}
+      sizes={variantSizes[variant]}
+    />
   );
 }

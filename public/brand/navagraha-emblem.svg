@@ -68,7 +68,7 @@
     stroke="#ad7318"
     stroke-width="1.2"
     paint-order="stroke fill"
-  >ॐ</text>
+  >&#x0950;</text>
 
   <g opacity="0.9">
     <use href="#diamond" fill="url(#goldOuter)"/>

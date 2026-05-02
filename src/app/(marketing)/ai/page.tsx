@@ -1,15 +1,15 @@
+import type { ReactNode } from "react";
 import { TrackedLink } from "@/components/analytics/tracked-link";
 import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
 import { PremiumAICTA } from "@/components/monetization/PremiumAICTA";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import {
   ConsultationIcon,
-  KundliIcon,
   NavagrahaAiIcon,
-  NumerologyIcon,
-  RashifalIcon,
   ReportIcon,
 } from "@/components/icons/astrology-icons";
+import { NavagrahaAiGraphic } from "@/components/graphics/navagraha-ai-graphic";
+import { UtilityIcon } from "@/components/graphics/utility-icons";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -71,7 +71,7 @@ const aiTools = [
     ctaLabel: "Explore Numerology",
   },
   {
-    icon: "consultation",
+    icon: "compatibility",
     title: "Marriage Compatibility AI",
     description:
       "Relationship guidance framed through compatibility signals, communication themes, and next-step clarity.",
@@ -126,20 +126,42 @@ const aiTools = [
   },
 ] as const;
 
+function AiToolIconFrame({ children }: Readonly<{ children: ReactNode }>) {
+  return (
+    <span className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-[rgba(244,213,143,0.34)] bg-[radial-gradient(circle_at_30%_28%,rgba(255,255,255,0.16),rgba(255,255,255,0.06)_70%)] text-[#f9efd3] shadow-[0_10px_24px_rgba(0,0,0,0.2)]">
+      {children}
+    </span>
+  );
+}
+
 function getAiToolIcon(icon: (typeof aiTools)[number]["icon"]) {
   switch (icon) {
     case "kundli":
-      return <KundliIcon />;
+      return <UtilityIcon name="kundli" />;
     case "rashifal":
-      return <RashifalIcon />;
+      return <UtilityIcon name="rashifal" />;
+    case "compatibility":
+      return <UtilityIcon name="compatibility" />;
     case "consultation":
-      return <ConsultationIcon />;
+      return (
+        <AiToolIconFrame>
+          <ConsultationIcon className="h-6 w-6" />
+        </AiToolIconFrame>
+      );
     case "numerology":
-      return <NumerologyIcon />;
+      return <UtilityIcon name="numerology" />;
     case "reports":
-      return <ReportIcon />;
+      return (
+        <AiToolIconFrame>
+          <ReportIcon className="h-6 w-6" />
+        </AiToolIconFrame>
+      );
     default:
-      return <NavagrahaAiIcon />;
+      return (
+        <AiToolIconFrame>
+          <NavagrahaAiIcon className="h-6 w-6 text-[rgba(255,244,202,0.96)]" />
+        </AiToolIconFrame>
+      );
   }
 }
 
@@ -257,23 +279,31 @@ export default function AiPage() {
         payload={{ page: "/ai", feature: "ai-page" }}
       />
 
-      <section className="relative overflow-hidden border-b border-[color:var(--color-border)] bg-[linear-gradient(180deg,#fffefb_0%,#fdf7ea_48%,#faefdd_100%)]">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_14%,rgba(214,171,95,0.2),transparent_36%),radial-gradient(circle_at_84%_16%,rgba(216,173,114,0.16),transparent_34%),radial-gradient(circle_at_72%_90%,rgba(190,148,92,0.12),transparent_38%)]" />
+      <section className="relative overflow-hidden border-b border-[rgba(212,175,55,0.24)] bg-[linear-gradient(180deg,#0c1022_0%,#120f2c_52%,#1f1232_100%)]">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_12%,rgba(138,92,246,0.22),transparent_34%),radial-gradient(circle_at_84%_14%,rgba(212,175,55,0.18),transparent_32%),radial-gradient(circle_at_50%_90%,rgba(212,175,55,0.12),transparent_38%)]" />
         <Container className="relative grid gap-8 py-12 sm:py-14 lg:grid-cols-[minmax(0,1.02fr)_minmax(320px,0.98fr)] lg:items-center">
           <div className="space-y-6">
-            <Badge tone="trust">NAVAGRAHA AI Flagship</Badge>
+            <Badge
+              tone="neutral"
+              className="border-[rgba(244,213,143,0.34)] bg-[rgba(255,255,255,0.08)] text-[#f8e4a8]"
+            >
+              NAVAGRAHA AI Flagship
+            </Badge>
             <div className="space-y-4">
               <h1
-                className="font-[family-name:var(--font-display)] text-[length:var(--font-size-display-md)] text-[var(--color-ink-strong)] sm:text-[length:var(--font-size-display-lg)]"
+                className="font-[family-name:var(--font-display)] text-[length:var(--font-size-display-md)] text-white sm:text-[length:var(--font-size-display-lg)]"
                 style={{
                   letterSpacing: "var(--tracking-display)",
                   lineHeight: "var(--line-height-tight)",
                 }}
               >
-              NAVAGRAHA AI - chart-aware Vedic astrology intelligence.
+                NAVAGRAHA AI - chart-aware Vedic astrology intelligence.
               </h1>
-              <p className="max-w-[44rem] text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+              <p className="max-w-[44rem] text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[#f9efd3]">
                 NAVAGRAHA AI connects Kundli context, Dasha timing, transit signals, rule-based checks, and safe interpretation into one calm guidance layer.
+              </p>
+              <p className="inline-flex rounded-[var(--radius-pill)] border border-[rgba(244,213,143,0.28)] bg-[rgba(255,255,255,0.07)] px-4 py-2 text-[0.68rem] uppercase tracking-[0.14em] text-[#f8e4a8]">
+                Powered by your birth chart
               </p>
             </div>
 
@@ -287,7 +317,7 @@ export default function AiPage() {
                   className: "w-full justify-center sm:w-auto",
                 })}
               >
-                Ask My Chart
+                Chat with NAVAGRAHA AI
               </TrackedLink>
               <TrackedLink
                 href="/kundli"
@@ -296,7 +326,7 @@ export default function AiPage() {
                 className={buttonStyles({
                   size: "lg",
                   tone: "secondary",
-                  className: "w-full justify-center sm:w-auto",
+                  className: "w-full justify-center border-[rgba(244,213,143,0.44)] bg-[rgba(255,255,255,0.08)] text-[#f9efd3] hover:bg-[rgba(255,255,255,0.14)] sm:w-auto",
                 })}
               >
                 Generate Kundli First
@@ -308,7 +338,7 @@ export default function AiPage() {
                 className={buttonStyles({
                   size: "lg",
                   tone: "ghost",
-                  className: "w-full justify-center sm:w-auto",
+                  className: "w-full justify-center text-[#f9efd3] hover:text-white sm:w-auto",
                 })}
               >
                 Explore AI Tools
@@ -316,32 +346,7 @@ export default function AiPage() {
             </div>
           </div>
 
-          <Card className="space-y-4 border-[rgba(184,137,67,0.28)] bg-[linear-gradient(165deg,rgba(255,255,255,0.96)_0%,rgba(248,237,218,0.9)_100%)]">
-            <Badge tone="trust">Astrology Intelligence Preview</Badge>
-            <div className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.86)] p-4">
-              <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
-                Chart-Aware Context
-              </p>
-              <p className="mt-2 text-[length:var(--font-size-body-sm)] text-[var(--color-ink-body)]">
-                Validated birth context, available Dasha period, transit context, and rule signals are checked before guidance is shown.
-              </p>
-            </div>
-            <div className="grid gap-2 sm:grid-cols-2">
-              {[
-                "Chart foundation",
-                "Timing context",
-                "Safety policy",
-                "Structured guidance",
-              ].map((item) => (
-                <div
-                  key={item}
-                  className="rounded-[var(--radius-lg)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.84)] px-3 py-2 text-[0.68rem] uppercase tracking-[0.13em] text-[var(--color-ink-body)]"
-                >
-                  {item}
-                </div>
-              ))}
-            </div>
-          </Card>
+          <NavagrahaAiGraphic mode="hero" />
         </Container>
       </section>
 

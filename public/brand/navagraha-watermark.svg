@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 620" role="img" aria-labelledby="title desc">
+  <title id="title">NAVAGRAHA Watermark</title>
+  <desc id="desc">Subtle golden Om mandala watermark for premium Vedic background decoration.</desc>
+  <defs>
+    <linearGradient id="goldWatermark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8e6b4"/>
+      <stop offset="44%" stop-color="#d4af37"/>
+      <stop offset="100%" stop-color="#b9871f"/>
+    </linearGradient>
+    <path id="ray" d="M310 56 L296 124 L324 124 Z"/>
+  </defs>
+
+  <g opacity="0.24">
+    <use href="#ray" fill="url(#goldWatermark)"/>
+    <use href="#ray" fill="url(#goldWatermark)" transform="rotate(45 310 310)"/>
+    <use href="#ray" fill="url(#goldWatermark)" transform="rotate(90 310 310)"/>
+    <use href="#ray" fill="url(#goldWatermark)" transform="rotate(135 310 310)"/>
+    <use href="#ray" fill="url(#goldWatermark)" transform="rotate(180 310 310)"/>
+    <use href="#ray" fill="url(#goldWatermark)" transform="rotate(225 310 310)"/>
+    <use href="#ray" fill="url(#goldWatermark)" transform="rotate(270 310 310)"/>
+    <use href="#ray" fill="url(#goldWatermark)" transform="rotate(315 310 310)"/>
+    <circle cx="310" cy="310" r="234" fill="none" stroke="url(#goldWatermark)" stroke-width="11"/>
+    <circle cx="310" cy="310" r="188" fill="none" stroke="url(#goldWatermark)" stroke-width="7"/>
+    <circle cx="310" cy="310" r="142" fill="none" stroke="url(#goldWatermark)" stroke-width="5"/>
+    <circle cx="310" cy="310" r="102" fill="none" stroke="url(#goldWatermark)" stroke-width="4"/>
+    <text
+      x="310"
+      y="356"
+      text-anchor="middle"
+      font-size="170"
+      font-family="'Noto Serif Devanagari', 'Mangal', 'Kohinoor Devanagari', serif"
+      fill="url(#goldWatermark)"
+      paint-order="stroke fill"
+    >&#x0950;</text>
+  </g>
+</svg>

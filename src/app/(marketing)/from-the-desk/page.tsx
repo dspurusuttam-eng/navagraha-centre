@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
+import { EditorialDeskGraphic } from "@/components/graphics/service-graphics";
 import { createPageMetadata } from "@/lib/seo/metadata";
 import { getCoreSeoCopy } from "@/lib/seo/seo-config";
 import { createBreadcrumbSchema, createPersonSchema } from "@/lib/seo/schema";
@@ -272,6 +273,7 @@ export default async function FromTheDeskPage({
           <AuthorAuthorityBlock consultationHref={localizeHref("/consultation")} />
           <Card className="content-card space-y-3">
             <Badge tone="outline">Editorial Trust</Badge>
+            <EditorialDeskGraphic className="h-24" />
             <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
               Published for practical guidance, not fear.
             </h2>

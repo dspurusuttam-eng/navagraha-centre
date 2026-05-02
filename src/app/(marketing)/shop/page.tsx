@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
+import { SpiritualShopGraphic } from "@/components/graphics/service-graphics";
 import { EditorialPlaceholder } from "@/components/site/editorial-placeholder";
 import { PageHero } from "@/components/site/page-hero";
 import {
@@ -108,6 +109,7 @@ export default async function ShopPage() {
         tone="light"
       >
         <Card tone="light" className="service-card space-y-4">
+          <SpiritualShopGraphic className="h-24" />
           <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
             Start with your chart and guidance journey first. Add spiritual products only when they align with your practice and personal intent.
           </p>

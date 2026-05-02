@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
+import { PremiumReportsGraphic } from "@/components/graphics/service-graphics";
 import { createToolMetadata } from "@/lib/seo/metadata";
 import { getCoreSeoCopy } from "@/lib/seo/seo-config";
 import { getRequestLocale, hasExplicitLocalePrefixInRequest } from "@/modules/localization/request";
@@ -163,6 +164,7 @@ export default function ReportsPage() {
               className="service-offering-card flex h-full flex-col space-y-3"
             >
               <Badge tone="trust">Currently Free</Badge>
+              <PremiumReportsGraphic className="h-24" />
               <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
                 {item.title}
               </h2>

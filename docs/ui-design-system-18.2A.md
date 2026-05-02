@@ -653,3 +653,34 @@ Mobile and footer rules:
 2. Homepage CTA groups should remain stacked and tap-friendly at 360px, 390px, and 430px.
 3. Dark footer links must use warm ivory/champagne text, gold headings, and visible hover/focus contrast.
 4. Decorative dark AI graphics remain `aria-hidden` unless they communicate meaningful content.
+
+## 35. G7 Final Graphics QA Notes
+
+Mobile graphics rules:
+
+1. Hero and AI artwork blocks must scale down on narrow screens before text becomes cramped.
+2. Graphics should stay inside card boundaries with `overflow-hidden` and responsive `max-width`.
+3. Decorative layers must never push CTA buttons below comfortable tap zones.
+4. Footer logo should use a reduced mobile width to keep the link columns readable.
+
+SVG/image sizing rules:
+
+1. Prefer SVG for emblem, utility icon, hero, AI, and service graphics.
+2. Keep brand/image components on explicit intrinsic dimensions plus responsive CSS width classes.
+3. Use responsive `sizes` on `next/image` variants to avoid unnecessary payload on mobile.
+4. Avoid fixed large heights on decorative graphics without smaller mobile breakpoints.
+
+Watermark and pattern opacity rules:
+
+1. Sacred geometry overlays should stay subtle (`--pattern-opacity-geometry` low enough for body text contrast).
+2. Om watermark opacity should be very low and decorative only.
+3. Parchment and glow layers should support depth without competing with content.
+4. Section dividers should remain visible but restrained on both light and dark surfaces.
+
+Performance and accessibility rules:
+
+1. Decorative graphics must be `aria-hidden` and non-interactive (`pointer-events-none`) by default.
+2. Meaningful brand marks must retain descriptive alt text.
+3. Avoid external image hotlinks and oversized raster artwork for decorative sections.
+4. Respect reduced-motion settings and keep visual animation minimal.
+5. Keep contrast strong in dark AI panels and on patterned light backgrounds.

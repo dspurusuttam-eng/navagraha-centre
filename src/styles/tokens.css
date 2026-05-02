@@ -89,6 +89,13 @@
     rgba(251, 245, 233, 0.95) 100%
   );
 
+  /* Decorative section pattern tokens */
+  --pattern-opacity-geometry: 0.24;
+  --pattern-opacity-watermark: 0.08;
+  --pattern-opacity-glow: 0.9;
+  --pattern-opacity-parchment: 0.18;
+  --color-divider-gold: rgba(184, 137, 67, 0.42);
+
   /* Typography foundation */
   --space-1: 0.25rem;
   --space-2: 0.5rem;

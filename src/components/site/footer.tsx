@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { NavagrahaLogo } from "@/components/brand/navagraha-logo";
+import { GoldSectionDivider } from "@/components/graphics/section-patterns";
 import { LanguageSwitcher } from "@/components/site/language-switcher";
 import { Container } from "@/components/ui/container";
 import { siteConfig } from "@/config/site";
@@ -90,6 +91,7 @@ export async function Footer() {
       data-nosnippet
       className="border-t border-[rgba(212,175,55,0.24)] bg-[radial-gradient(circle_at_18%_0%,rgba(212,175,55,0.12),transparent_28%),linear-gradient(180deg,#17110d_0%,#100c09_72%,#090705_100%)] text-[#f9efd3]"
     >
+      <GoldSectionDivider tone="dark" className="pt-2" />
       <Container className="space-y-8 py-[var(--space-10)] sm:py-[var(--space-12)]">
         <div className="grid gap-8 lg:grid-cols-[1.15fr_2fr] lg:gap-10">
           <div className="space-y-4">
@@ -97,7 +99,7 @@ export async function Footer() {
               href={localizeHref("/")}
               className="inline-block transition [transition-duration:var(--motion-duration-base)] hover:opacity-90"
             >
-              <NavagrahaLogo dark />
+              <NavagrahaLogo variant="footer-dark" className="w-[9.5rem] sm:w-[11.5rem]" />
             </Link>
             <p className="max-w-sm text-[length:var(--font-size-body-sm)] leading-relaxed text-[#dfceb0]">
               Premium Vedic astrology, daily guidance, AI tools, reports, consultation,

@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
+import { ConsultationGraphic } from "@/components/graphics/service-graphics";
 import { createToolMetadata } from "@/lib/seo/metadata";
 import { getCoreSeoCopy } from "@/lib/seo/seo-config";
 import {
@@ -207,6 +208,8 @@ export default async function ConsultationPage({
                 </Badge>
                 <Badge tone="outline">{globalLabelCopy.limitedFreeAccessLabel}</Badge>
               </div>
+
+              <ConsultationGraphic className="h-24" />
 
               <div className="space-y-3">
                 <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">

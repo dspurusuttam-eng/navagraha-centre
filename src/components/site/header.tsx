@@ -102,7 +102,7 @@ export async function Header() {
             href={localizeHref("/")}
             className="min-w-0 shrink-0 transition [transition-duration:var(--motion-duration-base)] hover:text-[var(--color-accent)]"
           >
-            <NavagrahaLogo />
+            <NavagrahaLogo variant="header" priority />
           </Link>
 
           <nav
@@ -184,7 +184,7 @@ export async function Header() {
             href={localizeHref("/")}
             className="mr-auto"
           >
-            <NavagrahaLogo compact />
+            <NavagrahaLogo variant="mobile" priority />
           </Link>
 
           <TrackedLink

@@ -2,15 +2,12 @@ import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import { TrackedLink } from "@/components/analytics/tracked-link";
 import {
-  CalculatorIcon,
   ConsultationIcon,
-  KundliIcon,
   NavagrahaAiIcon,
-  NumerologyIcon,
-  PanchangIcon,
-  RashifalIcon,
   ReportIcon,
 } from "@/components/icons/astrology-icons";
+import type { UtilityIconName } from "@/components/graphics/utility-icons";
+import { UtilityIcon } from "@/components/graphics/utility-icons";
 import { PageHero } from "@/components/site/page-hero";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
@@ -42,15 +39,7 @@ type ToolCard = {
   ctaLabel: string;
   eventName: TrackedEventName;
   feature: string;
-  icon:
-    | "kundli"
-    | "panchang"
-    | "rashifal"
-    | "numerology"
-    | "calculator"
-    | "ai"
-    | "report"
-    | "consultation";
+  icon: UtilityIconName | "ai" | "report" | "consultation";
 };
 
 type ToolGroup = {
@@ -83,7 +72,7 @@ const toolGroups: readonly ToolGroup[] = [
         ctaLabel: "Open Calculator",
         eventName: "calculator_tool_click",
         feature: "tools-hub-moon-sign",
-        icon: "calculator",
+        icon: "calculators",
       },
       {
         title: "Nakshatra Calculator",
@@ -92,7 +81,7 @@ const toolGroups: readonly ToolGroup[] = [
         ctaLabel: "Open Calculator",
         eventName: "calculator_tool_click",
         feature: "tools-hub-nakshatra",
-        icon: "calculator",
+        icon: "calculators",
       },
       {
         title: "Lagna Calculator",
@@ -101,7 +90,7 @@ const toolGroups: readonly ToolGroup[] = [
         ctaLabel: "Open Calculator",
         eventName: "calculator_tool_click",
         feature: "tools-hub-lagna",
-        icon: "calculator",
+        icon: "calculators",
       },
     ],
   },
@@ -146,7 +135,7 @@ const toolGroups: readonly ToolGroup[] = [
         ctaLabel: "Check Compatibility",
         eventName: "utility_card_click",
         feature: "tools-hub-compatibility",
-        icon: "consultation",
+        icon: "compatibility",
       },
       {
         title: "Compatibility Quick Score",
@@ -156,7 +145,7 @@ const toolGroups: readonly ToolGroup[] = [
         ctaLabel: "Open Quick Score",
         eventName: "calculator_tool_click",
         feature: "tools-hub-compatibility-quick",
-        icon: "calculator",
+        icon: "calculators",
       },
     ],
   },
@@ -184,7 +173,7 @@ const toolGroups: readonly ToolGroup[] = [
         ctaLabel: "Run Quick Check",
         eventName: "calculator_tool_click",
         feature: "tools-hub-birth-destiny",
-        icon: "calculator",
+        icon: "calculators",
       },
     ],
   },
@@ -202,7 +191,7 @@ const toolGroups: readonly ToolGroup[] = [
         ctaLabel: "Open Time Tools",
         eventName: "muhurta_tool_click",
         feature: "tools-hub-time-muhurta",
-        icon: "panchang",
+        icon: "muhurta",
       },
       {
         title: "Auspicious Date Check",
@@ -212,7 +201,7 @@ const toolGroups: readonly ToolGroup[] = [
         ctaLabel: "Check Date",
         eventName: "calculator_tool_click",
         feature: "tools-hub-date-check",
-        icon: "calculator",
+        icon: "calculators",
       },
       {
         title: "Panchang Timing Context",
@@ -269,23 +258,21 @@ const toolGroups: readonly ToolGroup[] = [
 function getToolIcon(icon: ToolCard["icon"]) {
   switch (icon) {
     case "kundli":
-      return <KundliIcon />;
-    case "panchang":
-      return <PanchangIcon />;
+    case "compatibility":
     case "rashifal":
-      return <RashifalIcon />;
+    case "panchang":
     case "numerology":
-      return <NumerologyIcon />;
-    case "calculator":
-      return <CalculatorIcon />;
+    case "calculators":
+    case "muhurta":
+      return <UtilityIcon name={icon} />;
     case "ai":
-      return <NavagrahaAiIcon />;
+      return <NavagrahaAiIcon className="h-12 w-12" />;
     case "report":
-      return <ReportIcon />;
+      return <ReportIcon className="h-12 w-12" />;
     case "consultation":
-      return <ConsultationIcon />;
+      return <ConsultationIcon className="h-12 w-12" />;
     default:
-      return <KundliIcon />;
+      return <UtilityIcon name="kundli" />;
   }
 }
 
