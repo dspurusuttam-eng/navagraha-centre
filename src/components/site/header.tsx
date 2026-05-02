@@ -4,7 +4,6 @@ import { LanguageSwitcher } from "@/components/site/language-switcher";
 import { NavigationLink } from "@/components/site/navigation-link";
 import { buttonStyles } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
-import { siteConfig } from "@/config/site";
 import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
 import { getGlobalCopyBundleForLocale } from "@/modules/localization/copy";
 import {
@@ -17,10 +16,11 @@ type NavigationItem = {
   label: string;
 };
 
-type NavigationGroup = {
-  title: string;
-  items: readonly NavigationItem[];
-};
+const topTrustItems = [
+  "Trusted Vedic Guidance",
+  "Secure & Confidential",
+  "Expert Astrologer Support",
+] as const;
 
 export async function Header() {
   const requestLocale = await getRequestLocale();
@@ -34,18 +34,19 @@ export async function Header() {
         hasExplicitLocalePrefix,
     });
 
-  const primaryNavigation: readonly NavigationItem[] = [
-    { href: localizeHref("/"), label: copy.navigation.home },
-    { href: localizeHref("/kundli"), label: copy.navigation.kundli },
-    { href: localizeHref("/compatibility"), label: copy.navigation.compatibility },
-    { href: localizeHref("/rashifal"), label: copy.navigation.rashifal },
-    { href: localizeHref("/panchang"), label: copy.navigation.panchang },
-    { href: localizeHref("/numerology"), label: copy.footer.links.numerology },
-    { href: localizeHref("/ai"), label: copy.navigation.ai },
-    { href: localizeHref("/reports"), label: copy.navigation.reports },
-    { href: localizeHref("/consultation"), label: copy.navigation.consultation },
-    { href: localizeHref("/insights"), label: copy.navigation.insights },
-    { href: localizeHref("/shop"), label: copy.navigation.shop },
+  const desktopNavigationBeforeTools: readonly NavigationItem[] = [
+    { href: localizeHref("/"), label: "Home" },
+    { href: localizeHref("/kundli"), label: "Kundli" },
+    { href: localizeHref("/rashifal"), label: "Rashifal" },
+    { href: localizeHref("/compatibility"), label: "Matchmaking" },
+    { href: localizeHref("/panchang"), label: "Panchang" },
+  ] as const;
+
+  const desktopNavigationAfterTools: readonly NavigationItem[] = [
+    { href: localizeHref("/reports"), label: "Reports" },
+    { href: localizeHref("/consultation"), label: "Consultation" },
+    { href: localizeHref("/shop"), label: "Shop" },
+    { href: localizeHref("/from-the-desk"), label: "From the Desk" },
   ] as const;
 
   const utilityNavigation: readonly NavigationItem[] = [
@@ -56,32 +57,17 @@ export async function Header() {
     { href: localizeHref("/compatibility"), label: copy.navigation.compatibility },
   ] as const;
 
-  const contentNavigation: readonly NavigationItem[] = [
+  const mobileMenuItems: readonly NavigationItem[] = [
+    { href: localizeHref("/"), label: "Home" },
+    { href: localizeHref("/kundli"), label: "Kundli" },
+    { href: localizeHref("/rashifal"), label: "Rashifal" },
+    { href: localizeHref("/compatibility"), label: "Matchmaking" },
+    { href: localizeHref("/panchang"), label: "Panchang" },
+    { href: localizeHref("/tools"), label: "Tools" },
+    { href: localizeHref("/reports"), label: "Reports" },
+    { href: localizeHref("/consultation"), label: "Consultation" },
+    { href: localizeHref("/shop"), label: "Shop" },
     { href: localizeHref("/from-the-desk"), label: "From the Desk" },
-    { href: localizeHref("/insights"), label: copy.navigation.insights },
-    { href: localizeHref("/daily-rashifal"), label: copy.navigation.dailyRashifal },
-    { href: localizeHref("/insights/remedies"), label: "Remedies / Guidance" },
-  ] as const;
-
-  const mobilePrimaryNavigation: readonly NavigationItem[] = [
-    { href: localizeHref("/kundli"), label: copy.navigation.kundli },
-    { href: localizeHref("/rashifal"), label: copy.navigation.rashifal },
-    { href: localizeHref("/panchang"), label: copy.navigation.panchang },
-  ] as const;
-
-  const mobileGroups: readonly NavigationGroup[] = [
-    { title: "Primary", items: mobilePrimaryNavigation },
-    { title: "Utilities", items: utilityNavigation },
-    { title: "NAVAGRAHA AI", items: [{ href: localizeHref("/ai"), label: copy.navigation.ai }] },
-    {
-      title: "Services",
-      items: [
-        { href: localizeHref("/reports"), label: copy.navigation.reports },
-        { href: localizeHref("/consultation"), label: copy.navigation.consultation },
-      ],
-    },
-    { title: "Content", items: contentNavigation },
-    { title: "Shop", items: [{ href: localizeHref("/shop"), label: copy.navigation.shop }] },
   ] as const;
 
   return (
@@ -89,6 +75,26 @@ export async function Header() {
       data-nosnippet
       className="sticky top-0 z-50 border-b border-[color:var(--color-border)] bg-[rgba(255,254,250,0.95)] shadow-[0_8px_24px_rgba(96,74,45,0.08)] backdrop-blur-xl"
     >
+      <div className="border-b border-[color:var(--color-border)] bg-[rgba(255,255,255,0.84)]">
+        <Container className="flex flex-wrap items-center justify-between gap-2 py-1.5">
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
+            {topTrustItems.map((item) => (
+              <span
+                key={item}
+                className="inline-flex min-h-8 min-w-0 items-center gap-1.5 rounded-[var(--radius-pill)] border border-[rgba(185,139,70,0.24)] bg-[rgba(255,253,247,0.9)] px-2.5 py-1 text-[0.62rem] tracking-[0.04em] text-[var(--color-ink-strong)]"
+              >
+                <span
+                  aria-hidden="true"
+                  className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-accent-gold)] shadow-[0_0_0_3px_rgba(185,139,70,0.14)]"
+                />
+                <span className="mobile-safe-text">{item}</span>
+              </span>
+            ))}
+          </div>
+          <LanguageSwitcher variant="compact" />
+        </Container>
+      </div>
+
       <Container className="py-3">
         <div className="hidden items-center gap-4 xl:flex">
           <Link
@@ -99,10 +105,10 @@ export async function Header() {
               className="block font-[family-name:var(--font-display)] text-[1.42rem] leading-none text-[var(--color-ink-strong)]"
               style={{ letterSpacing: "0.1em" }}
             >
-              {siteConfig.name}
+              NAVAGRAHA CENTRE
             </span>
             <span className="mt-1 block text-[0.6rem] uppercase tracking-[0.12em] text-[var(--color-trust-text)]">
-              ভাগ্য গণনা কাৰ্যালয় Since 1950
+              {"Vedic Astrology \u2022 AI Guidance"}
             </span>
           </Link>
 
@@ -110,11 +116,48 @@ export async function Header() {
             aria-label="Primary navigation"
             className="flex flex-1 items-center justify-center gap-0.5"
           >
-            {primaryNavigation.map((item) => (
+            {desktopNavigationBeforeTools.map((item) => (
               <NavigationLink
                 key={item.href}
                 href={item.href}
-                className="min-h-10 max-w-[8.5rem] px-2.5 text-[0.64rem] 2xl:px-3"
+                className="min-h-10 rounded-none border-x-transparent border-t-transparent border-b-[2px] border-b-transparent bg-transparent px-2 text-[0.63rem] text-[var(--color-ink-body)] shadow-none hover:bg-transparent hover:text-[var(--color-ink-strong)] 2xl:px-2.5"
+                activeClassName="rounded-none border-x-transparent border-t-transparent border-b-[2px] border-b-[var(--color-accent-gold)] bg-transparent text-[var(--color-ink-strong)] shadow-none"
+              >
+                {item.label}
+              </NavigationLink>
+            ))}
+            <details className="group relative">
+              <summary
+                aria-label="Tools"
+                className={buttonStyles({
+                  tone: "ghost",
+                  size: "sm",
+                  className:
+                    "min-h-10 rounded-none border-x-transparent border-t-transparent border-b-[2px] border-b-transparent bg-transparent px-2 text-[0.63rem] text-[var(--color-ink-body)] shadow-none hover:bg-transparent hover:text-[var(--color-ink-strong)] marker:content-none 2xl:px-2.5 [&::-webkit-details-marker]:hidden",
+                })}
+              >
+                Tools
+              </summary>
+              <div className="absolute top-[calc(100%+0.55rem)] z-40 max-h-[min(72vh,28rem)] w-[min(calc(100vw-2rem),18rem)] overflow-y-auto rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,254,250,0.98)] p-3 shadow-[var(--shadow-md)] [inset-inline-start:0]">
+                <div className="grid gap-1" role="list">
+                  {utilityNavigation.map((item) => (
+                    <NavigationLink
+                      key={item.href}
+                      href={item.href}
+                      className="w-full justify-start"
+                    >
+                      {item.label}
+                    </NavigationLink>
+                  ))}
+                </div>
+              </div>
+            </details>
+            {desktopNavigationAfterTools.map((item) => (
+              <NavigationLink
+                key={item.href}
+                href={item.href}
+                className="min-h-10 rounded-none border-x-transparent border-t-transparent border-b-[2px] border-b-transparent bg-transparent px-2 text-[0.63rem] text-[var(--color-ink-body)] shadow-none hover:bg-transparent hover:text-[var(--color-ink-strong)] 2xl:px-2.5"
+                activeClassName="rounded-none border-x-transparent border-t-transparent border-b-[2px] border-b-[var(--color-accent-gold)] bg-transparent text-[var(--color-ink-strong)] shadow-none"
               >
                 {item.label}
               </NavigationLink>
@@ -122,7 +165,14 @@ export async function Header() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <LanguageSwitcher variant="compact" />
+            <TrackedLink
+              href={localizeHref("/ai")}
+              eventName="premium_ai_cta_click"
+              eventPayload={{ page: "global-header", feature: "header-ask-navagraha-ai" }}
+              className={buttonStyles({ size: "sm", className: "whitespace-nowrap" })}
+            >
+              Ask NAVAGRAHA AI
+            </TrackedLink>
             <Link
               href={localizeHref("/dashboard")}
               className={buttonStyles({
@@ -131,43 +181,37 @@ export async function Header() {
                 className: "whitespace-nowrap",
               })}
             >
-              Login / Sign Up
+              Login / Account
             </Link>
-            <TrackedLink
-              href={localizeHref("/kundli")}
-              eventName="cta_click"
-              eventPayload={{ page: "global-header", feature: "header-generate-kundli" }}
-              className={buttonStyles({ size: "sm", className: "whitespace-nowrap" })}
-            >
-              {copy.cta.generateKundli}
-            </TrackedLink>
           </div>
         </div>
 
         <div className="flex items-center gap-2 xl:hidden">
           <Link
             href={localizeHref("/")}
-            className="mobile-safe-text mr-auto min-w-0 max-w-[10rem] sm:max-w-none"
+            className="mobile-safe-text mr-auto min-w-0 max-w-[9.75rem] sm:max-w-[12rem]"
           >
             <span
               className="block truncate font-[family-name:var(--font-display)] text-[1.08rem] leading-none text-[var(--color-ink-strong)]"
               style={{ letterSpacing: "0.08em" }}
             >
-              NAVAGRAHA
+              NAVAGRAHA CENTRE
             </span>
             <span className="mt-1 hidden text-[0.54rem] uppercase tracking-[0.1em] text-[var(--color-trust-text)] sm:block">
-              ভাগ্য গণনা কাৰ্যালয় Since 1950
+              {"Vedic Astrology \u2022 AI Guidance"}
             </span>
           </Link>
 
           <TrackedLink
-            href={localizeHref("/kundli")}
-            eventName="cta_click"
-            eventPayload={{ page: "global-header-mobile", feature: "header-generate-kundli" }}
-            className={buttonStyles({ size: "sm", className: "shrink-0 px-3 sm:px-[1.125rem]" })}
+            href={localizeHref("/ai")}
+            eventName="premium_ai_cta_click"
+            eventPayload={{ page: "global-header-mobile", feature: "header-ask-ai" }}
+            className={buttonStyles({
+              size: "sm",
+              className: "shrink-0 px-2.5 text-[0.64rem] sm:px-3",
+            })}
           >
-            <span className="sm:hidden">Kundli</span>
-            <span className="hidden sm:inline">Generate Kundli</span>
+            <span>Ask AI</span>
           </TrackedLink>
 
           <details className="group relative">
@@ -184,26 +228,27 @@ export async function Header() {
             </summary>
             <div className="absolute top-[calc(100%+0.6rem)] max-h-[calc(100vh-5.5rem)] w-[min(calc(100vw-2rem),23rem)] overflow-y-auto rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,254,250,0.98)] p-3 shadow-[var(--shadow-md)] [inset-inline-end:0]">
               <nav aria-label="Mobile navigation" className="grid gap-4">
-                {mobileGroups.map((group) => (
-                  <div key={group.title} className="grid gap-2">
-                    <p className="px-3 text-[0.64rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
-                      {group.title}
-                    </p>
-                    <div className="grid gap-1">
-                      {group.items.map((item) => (
-                        <NavigationLink
-                          key={`${group.title}-${item.href}`}
-                          href={item.href}
-                          tone={group.title === "Primary" ? "ghost" : "tertiary"}
-                          className="w-full justify-start"
-                        >
-                          {item.label}
-                        </NavigationLink>
-                      ))}
-                    </div>
+                <div className="grid gap-2">
+                  <p className="px-3 text-[0.64rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
+                    Menu
+                  </p>
+                  <div className="grid gap-1">
+                    {mobileMenuItems.map((item) => (
+                      <NavigationLink
+                        key={`mobile-nav-${item.href}`}
+                        href={item.href}
+                        tone="tertiary"
+                        className="w-full justify-start"
+                      >
+                        {item.label}
+                      </NavigationLink>
+                    ))}
                   </div>
-                ))}
+                </div>
                 <div className="mt-1 border-t border-[color:var(--color-border)] pt-3">
+                  <p className="px-3 pb-2 text-[0.64rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
+                    Language
+                  </p>
                   <LanguageSwitcher variant="compact" />
                 </div>
                 <div className="mt-1 grid gap-2 border-t border-[color:var(--color-border)] pt-3">
@@ -215,32 +260,8 @@ export async function Header() {
                       className: "w-full justify-center",
                     })}
                   >
-                    {copy.navigation.account}
+                    Login / Account
                   </Link>
-                  <TrackedLink
-                    href={localizeHref("/kundli-ai")}
-                    eventName="cta_click"
-                    eventPayload={{ page: "global-header-mobile", feature: "header-try-ai" }}
-                    className={buttonStyles({
-                      tone: "secondary",
-                      size: "sm",
-                      className: "w-full justify-center",
-                    })}
-                  >
-                    {copy.cta.exploreAi}
-                  </TrackedLink>
-                  <TrackedLink
-                    href={localizeHref("/reports")}
-                    eventName="cta_click"
-                    eventPayload={{ page: "global-header-mobile", feature: "header-get-report" }}
-                    className={buttonStyles({
-                      tone: "secondary",
-                      size: "sm",
-                      className: "w-full justify-center",
-                    })}
-                  >
-                    {copy.cta.unlockFullReport}
-                  </TrackedLink>
                 </div>
               </nav>
             </div>
