@@ -3,8 +3,6 @@ import "server-only";
 import type { Prisma } from "@prisma/client";
 import {
   calculatePredictionConfidence,
-  formatConfidenceLine,
-  getAstrologyDisclaimer,
   getIncompleteDataFallback,
   getMissingBirthDetailsFallback,
   logAccuracyEvent,
@@ -23,6 +21,7 @@ import {
   mapUnifiedChartToAiContext,
   type ChartAiContext,
 } from "@/modules/ask-chart/chart-context-mapper";
+import { formatJyotishAnswerForConversation } from "@/modules/ask-chart/jyotish-answer-formatter";
 import {
   retrieveOrRefreshBirthChartForUser,
 } from "@/modules/astrology/chart-retrieval";
@@ -35,6 +34,8 @@ import { getAstrologyService } from "@/modules/astrology/server";
 import type { BirthDetails, NatalChartResponse, PlanetaryBody } from "@/modules/astrology/types";
 import { getContentAdapter } from "@/modules/content/server";
 import { getChartOverview, type ChartOverview } from "@/modules/onboarding/service";
+import { calculateDailyPanchangContext } from "@/modules/panchang";
+import { getRashifalSignBySlug } from "@/modules/rashifal/content";
 import { getRemedyRecommendationService } from "@/modules/remedies/service";
 import { getRelatedProductsForRemedySlugs } from "@/modules/shop/service";
 import {
@@ -63,6 +64,8 @@ const starterPrompts = [
 
 const unsupportedScopePattern =
   /\b(diagnose|medical advice|legal advice|financial advice|lottery|gambling|stock tip|sure shot|guaranteed result|guaranteed outcome|black magic|animal sacrifice|death prediction)\b/i;
+const dailyPredictionPattern =
+  /\b(today|today's|daily|tomorrow|tonight|this week|how is my day|what should i focus on today|what should i avoid today|best time|auspicious time|lucky color|lucky number|lucky time|caution window)\b/i;
 
 const planetaryKeywordMap = [
   { body: "SUN", patterns: [/\bsun\b/i, /\bsolar\b/i] },
@@ -101,6 +104,20 @@ const aspectKeywordMap = [
   { type: "TRINE", patterns: [/\btrine\b/i] },
   { type: "OPPOSITION", patterns: [/\bopposition\b/i, /\bopposed\b/i] },
 ] as const;
+
+const careerQuestionPattern =
+  /\b(career|job|profession|promotion|employment|work|business|entrepreneur|income|salary|gains|network|reputation|government job|private job)\b/i;
+const financeQuestionPattern =
+  /\b(finance|financial|money|wealth|income|savings|expense|expenses|debt|loan|loans|investment|investing|profit|loss|cashflow|cash flow|financial timing|wealth growth|sudden gain|sudden loss)\b/i;
+const healthQuestionPattern =
+  /\b(health|wellness|wellbeing|well-being|stress|sleep|energy|vitality|routine|rest|fatigue|burnout|anxiety|emotional balance|emotional distress|emotionally disturbed|mental health|mentally exhausted)\b/i;
+const educationQuestionPattern =
+  /\b(education|study|studies|exam|exams|learning|academic|subject choice|higher study|higher studies|admission|scholarship|concentration|memory|revision|entrance exam|competitive exam|school|college|university)\b/i;
+const relationshipQuestionPattern =
+  /\b(marriage|relationship|compatibility|partner|spouse|love|love marriage|arranged marriage|wedding|divorce|breakup|separation|remarriage|second marriage|fianc[ée]|in[-\s]?laws?)\b/i;
+
+const businessQuestionPattern =
+  /\b(business|startup|entrepreneur|entrepreneurship|venture|trade|commerce|client|customer|partnership|co[-\s]?founder|cofounder|side business|family business|export|import|retail|wholesale|distribution|launch|scale|scaling|expansion|foreign business)\b/i;
 
 type AskMyChartIntent =
   | "PLACEMENT_EXPLANATION"
@@ -171,6 +188,34 @@ type AskMyChartToolBundle = {
     }[];
   };
   predictiveAssistantContext: PredictiveAssistantContextOutput | null;
+  dailyPanchangSnapshot: null | {
+    asOfDate: string;
+    locationLabel: string;
+    moonSign: string;
+    dayFeel: string;
+    dailyQuality: string;
+    spiritualTone: string[];
+    suitableFocus: string[];
+    cautionAreas: string[];
+    observanceHints: string[];
+    sunriseLocalTime: string;
+    sunsetLocalTime: string;
+    transitionWindows: {
+      cautionWindows: string[];
+      supportiveWindows: string[];
+      cautionTimeBlocks: string[];
+      betterTimeBlocks: string[];
+      note: string;
+    };
+  };
+  dailyRashifalSnapshot: null | {
+    signSlug: string;
+    signName: string;
+    shortPrediction: string;
+    luckyColor: string;
+    luckyNumber: string;
+    luckyTime: string;
+  };
   approvedRemedies: {
     remedies: {
       id: string;
@@ -351,7 +396,11 @@ function classifyQuestion(question: string): AskMyChartClassification {
     };
   }
 
-  if (/\b(remedy|recommended remedy|gemstone|mantra|rudraksha|yantra|puja|mala)\b/i.test(normalized)) {
+  if (
+    /\b(remedy|remedies|recommended remedy|gemstone|gemstones|mantra|prayer|rudraksha|yantra|puja|daan|charity|fasting|mala|japa|stotra|homa|havan|upay|upaya|spiritual support|shop|product|buy|purchase|consultation)\b/i.test(
+      normalized
+    )
+  ) {
     return {
       intent: "REMEDY_EXPLANATION",
       taskKind: "REMEDY_EXPLANATION",
@@ -397,6 +446,66 @@ function classifyQuestion(question: string): AskMyChartClassification {
       taskKind: "CHART_EXPLANATION",
       supported: true,
       guidance: "Summarize the strongest grounded themes in the existing chart.",
+    };
+  }
+
+  if (businessQuestionPattern.test(normalized)) {
+    return {
+      intent: "CHART_SUMMARY",
+      taskKind: "CHART_EXPLANATION",
+      supported: true,
+      guidance:
+        "For business questions, explain using 7th/10th/11th/2nd/3rd/5th/6th/8th/9th/12th house context, Mercury/Saturn/Mars/Jupiter/Venus, active dasha-transit timing, practical business discipline, partnership caution, and non-deterministic guidance. Avoid guaranteed profit, clients, funding, or expansion claims and advise qualified professional help for legal, tax, or investment decisions.",
+    };
+  }
+
+  if (financeQuestionPattern.test(normalized)) {
+    return {
+      intent: "CHART_SUMMARY",
+      taskKind: "CHART_EXPLANATION",
+      supported: true,
+      guidance:
+        "For finance questions, explain using 2nd/11th/5th/8th/6th/9th/10th/12th house context, Jupiter/Venus/Saturn/Mercury, active dasha-transit timing, practical discipline, and non-deterministic guidance.",
+    };
+  }
+
+  if (healthQuestionPattern.test(normalized)) {
+    return {
+      intent: "CHART_SUMMARY",
+      taskKind: "CHART_EXPLANATION",
+      supported: true,
+      guidance:
+        "For health and wellness questions, use 1st/6th/8th/12th house context, Moon/Sun/Mars/Saturn/Mercury/Jupiter/Venus, and current timing layers to discuss routine, sleep, stress, energy, emotional balance, and caution periods without diagnosis, medicine advice, or treatment claims. If symptoms or urgent warning signs are mentioned, direct the user toward qualified healthcare or emergency support.",
+    };
+  }
+
+  if (educationQuestionPattern.test(normalized)) {
+    return {
+      intent: "CHART_SUMMARY",
+      taskKind: "CHART_EXPLANATION",
+      supported: true,
+      guidance:
+        "For education questions, explain using 4th/5th/9th/2nd/3rd/6th/10th house context, Mercury/Jupiter/Moon/Saturn/Mars, active dasha-transit timing, subject choice, exam rhythm, learning discipline, and student-safe non-deterministic guidance. Avoid guaranteed rank, pass/fail, admission, or scholarship claims and keep exam stress supportive.",
+    };
+  }
+
+  if (careerQuestionPattern.test(normalized)) {
+    return {
+      intent: "CHART_SUMMARY",
+      taskKind: "CHART_EXPLANATION",
+      supported: true,
+      guidance:
+        "For career questions, explain using 10th/6th/2nd/11th/5th/9th/7th house context, active dasha-transit timing, practical non-deterministic guidance, and calm safety framing.",
+    };
+  }
+
+  if (relationshipQuestionPattern.test(normalized)) {
+    return {
+      intent: "CHART_SUMMARY",
+      taskKind: "CHART_EXPLANATION",
+      supported: true,
+      guidance:
+        "For relationship questions, explain using 7th, 2nd, 4th, 5th, 8th, and 11th house context, Venus, Jupiter, active dasha-transit timing, emotional harmony, family involvement, compatibility, and calm non-deterministic guidance. If safety, coercion, or abuse is mentioned, prioritize supportive human help and keep the response non-judgmental.",
     };
   }
 
@@ -476,9 +585,18 @@ function toBirthDetails(
 
 function getMatchingPlacements(question: string, chart: NatalChartResponse) {
   const mentionedBodies = getMentionedBodies(question);
+  const isBusinessFocused = businessQuestionPattern.test(question);
+  const isHealthFocused = healthQuestionPattern.test(question);
+  const isRelationshipFocused = relationshipQuestionPattern.test(question);
   const targetBodies = mentionedBodies.length
     ? mentionedBodies
-    : chart.summary.dominantBodies.slice(0, 3);
+    : isBusinessFocused
+      ? (["MERCURY", "SATURN", "MARS", "JUPITER", "VENUS", "SUN", "MOON"] as PlanetaryBody[])
+    : isHealthFocused
+      ? (["SUN", "MOON", "MARS", "SATURN", "MERCURY", "JUPITER", "VENUS"] as PlanetaryBody[])
+    : isRelationshipFocused
+      ? (["VENUS", "JUPITER", "MOON"] as PlanetaryBody[])
+      : chart.summary.dominantBodies.slice(0, 3);
 
   return chart.planets
     .filter((planet) => targetBodies.includes(planet.body))
@@ -493,12 +611,27 @@ function getMatchingPlacements(question: string, chart: NatalChartResponse) {
 
 function getMatchingHouses(question: string, chart: NatalChartResponse) {
   const mentionedHouses = getMentionedHouses(question);
+  const isBusinessFocused = businessQuestionPattern.test(question);
+  const isCareerFocused = careerQuestionPattern.test(question) && !isBusinessFocused;
+  const isHealthFocused = healthQuestionPattern.test(question);
+  const isRelationshipFocused = relationshipQuestionPattern.test(question);
+  const defaultHouses = isCareerFocused
+    ? [10, 6, 2, 11, 5, 9, 7]
+    : isBusinessFocused
+      ? [7, 10, 11, 2, 3, 5, 6, 8, 9, 12]
+    : isHealthFocused
+      ? [1, 6, 8, 12]
+    : isRelationshipFocused
+      ? [7, 2, 4, 5, 8, 11]
+      : [1, 2, 3, 4];
 
   return chart.houses
     .filter((house) =>
-      mentionedHouses.length ? mentionedHouses.includes(house.house) : house.house <= 4
+      mentionedHouses.length
+        ? mentionedHouses.includes(house.house)
+        : defaultHouses.includes(house.house)
     )
-    .slice(0, 4)
+    .slice(0, isBusinessFocused || isCareerFocused ? 7 : 4)
     .map((house) => ({
       house: house.house,
       sign: formatSignLabel(house.sign),
@@ -513,6 +646,17 @@ function isPlanetaryBody(value: string): value is PlanetaryBody {
 function getMatchingAspects(question: string, chart: NatalChartResponse) {
   const mentionedBodies = getMentionedBodies(question);
   const mentionedAspectTypes = getMentionedAspectTypes(question);
+  const isBusinessFocused = businessQuestionPattern.test(question);
+  const isHealthFocused = healthQuestionPattern.test(question);
+  const isRelationshipFocused = relationshipQuestionPattern.test(question);
+  const defaultBodies = isBusinessFocused
+    ? (["MERCURY", "SATURN", "MARS", "JUPITER", "VENUS", "SUN", "MOON"] as PlanetaryBody[])
+    : isRelationshipFocused
+    ? (["VENUS", "JUPITER", "MOON"] as PlanetaryBody[])
+    : isHealthFocused
+      ? (["SUN", "MOON", "MARS", "SATURN", "MERCURY", "JUPITER", "VENUS"] as PlanetaryBody[])
+    : chart.summary.dominantBodies.slice(0, 3);
+  const targetBodies = mentionedBodies.length ? mentionedBodies : defaultBodies;
 
   return chart.aspects
     .filter((aspect) => {
@@ -521,12 +665,12 @@ function getMatchingAspects(question: string, chart: NatalChartResponse) {
       const sourceMatches =
         typeof aspect.source === "string" &&
         isPlanetaryBody(aspect.source) &&
-        mentionedBodies.includes(aspect.source);
+        targetBodies.includes(aspect.source);
       const targetMatches =
         typeof aspect.target === "string" &&
         isPlanetaryBody(aspect.target) &&
-        mentionedBodies.includes(aspect.target);
-      const bodyMatches = !mentionedBodies.length || sourceMatches || targetMatches;
+        targetBodies.includes(aspect.target);
+      const bodyMatches = !targetBodies.length || sourceMatches || targetMatches;
 
       return aspectMatches && bodyMatches;
     })
@@ -612,6 +756,140 @@ async function getTransitSnapshotTool(userId: string) {
   } catch {
     return null;
   }
+}
+
+function getTodayDateInTimeZone(timezone: string) {
+  try {
+    const parts = new Intl.DateTimeFormat("en-CA", {
+      timeZone: timezone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).formatToParts(new Date());
+    const year = parts.find((part) => part.type === "year")?.value;
+    const month = parts.find((part) => part.type === "month")?.value;
+    const day = parts.find((part) => part.type === "day")?.value;
+
+    if (!year || !month || !day) {
+      return null;
+    }
+
+    return `${year}-${month}-${day}`;
+  } catch {
+    return null;
+  }
+}
+
+function getDailyPanchangSnapshotTool(overview: ChartOverview) {
+  const profile = overview.birthProfile;
+  const latitude = profile?.latitude;
+  const longitude = profile?.longitude;
+
+  if (
+    !profile ||
+    !profile.timezone ||
+    typeof latitude !== "number" ||
+    typeof longitude !== "number" ||
+    !Number.isFinite(latitude) ||
+    !Number.isFinite(longitude)
+  ) {
+    return null;
+  }
+
+  const dateLocal = getTodayDateInTimeZone(profile.timezone);
+
+  if (!dateLocal) {
+    return null;
+  }
+
+  const locationLabel = [profile.city, profile.region, profile.country]
+    .filter((part): part is string => typeof part === "string" && part.length > 0)
+    .join(", ");
+
+  const panchang = calculateDailyPanchangContext({
+    dateLocal,
+    location: {
+      displayName: locationLabel || "Profile location",
+      latitude,
+      longitude,
+      timezoneIana: profile.timezone,
+      city: profile.city,
+      region: profile.region,
+      countryName: profile.country,
+    },
+  });
+
+  if (!panchang.success) {
+    return null;
+  }
+
+  return {
+    asOfDate: panchang.data.as_of_date,
+    locationLabel: panchang.data.location.display_name,
+    moonSign: panchang.data.moon_sign,
+    dayFeel: panchang.data.guidance.day_feel,
+    dailyQuality: panchang.data.guidance.daily_quality,
+    spiritualTone: panchang.data.guidance.spiritual_tone.slice(0, 3),
+    suitableFocus: panchang.data.guidance.suitable_focus.slice(0, 3),
+    cautionAreas: panchang.data.guidance.caution_areas.slice(0, 3),
+    observanceHints: panchang.data.guidance.observance_hint.slice(0, 2),
+    sunriseLocalTime: panchang.data.sunrise.local_time,
+    sunsetLocalTime: panchang.data.sunset.local_time,
+    transitionWindows: {
+      cautionWindows: panchang.data.advanced_timings.timing_summary.caution_windows.slice(0, 3),
+      supportiveWindows: panchang.data.advanced_timings.timing_summary.auspicious_windows.slice(0, 3),
+      cautionTimeBlocks: panchang.data.advanced_timings.timing_summary.caution_windows.slice(0, 3),
+      betterTimeBlocks: panchang.data.advanced_timings.timing_summary.auspicious_windows.slice(0, 3),
+      note: panchang.data.advanced_timings.timing_summary.note,
+    },
+  } as const;
+}
+
+function toRashifalSlug(value: string | null | undefined) {
+  if (!value) {
+    return null;
+  }
+
+  const normalized = value.trim().toLowerCase().replace(/[\s_-]+/g, "");
+  const supported = new Set([
+    "aries",
+    "taurus",
+    "gemini",
+    "cancer",
+    "leo",
+    "virgo",
+    "libra",
+    "scorpio",
+    "sagittarius",
+    "capricorn",
+    "aquarius",
+    "pisces",
+  ]);
+
+  return supported.has(normalized) ? normalized : null;
+}
+
+function getDailyRashifalSnapshotTool(chartContext: ChartAiContext) {
+  const preferredSign = toRashifalSlug(chartContext.moonSign) ?? toRashifalSlug(chartContext.lagna.sign);
+
+  if (!preferredSign) {
+    return null;
+  }
+
+  const sign = getRashifalSignBySlug(preferredSign);
+
+  if (!sign) {
+    return null;
+  }
+
+  return {
+    signSlug: sign.slug,
+    signName: sign.name,
+    shortPrediction: sign.shortPrediction,
+    luckyColor: sign.luckyColor,
+    luckyNumber: sign.luckyNumber,
+    luckyTime: sign.luckyTime,
+  } as const;
 }
 
 function getPredictiveAssistantContextTool(chart: UnifiedSiderealChart) {
@@ -773,24 +1051,6 @@ async function getConsultationContextTool(
   };
 }
 
-function formatConfidenceLabel(value: AstrologyAssistantStructuredResponse["confidence"]) {
-  return value.charAt(0).toUpperCase() + value.slice(1);
-}
-
-function toPredictionConfidenceLevel(
-  value: AstrologyAssistantStructuredResponse["confidence"]
-) {
-  if (value === "high") {
-    return "HIGH" as const;
-  }
-
-  if (value === "medium") {
-    return "MEDIUM" as const;
-  }
-
-  return "LOW" as const;
-}
-
 function toAssistantConfidenceFromPredictionLevel(
   level: "HIGH" | "MEDIUM" | "LOW" | "INCOMPLETE"
 ): AstrologyAssistantStructuredResponse["confidence"] {
@@ -810,24 +1070,23 @@ function formatStructuredReplyForConversation(
   options?: {
     locale?: string | null;
     includeDisclaimer?: boolean;
+    intent?: AskMyChartIntent | null;
+    question?: string | null;
+    chartContext?: ChartAiContext | null;
+    toolBundle?: AskMyChartToolBundle | null;
+    planType?: UserPlanType | null;
   }
 ) {
-  const locale = resolvePredictionLocale(options?.locale);
-  const lines = [
-    response.answer,
-    `Reasoning: ${response.reasoning}`,
-    `Confidence: ${formatConfidenceLabel(response.confidence)}`,
-    formatConfidenceLine({
-      locale,
-      level: toPredictionConfidenceLevel(response.confidence),
-    }),
-  ];
-
-  if (options?.includeDisclaimer) {
-    lines.push(`Disclaimer: ${getAstrologyDisclaimer(locale)}`);
-  }
-
-  return lines.join("\n\n");
+  return formatJyotishAnswerForConversation({
+    response,
+    locale: options?.locale,
+    includeDisclaimer: options?.includeDisclaimer,
+    intent: options?.intent,
+    question: options?.question,
+    chartContext: options?.chartContext,
+    toolBundle: options?.toolBundle,
+    planType: options?.planType,
+  });
 }
 
 function applyFreePlanResponseGuardrailsNormalized(
@@ -1030,7 +1289,8 @@ async function buildToolBundle(
   userId: string,
   question: string,
   overview: ChartOverview,
-  chartContract: UnifiedSiderealChart
+  chartContract: UnifiedSiderealChart,
+  chartContext: ChartAiContext
 ) {
   if (!overview.chart || !overview.chartRecord) {
     throw new Error("A stored chart is required before Ask My Chart can respond.");
@@ -1044,6 +1304,12 @@ async function buildToolBundle(
       getApprovedRemediesTool(userId, overview.chartRecord.id, overview.chart),
       getPublishedInsightsTool(question),
     ]);
+  const dailyPanchangSnapshot = dailyPredictionPattern.test(question)
+    ? getDailyPanchangSnapshotTool(overview)
+    : null;
+  const dailyRashifalSnapshot = dailyPredictionPattern.test(question)
+    ? getDailyRashifalSnapshotTool(chartContext)
+    : null;
 
   const relatedProducts = await getRelatedProductsTool(
     approvedRemedies.remedies.map((remedy) => remedy.slug)
@@ -1059,6 +1325,8 @@ async function buildToolBundle(
     chartSummaryFacts,
     transitSnapshot,
     predictiveAssistantContext,
+    dailyPanchangSnapshot,
+    dailyRashifalSnapshot,
     approvedRemedies,
     relatedProducts,
     publishedInsights,
@@ -1083,6 +1351,14 @@ function getUsedToolNames(
 
   if (classification.intent === "TRANSIT_EXPLANATION" && toolBundle.transitSnapshot) {
     names.push("get_current_transit_snapshot");
+  }
+
+  if (toolBundle.dailyPanchangSnapshot) {
+    names.push("get_daily_panchang_context");
+  }
+
+  if (toolBundle.dailyRashifalSnapshot) {
+    names.push("get_daily_rashifal_context");
   }
 
   if (toolBundle.predictiveAssistantContext) {
@@ -1118,6 +1394,11 @@ async function generateAssistantReply(
       assistantMessage: formatStructuredReplyForConversation(structuredResponse, {
         locale: resolvedLocale,
         includeDisclaimer: true,
+        intent: classification.intent,
+        question,
+        chartContext,
+        toolBundle,
+        planType,
       }),
       structuredResponse,
       providerKey: "policy-refusal",
@@ -1159,6 +1440,11 @@ async function generateAssistantReply(
     assistantMessage: formatStructuredReplyForConversation(structuredResponse, {
       locale: resolvedLocale,
       includeDisclaimer: true,
+      intent: classification.intent,
+      question,
+      chartContext,
+      toolBundle,
+      planType,
     }),
     structuredResponse,
     providerKey: response.providerKey,
@@ -1440,6 +1726,9 @@ export async function sendAskMyChartMessage(input: {
       assistantMessage = formatStructuredReplyForConversation(structuredResponse, {
         locale,
         includeDisclaimer: true,
+        intent: classification.intent,
+        question,
+        planType,
       });
       providerKey = "chart-context-fallback";
       model = null;
@@ -1480,6 +1769,9 @@ export async function sendAskMyChartMessage(input: {
         assistantMessage = formatStructuredReplyForConversation(structuredResponse, {
           locale,
           includeDisclaimer: true,
+          intent: classification.intent,
+          question,
+          planType,
         });
         providerKey = "chart-context-fallback";
         model = null;
@@ -1510,6 +1802,9 @@ export async function sendAskMyChartMessage(input: {
         assistantMessage = formatStructuredReplyForConversation(structuredResponse, {
           locale,
           includeDisclaimer: true,
+          intent: classification.intent,
+          question,
+          planType,
         });
         providerKey = "data-completeness-fallback";
         model = null;
@@ -1538,7 +1833,8 @@ export async function sendAskMyChartMessage(input: {
           input.userId,
           question,
           overview,
-          savedChartResult.data.chart
+          savedChartResult.data.chart,
+          chartContext
         );
 
         if (!chartContext.verification.isValidForAssistant) {
@@ -1555,6 +1851,11 @@ export async function sendAskMyChartMessage(input: {
           assistantMessage = formatStructuredReplyForConversation(structuredResponse, {
             locale,
             includeDisclaimer: true,
+            intent: classification.intent,
+            question,
+            chartContext,
+            toolBundle,
+            planType,
           });
           providerKey = "verification-fallback";
           model = null;

@@ -12,6 +12,7 @@ export type ChartAiContext = {
     degreeInSign: number;
   };
   moonSign: string | null;
+  sunSign: string | null;
   rashiPlacements: Array<{
     body: PlanetaryBody;
     sign: string;
@@ -25,6 +26,16 @@ export type ChartAiContext = {
     house: number;
     sign: string;
     occupants: PlanetaryBody[];
+  }>;
+  houseLordship: Array<{
+    house: number;
+    sign: string;
+    ruler: PlanetaryBody;
+  }>;
+  signLordship: Array<{
+    sign: string;
+    ruler: PlanetaryBody;
+    house: number;
   }>;
   strengths: string[];
   warnings: string[];
@@ -136,6 +147,28 @@ function buildWarnings(
   return warnings;
 }
 
+function buildLordshipContext(natalChart: NatalChartResponse) {
+  const houseLordship = natalChart.houses
+    .slice()
+    .sort((left, right) => left.house - right.house)
+    .map((house) => ({
+      house: house.house,
+      sign: house.sign,
+      ruler: house.ruler,
+    }));
+
+  const signLordship = houseLordship.map((house) => ({
+    sign: house.sign,
+    ruler: house.ruler,
+    house: house.house,
+  }));
+
+  return {
+    houseLordship,
+    signLordship,
+  };
+}
+
 export function mapUnifiedChartToAiContext(input: {
   chart: SiderealBirthChart;
   natalChart: NatalChartResponse;
@@ -181,6 +214,8 @@ export function mapUnifiedChartToAiContext(input: {
     }));
 
   const moonSign = placementsByBody.get("MOON")?.sign ?? null;
+  const sunSign = placementsByBody.get("SUN")?.sign ?? null;
+  const lordshipContext = buildLordshipContext(input.natalChart);
   const confidence = toConfidence(input.chart.verification.verification_status);
   const isValidForAssistant =
     input.chart.verification.is_verified_for_chart_logic &&
@@ -194,8 +229,11 @@ export function mapUnifiedChartToAiContext(input: {
       degreeInSign: input.chart.lagna.degree_in_sign,
     },
     moonSign,
+    sunSign,
     rashiPlacements,
     housePlacements,
+    houseLordship: lordshipContext.houseLordship,
+    signLordship: lordshipContext.signLordship,
     strengths: buildStrengths(input.natalChart, placementsByBody),
     warnings: buildWarnings(input.natalChart, input.chart),
     verification: {

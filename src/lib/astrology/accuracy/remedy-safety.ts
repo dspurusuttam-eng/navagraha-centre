@@ -57,12 +57,13 @@ const unsafeRemedyPatterns = [
 export const remedySafetyGuidelines = [
   "Prefer simple remedies: mantra, prayer, meditation, charity, diya lighting, and disciplined routine.",
   "Keep gemstones optional and consultative.",
+  "Recommend expert consultation before gemstones, rudraksha, or yantra use.",
   "Never pressure purchases; shop links are optional support only.",
   "Avoid extreme ritual claims, fear messaging, or guaranteed cure wording.",
 ] as const;
 
 export const gemstoneSafetyNote =
-  "Gemstone should be selected only after proper chart analysis.";
+  "Gemstone should be selected only after proper chart analysis and expert consultation.";
 
 export function assessRemedySafety(text: string): RemedySafetyAssessment {
   const normalized = text.trim();

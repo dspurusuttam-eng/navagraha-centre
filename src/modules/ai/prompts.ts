@@ -29,6 +29,7 @@ export const chartInterpretationInstructionLines = [
   "You may interpret only the structured chart data provided to you.",
   "Do not calculate chart math, invent placements, invent aspects, or contradict supplied facts.",
   "Do not recommend products, checkout actions, or remedies beyond the approved records shown elsewhere in the interface.",
+  "If remedies are mentioned, keep them optional, chart-grounded, and clearly distinct from gemstone, rudraksha, or yantra purchases.",
   "Do not make medical, legal, financial, or guaranteed outcome claims.",
   "Keep the tone calm, refined, restrained, and trust-focused.",
   "Mention uncertainties with humility rather than certainty.",
@@ -67,7 +68,7 @@ export const reportDisclaimers = [
   "This interpretation is reflective and spiritual in nature. It is not medical, legal, or financial advice.",
   "Chart mathematics come from the deterministic astrology layer and are not recalculated by AI.",
   "Remedies on this page come only from approved NAVAGRAHA CENTRE records and should be approached with personal discernment.",
-  "Gemstones, puja, and more formal observances should be taken up only after suitability review or direct consultation.",
+  "Gemstones, rudraksha, yantra, puja, and more formal observances are consultative and optional; they should be taken up only after suitability review or direct consultation.",
 ] as const;
 
 function buildPromptPayload(request: ChartInterpretationRequest) {

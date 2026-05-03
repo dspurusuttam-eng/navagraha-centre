@@ -81,6 +81,35 @@ function validateLength(text: string) {
   return null;
 }
 
+function detectRawStructuredLeak(text: string) {
+  const normalized = text.trim();
+
+  if (!normalized) {
+    return null;
+  }
+
+  const hasJsonWrapper =
+    normalized.startsWith("{") || normalized.includes("```json");
+  const hasStructuredKeys =
+    /"answer"\s*:/.test(normalized) &&
+    /"reasoning"\s*:/.test(normalized) &&
+    /"confidence"\s*:/.test(normalized);
+  const hasInternalContextKeys =
+    /"astrologyDataSummary"\s*:|\"jyotish_core_context\"\s*:|\"timing_context\"\s*:|\"transit_context\"\s*:|\"verification\"\s*:|\"warnings\"\s*:/.test(
+      normalized
+    );
+
+  if ((hasJsonWrapper && hasStructuredKeys) || hasInternalContextKeys) {
+    return issue(
+      "RAW_STRUCTURED_CONTEXT_LEAK",
+      "Assistant output appears to expose raw structured JSON or internal context keys.",
+      "high"
+    );
+  }
+
+  return null;
+}
+
 export function validateAssistantStructuredOutput(input: {
   output: AstrologyAssistantStructuredResponse;
   locale: string;
@@ -114,6 +143,12 @@ export function validateAssistantStructuredOutput(input: {
 
   if (lengthIssue) {
     issues.push(lengthIssue);
+  }
+
+  const rawLeakIssue = detectRawStructuredLeak(combined);
+
+  if (rawLeakIssue) {
+    issues.push(rawLeakIssue);
   }
 
   const policy = assessPredictionPolicy(combined);
