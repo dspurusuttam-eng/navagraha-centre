@@ -8,6 +8,12 @@ import { Card } from "@/components/ui/card";
 import { trackEvent } from "@/lib/analytics/track-event";
 import { getApiErrorMessage } from "@/lib/api/http";
 import { listPremiumProductCatalog, type PremiumProductKey } from "@/modules/report/premium-product-catalog";
+import {
+  ReportPresentationBlockCard,
+  ReportPresentationCover,
+  ReportPresentationMetaGrid,
+} from "@/modules/report/components/report-presentation";
+import type { ReportPresentationModel } from "@/modules/report/report-presentation-types";
 import { getMonetizationUpgradeCopy } from "@/modules/subscriptions/monetization-content";
 
 type PremiumReportType = "CAREER" | "MARRIAGE" | "FINANCE" | "HEALTH";
@@ -22,6 +28,7 @@ type PremiumReportOutput = {
     title: string;
     content: string;
   }>;
+  presentation: ReportPresentationModel;
   message: string;
   upgradeHref: string | null;
 };
@@ -39,11 +46,11 @@ const premiumReportOptions: Array<{
 function getUpgradeCtaLabel(reportType: PremiumReportType) {
   switch (reportType) {
     case "CAREER":
-      return "Get Free Report";
+      return "Unlock Full Report";
     case "MARRIAGE":
-      return "Get Free Report";
+      return "Unlock Full Report";
     default:
-      return "Get Free Report";
+      return "Unlock Full Report";
   }
 }
 
@@ -158,7 +165,7 @@ export function PremiumReportGenerator() {
   }
 
   return (
-    <Card className="space-y-5">
+    <Card className="report-print-surface report-print-card space-y-5">
       <div className="space-y-2">
         <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
           Report Generator
@@ -208,13 +215,45 @@ export function PremiumReportGenerator() {
 
       {result ? (
         <div className="space-y-4 rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4">
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="mobile-safe-cluster">
             <Badge tone="accent">{result.title}</Badge>
             <Badge tone="neutral">{result.status}</Badge>
+            <Badge tone="outline">
+              {result.presentation.export.status === "STRUCTURE_READY"
+                ? "Print-ready structure"
+                : "Export pending"}
+            </Badge>
           </div>
-          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-            {result.preview}
-          </p>
+
+          <ReportPresentationCover
+            eyebrow={result.presentation.cover.eyebrow}
+            title={result.presentation.cover.title}
+            summary={result.preview}
+            lead={result.presentation.cover.lead}
+            badges={result.presentation.cover.badges}
+          />
+
+          <ReportPresentationMetaGrid
+            items={[
+              {
+                label: "Access",
+                value: result.presentation.metadata.accessTier,
+              },
+              {
+                label: "Unlock",
+                value: result.presentation.metadata.unlockState,
+              },
+              {
+                label: "Preview Sections",
+                value: String(result.presentation.metadata.previewSections),
+              },
+              {
+                label: "Premium Sections",
+                value: String(result.presentation.metadata.premiumSections),
+              },
+            ]}
+          />
+
           {result.status !== "FULL_ACCESS" ? (
             <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
               {result.status === "LIMIT_REACHED"
@@ -249,98 +288,90 @@ export function PremiumReportGenerator() {
             </div>
           ) : null}
 
-          {result.status === "FULL_ACCESS" ? (
-            <div className="space-y-4">
-              <div className="space-y-3">
-                {result.fullReportSections.map((section) => (
-                  <div
-                    key={section.title}
-                    className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 py-4"
-                  >
-                    <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-                      {section.title}
-                    </p>
-                    <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                      {section.content}
-                    </p>
-                  </div>
-                ))}
-              </div>
+          <div className="space-y-4">
+            <div className="space-y-3">
+              {result.presentation.sectionBlocks.map((section) => (
+                <ReportPresentationBlockCard key={section.id} block={section} />
+              ))}
+            </div>
 
-              <div className="flex flex-wrap gap-3">
-                <Link
-                  href="/dashboard/ask-my-chart"
-                  className="inline-flex rounded-full border border-[color:var(--color-border)] px-4 py-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-foreground)] transition [transition-duration:var(--motion-duration-base)] hover:border-[color:var(--color-border-strong)]"
-                  onClick={() => {
-                    trackEvent("premium_click", {
-                      page: "/dashboard/report",
-                      feature: `premium-report-followup-${result.reportType.toLowerCase()}`,
-                    });
-                  }}
-                >
-                  Ask My Chart About This Report
-                </Link>
-                <Link
-                  href="/dashboard/consultations"
-                  className="inline-flex rounded-full border border-[color:var(--color-border)] px-4 py-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-foreground)] transition [transition-duration:var(--motion-duration-base)] hover:border-[color:var(--color-border-strong)]"
-                >
-                  Continue To Consultation
-                </Link>
-              </div>
-
-              {result.planType === "PREMIUM" ? (
-                <div className="rounded-[var(--radius-xl)] border border-[rgba(215,187,131,0.24)] bg-[rgba(215,187,131,0.08)] px-4 py-4">
-                  <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-                    {
-                      getMonetizationUpgradeCopy({
-                        prompt: "report-pro",
-                        surface: "protected",
-                        planType: result.planType,
-                      }).title
-                    }
-                  </p>
-                  <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                    {
-                      getMonetizationUpgradeCopy({
-                        prompt: "report-pro",
-                        surface: "protected",
-                        planType: result.planType,
-                      }).message
-                    }
-                  </p>
+            {result.status === "FULL_ACCESS" ? (
+              <>
+                <div className="report-no-print flex flex-wrap gap-3">
                   <Link
-                    href="/dashboard/consultations"
-                    className="mt-4 inline-flex rounded-full border border-[color:var(--color-border)] px-4 py-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-foreground)] transition [transition-duration:var(--motion-duration-base)] hover:border-[color:var(--color-border-strong)]"
+                    href="/dashboard/ask-my-chart"
+                    className="inline-flex rounded-full border border-[color:var(--color-border)] px-4 py-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-foreground)] transition [transition-duration:var(--motion-duration-base)] hover:border-[color:var(--color-border-strong)]"
                     onClick={() => {
-                      trackEvent("upgrade_prompt_view", {
+                      trackEvent("premium_click", {
                         page: "/dashboard/report",
-                        feature: "premium-report-pro-journey",
-                        plan: result.planType,
-                      });
-                      trackEvent("upgrade_started", {
-                        page: "/dashboard/report",
-                        feature: "premium-report-pro-journey",
-                        plan: result.planType,
+                        feature: `premium-report-followup-${result.reportType.toLowerCase()}`,
                       });
                     }}
                   >
-                    {
-                      getMonetizationUpgradeCopy({
-                        prompt: "report-pro",
-                        surface: "protected",
-                        planType: result.planType,
-                      }).ctaLabel
-                    }
+                    Ask My Chart About This Report
+                  </Link>
+                  <Link
+                    href="/dashboard/consultations"
+                    className="inline-flex rounded-full border border-[color:var(--color-border)] px-4 py-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-foreground)] transition [transition-duration:var(--motion-duration-base)] hover:border-[color:var(--color-border-strong)]"
+                  >
+                    Continue To Consultation
                   </Link>
                 </div>
-              ) : null}
-            </div>
-          ) : null}
+
+                {result.planType === "PREMIUM" ? (
+                  <div className="report-print-card rounded-[var(--radius-xl)] border border-[rgba(215,187,131,0.24)] bg-[rgba(215,187,131,0.08)] px-4 py-4">
+                    <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                      {
+                        getMonetizationUpgradeCopy({
+                          prompt: "report-pro",
+                          surface: "protected",
+                          planType: result.planType,
+                        }).title
+                      }
+                    </p>
+                    <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                      {
+                        getMonetizationUpgradeCopy({
+                          prompt: "report-pro",
+                          surface: "protected",
+                          planType: result.planType,
+                        }).message
+                      }
+                    </p>
+                    <Link
+                      href="/dashboard/consultations"
+                      className="mt-4 inline-flex rounded-full border border-[color:var(--color-border)] px-4 py-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-foreground)] transition [transition-duration:var(--motion-duration-base)] hover:border-[color:var(--color-border-strong)]"
+                      onClick={() => {
+                        trackEvent("upgrade_prompt_view", {
+                          page: "/dashboard/report",
+                          feature: "premium-report-pro-journey",
+                          plan: result.planType,
+                        });
+                        trackEvent("upgrade_started", {
+                          page: "/dashboard/report",
+                          feature: "premium-report-pro-journey",
+                          plan: result.planType,
+                        });
+                      }}
+                    >
+                      {
+                        getMonetizationUpgradeCopy({
+                          prompt: "report-pro",
+                          surface: "protected",
+                          planType: result.planType,
+                        }).ctaLabel
+                      }
+                    </Link>
+                  </div>
+                ) : null}
+              </>
+            ) : null}
+          </div>
 
           {result.upgradeHref ? (
             <Link
               href={result.upgradeHref}
-              className="inline-flex rounded-full border border-[color:var(--color-border)] px-4 py-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-foreground)] transition [transition-duration:var(--motion-duration-base)] hover:border-[color:var(--color-border-strong)]"
+              className="report-no-print inline-flex rounded-full border border-[color:var(--color-border)] px-4 py-2 text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-foreground)] transition [transition-duration:var(--motion-duration-base)] hover:border-[color:var(--color-border-strong)]"
               onClick={() => {
                 trackEvent("premium_click", {
                   page: "/dashboard/report",

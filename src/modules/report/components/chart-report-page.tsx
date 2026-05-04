@@ -11,6 +11,10 @@ import { Section } from "@/components/ui/section";
 import { OfferRecommendationPanel } from "@/modules/offers/components/offer-recommendation-panel";
 import type { OfferRecommendationResult } from "@/modules/offers/types";
 import { type RemedyRecommendation } from "@/modules/remedies";
+import {
+  ReportPresentationCover,
+  ReportPresentationMetaGrid,
+} from "@/modules/report/components/report-presentation";
 import { PremiumProductCatalogSection } from "@/modules/report/components/premium-product-catalog-section";
 import { PremiumReportGenerator } from "@/modules/report/components/premium-report-generator";
 import { getLabelForRemedyType } from "@/modules/report/components/remedy-presenter";
@@ -355,10 +359,42 @@ export function ChartReportPage({
       title="A calm first reading built on structured chart facts."
       description="This report keeps chart mathematics and remedy selection deterministic, while the explanation layer stays interpretive and carefully bounded."
       tone="transparent"
-      className="pt-0"
+      className="report-print-surface pt-0"
     >
+      {report.presentation ? (
+        <div className="mb-6 space-y-4">
+          <ReportPresentationCover
+            eyebrow={report.presentation.cover.eyebrow}
+            title={report.presentation.cover.title}
+            summary={report.reportSummary.headline}
+            lead={report.presentation.cover.lead}
+            badges={report.presentation.cover.badges}
+          />
+          <ReportPresentationMetaGrid
+            items={[
+              {
+                label: "Access",
+                value: report.presentation.metadata.accessTier,
+              },
+              {
+                label: "Unlock",
+                value: report.presentation.metadata.unlockState,
+              },
+              {
+                label: "Preview Sections",
+                value: String(report.presentation.metadata.previewSections),
+              },
+              {
+                label: "Premium Sections",
+                value: String(report.presentation.metadata.premiumSections),
+              },
+            ]}
+          />
+        </div>
+      ) : null}
+
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)]">
-        <Card tone="accent" className="relative overflow-hidden space-y-6">
+        <Card tone="accent" className="report-print-card report-print-avoid-break relative overflow-hidden space-y-6">
           <div className="pointer-events-none absolute right-[-10%] top-[-12%] h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(215,187,131,0.22)_0%,rgba(215,187,131,0)_70%)]" />
           <div className="relative z-10 flex flex-wrap items-center gap-3">
             <Badge tone="accent">🔥 Currently Free (Limited Time)</Badge>
@@ -413,7 +449,7 @@ export function ChartReportPage({
           </div>
         </Card>
 
-        <Card className="space-y-5">
+        <Card className="report-print-card report-print-avoid-break space-y-5">
           <div className="space-y-2">
             <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
               Chart Foundations
@@ -527,7 +563,7 @@ export function ChartReportPage({
       />
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-        <Card className="space-y-5">
+        <Card className="report-print-card report-print-avoid-break space-y-5">
           <div className="space-y-2">
             <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
               Content Intelligence
@@ -725,7 +761,7 @@ export function ChartReportPage({
 
           {hasDeeperReportLayers ? (
             <>
-            <Card className="space-y-5">
+            <Card className="report-print-card report-print-avoid-break space-y-5">
               <div className="space-y-2">
                 <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
                   AI Interpretation
@@ -755,7 +791,7 @@ export function ChartReportPage({
               </div>
             </Card>
 
-            <Card className="space-y-5">
+            <Card className="report-print-card report-print-avoid-break space-y-5">
               <div className="space-y-2">
                 <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
                   Chart Signals
@@ -868,7 +904,7 @@ export function ChartReportPage({
       </div>
 
       <div className="mt-6 grid gap-6">
-        <Card className="space-y-5">
+        <Card className="report-print-card report-print-avoid-break space-y-5">
           <div className="space-y-2">
             <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
               Consultation Context
@@ -915,7 +951,7 @@ export function ChartReportPage({
           )}
         </Card>
 
-        <Card className="space-y-5">
+        <Card className="report-print-card report-print-avoid-break space-y-5">
           <div className="space-y-2">
             <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
               Recommended Remedies
@@ -946,7 +982,7 @@ export function ChartReportPage({
       </div>
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-        <Card className="space-y-5">
+        <Card className="report-print-card report-print-avoid-break space-y-5">
           <div className="space-y-2">
             <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
               Caution
@@ -963,7 +999,7 @@ export function ChartReportPage({
           </p>
         </Card>
 
-        <Card className="space-y-5">
+        <Card className="report-print-card report-print-avoid-break space-y-5">
           <div className="space-y-2">
             <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
               Disclosures

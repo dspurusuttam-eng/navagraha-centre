@@ -1,9 +1,18 @@
 import "server-only";
 
 import { getPrisma } from "@/lib/prisma";
+import type { ReportPredictiveContext } from "@/lib/ai/types";
 import type { CurrentCycleSummary } from "@/lib/astrology/current-cycle";
 import type { ChartInsights } from "@/lib/ai/types";
 import type { ChartReportState } from "@/modules/report/service";
+import {
+  buildPremiumReportFoundation,
+  resolveReportFoundationTypeKey,
+  type ReportFoundation,
+  type ReportUnlockState,
+  type ReportSectionPlan,
+} from "@/modules/report/report-foundation";
+import { buildReportPresentationModel } from "@/modules/report/report-presentation";
 import {
   getMonetizationUpgradeCopy,
   getUpgradeHrefForUserPlan,
@@ -33,6 +42,8 @@ export type PremiumReportOutput = {
     title: string;
     content: string;
   }>;
+  sectionPlan: ReportSectionPlan[];
+  presentation: ReturnType<typeof buildReportPresentationModel>;
   message: string;
   upgradeHref: string | null;
 };
@@ -65,70 +76,27 @@ function normalizeReportType(value: string) {
   return normalized;
 }
 
-function buildPreviewText(input: {
-  reportType: PremiumReportType;
-  chartReport: ChartReportState;
-  insights: ChartInsights;
-  currentCycle: CurrentCycleSummary;
-}) {
-  const chartNarrative =
-    input.chartReport.status === "ready"
-      ? input.chartReport.overview.chart.summary.narrative
-      : input.insights.summary;
-  const lens = premiumReportLensMap[input.reportType];
-  const timingLine =
-    input.currentCycle.status === "ready"
-      ? input.currentCycle.synthesis.activeAreas[0]?.summary ??
-        input.currentCycle.synthesis.overview
-      : input.currentCycle.unavailableReason;
+function mapReportTypeToLensType(reportType: PremiumReportType) {
+  return reportType;
+}
 
-  return `${chartNarrative} This preview focuses on ${lens}. Timing context: ${timingLine}`;
+function buildPreviewText(input: {
+  foundation: ReportFoundation;
+}) {
+  const lens = premiumReportLensMap[
+    mapReportTypeToLensType(input.foundation.reportType as PremiumReportType)
+  ];
+
+  return `${input.foundation.contextSummary.executiveSummary} This preview focuses on ${lens}. Deeper timing and full section analysis are available after unlocking the report.`;
 }
 
 function buildFullSections(input: {
-  reportType: PremiumReportType;
-  chartReport: ChartReportState;
-  insights: ChartInsights;
-  currentCycle: CurrentCycleSummary;
+  foundation: ReportFoundation;
 }) {
-  const sections: Array<{ title: string; content: string }> = [];
-  const chartLead =
-    input.chartReport.status === "ready"
-      ? input.chartReport.interpretation.summary
-      : input.insights.summary;
-  const strengths = input.insights.strengths.slice(0, 3).join(" ");
-  const challenges = input.insights.challenges.slice(0, 3).join(" ");
-  const recommendations = input.insights.recommendations.slice(0, 3).join(" ");
-
-  sections.push({
-    title: "Chart Lens",
-    content: `${chartLead} The applied lens here is ${premiumReportLensMap[input.reportType]}.`,
-  });
-  sections.push({
-    title: "Strengths To Build",
-    content: strengths || "No dominant strengths are available in this context yet.",
-  });
-  sections.push({
-    title: "Pressure Points To Pace",
-    content:
-      challenges || "No dominant pressure points are available in this context yet.",
-  });
-
-  if (input.currentCycle.status === "ready") {
-    sections.push({
-      title: "Current Timing",
-      content: input.currentCycle.synthesis.overview,
-    });
-  }
-
-  sections.push({
-    title: "Action Focus",
-    content:
-      recommendations ||
-      "Use measured follow-up and consultation support for any high-stakes decisions.",
-  });
-
-  return sections;
+  return input.foundation.sectionPlan.map((section) => ({
+    title: section.title,
+    content: section.content,
+  }));
 }
 
 export async function generatePremiumReportForUser(input: {
@@ -137,20 +105,36 @@ export async function generatePremiumReportForUser(input: {
   chartReport: ChartReportState;
   insights: ChartInsights;
   currentCycle: CurrentCycleSummary;
+  predictiveContext: ReportPredictiveContext | null;
 }) {
   const reportType = normalizeReportType(input.reportType);
+  const foundationType = resolveReportFoundationTypeKey(reportType);
   const { plan, usage } = await getUserPlanUsageModel(input.userId);
   const reportLimit = plan.usage_limits.premiumReportsPerMonth;
   const monthlyUsageReached =
     reportLimit !== null &&
     usage.premium_reports_generated_this_month >= reportLimit;
   const title = premiumReportTitleMap[reportType];
-  const preview = buildPreviewText({
-    reportType,
+  const unlockState: ReportUnlockState = monthlyUsageReached
+    ? "LIMIT_REACHED"
+    : isPremiumPlan(plan.plan_type)
+      ? "UNLOCKED"
+      : "PREVIEW_LOCKED";
+  const foundation = buildPremiumReportFoundation({
+    reportType: foundationType,
+    accessTier: plan.plan_type,
+    unlockState,
     chartReport: input.chartReport,
     insights: input.insights,
     currentCycle: input.currentCycle,
+    predictiveContext: input.predictiveContext,
+    accuracy:
+      input.chartReport.status === "ready" ? input.chartReport.accuracy : null,
   });
+  const preview = buildPreviewText({
+    foundation,
+  });
+  const presentation = buildReportPresentationModel(foundation);
 
   if (monthlyUsageReached) {
     const upgradeCopy = getMonetizationUpgradeCopy({
@@ -165,6 +149,8 @@ export async function generatePremiumReportForUser(input: {
       title,
       preview,
       fullReportSections: [],
+      sectionPlan: foundation.sectionPlan,
+      presentation,
       message: upgradeCopy.message,
       upgradeHref: getUpgradeHrefForUserPlan(plan.plan_type, "protected"),
     } satisfies PremiumReportOutput;
@@ -213,16 +199,15 @@ export async function generatePremiumReportForUser(input: {
       title,
       preview,
       fullReportSections: [],
+      sectionPlan: foundation.sectionPlan,
+      presentation,
       message: upgradeCopy.message,
       upgradeHref: getUpgradeHrefForUserPlan(plan.plan_type, "protected"),
     } satisfies PremiumReportOutput;
   }
 
   const fullReportSections = buildFullSections({
-    reportType,
-    chartReport: input.chartReport,
-    insights: input.insights,
-    currentCycle: input.currentCycle,
+    foundation,
   });
 
   await getPrisma().aiTaskRun.create({
@@ -261,6 +246,8 @@ export async function generatePremiumReportForUser(input: {
     title,
     preview,
     fullReportSections,
+    sectionPlan: foundation.sectionPlan,
+    presentation,
     message:
       "Full premium report generated from your saved chart context and current cycle data.",
     upgradeHref: null,

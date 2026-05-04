@@ -107,6 +107,7 @@ export async function POST(request: Request) {
       chartReport: report.chartReport,
       insights: report.insights,
       currentCycle: report.currentCycle,
+      predictiveContext: report.predictiveContext,
     });
 
     if (premiumReport.status !== "FULL_ACCESS") {

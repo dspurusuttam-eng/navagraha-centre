@@ -258,6 +258,41 @@ select {
   color: var(--color-trust-text);
 }
 
+.report-print-surface {
+  color: var(--color-ink-black);
+}
+
+.report-print-card,
+.report-print-avoid-break {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.report-print-page-break-before {
+  break-before: page;
+  page-break-before: always;
+}
+
+.report-premium-locked {
+  border-style: dashed;
+}
+
+@media print {
+  .report-print-surface {
+    background: #fff !important;
+    color: #111 !important;
+  }
+
+  .report-print-surface .report-no-print {
+    display: none !important;
+  }
+
+  .report-print-surface .report-print-card {
+    box-shadow: none !important;
+    background: #fff !important;
+  }
+}
+
 .utility-page-flow {
   --utility-card-border: rgba(184, 137, 67, 0.24);
   --utility-card-border-strong: rgba(184, 137, 67, 0.36);

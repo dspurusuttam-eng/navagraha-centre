@@ -148,6 +148,7 @@ export async function getChartReport(
       reportId: overview.chartRecord.id,
       subjectName,
       preferredLanguageLabel: localeLabel ?? overview.preferredLanguageLabel,
+      reportType: "FULL_KUNDLI",
       chart: overview.chart,
       signals: recommendations.signals,
     });

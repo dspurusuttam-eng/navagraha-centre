@@ -12,6 +12,8 @@ import { suggestRemedies } from "@/lib/ai/remedies-engine";
 import type { GeneratedUserReport, ReportPredictiveContext } from "@/lib/ai/types";
 import { retrieveOrRefreshBirthChartForUser } from "@/modules/astrology/chart-retrieval";
 import { getPredictiveReportContextForChart } from "@/modules/astrology/predictive-report-context";
+import { buildPremiumReportFoundation } from "@/modules/report/report-foundation";
+import { buildReportPresentationModel } from "@/modules/report/report-presentation";
 import { getChartReport } from "@/modules/report/service";
 
 function buildReportPredictiveContext(
@@ -76,6 +78,17 @@ export async function generateUserReport(
       retrieveOrRefreshBirthChartForUser(userId),
     ]);
     const predictiveContext = buildReportPredictiveContext(userChartResult);
+    const foundation = buildPremiumReportFoundation({
+      reportType: "FULL_KUNDLI",
+      accessTier: "UNKNOWN",
+      unlockState: "UNLOCKED",
+      chartReport,
+      insights,
+      currentCycle,
+      predictiveContext,
+      accuracy:
+        chartReport.status === "ready" ? chartReport.accuracy : null,
+    });
 
     return {
       chartReport:
@@ -88,13 +101,14 @@ export async function generateUserReport(
       consultationNotes: context.consultationNotes ?? [],
       remedies: remedies ?? [],
       predictiveContext,
+      presentation: buildReportPresentationModel(foundation),
       reportSummary: {
         headline:
-          chartReport.status === "ready"
-            ? "Your stored chart now carries a readable private narrative."
+          foundation.chartContext.hasSavedChart
+            ? "Your Full Kundli report is ready."
             : "Your report surface is ready for the first saved chart.",
-        overview: context.consultationNotes.length
-          ? "This report now combines structured chart insight with the latest consultation context already attached to your private account."
+        overview: foundation.chartContext.hasSavedChart
+          ? `${foundation.contextSummary.chartFoundation} Current timing: ${foundation.contextSummary.timingInsight} ${foundation.timingContext.predictiveOverview ? `Predictive focus: ${foundation.timingContext.predictiveOverview}.` : ""} Key strength: ${foundation.contextSummary.keyStrengths[0] ?? "No dominant strengths are available yet."} Caution focus: ${foundation.contextSummary.cautionAreas[0] ?? "No dominant caution areas are available yet."} ${foundation.contextSummary.nextStepCta}`
           : "This report combines structured chart insight with a clean data layer, ready for future consultation notes and deeper AI support.",
       },
     };

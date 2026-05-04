@@ -8,10 +8,22 @@ export type AiTaskContext = {
   promptVersionLabel?: string;
 };
 
+export type ChartInterpretationReportType =
+  | "FULL_KUNDLI"
+  | "CAREER"
+  | "MARRIAGE"
+  | "FINANCE"
+  | "HEALTH"
+  | "EDUCATION"
+  | "BUSINESS"
+  | "DAILY"
+  | "YEARLY";
+
 export type ChartInterpretationRequest = {
   reportId: string;
   subjectName: string;
   preferredLanguageLabel: string;
+  reportType?: ChartInterpretationReportType;
   chart: NatalChartResponse;
   signals: ReportChartSignal[];
   context?: AiTaskContext;

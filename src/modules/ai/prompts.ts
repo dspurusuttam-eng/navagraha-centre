@@ -3,6 +3,7 @@ import type {
   ChartInterpretationResult,
   ChartInterpretationSection,
   ChartInterpretationSectionKey,
+  ChartInterpretationReportType,
 } from "@/modules/ai/types";
 import {
   buildPredictionPrompt,
@@ -71,10 +72,35 @@ export const reportDisclaimers = [
   "Gemstones, rudraksha, yantra, puja, and more formal observances are consultative and optional; they should be taken up only after suitability review or direct consultation.",
 ] as const;
 
+function getReportTypeInterpretationGuidance(
+  reportType: ChartInterpretationReportType | undefined
+) {
+  if (reportType !== "FULL_KUNDLI") {
+    return [
+      "Keep the report balanced, chart-grounded, and aligned to the asked report type.",
+      "Use the supplied chart facts, signals, and disclaimers only.",
+    ];
+  }
+
+  return [
+    "For FULL_KUNDLI reports, make the summary read like an overall life-theme overview rather than a narrow topic answer.",
+    "Cover chart foundation, personality tone, house emphasis, planetary influence, dasha rhythm, transit tone, life-area snapshots, and practical guidance across the four sections.",
+    "When available, mention Lagna, Moon sign, Sun sign, house placements, divisional charts such as D9 or D10, and timing layers in simple public-friendly language.",
+    "Keep deeper house, timing, yoga, and remedy detail grounded and premium-calibrated without exposing raw chart data.",
+  ];
+}
+
 function buildPromptPayload(request: ChartInterpretationRequest) {
+  const moonSign = request.chart.planets.find((planet) => planet.body === "MOON")?.sign ?? null;
+  const sunSign = request.chart.planets.find((planet) => planet.body === "SUN")?.sign ?? null;
+
   return {
+    reportType: request.reportType ?? "FULL_KUNDLI",
     subjectName: request.subjectName,
     preferredLanguage: request.preferredLanguageLabel,
+    lagnaSign: request.chart.ascendantSign,
+    moonSign,
+    sunSign,
     chart: {
       ascendantSign: request.chart.ascendantSign,
       houseSystem: request.chart.houseSystem,
@@ -97,6 +123,14 @@ function buildPromptPayload(request: ChartInterpretationRequest) {
         orb: aspect.orb,
         exact: aspect.exact,
       })),
+      divisionalCharts: request.chart.divisionalCharts.map((chart) => ({
+        code: chart.code,
+        title: chart.title,
+        focus: chart.focus,
+        ascendantSign: chart.ascendantSign,
+        highlights: chart.highlights.slice(0, 3),
+      })),
+      currentDashaLord: request.chart.currentDasha?.lord ?? null,
     },
     signals: request.signals.map((signal) => ({
       key: signal.key,
@@ -115,6 +149,7 @@ export function buildChartInterpretationPrompt(
 ) {
   const payload = buildPromptPayload(request);
   const locale = resolvePredictionLocale(request.preferredLanguageLabel);
+  const typeGuidance = getReportTypeInterpretationGuidance(request.reportType);
   const structuredPrompt = buildPredictionPrompt({
     toolType: "REPORT",
     locale,
@@ -125,6 +160,7 @@ export function buildChartInterpretationPrompt(
       "Return plain text sections only.",
       "Use exactly these labels in this order: SUMMARY, ORIENTATION, STRENGTHS, CONSIDERATIONS, INTEGRATION, CAUTION.",
       "Keep each section to one concise and readable paragraph.",
+      ...typeGuidance,
     ],
   });
 
@@ -132,6 +168,7 @@ export function buildChartInterpretationPrompt(
     instructions: structuredPrompt.instructions,
     input: [
       template.userPrompt,
+      `Report type: ${payload.reportType}.`,
       structuredPrompt.input,
     ].join("\n\n"),
   };
@@ -150,34 +187,51 @@ export function createFallbackInterpretation(
     .map((body) => body.toLowerCase())
     .join(", ");
   const primarySignal = request.signals[0];
+  const isFullKundli = request.reportType === "FULL_KUNDLI";
+  const orientationSummary = isFullKundli
+    ? `The Full Kundli view centers on ${request.chart.ascendantSign.toLowerCase()} rising with ${dominantBodies || "measured"} emphasis, so the chart reads best as a complete life pattern rather than a single-topic prediction.`
+    : `The stored chart points toward a ${request.chart.ascendantSign.toLowerCase()} ascendant and a tone shaped most clearly by ${dominantBodies || "the chart's dominant bodies"}.`;
+  const strengthsSummary = isFullKundli
+    ? `The strongest reading emerges when you connect the birth chart foundation, house pattern, and current timing rhythm. ${request.chart.summary.narrative} The chart supports steady growth, measured judgment, and a calmer reading of life areas over time.`
+    : `The chart's strengths appear strongest when you trust rhythm over urgency. ${request.chart.summary.narrative} This suggests depth, patience, and a capacity to grow through well-held commitments.`;
+  const considerationsSummary = isFullKundli
+    ? primarySignal
+      ? `${primarySignal.title} ${primarySignal.rationale} In a Full Kundli frame, that caution belongs beside house emphasis, timing rhythm, and practical pacing rather than as a fixed fate statement.`
+      : "The Full Kundli view asks for balanced pacing across career, relationships, money, health, study, and purpose. Stronger results are more likely to come from consistency, reflection, and refined restraint than from dramatic interventions."
+    : primarySignal
+      ? `${primarySignal.title} ${primarySignal.rationale} The helpful question is not how to force a change, but how to hold the chart's pressure points with more clarity and less strain.`
+      : "The chart asks for discernment around overstretching. Stronger results are more likely to come from consistency, reflection, and refined restraint than from dramatic interventions.";
+  const integrationSummary = isFullKundli
+    ? "Keep the practical foundation simple: stable routine, measured devotional practice, and gradual refinement across the major life areas. Read the report as a structured mirror for self-understanding, not as a fixed decree. Where divisional charts such as D9 or D10 are available, treat them as supportive refinement rather than a separate destiny."
+    : "Keep the practical foundation simple: stable routine, measured devotional practice, and gradual refinement. The report is best read as a structured mirror for personal reflection rather than a fixed prediction.";
 
   return {
     providerKey,
     model,
     generatedAtUtc: new Date().toISOString(),
-    summary: `${request.chart.ascendantSign.toLowerCase()} rising with ${dominantBodies || "measured"} emphasis suggests a chart that benefits from quiet steadiness, careful pacing, and reflective structure.`,
+    summary: isFullKundli
+      ? `Full Kundli view for ${request.chart.ascendantSign.toLowerCase()} rising suggests a life pattern that benefits from quiet steadiness, careful pacing, and reflective structure across the whole chart.`
+      : `${request.chart.ascendantSign.toLowerCase()} rising with ${dominantBodies || "measured"} emphasis suggests a chart that benefits from quiet steadiness, careful pacing, and reflective structure.`,
     sections: [
       {
         key: "orientation",
         title: "Orientation",
-        body: `The stored chart points toward a ${request.chart.ascendantSign.toLowerCase()} ascendant and a tone shaped most clearly by ${dominantBodies || "the chart's dominant bodies"}. The overall posture is not about intensity, but about learning where your effort becomes more effective when it is deliberate and calm.`,
+        body: orientationSummary,
       },
       {
         key: "strengths",
         title: "Strengths",
-        body: `The chart's strengths appear strongest when you trust rhythm over urgency. ${request.chart.summary.narrative} This suggests depth, patience, and a capacity to grow through well-held commitments.`,
+        body: strengthsSummary,
       },
       {
         key: "considerations",
         title: "Considerations",
-        body: primarySignal
-          ? `${primarySignal.title} ${primarySignal.rationale} The helpful question is not how to force a change, but how to hold the chart's pressure points with more clarity and less strain.`
-          : "The chart asks for discernment around overstretching. Stronger results are more likely to come from consistency, reflection, and refined restraint than from dramatic interventions.",
+        body: considerationsSummary,
       },
       {
         key: "integration",
         title: "Integration",
-        body: "Keep the practical foundation simple: stable routine, measured devotional practice, and gradual refinement. The report is best read as a structured mirror for personal reflection rather than a fixed prediction.",
+        body: integrationSummary,
       },
     ],
     caution:

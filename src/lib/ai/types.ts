@@ -1,4 +1,5 @@
 import type { ChartReportState } from "@/modules/report/service";
+import type { ReportPresentationModel } from "@/modules/report/report-presentation-types";
 import type { CurrentCycleSummary } from "@/lib/astrology/current-cycle";
 import type { PredictiveReportContextOutput } from "@/modules/astrology/predictive-report-context";
 
@@ -57,6 +58,7 @@ export type GeneratedUserReport = {
   consultationNotes: ConsultationNoteSummary[];
   remedies: RemedySuggestion[];
   predictiveContext: ReportPredictiveContext | null;
+  presentation?: ReportPresentationModel;
   reportSummary: {
     headline: string;
     overview: string;
