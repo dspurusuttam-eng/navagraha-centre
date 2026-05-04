@@ -459,7 +459,10 @@ function detectFinanceIntents(question: string): FinanceFormatterIntent[] {
   add("wealth_growth", /\bwealth|wealth growth|net worth|assets|accumulation\b/i);
   add("business_profit", /\bbusiness profit|profit|margin|revenue|turnover|cash flow|cashflow\b/i);
   add("investment_risk", /\binvest|investment|portfolio|stocks?|crypto|trading|speculation|risk\b/i);
-  add("financial_timing", /\btiming|period|phase|cycle|dasha|transit|now|current\b/i);
+  add(
+    "financial_timing",
+    /\b(financial timing|finance timing|money timing|income timing|wealth timing|savings timing|debt timing|loan timing|cash flow timing|financial period|money period|income period|wealth period)\b/i
+  );
   add("sudden_gain_loss", /\bsudden gain|sudden loss|unexpected gain|unexpected loss\b/i);
   add("financial_discipline", /\bdiscipline|budget|budgeting|planning|control|prudence\b/i);
   add("money_remedy", /\bremedy|mantra|prayer|ritual|upaya|solution\b/i);
