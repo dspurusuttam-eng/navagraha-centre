@@ -24,6 +24,15 @@ export type DashboardAiHistoryItem = {
   category: DashboardAiCategory;
   updatedAtUtc: string;
   resumeHref: string;
+  moduleLabel?: string;
+  title?: string;
+  firstQuestion?: string;
+  lastMessageSnippet?: string;
+  snippet?: string;
+  relatedKundliId?: string | null;
+  relatedKundliLabel?: string | null;
+  createdAtUtc?: string;
+  continueHref?: string;
 };
 
 export type DashboardSavedReportItem = {
@@ -33,6 +42,16 @@ export type DashboardSavedReportItem = {
   generatedAtUtc: string;
   viewHref: string;
   downloadHref: string | null;
+  type?: string;
+  accessLabel?: "Ready" | "Preview" | "Locked";
+  paymentLabel?: "Paid" | "Pending" | "Limit Reached";
+  previewAllowed?: boolean;
+  lastViewedAtUtc?: string | null;
+  relatedKundliId?: string | null;
+  previewHref?: string;
+  fullHref?: string;
+  unlockHref?: string;
+  generateHref?: string;
 };
 
 export type DashboardCompatibilityHistoryItem = {
@@ -49,13 +68,34 @@ export type DashboardConsultationHistory = {
     label: string;
     scheduleLine: string;
     status: ConsultationListItem["status"];
+    relatedKundliId: string | null;
+    relatedKundliLabel: string | null;
+    astrologerName: string;
+    updatedAtUtc: string;
     openHref: string;
   }>;
   past: Array<{
     id: string;
     label: string;
+    status: ConsultationListItem["status"];
+    scheduleLine: string;
     completedLine: string;
     followUpNote: string | null;
+    relatedKundliId: string | null;
+    relatedKundliLabel: string | null;
+    astrologerName: string;
+    updatedAtUtc: string;
+    openHref: string;
+  }>;
+  recent: Array<{
+    id: string;
+    label: string;
+    status: ConsultationListItem["status"];
+    scheduleLine: string;
+    relatedKundliId: string | null;
+    relatedKundliLabel: string | null;
+    astrologerName: string;
+    updatedAtUtc: string;
     openHref: string;
   }>;
   preparationGuidance: readonly string[];
@@ -264,6 +304,7 @@ function buildConsultationHistory(
   const now = Date.now();
   const upcoming: DashboardConsultationHistory["upcoming"] = [];
   const past: DashboardConsultationHistory["past"] = [];
+  const recent: DashboardConsultationHistory["recent"] = [];
 
   consultations.forEach((consultation) => {
     const scheduledMs = consultation.scheduledForUtc
@@ -279,29 +320,38 @@ function buildConsultationHistory(
       consultation.scheduledEndUtc,
       consultation.clientTimezone
     );
+    const entry = {
+      id: consultation.id,
+      label: consultation.serviceLabel,
+      scheduleLine,
+      status: consultation.status,
+      relatedKundliId: consultation.relatedKundliId,
+      relatedKundliLabel: consultation.birthProfileLabel,
+      astrologerName: consultation.astrologerName,
+      updatedAtUtc: consultation.updatedAtUtc,
+      openHref: `/dashboard/consultations/${consultation.id}`,
+    };
 
     if (isPast) {
       past.push({
-        id: consultation.id,
-        label: consultation.serviceLabel,
+        ...entry,
         completedLine: scheduleLine,
         followUpNote: consultation.intakeSummary ?? consultation.topicFocus ?? null,
-        openHref: `/dashboard/consultations/${consultation.id}`,
       });
     } else {
-      upcoming.push({
-        id: consultation.id,
-        label: consultation.serviceLabel,
-        scheduleLine,
-        status: consultation.status,
-        openHref: `/dashboard/consultations/${consultation.id}`,
-      });
+      upcoming.push(entry);
     }
   });
+
+  recent.push(
+    ...upcoming.slice(0, 2),
+    ...past.slice(0, 1)
+  );
 
   return {
     upcoming: upcoming.slice(0, 3),
     past: past.slice(0, 3),
+    recent: recent.slice(0, 3),
     preparationGuidance: [
       "Bring one clear topic focus and one practical outcome you want from the session.",
       "Review your chart and recent AI notes before the session for stronger continuity.",
@@ -322,6 +372,7 @@ export function createEmptyDashboardEcosystemData(): DashboardEcosystemData {
     consultationHistory: {
       upcoming: [],
       past: [],
+      recent: [],
       preparationGuidance: [
         "Prepare your topic focus before booking so guidance can stay specific.",
       ],
@@ -427,4 +478,3 @@ export async function getDashboardEcosystemData(
     },
   };
 }
-

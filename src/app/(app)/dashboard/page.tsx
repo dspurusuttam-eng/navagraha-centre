@@ -15,6 +15,10 @@ import { buildPageMetadata } from "@/lib/metadata";
 import { getDashboardOverview } from "@/modules/account/service";
 import { DashboardEcosystemHome } from "@/modules/account/components/dashboard-ecosystem-home";
 import {
+  buildDashboardHubData,
+  createEmptyDashboardHubData,
+} from "@/modules/account/dashboard-hub";
+import {
   createEmptyDashboardEcosystemData,
   getDashboardEcosystemData,
   type DashboardEcosystemData,
@@ -54,6 +58,25 @@ export const metadata = buildPageMetadata({
 
 function createFallbackDashboardOverview() {
   return {
+    profile: {
+      id: "",
+      userId: "",
+      phone: null,
+      preferredLanguage: null,
+      dob: null,
+      tob: null,
+      city: null,
+      region: null,
+      country: null,
+      timezone: null,
+      latitude: null,
+      longitude: null,
+      chartData: null,
+      bio: null,
+      notes: null,
+      createdAt: new Date(0),
+      updatedAt: new Date(0),
+    },
     readinessScore: 0,
     counts: {
       birthData: 0,
@@ -276,12 +299,39 @@ export default async function DashboardPage() {
       return createFallbackRetentionDashboardState();
     }
   })();
-  const hasBirthProfile = Boolean(chartOverview.birthProfile);
-  const hasChart = Boolean(chartOverview.chartRecord && chartOverview.chart);
-  const leadConsultationNote = report.consultationNotes[0]?.note ?? null;
+  const userEmail = (session.user as { email?: string | null }).email ?? null;
+  const dashboardHub = (() => {
+    try {
+      return buildDashboardHubData({
+        userId: session.user.id,
+        userName: session.user.name,
+        userEmail,
+        overview,
+        chartOverview,
+        insights,
+        report,
+        ecosystem: ecosystemState,
+        retentionState,
+        subscriptionState,
+        userPlan: userPlanState.plan,
+        usage: userPlanState.usage,
+      });
+    } catch (error) {
+      console.error("Dashboard hub contract failed", error);
+
+      return createEmptyDashboardHubData({
+        userName: session.user.name,
+        userEmail,
+      });
+    }
+  })();
+  const hasBirthProfile = dashboardHub.activeKundli.hasBirthProfile;
+  const hasChart = dashboardHub.activeKundli.hasChart;
+  const leadConsultationNote =
+    dashboardHub.consultations.leadNote ?? report.consultationNotes[0]?.note ?? null;
   const leadRemedy = report.remedies[0] ?? null;
-  const currentCycle = report.currentCycle;
-  const hasAdvancedTimingInsights = subscriptionState.featureGates.advancedTimingInsights;
+  const currentCycle = dashboardHub.dasha.currentCycle;
+  const hasAdvancedTimingInsights = dashboardHub.access.advancedTimingInsights;
 
   return (
     <Section
@@ -308,7 +358,7 @@ export default async function DashboardPage() {
             Profile Readiness
           </p>
           <p className="font-[family-name:var(--font-display)] text-5xl text-[color:var(--color-foreground)]">
-            {overview.readinessScore}/4
+            {dashboardHub.profile.readinessScore}/4
           </p>
           <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
             Identity, location, and a primary birth record move this workspace
@@ -382,7 +432,7 @@ export default async function DashboardPage() {
 
           <div className="space-y-4 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
             <p>{insights.summary}</p>
-            <p>{report.reportSummary.overview}</p>
+            <p>{dashboardHub.reports.current.overview}</p>
             <div className="flex flex-wrap gap-3">
               <Link
                 href="/dashboard/onboarding"

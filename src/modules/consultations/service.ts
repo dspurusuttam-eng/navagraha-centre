@@ -45,6 +45,7 @@ export type ConsultationListItem = {
   status: ConsultationStatus;
   serviceLabel: string;
   packageSlug: string | null;
+  relatedKundliId: string | null;
   scheduledForUtc: string | null;
   scheduledEndUtc: string | null;
   clientTimezone: string | null;
@@ -54,6 +55,7 @@ export type ConsultationListItem = {
   intakeSummary: string | null;
   birthProfileLabel: string | null;
   createdAtUtc: string;
+  updatedAtUtc: string;
 };
 
 export type ConsultationDetail = ConsultationListItem & {
@@ -206,6 +208,8 @@ function mapConsultationRecordToDetail(record: {
   topicFocus: string | null;
   intakeSummary: string | null;
   createdAt: Date;
+  updatedAt: Date;
+  birthDataId: string | null;
   birthData: { label: string } | null;
   package: {
     slug: string;
@@ -229,9 +233,11 @@ function mapConsultationRecordToDetail(record: {
     intakeSummary: record.intakeSummary,
     birthProfileLabel: record.birthData?.label ?? null,
     createdAtUtc: record.createdAt.toISOString(),
+    updatedAtUtc: record.updatedAt.toISOString(),
     packageDescription: record.package?.description ?? null,
     durationMinutes: record.package?.durationMinutes ?? null,
     slotTimezone: record.slot?.timezone ?? null,
+    relatedKundliId: record.birthDataId ?? null,
   };
 }
 
@@ -480,6 +486,7 @@ export async function getUserConsultations(userId: string) {
       confirmationCode: true,
       status: true,
       serviceLabel: true,
+      birthDataId: true,
       scheduledFor: true,
       scheduledEnd: true,
       clientTimezone: true,
@@ -488,6 +495,7 @@ export async function getUserConsultations(userId: string) {
       topicFocus: true,
       intakeSummary: true,
       createdAt: true,
+      updatedAt: true,
       birthData: {
         select: { label: true },
       },
@@ -523,6 +531,7 @@ export async function getConsultationDetail(
       confirmationCode: true,
       status: true,
       serviceLabel: true,
+      birthDataId: true,
       scheduledFor: true,
       scheduledEnd: true,
       clientTimezone: true,
@@ -531,6 +540,7 @@ export async function getConsultationDetail(
       topicFocus: true,
       intakeSummary: true,
       createdAt: true,
+      updatedAt: true,
       birthData: {
         select: { label: true },
       },
@@ -590,22 +600,24 @@ export async function getConsultationAdminBoard(): Promise<ConsultationAdminBoar
       },
       orderBy: [{ scheduledFor: "asc" }, { createdAt: "desc" }],
       take: 8,
-      select: {
-        id: true,
-        confirmationCode: true,
-        status: true,
-        serviceLabel: true,
-        scheduledFor: true,
-        scheduledEnd: true,
-        clientTimezone: true,
-        preferredLanguage: true,
-        astrologerName: true,
+    select: {
+      id: true,
+      confirmationCode: true,
+      status: true,
+      serviceLabel: true,
+      birthDataId: true,
+      scheduledFor: true,
+      scheduledEnd: true,
+      clientTimezone: true,
+      preferredLanguage: true,
+      astrologerName: true,
         topicFocus: true,
         intakeSummary: true,
-        createdAt: true,
-        birthData: {
-          select: { label: true },
-        },
+      createdAt: true,
+      updatedAt: true,
+      birthData: {
+        select: { label: true },
+      },
         package: {
           select: {
             slug: true,

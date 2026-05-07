@@ -125,3 +125,5 @@ export async function saveProfileSettings({
     }),
   ]);
 }
+
+export type DashboardOverview = Awaited<ReturnType<typeof getDashboardOverview>>;

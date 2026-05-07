@@ -26,6 +26,21 @@ function getStatusTone(status: ConsultationListItem["status"]) {
   }
 }
 
+function formatStatusLabel(status: ConsultationListItem["status"]) {
+  switch (status) {
+    case "CONFIRMED":
+      return "Confirmed";
+    case "REQUESTED":
+      return "Requested";
+    case "CANCELLED":
+      return "Cancelled";
+    case "COMPLETED":
+      return "Completed";
+    default:
+      return "Pending";
+  }
+}
+
 export function ConsultationDashboardList({
   consultations,
   retentionSnapshot,
@@ -160,7 +175,7 @@ export function ConsultationDashboardList({
               <div className="space-y-2">
                 <div className="flex flex-wrap items-center gap-3">
                   <Badge tone={getStatusTone(consultation.status)}>
-                    {consultation.status}
+                    {formatStatusLabel(consultation.status)}
                   </Badge>
                   <Badge tone="neutral">{consultation.confirmationCode}</Badge>
                 </div>
@@ -203,18 +218,32 @@ export function ConsultationDashboardList({
               </div>
               <div className="space-y-1">
                 <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-                  Birth Profile
+                  Related Kundli
                 </p>
                 <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-foreground)]">
                   {consultation.birthProfileLabel ?? "Not attached"}
                 </p>
+                <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                  Kundli ID
+                </p>
+                <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-foreground)]">
+                  {consultation.relatedKundliId ?? "Unavailable"}
+                </p>
               </div>
               <div className="space-y-1">
                 <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-                  Created
+                  Astrologer
                 </p>
                 <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-foreground)]">
-                  {formatConsultationCreatedLine(consultation.createdAtUtc)}
+                  {consultation.astrologerName}
+                </p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                  Updated
+                </p>
+                <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-foreground)]">
+                  {formatConsultationCreatedLine(consultation.updatedAtUtc)}
                 </p>
               </div>
             </div>
@@ -224,6 +253,21 @@ export function ConsultationDashboardList({
                 Focus: {consultation.topicFocus}
               </p>
             ) : null}
+
+            <div className="flex flex-wrap gap-2">
+              <Link
+                href={`/dashboard/consultations/${consultation.id}`}
+                className={buttonStyles({ size: "sm", tone: "secondary" })}
+              >
+                View Details
+              </Link>
+              <Link
+                href="/dashboard/consultations/book"
+                className={buttonStyles({ size: "sm", tone: "ghost" })}
+              >
+                Book Again
+              </Link>
+            </div>
           </Card>
         ))}
       </div>
