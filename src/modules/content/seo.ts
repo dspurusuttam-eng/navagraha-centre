@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { createArticleMetadata } from "@/lib/seo/metadata";
+import { createArticleMetadata, createPageMetadata } from "@/lib/seo/metadata";
 import {
   createArticleSchema,
   createBreadcrumbSchema,
@@ -21,7 +21,21 @@ type ContentMetadataOptions = {
   alternatesByLocale?: Partial<Record<SupportedLocale, string>>;
 };
 
+type ContentListingMetadataOptions = {
+  locale?: string | null;
+  explicitLocalePrefix?: boolean;
+  keywords?: readonly string[];
+  index?: boolean;
+};
+
 function getCollectionInfo(path: string) {
+  if (path.startsWith("/articles")) {
+    return {
+      path: "/articles",
+      label: "Blog & Articles",
+    };
+  }
+
   if (path.startsWith("/from-the-desk")) {
     return {
       path: "/from-the-desk",
@@ -54,6 +68,25 @@ export function buildContentMetadata(
     modifiedTime: entry.updatedAt,
     authors: [entry.author.name],
     index: entry.status === "published",
+  });
+}
+
+export function buildContentListingMetadata(
+  title: string,
+  description: string,
+  path: string,
+  options?: ContentListingMetadataOptions
+): Metadata {
+  const locale = resolveLocale(options?.locale);
+
+  return createPageMetadata({
+    title,
+    description,
+    path,
+    locale,
+    explicitLocalePrefix: options?.explicitLocalePrefix,
+    keywords: options?.keywords ?? [],
+    index: options?.index ?? true,
   });
 }
 
@@ -118,6 +151,33 @@ export function getInsightsCollectionStructuredData(options?: {
     path: "/from-the-desk",
     locale,
   });
+}
+
+export function getContentListingStructuredData(options: {
+  title: string;
+  description: string;
+  path: string;
+  locale?: string | null;
+  explicitLocalePrefix?: boolean;
+}) {
+  const locale = resolveLocale(options.locale);
+
+  return [
+    createCollectionPageSchema({
+      name: options.title,
+      description: options.description,
+      path: options.path,
+      locale,
+    }),
+    createBreadcrumbSchema({
+      locale,
+      explicitLocalePrefix: options.explicitLocalePrefix,
+      items: [
+        { name: "Home", path: "/" },
+        { name: options.title, path: options.path },
+      ],
+    }),
+  ] satisfies JsonLdRecord[];
 }
 
 export function getDefaultContentAlternates() {

@@ -42,7 +42,11 @@ function normalizePath(path: string) {
 
 function shouldIndexPath(path: string) {
   return !(
+    path.startsWith("/_next") ||
     path.startsWith("/dashboard") ||
+    path.startsWith("/account") ||
+    path.startsWith("/auth") ||
+    path.startsWith("/login") ||
     path.startsWith("/settings") ||
     path.startsWith("/sign-") ||
     path.startsWith("/forgot-password") ||

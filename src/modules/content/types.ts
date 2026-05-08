@@ -13,7 +13,15 @@ export type ContentStatus = "draft" | "review" | "published" | "archived";
 
 export type ContentCategory =
   | "Daily Rashifal"
+  | "Monthly Rashifal"
   | "Panchang"
+  | "Graha"
+  | "Nakshatra"
+  | "Kundli"
+  | "Marriage"
+  | "Career"
+  | "Finance"
+  | "Health"
   | "Vedic Astrology"
   | "Remedies"
   | "Numerology"

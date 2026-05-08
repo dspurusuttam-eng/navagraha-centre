@@ -19,7 +19,9 @@ import { AdSlot } from "@/modules/content/components/ad-slot";
 import { AuthorAuthorityBlock } from "@/modules/content/components/author-authority-block";
 import { ContentCard } from "@/modules/content/components/content-card";
 import { EditorialAttribution } from "@/modules/content/components/editorial-attribution";
+import { ContentLinkBlock } from "@/modules/content/components/content-link-block";
 import { getDeskCopy } from "@/modules/content/from-desk-copy";
+import { getEditorialLinkGroups } from "@/modules/content/linking";
 import type { ContentEntry } from "@/modules/content/types";
 import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
 import {
@@ -488,6 +490,10 @@ export default async function DeskArticleDetailPage({
             </div>
           </div>
         ) : null}
+      </Section>
+
+      <Section tone="transparent" category="content">
+        <ContentLinkBlock groups={getEditorialLinkGroups(entry)} />
       </Section>
     </>
   );

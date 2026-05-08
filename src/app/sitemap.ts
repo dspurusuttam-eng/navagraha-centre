@@ -96,6 +96,7 @@ const staticRoutes: readonly StaticRouteDefinition[] = [
   { path: "/consultation", changeFrequency: "weekly", priority: 0.9 },
   { path: "/shop", changeFrequency: "weekly", priority: 0.7 },
   { path: "/from-the-desk", changeFrequency: "daily", priority: 0.8 },
+  { path: "/articles", changeFrequency: "daily", priority: 0.8 },
   { path: "/insights", changeFrequency: "daily", priority: 0.8 },
   { path: "/tools", changeFrequency: "weekly", priority: 0.7 },
   { path: "/calculators", changeFrequency: "weekly", priority: 0.7 },
