@@ -29,10 +29,38 @@ export const adminRouteCatalog = [
     allowedRoles: ["founder"],
   },
   {
+    href: "/admin/kundlis",
+    label: "Kundlis",
+    description:
+      "Review safe saved Kundli summaries, active profile flags, and recent chart activity.",
+    allowedRoles: ["founder", "support"],
+  },
+  {
+    href: "/admin/reports",
+    label: "Reports",
+    description:
+      "Inspect safe premium report generation history and access state snapshots.",
+    allowedRoles: ["founder", "support"],
+  },
+  {
     href: "/admin/consultations",
     label: "Consultations",
     description: "Manage consultation requests, notes, and session statuses.",
     allowedRoles: ["founder", "support"],
+  },
+  {
+    href: "/admin/content",
+    label: "Content",
+    description:
+      "Manage editorial records and the From the Desk content surface.",
+    allowedRoles: ["founder", "editor"],
+  },
+  {
+    href: "/admin/rashifal",
+    label: "Daily Rashifal",
+    description:
+      "Review manual daily Rashifal publishing entries and template coverage.",
+    allowedRoles: ["founder", "editor"],
   },
   {
     href: "/admin/orders",
@@ -81,6 +109,13 @@ export const adminRouteCatalog = [
     description:
       "Track prompt versions and promote approved template revisions.",
     allowedRoles: ["founder", "editor"],
+  },
+  {
+    href: "/admin/settings",
+    label: "Settings",
+    description:
+      "Review operational health, counts, and admin readiness snapshots.",
+    allowedRoles: ["founder", "support"],
   },
 ] as const satisfies readonly AdminRouteDefinition[];
 

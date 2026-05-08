@@ -96,6 +96,12 @@ export default async function AdminUsersPage() {
                     <td className="border-y border-[color:var(--color-border)] bg-[rgba(255,255,255,0.015)] px-3 py-4 align-top">
                       <div className="space-y-2 text-[length:var(--font-size-body-sm)] text-[color:var(--color-muted)]">
                         <p>
+                          Kundlis:{" "}
+                          <span className="text-[color:var(--color-foreground)]">
+                            {user._count.birthData}
+                          </span>
+                        </p>
+                        <p>
                           Charts:{" "}
                           <span className="text-[color:var(--color-foreground)]">
                             {user._count.charts}

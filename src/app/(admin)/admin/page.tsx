@@ -5,6 +5,7 @@ import { AdminPageIntro } from "@/modules/admin/components/admin-page-intro";
 import { AdminStatusBadge } from "@/modules/admin/components/admin-status-badge";
 import { formatAdminDateTime } from "@/modules/admin/format";
 import { buildAdminMetadata } from "@/modules/admin/metadata";
+import { getAdminLaunchMetrics } from "@/modules/admin/control-panel";
 import { getVisibleAdminRoutes } from "@/modules/admin/permissions";
 import { getAdminDashboardData } from "@/modules/admin/service";
 import { requireAdminSession } from "@/modules/auth/server";
@@ -20,9 +21,21 @@ export const metadata = buildAdminMetadata({
 export default async function AdminPage() {
   const session = await requireAdminSession();
   const dashboard = await getAdminDashboardData();
+  const metrics = await getAdminLaunchMetrics();
   const quickLinks = getVisibleAdminRoutes(session.adminRoles).filter(
     (route) => route.href !== "/admin"
   );
+  const quickActionOrder = [
+    "/admin/content",
+    "/admin/rashifal",
+    "/admin/consultations",
+    "/admin/users",
+    "/admin/reports",
+    "/admin/products",
+  ] as const;
+  const quickActions = quickActionOrder
+    .map((href) => quickLinks.find((route) => route.href === href))
+    .filter((route): route is (typeof quickLinks)[number] => Boolean(route));
 
   return (
     <div className="space-y-6">
@@ -32,7 +45,7 @@ export default async function AdminPage() {
         description="The control panel is organized around the real workflow layers already in the product: members, consultation operations, merchandising, remedy governance, editorial review, and AI prompt versioning."
         actions={
           <>
-            {quickLinks.slice(0, 3).map((route) => (
+            {quickActions.slice(0, 4).map((route) => (
               <Link
                 key={route.href}
                 href={route.href}
@@ -142,6 +155,156 @@ export default async function AdminPage() {
           </p>
           <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-muted)]">
             Published code-backed content entries currently exposed publicly.
+          </p>
+        </Card>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <Card className="space-y-3">
+          <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+            Saved Kundlis
+          </p>
+          <p className="font-[family-name:var(--font-display)] text-5xl text-[color:var(--color-foreground)]">
+            {metrics.savedKundlis}
+          </p>
+          <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-muted)]">
+            All stored birth profiles tied to chart generation.
+          </p>
+        </Card>
+
+        <Card className="space-y-3">
+          <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+            Premium Report Runs
+          </p>
+          <p className="font-[family-name:var(--font-display)] text-5xl text-[color:var(--color-foreground)]">
+            {metrics.premiumReportRuns}
+          </p>
+          <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-muted)]">
+            Recent premium report generation task runs only.
+          </p>
+        </Card>
+
+        <Card className="space-y-3">
+          <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+            Unlocked Reports
+          </p>
+          <p className="font-[family-name:var(--font-display)] text-5xl text-[color:var(--color-foreground)]">
+            {metrics.unlockedPremiumReportRuns}
+          </p>
+          <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-muted)]">
+            Full-access runs in the recent report task sample.
+          </p>
+        </Card>
+
+        <Card className="space-y-3">
+          <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+            Pending Consultations
+          </p>
+          <p className="font-[family-name:var(--font-display)] text-5xl text-[color:var(--color-foreground)]">
+            {metrics.pendingConsultations}
+          </p>
+          <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-muted)]">
+            Requested or confirmed sessions still moving through the queue.
+          </p>
+        </Card>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <Card className="space-y-3">
+          <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+            Total Consultations
+          </p>
+          <p className="font-[family-name:var(--font-display)] text-5xl text-[color:var(--color-foreground)]">
+            {metrics.consultations}
+          </p>
+          <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-muted)]">
+            Every consultation request captured in the admin surface.
+          </p>
+        </Card>
+
+        <Card className="space-y-3">
+          <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+            Orders / Payments
+          </p>
+          <p className="font-[family-name:var(--font-display)] text-5xl text-[color:var(--color-foreground)]">
+            {metrics.orders}
+          </p>
+          <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-muted)]">
+            Payment records stay internal and read-only here.
+          </p>
+        </Card>
+
+        <Card className="space-y-3">
+          <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+            Active Products
+          </p>
+          <p className="font-[family-name:var(--font-display)] text-5xl text-[color:var(--color-foreground)]">
+            {metrics.activeProducts}
+          </p>
+          <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-muted)]">
+            Catalog items currently active for shop surfaces.
+          </p>
+        </Card>
+
+        <Card className="space-y-3">
+          <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+            Rashifal Entries
+          </p>
+          <p className="font-[family-name:var(--font-display)] text-5xl text-[color:var(--color-foreground)]">
+            {metrics.dailyRashifalEntries}
+          </p>
+          <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-muted)]">
+            Manual daily Rashifal entries ready for editorial review.
+          </p>
+        </Card>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <Card className="space-y-3">
+          <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+            Editorial Records
+          </p>
+          <p className="font-[family-name:var(--font-display)] text-5xl text-[color:var(--color-foreground)]">
+            {metrics.editorialRecords}
+          </p>
+          <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-muted)]">
+            Editorial records in draft, review, or published states.
+          </p>
+        </Card>
+
+        <Card className="space-y-3">
+          <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+            Ready Kundlis
+          </p>
+          <p className="font-[family-name:var(--font-display)] text-5xl text-[color:var(--color-foreground)]">
+            {metrics.readyKundlis}
+          </p>
+          <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-muted)]">
+            Ready chart records available for reports and AI history.
+          </p>
+        </Card>
+
+        <Card className="space-y-3">
+          <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+            Paid Orders
+          </p>
+          <p className="font-[family-name:var(--font-display)] text-5xl text-[color:var(--color-foreground)]">
+            {metrics.paidOrders}
+          </p>
+          <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-muted)]">
+            Completed payment states only, without exposing secrets.
+          </p>
+        </Card>
+
+        <Card className="space-y-3">
+          <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+            Preview Reports
+          </p>
+          <p className="font-[family-name:var(--font-display)] text-5xl text-[color:var(--color-foreground)]">
+            {metrics.previewPremiumReportRuns}
+          </p>
+          <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-muted)]">
+            Recent premium report preview runs still under the gate.
           </p>
         </Card>
       </div>

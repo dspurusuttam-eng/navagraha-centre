@@ -222,6 +222,7 @@ export async function listAdminUsers() {
       },
       _count: {
         select: {
+          birthData: true,
           charts: true,
           consultations: true,
           orders: true,
