@@ -1,8 +1,15 @@
 import Script from "next/script";
 import { monetizationConfig } from "@/lib/monetization/monetization-config";
+import { hasAdvertisingConsentFromRequest } from "@/lib/consent";
 
-export function AdSenseScript() {
-  if (!monetizationConfig.enableAdsense || !monetizationConfig.adsensePublisherId) {
+export async function AdSenseScript() {
+  const canRenderAds = await hasAdvertisingConsentFromRequest().catch(() => false);
+
+  if (
+    !canRenderAds ||
+    !monetizationConfig.enableAdsense ||
+    !monetizationConfig.adsensePublisherId
+  ) {
     return null;
   }
 
@@ -16,4 +23,3 @@ export function AdSenseScript() {
     />
   );
 }
-
