@@ -1,5 +1,6 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import {
   applyConsentPatch,
   consentCookieName,
@@ -9,6 +10,8 @@ import {
   type ConsentPreferencePatch,
   type ConsentPreferences,
 } from "@/lib/consent/consent-preferences";
+
+const consentChangeEventName = "navagraha-consent-change";
 
 function readCookieValue(cookieName: string) {
   if (typeof document === "undefined") {
@@ -55,6 +58,14 @@ function writeCookieValue(
   document.cookie = cookieParts.join("; ");
 }
 
+function emitConsentChange() {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.dispatchEvent(new Event(consentChangeEventName));
+}
+
 export function getConsentPreferences(): ConsentPreferences {
   if (typeof window === "undefined") {
     return getDefaultConsentPreferences();
@@ -76,6 +87,7 @@ export function setConsentPreferences(
       updatedAtUtc: new Date().toISOString(),
     })
   );
+  emitConsentChange();
 
   return {
     ...next,
@@ -91,7 +103,29 @@ export function resetConsentPreferences(): ConsentPreferences {
   } satisfies ConsentPreferences;
 
   writeCookieValue(consentCookieName, serializeConsentPreferences(stamped));
+  emitConsentChange();
 
   return stamped;
 }
 
+export function useConsentPreferences() {
+  return useSyncExternalStore(
+    (onStoreChange) => {
+      if (typeof window === "undefined") {
+        return () => {};
+      }
+
+      const handleStoreChange = () => onStoreChange();
+
+      window.addEventListener(consentChangeEventName, handleStoreChange);
+      window.addEventListener("storage", handleStoreChange);
+
+      return () => {
+        window.removeEventListener(consentChangeEventName, handleStoreChange);
+        window.removeEventListener("storage", handleStoreChange);
+      };
+    },
+    getConsentPreferences,
+    getDefaultConsentPreferences
+  );
+}

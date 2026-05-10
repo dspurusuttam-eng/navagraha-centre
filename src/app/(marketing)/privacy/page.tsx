@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PageHero } from "@/components/site/page-hero";
+import { ConsentPreferencesPanel } from "@/components/site/consent-preferences-panel";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
@@ -36,6 +37,14 @@ const policySections = [
       "Critical flows use structured validation and safe fallback states.",
       "Public analytics excludes raw birth details and credential material.",
       "Access checks are enforced in protected chart, report, and account surfaces.",
+    ],
+  },
+  {
+    title: "Cookies and Consent",
+    points: [
+      "Necessary cookies support the site shell, localization, and secure navigation.",
+      "Analytics, advertising, and personalization remain opt-in and can be updated later.",
+      "Third-party tracking is not enabled until a real consent choice and provider config exist.",
     ],
   },
 ] as const;
@@ -81,6 +90,20 @@ export default function PrivacyPolicyPage() {
               </ul>
             </Card>
           ))}
+        </div>
+      </Section>
+
+      <Section className="pt-0" tone="transparent" eyebrow="Your Choices" title="Manage consent preferences">
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)]">
+          <ConsentPreferencesPanel />
+          <Card className="space-y-4">
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              Consent is stored in a first-party preference cookie only. It does not contain birth details, chart data, AI prompts, or payment information.
+            </p>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              If you clear site data, the site falls back to necessary-only mode.
+            </p>
+          </Card>
         </div>
       </Section>
 
