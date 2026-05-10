@@ -1,6 +1,8 @@
+import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
 import { buildPageMetadata } from "@/lib/metadata";
 import { SeoEntryPageView } from "@/modules/marketing/components/seo-entry-page";
 import { getSeoEntryPage } from "@/modules/marketing/seo-entry-pages";
+import { RetentionPreferenceBridge } from "@/modules/retention/components/retention-preference-bridge";
 
 const entry = getSeoEntryPage("daily-rashifal");
 
@@ -12,5 +14,14 @@ export const metadata = buildPageMetadata({
 });
 
 export default function DailyRashifalPage() {
-  return <SeoEntryPageView entry={entry} />;
+  return (
+    <>
+      <AnalyticsEventTracker
+        event="daily_rashifal_view"
+        payload={{ page: "/daily-rashifal", feature: "daily-rashifal-entry" }}
+      />
+      <RetentionPreferenceBridge section="daily-rashifal" />
+      <SeoEntryPageView entry={entry} />
+    </>
+  );
 }

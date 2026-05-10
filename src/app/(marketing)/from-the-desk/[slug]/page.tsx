@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
+import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
 import { ConsultationCTA } from "@/components/monetization/ConsultationCTA";
 import { GemstoneGuidanceCTA } from "@/components/monetization/GemstoneGuidanceCTA";
 import { ReportCTA } from "@/components/monetization/ReportCTA";
@@ -28,6 +29,7 @@ import {
   getRequestLocale,
   hasExplicitLocalePrefixInRequest,
 } from "@/modules/localization/request";
+import { RetentionPreferenceBridge } from "@/modules/retention/components/retention-preference-bridge";
 
 type DeskArticleDetailPageProps = {
   params: Promise<{
@@ -218,6 +220,14 @@ export default async function DeskArticleDetailPage({
         page={`/from-the-desk/${entry.slug}`}
         feature={`from-the-desk-detail-${entry.slug}`}
       />
+      <AnalyticsEventTracker
+        event="from_the_desk_read"
+        payload={{
+          page: `/from-the-desk/${entry.slug}`,
+          feature: `from-the-desk-detail-${entry.slug}`,
+        }}
+      />
+      <RetentionPreferenceBridge section="from-the-desk" />
 
       {structuredData.map((record, index) => (
         <script

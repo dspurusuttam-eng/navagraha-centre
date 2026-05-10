@@ -13,6 +13,7 @@ import { createToolMetadata } from "@/lib/seo/metadata";
 import { getCoreSeoCopy } from "@/lib/seo/seo-config";
 import { getRequestLocale, hasExplicitLocalePrefixInRequest } from "@/modules/localization/request";
 import { rashifalSigns } from "@/modules/rashifal/content";
+import { RetentionPreferenceBridge } from "@/modules/retention/components/retention-preference-bridge";
 import { RevenuePathwaysCard } from "@/modules/subscriptions/components/revenue-readiness-panels";
 
 export async function generateMetadata() {
@@ -47,6 +48,11 @@ export default function RashifalPage() {
         event="rashifal_page_view"
         payload={{ page: "/rashifal", feature: "rashifal-main" }}
       />
+      <AnalyticsEventTracker
+        event="rashifal_view"
+        payload={{ page: "/rashifal", feature: "rashifal-main-view" }}
+      />
+      <RetentionPreferenceBridge section="rashifal" />
 
       <section className="relative overflow-hidden border-b border-[color:var(--color-border)] bg-[linear-gradient(180deg,#fffefb_0%,#fcf4e7_54%,#f8ecd8_100%)]">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_10%_14%,rgba(210,166,90,0.2),transparent_34%),radial-gradient(circle_at_86%_16%,rgba(208,164,112,0.16),transparent_34%),radial-gradient(circle_at_70%_88%,rgba(188,145,87,0.12),transparent_38%)]" />

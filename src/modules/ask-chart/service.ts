@@ -77,6 +77,9 @@ const planetaryKeywordMap = [
   { body: "SATURN", patterns: [/\bsaturn\b/i] },
   { body: "RAHU", patterns: [/\brahu\b/i, /\bnorth node\b/i] },
   { body: "KETU", patterns: [/\bketu\b/i, /\bsouth node\b/i] },
+  { body: "URANUS", patterns: [/\buranus\b/i] },
+  { body: "NEPTUNE", patterns: [/\bneptune\b/i] },
+  { body: "PLUTO", patterns: [/\bpluto\b/i] },
 ] as const satisfies readonly {
   body: PlanetaryBody;
   patterns: readonly RegExp[];
@@ -422,7 +425,7 @@ function classifyQuestion(question: string): AskMyChartClassification {
     };
   }
 
-  if (/\b(ascendant|rising|placement|planet|sun|moon|mars|mercury|jupiter|venus|saturn|rahu|ketu)\b/i.test(normalized)) {
+  if (/\b(ascendant|rising|placement|planet|sun|moon|mars|mercury|jupiter|venus|saturn|rahu|ketu|uranus|neptune|pluto)\b/i.test(normalized)) {
     return {
       intent: "PLACEMENT_EXPLANATION",
       taskKind: "CHART_EXPLANATION",

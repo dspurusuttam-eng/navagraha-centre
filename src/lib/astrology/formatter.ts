@@ -59,6 +59,9 @@ const GRAHA_DISPLAY_NAMES: Record<CoreGrahaName, string> = {
   SATURN: "Saturn",
   RAHU: "Rahu",
   KETU: "Ketu",
+  URANUS: "Uranus",
+  NEPTUNE: "Neptune",
+  PLUTO: "Pluto",
 };
 
 const COMBUSTION_THRESHOLDS: Partial<Record<CoreGrahaName, number>> = {

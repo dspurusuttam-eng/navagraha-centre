@@ -1,5 +1,6 @@
 import type {
   aspectTypes,
+  classicalPlanetaryBodies,
   dashaSystems,
   chartPoints,
   divisionalChartCodes,
@@ -29,11 +30,43 @@ export type DashaSystem = (typeof dashaSystems)[number];
 export type VedicAspectRelation = (typeof vedicAspectRelations)[number];
 export type YogaKey = (typeof yogaKeys)[number];
 export type YogaStrength = (typeof yogaStrengths)[number];
+export type ClassicalPlanetaryBody = (typeof classicalPlanetaryBodies)[number];
+export type DivisionalReadinessStatus = "available" | "pending" | "unavailable";
+export type DivisionalReadinessCode = "D1" | "D4" | "D7" | "D9" | "D10" | "D12" | "D60";
+
+export type DivisionalPlanetSummary = {
+  body: PlanetaryBody;
+  sign: ZodiacSign;
+  longitude: number;
+  degree: number;
+  minute: number;
+  house: HouseNumber;
+  retrograde: boolean;
+  nakshatra: string | null;
+  pada: number | null;
+};
+
+export type DivisionalChartReadiness = {
+  code: DivisionalReadinessCode;
+  title: string;
+  focus: string;
+  status: DivisionalReadinessStatus;
+  note: string;
+  chart: null | {
+    chartType: DivisionalReadinessCode;
+    ascendantSign: ZodiacSign;
+    planets: DivisionalPlanetSummary[];
+    houses: Array<{
+      house: HouseNumber;
+      sign: ZodiacSign;
+    }>;
+  };
+};
 
 export type NakshatraPlacement = {
   name: NakshatraName;
   pada: 1 | 2 | 3 | 4;
-  ruler: PlanetaryBody;
+  ruler: ClassicalPlanetaryBody;
   degreesIntoNakshatra: number;
 };
 
@@ -189,8 +222,8 @@ export type YogaResult = {
 
 export type DashaPeriod = {
   system: DashaSystem;
-  lord: PlanetaryBody;
-  nextLord: PlanetaryBody;
+  lord: ClassicalPlanetaryBody;
+  nextLord: ClassicalPlanetaryBody;
   startAtUtc: string;
   endAtUtc: string;
   balanceYears: number;

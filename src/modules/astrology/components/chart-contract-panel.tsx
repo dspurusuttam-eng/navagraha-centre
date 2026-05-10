@@ -52,6 +52,48 @@ function formatNakshatra(value: string) {
     .join(" ");
 }
 
+function formatSpeed(value: number | null | undefined) {
+  if (!Number.isFinite(value ?? Number.NaN)) {
+    return "Unavailable";
+  }
+
+  return `${value?.toFixed(3)}°/day`;
+}
+
+function formatDignity(value: string | null | undefined) {
+  if (!value) {
+    return "Unavailable";
+  }
+
+  switch (value) {
+    case "OWN_SIGN":
+      return "Own Sign";
+    case "EXALTED":
+      return "Exalted";
+    case "DEBILITATED":
+      return "Debilitated";
+    default:
+      return "Neutral";
+  }
+}
+
+function formatDivisionalPlacement(
+  placement:
+    | {
+        code: "D1";
+        sign: string;
+        house: number;
+      }
+    | null
+    | undefined
+) {
+  if (!placement) {
+    return "Unavailable";
+  }
+
+  return `${placement.code} · ${formatSign(placement.sign)} · House ${placement.house}`;
+}
+
 function isChartPayload(payload: unknown): payload is ChartContractSuccessResponse {
   if (!payload || typeof payload !== "object") {
     return false;
@@ -229,6 +271,8 @@ export function ChartContractPanel({
     state.status === "ready" && !hasPremiumAccess
       ? Math.max(0, sortedPlanets.length - visiblePlanets.length)
       : 0;
+  const divisionalReadiness =
+    state.status === "ready" ? state.chart.divisionalReadiness ?? [] : [];
 
   useEffect(() => {
     if (state.status !== "ready" || hasPremiumAccess) {
@@ -454,6 +498,55 @@ export function ChartContractPanel({
             </Card>
           </div>
 
+          {divisionalReadiness.length ? (
+            <Card className="space-y-4">
+              <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                Divisional Chart Foundation
+              </p>
+              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                {divisionalReadiness.map((entry) => (
+                  <div
+                    key={entry.code}
+                    className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] p-4"
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-[0.7rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                        {entry.code}
+                      </p>
+                      <span className="rounded-[var(--radius-pill)] border border-[color:var(--color-border)] px-2 py-1 text-[0.62rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-muted)]">
+                        {entry.status}
+                      </span>
+                    </div>
+                    <p className="mt-2 text-[length:var(--font-size-body-md)] text-[color:var(--color-foreground)]">
+                      {entry.title}
+                    </p>
+                    <p className="mt-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                      {entry.focus}
+                    </p>
+                    <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                      {entry.note}
+                    </p>
+                    {entry.chart ? (
+                      <div className="mt-3 rounded-[var(--radius-lg)] border border-[rgba(215,187,131,0.18)] bg-[rgba(215,187,131,0.06)] px-3 py-3">
+                        <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                          Available
+                        </p>
+                        <p className="mt-1 text-[length:var(--font-size-body-sm)] text-[color:var(--color-foreground)]">
+                          {entry.chart.chartType} with {entry.chart.planets.length} planets and{" "}
+                          {entry.chart.houses.length} houses.
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="mt-3 text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-muted)]">
+                        Coming Soon
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </Card>
+          ) : null}
+
           {!hasPremiumAccess ? (
             <Card className="space-y-4">
               <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
@@ -513,15 +606,24 @@ export function ChartContractPanel({
                   <p className="mt-1 text-[length:var(--font-size-body-md)] text-[color:var(--color-foreground)]">
                     {formatSign(planet.sign)} | House {planet.house}
                   </p>
-                  <p className="mt-1 text-[length:var(--font-size-body-sm)] text-[color:var(--color-muted)]">
-                    {planet.degree_in_sign.toFixed(2)} deg | {formatNakshatra(planet.nakshatra)}{" "}
-                    pada {planet.pada}
-                  </p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <span className="rounded-[var(--radius-pill)] border border-[color:var(--color-border)] px-2 py-1 text-[0.62rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-muted)]">
-                      {planet.is_retrograde ? "Retrograde" : "Direct"}
-                    </span>
-                    <span className="rounded-[var(--radius-pill)] border border-[color:var(--color-border)] px-2 py-1 text-[0.62rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-muted)]">
+                <p className="mt-1 text-[length:var(--font-size-body-sm)] text-[color:var(--color-muted)]">
+                  {planet.degree_in_sign.toFixed(2)} deg | {formatNakshatra(planet.nakshatra)}{" "}
+                  pada {planet.pada}
+                </p>
+                <p className="mt-1 text-[length:var(--font-size-body-sm)] text-[color:var(--color-muted)]">
+                  Speed: {formatSpeed(planet.speed)}
+                </p>
+                <p className="mt-1 text-[length:var(--font-size-body-sm)] text-[color:var(--color-muted)]">
+                  Dignity: {formatDignity(planet.dignity)}
+                </p>
+                <p className="mt-1 text-[length:var(--font-size-body-sm)] text-[color:var(--color-muted)]">
+                  Divisional: {formatDivisionalPlacement(planet.divisionalPlacement)}
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <span className="rounded-[var(--radius-pill)] border border-[color:var(--color-border)] px-2 py-1 text-[0.62rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-muted)]">
+                    {planet.is_retrograde ? "Retrograde" : "Direct"}
+                  </span>
+                  <span className="rounded-[var(--radius-pill)] border border-[color:var(--color-border)] px-2 py-1 text-[0.62rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-muted)]">
                       {planet.is_combust ? "Combust" : "Not Combust"}
                     </span>
                   </div>

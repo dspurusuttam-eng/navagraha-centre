@@ -67,7 +67,83 @@ const fallbackTransitDegrees: Record<
   SATURN: { degree: 19, minute: 17, speed: 0.11 },
   RAHU: { degree: 8, minute: 42, speed: -0.05 },
   KETU: { degree: 8, minute: 42, speed: -0.05 },
+  URANUS: { degree: 12, minute: 28, speed: 0.04 },
+  NEPTUNE: { degree: 3, minute: 36, speed: 0.02 },
+  PLUTO: { degree: 26, minute: 11, speed: 0.01 },
 };
+
+const outerPlanetFallbackBodies = [
+  "URANUS",
+  "NEPTUNE",
+  "PLUTO",
+] as const satisfies readonly PlanetaryBody[];
+
+const outerPlanetFallbackPositions: Record<
+  (typeof outerPlanetFallbackBodies)[number],
+  {
+    sign: ZodiacSign;
+    degree: number;
+    minute: number;
+    house: number;
+    retrograde: boolean;
+    speed: number;
+  }
+> = {
+  URANUS: {
+    sign: "AQUARIUS",
+    degree: 12,
+    minute: 28,
+    house: 11,
+    retrograde: false,
+    speed: 0.04,
+  },
+  NEPTUNE: {
+    sign: "PISCES",
+    degree: 3,
+    minute: 36,
+    house: 12,
+    retrograde: false,
+    speed: 0.02,
+  },
+  PLUTO: {
+    sign: "CAPRICORN",
+    degree: 26,
+    minute: 11,
+    house: 10,
+    retrograde: false,
+    speed: 0.01,
+  },
+};
+
+function buildSyntheticOuterPlanet(body: (typeof outerPlanetFallbackBodies)[number]): PlanetPosition {
+  const fallback = outerPlanetFallbackPositions[body];
+  const longitude =
+    zodiacOffsets[fallback.sign] + fallback.degree + fallback.minute / 60;
+
+  return {
+    body,
+    sign: fallback.sign,
+    longitude,
+    degree: fallback.degree,
+    minute: fallback.minute,
+    house: fallback.house as PlanetPosition["house"],
+    retrograde: fallback.retrograde,
+    speed: fallback.speed,
+    latitude: 0,
+    nakshatra: getNakshatraPlacement(longitude),
+  };
+}
+
+function ensureOuterPlanetPositions(planets: PlanetPosition[]) {
+  const presentBodies = new Set(planets.map((planet) => planet.body));
+
+  return [
+    ...planets,
+    ...outerPlanetFallbackBodies
+      .filter((body) => !presentBodies.has(body))
+      .map((body) => buildSyntheticOuterPlanet(body)),
+  ];
+}
 
 function enrichPlanetPosition(planet: FixturePlanetPosition): PlanetPosition {
   const longitude = planet.longitude ?? getLongitudeForPlanet(planet);
@@ -89,7 +165,7 @@ function buildTransitPlanets(fixture: (typeof mockAstrologyFixtures)[number]) {
     fixture.transits.transits.map((event) => [event.body, event] as const)
   );
 
-  return fixture.natal.planets.map((planet) => {
+  const planets = fixture.natal.planets.map((planet) => {
     const transitEvent = transitEventsByBody.get(planet.body);
 
     if (!transitEvent) {
@@ -109,10 +185,12 @@ function buildTransitPlanets(fixture: (typeof mockAstrologyFixtures)[number]) {
           ? true
           : planet.retrograde,
       speed: fallbackDegrees.speed,
-      longitude: undefined,
-      nakshatra: undefined,
-    });
+        longitude: undefined,
+        nakshatra: undefined,
+      });
   });
+
+  return ensureOuterPlanetPositions(planets);
 }
 
 export class MockDeterministicAstrologyProvider implements AstrologyProvider {
@@ -186,14 +264,17 @@ export class MockDeterministicAstrologyProvider implements AstrologyProvider {
         minute: 0,
         nakshatra: getNakshatraPlacement(zodiacOffsets[fixture.natal.ascendantSign]),
       },
-      planets: cloneValue(fixture.natal.planets).map(enrichPlanetPosition),
+      planets: ensureOuterPlanetPositions(
+        cloneValue(fixture.natal.planets).map(enrichPlanetPosition)
+      ),
       houses: cloneValue(fixture.natal.houses),
       aspects: cloneValue(fixture.natal.aspects),
       divisionalCharts:
         cloneValue(divisionalCharts) as unknown as NatalChartResponse["divisionalCharts"],
       remedySignals: cloneValue(fixture.natal.remedySignals),
-      nakshatras: cloneValue(fixture.natal.planets)
-        .map(enrichPlanetPosition)
+      nakshatras: ensureOuterPlanetPositions(
+        cloneValue(fixture.natal.planets).map(enrichPlanetPosition)
+      )
         .map((planet) => ({
           body: planet.body,
           placement: planet.nakshatra ?? getNakshatraPlacement(planet.longitude),

@@ -182,6 +182,9 @@ const transitPriorityOrder: Record<PlanetaryBody, number> = {
   VENUS: 4,
   MERCURY: 3,
   MOON: 2,
+  URANUS: 1,
+  NEPTUNE: 1,
+  PLUTO: 1,
 };
 
 const supportiveTransitBodies = new Set<PlanetaryBody>([

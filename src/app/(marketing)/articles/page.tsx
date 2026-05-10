@@ -24,6 +24,7 @@ import {
   getRequestLocale,
   hasExplicitLocalePrefixInRequest,
 } from "@/modules/localization/request";
+import { RetentionPreferenceBridge } from "@/modules/retention/components/retention-preference-bridge";
 
 type ArticlesPageProps = {
   searchParams?: Promise<{
@@ -144,6 +145,7 @@ export default async function ArticlesPage({
   return (
     <>
       <PageViewTracker page="/articles" feature="articles-listing" />
+      <RetentionPreferenceBridge section="articles" />
       <JsonLd id="articles-listing-schema" data={listingStructuredData} />
 
       <section className="border-b border-[color:var(--color-border)] bg-white">

@@ -19,6 +19,9 @@ const CORE_GRAHA_IDS = [
   { graha: "VENUS", key: "SE_VENUS" },
   { graha: "SATURN", key: "SE_SATURN" },
   { graha: "RAHU", key: "SE_TRUE_NODE" },
+  { graha: "URANUS", key: "SE_URANUS" },
+  { graha: "NEPTUNE", key: "SE_NEPTUNE" },
+  { graha: "PLUTO", key: "SE_PLUTO" },
 ] as const;
 
 export type CoreGrahaName =
@@ -30,7 +33,10 @@ export type CoreGrahaName =
   | "VENUS"
   | "SATURN"
   | "RAHU"
-  | "KETU";
+  | "KETU"
+  | "URANUS"
+  | "NEPTUNE"
+  | "PLUTO";
 
 export type CoreGrahaSiderealLongitude = {
   graha: CoreGrahaName;

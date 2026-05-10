@@ -23,6 +23,7 @@ import type {
   BirthDetails,
   HouseNumber,
   NakshatraName,
+  NakshatraPlacement,
   NatalChartResponse,
   PlanetaryBody,
   ZodiacSign,
@@ -146,6 +147,9 @@ const planetNameToBodyMap: Record<string, PlanetaryBody> = {
   saturn: "SATURN",
   rahu: "RAHU",
   ketu: "KETU",
+  uranus: "URANUS",
+  neptune: "NEPTUNE",
+  pluto: "PLUTO",
 };
 
 const dominantHouseWeights: Record<HouseNumber, number> = {
@@ -260,7 +264,7 @@ function toDegreeMinute(longitude: number) {
   };
 }
 
-function toNakshatraPlacement(longitude: number) {
+function toNakshatraPlacement(longitude: number): NakshatraPlacement {
   const normalized = normalizeLongitude(longitude);
   const nakshatraIndex = Math.floor(normalized / nakshatraSpanDegrees);
   const safeIndex = Math.min(nakshatraCatalog.length - 1, Math.max(0, nakshatraIndex));
@@ -276,7 +280,7 @@ function toNakshatraPlacement(longitude: number) {
   return {
     name: nakshatra.name as NakshatraName,
     pada,
-    ruler: nakshatra.ruler,
+    ruler: nakshatra.ruler as NakshatraPlacement["ruler"],
     degreesIntoNakshatra,
   };
 }

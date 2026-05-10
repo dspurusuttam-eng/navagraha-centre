@@ -67,6 +67,9 @@ const bodyCodeMap: Record<Exclude<PlanetaryBody, "KETU">, number> = {
   VENUS: swisseph.SE_VENUS,
   SATURN: swisseph.SE_SATURN,
   RAHU: swisseph.SE_TRUE_NODE,
+  URANUS: swisseph.SE_URANUS,
+  NEPTUNE: swisseph.SE_NEPTUNE,
+  PLUTO: swisseph.SE_PLUTO,
 };
 
 let cachedRuntime: SwissEphemerisRuntime | null = null;
@@ -164,7 +167,7 @@ export function getNakshatraPlacement(longitude: number): NakshatraPlacement {
   return {
     name: entry.name,
     pada,
-    ruler: entry.ruler,
+    ruler: entry.ruler as NakshatraPlacement["ruler"],
     degreesIntoNakshatra: Number(offsetWithinNakshatra.toFixed(4)),
   };
 }

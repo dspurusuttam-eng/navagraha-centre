@@ -2,6 +2,7 @@ import type {
   HouseNumber,
   HouseSystem,
   NakshatraName,
+  ClassicalPlanetaryBody,
   PlanetaryBody,
   ZodiacSign,
 } from "@/modules/astrology/types";
@@ -46,6 +47,9 @@ export const planetLabelMap: Record<PlanetaryBody, string> = {
   SATURN: "Saturn",
   RAHU: "Rahu",
   KETU: "Ketu",
+  URANUS: "Uranus",
+  NEPTUNE: "Neptune",
+  PLUTO: "Pluto",
 };
 
 export const wholeSignHouseNumbers: readonly HouseNumber[] = [
@@ -115,7 +119,7 @@ export const debilitationSignsByBody: Partial<Record<PlanetaryBody, ZodiacSign>>
 
 export const nakshatraCatalog: ReadonlyArray<{
   name: NakshatraName;
-  ruler: PlanetaryBody;
+  ruler: ClassicalPlanetaryBody;
 }> = [
   { name: "ASHWINI", ruler: "KETU" },
   { name: "BHARANI", ruler: "VENUS" },
@@ -176,7 +180,7 @@ export const nakshatraLabelMap: Record<NakshatraName, string> = {
   REVATI: "Revati",
 };
 
-export const dashaSequence: readonly PlanetaryBody[] = [
+export const dashaSequence: readonly ClassicalPlanetaryBody[] = [
   "KETU",
   "VENUS",
   "SUN",
@@ -188,7 +192,7 @@ export const dashaSequence: readonly PlanetaryBody[] = [
   "MERCURY",
 ];
 
-export const dashaYearsByLord: Record<PlanetaryBody, number> = {
+export const dashaYearsByLord: Record<ClassicalPlanetaryBody, number> = {
   KETU: 7,
   VENUS: 20,
   SUN: 6,
@@ -210,6 +214,9 @@ const planetSortBodies: readonly PlanetaryBody[] = [
   "SATURN",
   "RAHU",
   "KETU",
+  "URANUS",
+  "NEPTUNE",
+  "PLUTO",
 ];
 
 export const planetSortOrder = new Map<PlanetaryBody, number>(

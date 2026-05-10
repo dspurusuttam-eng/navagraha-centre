@@ -56,6 +56,9 @@ const grahaLabelMap: Record<PlanetaryBody, string> = {
   SATURN: "Saturn",
   RAHU: "Rahu",
   KETU: "Ketu",
+  URANUS: "Uranus",
+  NEPTUNE: "Neptune",
+  PLUTO: "Pluto",
 };
 
 const siderealNameToBodyMap: Record<string, PlanetaryBody> = {
@@ -68,6 +71,9 @@ const siderealNameToBodyMap: Record<string, PlanetaryBody> = {
   SATURN: "SATURN",
   RAHU: "RAHU",
   KETU: "KETU",
+  URANUS: "URANUS",
+  NEPTUNE: "NEPTUNE",
+  PLUTO: "PLUTO",
   NORTH_NODE: "RAHU",
   SOUTH_NODE: "KETU",
 };

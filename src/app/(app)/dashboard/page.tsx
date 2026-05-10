@@ -350,6 +350,7 @@ export default async function DashboardPage() {
         chartOverview={chartOverview}
         retentionState={retentionState}
         ecosystem={ecosystemState}
+        reportRemediesCount={report.remedies.length}
       />
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">

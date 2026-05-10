@@ -36,6 +36,9 @@ const planetAbbreviations: Record<string, string> = {
   Saturn: "Sa",
   Rahu: "Ra",
   Ketu: "Ke",
+  Uranus: "Ur",
+  Neptune: "Ne",
+  Pluto: "Pl",
 };
 
 function formatSign(sign: string) {

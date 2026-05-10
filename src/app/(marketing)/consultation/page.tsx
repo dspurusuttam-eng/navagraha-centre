@@ -37,6 +37,7 @@ import {
   TrustIndicatorStrip,
 } from "@/modules/marketing/components/trust-conversion-sections";
 import { ConsultationTiersSection } from "@/modules/subscriptions/components/revenue-readiness-panels";
+import { RetentionPreferenceBridge } from "@/modules/retention/components/retention-preference-bridge";
 
 export async function generateMetadata() {
   const locale = await getRequestLocale();
@@ -134,6 +135,7 @@ export default async function ConsultationPage({
         event="consultation_click"
         payload={{ page: "/consultation", feature: "consultation-page" }}
       />
+      <RetentionPreferenceBridge section="consultation" />
 
       <PageHero
         eyebrow="Consultations"

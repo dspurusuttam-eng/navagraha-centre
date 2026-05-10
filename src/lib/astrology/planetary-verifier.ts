@@ -79,6 +79,9 @@ const DISPLAY_NAME_BY_GRAHA: Record<CoreGrahaName, string> = {
   SATURN: "Saturn",
   RAHU: "Rahu",
   KETU: "Ketu",
+  URANUS: "Uranus",
+  NEPTUNE: "Neptune",
+  PLUTO: "Pluto",
 };
 
 const FULL_CIRCLE_DEGREES = 360;

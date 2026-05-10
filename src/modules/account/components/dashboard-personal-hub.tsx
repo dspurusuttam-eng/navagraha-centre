@@ -128,6 +128,7 @@ export function DashboardPersonalHub({
   const guidanceHref = askMyChartReady ? hub.ai.historyHref : "/dashboard/kundli/new";
   const askMyChartHref = askMyChartReady ? hub.dailyGuidance.askMyChartHref : guidanceHref;
   const panchangHref = hub.readiness.canViewPanchang ? hub.panchangSnapshot.panchangHref : "/panchang";
+  const currentPratyantardasha = hub.dasha.currentPratyantardasha ?? hub.dasha.currentPratyantar;
   const recentReports = hub.reports.saved.recent.slice(0, 3);
   const recentConsultations = hub.consultations.recentConsultations.slice(0, 2);
   const upcomingConsultation = hub.consultations.upcomingConsultation;
@@ -250,13 +251,37 @@ export function DashboardPersonalHub({
             <InfoLine
               label="Pratyantar"
               value={
-                hub.dasha.currentPratyantar
-                  ? `${hub.dasha.currentPratyantar.lord} - until ${formatDate(hub.dasha.currentPratyantar.endAtUtc)}`
+                currentPratyantardasha
+                  ? `${currentPratyantardasha.lord} - until ${formatDate(currentPratyantardasha.endAtUtc)}`
                   : "Unavailable"
               }
             />
             <InfoLine label="Timing tone" value={hub.dasha.timingTone} />
           </div>
+          {hub.dasha.timeline.length ? (
+            <div className="space-y-3 rounded-[var(--radius-xl)] border border-[#EAEAEA] bg-white px-4 py-4">
+              <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[#C89B2C]">
+                Mahadasha timeline
+              </p>
+              <div className="space-y-3">
+                {hub.dasha.timeline.slice(0, 3).map((segment) => (
+                  <div key={`${segment.lord}-${segment.startAtUtc}`} className="space-y-1">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-[length:var(--font-size-body-sm)] font-medium text-[#111111]">
+                        {segment.lord}
+                      </p>
+                      <Badge tone={segment.isCurrent ? "accent" : "neutral"}>
+                        {segment.isCurrent ? "Current" : "Upcoming"}
+                      </Badge>
+                    </div>
+                    <p className="text-[length:var(--font-size-body-xs)] text-[#4A4A4A]">
+                      {segment.summary}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
           <div className="flex flex-wrap gap-2">
             <Link href={hub.readiness.hasActiveKundli ? kundliHref : "/dashboard/kundli/new"} className={buttonStyles({ size: "sm", tone: "secondary" })}>
               {hub.readiness.hasActiveKundli ? "View Kundli" : "Add / Generate Kundli"}

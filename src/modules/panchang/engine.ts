@@ -195,6 +195,7 @@ type PanchangAdvancedTimings = {
   gulika_kaal: PanchangTimingWindow;
   yamaganda: PanchangTimingWindow;
   abhijit_muhurta: PanchangTimingWindow;
+  brahma_muhurta: PanchangTimingWindow | null;
   timing_summary: {
     auspicious_windows: string[];
     caution_windows: string[];
@@ -211,9 +212,43 @@ type PanchangGuidance = {
   day_feel: string;
 };
 
+type PanchangCoordinates = {
+  latitude: number;
+  longitude: number;
+};
+
+type PanchangTimingWindowSummary = {
+  rahuKaal: PanchangTimingWindow;
+  gulikaKaal: PanchangTimingWindow;
+  yamaganda: PanchangTimingWindow;
+  abhijitMuhurat: PanchangTimingWindow;
+  brahmaMuhurat: PanchangTimingWindow | null;
+  cautionWindows: string[];
+  recommendedActivities: string[];
+  note: string;
+};
+
+type PanchangDailyGuidance = {
+  dailyTone: string;
+  dailyQuality: string;
+  spiritualTone: string[];
+  suitableFocus: string[];
+  cautionAreas: string[];
+  observanceHint: string[];
+};
+
+type PanchangRegionalReadiness = {
+  assamReady: boolean;
+  indiaReady: boolean;
+  assameseDisplayReady: boolean;
+  supportedPlaceExamples: string[];
+};
+
 export type PanchangContextOutput = {
   as_of_date: string;
   as_of_utc: string;
+  panchangDate: string;
+  generatedAt: string;
   system: {
     zodiac: "sidereal";
     ayanamsha: "LAHIRI";
@@ -229,6 +264,10 @@ export type PanchangContextOutput = {
     region: string | null;
     city: string | null;
   };
+  locationLabel: string;
+  timezone: string;
+  coordinates: PanchangCoordinates;
+  weekday: string;
   tithi: {
     index: number;
     name: string;
@@ -237,6 +276,7 @@ export type PanchangContextOutput = {
   };
   paksha: "Shukla" | "Krishna";
   vara: string;
+  dailyTone: string;
   nakshatra: {
     index: number;
     name: string;
@@ -260,6 +300,14 @@ export type PanchangContextOutput = {
     local_time: string;
     utc: string;
   };
+  moonrise: {
+    local_time: string;
+    utc: string;
+  } | null;
+  moonset: {
+    local_time: string;
+    utc: string;
+  } | null;
   moon_sign: string;
   transitions: {
     next_tithi_change: {
@@ -284,12 +332,17 @@ export type PanchangContextOutput = {
     };
   };
   advanced_timings: PanchangAdvancedTimings;
+  timingWindows: PanchangTimingWindowSummary;
   guidance: PanchangGuidance;
+  dailyGuidance: PanchangDailyGuidance;
   summary: PanchangSummary;
+  regional: PanchangRegionalReadiness;
+  missingReason: string | null;
 };
 
 export type PanchangContextFailure = {
   success: false;
+  missingReason: string;
   error: {
     code: PanchangFailureCode;
     message: string;
@@ -309,6 +362,7 @@ function fail(
 ): PanchangContextFailure {
   return {
     success: false,
+    missingReason: message,
     error: {
       code,
       message,
@@ -488,6 +542,46 @@ function getSunEventUtc(input: {
   const response = input.swisseph.swe_rise_trans(
     input.julianDayStartUt,
     input.swisseph.SE_SUN,
+    "",
+    flags,
+    input.eventFlag,
+    input.longitude,
+    input.latitude,
+    0,
+    1013.25,
+    15
+  );
+
+  if (!response || typeof response !== "object") {
+    return null;
+  }
+
+  if (
+    ("error" in response && typeof response.error === "string") ||
+    !("transitTime" in response) ||
+    !Number.isFinite(response.transitTime)
+  ) {
+    return null;
+  }
+
+  return julianUtToUtcIso(response.transitTime, input.swisseph);
+}
+
+function getMoonEventUtc(input: {
+  julianDayStartUt: number;
+  longitude: number;
+  latitude: number;
+  eventFlag: number;
+  swisseph: ReturnType<typeof getSwissEphModule>;
+}) {
+  input.swisseph.swe_set_ephe_path(resolveEphemerisPath());
+  input.swisseph.swe_set_topo(input.longitude, input.latitude, 0);
+
+  const flags = input.swisseph.SEFLG_SWIEPH | input.swisseph.SEFLG_TOPOCTR;
+
+  const response = input.swisseph.swe_rise_trans(
+    input.julianDayStartUt,
+    input.swisseph.SE_MOON,
     "",
     flags,
     input.eventFlag,
@@ -748,6 +842,26 @@ function buildAbhijitMuhurtaTimingWindow(input: {
   });
 }
 
+function buildBrahmaMuhurtaTimingWindow(input: {
+  sunriseUtc: string;
+  timezoneIana: string;
+}) {
+  const sunriseMs = new Date(input.sunriseUtc).getTime();
+
+  if (!Number.isFinite(sunriseMs)) {
+    return null;
+  }
+
+  const startMs = sunriseMs - 96 * 60_000;
+  const endMs = sunriseMs - 48 * 60_000;
+
+  return formatTimingWindow({
+    startUtcIso: new Date(startMs).toISOString(),
+    endUtcIso: new Date(endMs).toISOString(),
+    timezoneIana: input.timezoneIana,
+  });
+}
+
 function buildAdvancedTimings(input: {
   dateLocal: string;
   sunriseUtc: string;
@@ -778,6 +892,10 @@ function buildAdvancedTimings(input: {
     sunsetUtc: input.sunsetUtc,
     timezoneIana: input.timezoneIana,
   });
+  const brahmaMuhurta = buildBrahmaMuhurtaTimingWindow({
+    sunriseUtc: input.sunriseUtc,
+    timezoneIana: input.timezoneIana,
+  });
 
   if (!rahuKaal || !gulikaKaal || !yamaganda || !abhijitMuhurta) {
     return null;
@@ -788,18 +906,58 @@ function buildAdvancedTimings(input: {
     gulika_kaal: gulikaKaal,
     yamaganda,
     abhijit_muhurta: abhijitMuhurta,
+    brahma_muhurta: brahmaMuhurta,
     timing_summary: {
       auspicious_windows: [
-        `Abhijit Muhurta: ${abhijitMuhurta.start_local_time} - ${abhijitMuhurta.end_local_time}`,
+        `Abhijit Muhurta planning reference: ${abhijitMuhurta.start_local_time} - ${abhijitMuhurta.end_local_time}`,
+        brahmaMuhurta
+          ? `Brahma Muhurta planning reference: ${brahmaMuhurta.start_local_time} - ${brahmaMuhurta.end_local_time}`
+          : "Brahma Muhurta reference is unavailable for this date and place.",
       ],
       caution_windows: [
-        `Rahu Kaal: ${rahuKaal.start_local_time} - ${rahuKaal.end_local_time}`,
-        `Gulika Kaal: ${gulikaKaal.start_local_time} - ${gulikaKaal.end_local_time}`,
-        `Yamaganda: ${yamaganda.start_local_time} - ${yamaganda.end_local_time}`,
+        `Planning caution window - Rahu Kaal: ${rahuKaal.start_local_time} - ${rahuKaal.end_local_time}`,
+        `Planning caution window - Gulika Kaal: ${gulikaKaal.start_local_time} - ${gulikaKaal.end_local_time}`,
+        `Planning caution window - Yamaganda: ${yamaganda.start_local_time} - ${yamaganda.end_local_time}`,
       ],
-      note: "Use timing windows as supportive references alongside practical judgment.",
+      note: "Use timing windows as supportive references alongside practical judgment. They do not guarantee outcomes.",
     },
   } satisfies PanchangAdvancedTimings;
+}
+
+function buildTimingWindows(input: {
+  advancedTimings: PanchangAdvancedTimings;
+  suitableFocus: string[];
+}) {
+  return {
+    rahuKaal: input.advancedTimings.rahu_kaal,
+    gulikaKaal: input.advancedTimings.gulika_kaal,
+    yamaganda: input.advancedTimings.yamaganda,
+    abhijitMuhurat: input.advancedTimings.abhijit_muhurta,
+    brahmaMuhurat: input.advancedTimings.brahma_muhurta,
+    cautionWindows: input.advancedTimings.timing_summary.caution_windows,
+    recommendedActivities: input.suitableFocus,
+    note: input.advancedTimings.timing_summary.note,
+  } satisfies PanchangTimingWindowSummary;
+}
+
+function buildDailyGuidanceOutput(guidance: PanchangGuidance): PanchangDailyGuidance {
+  return {
+    dailyTone: guidance.day_feel,
+    dailyQuality: guidance.daily_quality,
+    spiritualTone: guidance.spiritual_tone,
+    suitableFocus: guidance.suitable_focus,
+    cautionAreas: guidance.caution_areas,
+    observanceHint: guidance.observance_hint,
+  };
+}
+
+function buildRegionalReadiness(): PanchangRegionalReadiness {
+  return {
+    assamReady: true,
+    indiaReady: true,
+    assameseDisplayReady: true,
+    supportedPlaceExamples: ["Guwahati, Assam, India", "North Lakhimpur, Assam, India"],
+  };
 }
 
 function resolveTransitionState(
@@ -1265,12 +1423,36 @@ export function calculateDailyPanchangContext(
     moonSign,
     transitions,
   });
+  const timingWindows = buildTimingWindows({
+    advancedTimings,
+    suitableFocus: guidance.suitable_focus,
+  });
+  const moonriseUtc = getMoonEventUtc({
+    julianDayStartUt,
+    longitude: location.longitude,
+    latitude: location.latitude,
+    eventFlag: swisseph.SE_CALC_RISE,
+    swisseph,
+  });
+  const moonsetUtc = getMoonEventUtc({
+    julianDayStartUt,
+    longitude: location.longitude,
+    latitude: location.latitude,
+    eventFlag: swisseph.SE_CALC_SET,
+    swisseph,
+  });
+  const generatedAt = new Date().toISOString();
+  const locationLabel = location.displayName.trim();
+  const regional = buildRegionalReadiness();
+  const dailyGuidance = buildDailyGuidanceOutput(guidance);
 
   return {
     success: true,
     data: {
       as_of_date: dateLocal,
       as_of_utc: sunriseUtc,
+      panchangDate: dateLocal,
+      generatedAt,
       system: {
         zodiac: "sidereal",
         ayanamsha: "LAHIRI",
@@ -1286,6 +1468,13 @@ export function calculateDailyPanchangContext(
         region: location.region?.trim() || null,
         city: location.city?.trim() || null,
       },
+      locationLabel,
+      timezone: location.timezoneIana,
+      coordinates: {
+        latitude: Number(location.latitude.toFixed(6)),
+        longitude: Number(location.longitude.toFixed(6)),
+      },
+      weekday: vara,
       tithi: {
         index: tithi.index,
         name: tithi.name,
@@ -1294,6 +1483,7 @@ export function calculateDailyPanchangContext(
       },
       paksha: tithi.paksha,
       vara,
+      dailyTone: guidance.day_feel,
       nakshatra,
       yoga,
       karana,
@@ -1305,11 +1495,27 @@ export function calculateDailyPanchangContext(
         local_time: formatLocalTime(sunsetUtc, location.timezoneIana),
         utc: sunsetUtc,
       },
+      moonrise: moonriseUtc
+        ? {
+            local_time: formatLocalTime(moonriseUtc, location.timezoneIana),
+            utc: moonriseUtc,
+          }
+        : null,
+      moonset: moonsetUtc
+        ? {
+            local_time: formatLocalTime(moonsetUtc, location.timezoneIana),
+            utc: moonsetUtc,
+          }
+        : null,
       moon_sign: moonSign,
       transitions,
       advanced_timings: advancedTimings,
+      timingWindows,
       guidance,
+      dailyGuidance,
       summary: buildSummaryFromGuidance(guidance),
+      regional,
+      missingReason: null,
     },
   };
 }

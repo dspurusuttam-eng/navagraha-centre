@@ -123,6 +123,7 @@ export async function POST(request: Request) {
 
   const date = readText(payload.date);
   const place = readText(payload.place);
+  const activityType = readText(payload.activityType);
   const validatedInput = validatePanchangRequestInput({
     date,
     place,
@@ -185,6 +186,7 @@ export async function POST(request: Request) {
 
   const muhurtaLite = calculateMuhurtaLiteContext({
     dateLocal: normalized.data.date_local_normalized,
+    activityType,
     location: {
       displayName: resolved.data.normalized_place.display_name,
       latitude: resolved.data.normalized_place.latitude,

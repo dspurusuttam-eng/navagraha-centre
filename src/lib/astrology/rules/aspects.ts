@@ -33,6 +33,9 @@ const vedicAspectOffsets: Record<
   SATURN: ["SATURN_THIRD", "SEVENTH", "SATURN_TENTH"],
   RAHU: [],
   KETU: [],
+  URANUS: [],
+  NEPTUNE: [],
+  PLUTO: [],
 };
 
 const relationHouseOffsetMap: Record<VedicAspect["relation"], number> = {

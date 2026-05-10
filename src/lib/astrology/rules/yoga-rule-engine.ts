@@ -207,6 +207,21 @@ const NATURAL_RELATIONSHIPS: Record<
     enemies: ["SUN", "MOON"],
     neutrals: ["MERCURY", "VENUS", "RAHU"],
   },
+  URANUS: {
+    friends: [],
+    enemies: [],
+    neutrals: ["SUN", "MOON", "MARS", "MERCURY", "JUPITER", "VENUS", "SATURN", "RAHU", "KETU"],
+  },
+  NEPTUNE: {
+    friends: [],
+    enemies: [],
+    neutrals: ["SUN", "MOON", "MARS", "MERCURY", "JUPITER", "VENUS", "SATURN", "RAHU", "KETU"],
+  },
+  PLUTO: {
+    friends: [],
+    enemies: [],
+    neutrals: ["SUN", "MOON", "MARS", "MERCURY", "JUPITER", "VENUS", "SATURN", "RAHU", "KETU"],
+  },
 };
 
 const MOOLATRIKONA_SIGN_CANDIDATES: Partial<Record<PlanetaryBody, ZodiacSign>> = {
@@ -229,6 +244,9 @@ const BODY_NATURE: Record<PlanetaryBody, LordNature> = {
   SATURN: "MALEFIC",
   RAHU: "MALEFIC",
   KETU: "MALEFIC",
+  URANUS: "NEUTRAL",
+  NEPTUNE: "NEUTRAL",
+  PLUTO: "NEUTRAL",
 };
 
 const CLOSE_CONJUNCTION_ORB_DEGREES = 8;
@@ -481,6 +499,10 @@ function normalizePlanets(
 
 function getNaturalRelationship(left: PlanetaryBody, right: PlanetaryBody) {
   const entry = NATURAL_RELATIONSHIPS[left];
+
+  if (!entry) {
+    return "NEUTRAL";
+  }
 
   if (entry.friends.includes(right)) {
     return "FRIEND";

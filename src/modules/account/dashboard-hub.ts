@@ -15,6 +15,7 @@ import type {
   UserPlanUsageModel,
 } from "@/modules/subscriptions";
 import type { ChartOverview } from "@/modules/onboarding/service";
+import { buildVimshottariDashaFoundation } from "@/modules/astrology/dasha";
 
 type DashboardHubProfileSummary = {
   displayName: string;
@@ -50,7 +51,9 @@ type DashboardHubDashaSegment = {
   lord: string;
   startAtUtc: string;
   endAtUtc: string;
-  balanceYears: number;
+  balanceYears?: number;
+  isCurrent: boolean;
+  summary: string;
 };
 
 type DashboardHubDashaSummary = {
@@ -59,6 +62,9 @@ type DashboardHubDashaSummary = {
   currentMahadasha: DashboardHubDashaSegment | null;
   currentAntardasha: DashboardHubDashaSegment | null;
   currentPratyantar: DashboardHubDashaSegment | null;
+  currentPratyantardasha: DashboardHubDashaSegment | null;
+  timeline: DashboardHubDashaSegment[];
+  dashaType: "VIMSHOTTARI" | "UNAVAILABLE";
   summary: string;
   highlights: string[];
   guidanceCalendarAvailable: boolean;
@@ -452,6 +458,9 @@ export function createEmptyDashboardHubData(
       currentMahadasha: null,
       currentAntardasha: null,
       currentPratyantar: null,
+      currentPratyantardasha: null,
+      timeline: [],
+      dashaType: "UNAVAILABLE",
       summary: fallbackCurrentCycleSummary.unavailableReason
         ?? "Timing context will appear after a valid chart is saved.",
       highlights: [],
@@ -643,12 +652,65 @@ export function buildDashboardHubData(input?: BuildDashboardHubInput): Dashboard
     hasChart
   );
   const currentCycle = input.report.currentCycle;
+  const dashaFoundation = hasChart
+    ? buildVimshottariDashaFoundation({
+        chart: input.chartOverview.chart,
+        asOfDateUtc: currentCycle.generatedAtUtc,
+        periodCount: 9,
+      })
+    : null;
+  const dashaFoundationData =
+    dashaFoundation?.status === "ready" ? dashaFoundation.data : null;
   const currentMahadasha = currentCycle.dasha
     ? {
         lord: toPlanetLabel(currentCycle.dasha.lord) ?? currentCycle.dasha.lord,
         startAtUtc: currentCycle.dasha.startAtUtc,
         endAtUtc: currentCycle.dasha.endAtUtc,
         balanceYears: currentCycle.dasha.balanceYears,
+        isCurrent: true,
+        summary: `${toPlanetLabel(currentCycle.dasha.lord) ?? currentCycle.dasha.lord} Mahadasha is currently active until ${new Date(currentCycle.dasha.endAtUtc).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}.`,
+      }
+    : dashaFoundationData?.currentMahadasha
+      ? {
+          lord: dashaFoundationData?.currentMahadasha?.planet ?? "",
+          startAtUtc: dashaFoundationData?.currentMahadasha?.startDate ?? currentCycle.generatedAtUtc,
+          endAtUtc: dashaFoundationData?.currentMahadasha?.endDate ?? currentCycle.generatedAtUtc,
+          balanceYears: undefined,
+          isCurrent: true,
+          summary: dashaFoundationData?.currentMahadasha?.summary ?? "Vimshottari dasha is available.",
+        }
+      : null;
+  const timeline =
+    dashaFoundationData
+      ? dashaFoundationData.mahadashaTimeline.slice(0, 5).map((entry) => ({
+          lord: entry.planet,
+          startAtUtc: entry.startDate,
+          endAtUtc: entry.endDate,
+          balanceYears: undefined,
+          isCurrent: entry.isCurrent,
+          summary: entry.summary,
+        }))
+      : currentMahadasha
+        ? [currentMahadasha]
+        : [];
+  const currentAntardasha = dashaFoundationData?.currentAntardasha
+    ? {
+        lord: dashaFoundationData.currentAntardasha.planet,
+        startAtUtc: dashaFoundationData.currentAntardasha.startDate,
+        endAtUtc: dashaFoundationData.currentAntardasha.endDate,
+        balanceYears: undefined,
+        isCurrent: true,
+        summary: dashaFoundationData.currentAntardasha.summary,
+      }
+    : null;
+  const currentPratyantardasha = dashaFoundationData?.currentPratyantardasha
+    ? {
+        lord: dashaFoundationData.currentPratyantardasha.planet,
+        startAtUtc: dashaFoundationData.currentPratyantardasha.startDate,
+        endAtUtc: dashaFoundationData.currentPratyantardasha.endDate,
+        balanceYears: undefined,
+        isCurrent: true,
+        summary: dashaFoundationData.currentPratyantardasha.summary,
       }
     : null;
   const currentCycleTimingTone =
@@ -777,14 +839,19 @@ export function buildDashboardHubData(input?: BuildDashboardHubInput): Dashboard
     dasha: {
       state: currentCycle.status,
       currentCycle,
+      dashaType: dashaFoundationData?.dashaType ?? "UNAVAILABLE",
       currentMahadasha,
-      currentAntardasha: null,
-      currentPratyantar: null,
+      currentAntardasha,
+      currentPratyantar: currentPratyantardasha,
+      currentPratyantardasha,
+      timeline,
       summary:
-        currentCycle.status === "ready"
-          ? currentCycle.synthesis.overview
-          : currentCycle.unavailableReason ??
-            "Timing context is not available yet.",
+        dashaFoundationData
+          ? dashaFoundationData.safeSummary
+          : currentCycle.status === "ready"
+            ? currentCycle.synthesis.overview
+            : currentCycle.unavailableReason ??
+              "Timing context is not available yet.",
       highlights:
         currentCycle.status === "ready"
           ? currentCycle.synthesis.timeSensitiveHighlights.slice(0, 3)

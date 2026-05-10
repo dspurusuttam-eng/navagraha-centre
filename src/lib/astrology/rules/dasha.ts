@@ -8,9 +8,9 @@ import {
 } from "@/lib/astrology/constants";
 import type {
   DashaPeriod,
+  ClassicalPlanetaryBody,
   NakshatraPlacement,
   NakshatraName,
-  PlanetaryBody,
 } from "@/modules/astrology/types";
 
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
@@ -32,7 +32,7 @@ export type VimshottariMahadashaFailure = {
 };
 
 export type VimshottariMahadashaPeriod = {
-  planet: PlanetaryBody;
+  planet: ClassicalPlanetaryBody;
   startAtUtc: string;
   endAtUtc: string;
   durationYears: number;
@@ -41,7 +41,7 @@ export type VimshottariMahadashaPeriod = {
 };
 
 export type VimshottariAntardashaPeriod = {
-  planet: PlanetaryBody;
+  planet: ClassicalPlanetaryBody;
   startAtUtc: string;
   endAtUtc: string;
   durationYears: number;
@@ -50,7 +50,7 @@ export type VimshottariAntardashaPeriod = {
 };
 
 export type VimshottariPratyantarPeriod = {
-  planet: PlanetaryBody;
+  planet: ClassicalPlanetaryBody;
   startAtUtc: string;
   endAtUtc: string;
   durationYears: number;
@@ -58,7 +58,7 @@ export type VimshottariPratyantarPeriod = {
 };
 
 export type VimshottariDayDashaPeriod = {
-  planet: PlanetaryBody;
+  planet: ClassicalPlanetaryBody;
   startAtUtc: string;
   endAtUtc: string;
   durationYears: number;
@@ -66,25 +66,25 @@ export type VimshottariDayDashaPeriod = {
 };
 
 export type VimshottariActiveAntardasha = VimshottariAntardashaPeriod & {
-  mahadashaPlanet: PlanetaryBody;
+  mahadashaPlanet: ClassicalPlanetaryBody;
 };
 
 export type VimshottariActivePratyantar = VimshottariPratyantarPeriod & {
-  mahadashaPlanet: PlanetaryBody;
-  antardashaPlanet: PlanetaryBody;
+  mahadashaPlanet: ClassicalPlanetaryBody;
+  antardashaPlanet: ClassicalPlanetaryBody;
 };
 
 export type VimshottariActiveDayDasha = VimshottariDayDashaPeriod & {
-  mahadashaPlanet: PlanetaryBody;
-  antardashaPlanet: PlanetaryBody;
-  pratyantarPlanet: PlanetaryBody;
+  mahadashaPlanet: ClassicalPlanetaryBody;
+  antardashaPlanet: ClassicalPlanetaryBody;
+  pratyantarPlanet: ClassicalPlanetaryBody;
 };
 
 export type VimshottariCurrentDayDashaContext = {
   sourcePratyantar: {
-    mahadashaPlanet: PlanetaryBody;
-    antardashaPlanet: PlanetaryBody;
-    pratyantarPlanet: PlanetaryBody;
+    mahadashaPlanet: ClassicalPlanetaryBody;
+    antardashaPlanet: ClassicalPlanetaryBody;
+    pratyantarPlanet: ClassicalPlanetaryBody;
     startAtUtc: string;
     endAtUtc: string;
   };
@@ -96,13 +96,13 @@ export type VimshottariMahadashaTimeline = {
   system: "VIMSHOTTARI";
   moonNakshatra: {
     name: NakshatraName;
-    ruler: PlanetaryBody;
+    ruler: ClassicalPlanetaryBody;
     degreesIntoNakshatra: number;
     fractionTraversed: number;
   };
-  nakshatraLord: PlanetaryBody;
+  nakshatraLord: ClassicalPlanetaryBody;
   birthBalance: {
-    mahadashaLord: PlanetaryBody;
+    mahadashaLord: ClassicalPlanetaryBody;
     elapsedYears: number;
     remainingYears: number;
     remainingDays: number;
@@ -127,7 +127,7 @@ export type VimshottariMahadashaResult =
   | VimshottariMahadashaSuccess;
 
 type TimelinePeriodBounds = {
-  planet: PlanetaryBody;
+  planet: ClassicalPlanetaryBody;
   startAt: Date;
   endAt: Date;
   durationYears: number;
@@ -137,7 +137,7 @@ type TimelinePeriodBounds = {
 };
 
 type ActivePratyantarWithinMahadasha = VimshottariPratyantarPeriod & {
-  antardashaPlanet: PlanetaryBody;
+  antardashaPlanet: ClassicalPlanetaryBody;
 };
 
 function addDays(date: Date, days: number) {
@@ -148,7 +148,7 @@ function clampProgress(value: number) {
   return Math.max(0, Math.min(1, value));
 }
 
-function getNextLord(currentLord: PlanetaryBody) {
+function getNextLord(currentLord: ClassicalPlanetaryBody) {
   const currentIndex = dashaSequence.indexOf(currentLord);
 
   return dashaSequence[(currentIndex + 1) % dashaSequence.length] ?? "KETU";
@@ -229,7 +229,7 @@ function getNakshatraPlacement(longitude: number): NakshatraPlacement {
   return {
     name: entry.name,
     pada,
-    ruler: entry.ruler,
+    ruler: entry.ruler as NakshatraPlacement["ruler"],
     degreesIntoNakshatra: Number(offsetWithinNakshatra.toFixed(4)),
   };
 }
@@ -298,7 +298,7 @@ function mapPeriodsWithActiveFlag(
   };
 }
 
-function getDashaOrderFromLord(lord: PlanetaryBody) {
+function getDashaOrderFromLord(lord: ClassicalPlanetaryBody) {
   const startIndex = dashaSequence.indexOf(lord);
 
   return dashaSequence.map((_, index) => {
@@ -323,7 +323,7 @@ function toYearsFromDates(startAt: Date, endAt: Date) {
 }
 
 function buildAntardashasForMahadasha(input: {
-  mahadashaLord: PlanetaryBody;
+  mahadashaLord: ClassicalPlanetaryBody;
   mahadashaVisibleStartAt: Date;
   mahadashaVisibleEndAt: Date;
   mahadashaFullStartAt: Date;
@@ -400,7 +400,7 @@ function buildAntardashasForMahadasha(input: {
 }
 
 function buildPratyantarsForAntardasha(input: {
-  antardashaLord: PlanetaryBody;
+  antardashaLord: ClassicalPlanetaryBody;
   antardashaVisibleStartAt: Date;
   antardashaVisibleEndAt: Date;
   antardashaFullStartAt: Date;
@@ -457,7 +457,7 @@ function buildPratyantarsForAntardasha(input: {
 }
 
 function buildDayDashasForPratyantar(input: {
-  pratyantarLord: PlanetaryBody;
+  pratyantarLord: ClassicalPlanetaryBody;
   pratyantarStartAt: Date;
   pratyantarEndAt: Date;
   asOfDateUtc: Date;
@@ -510,7 +510,7 @@ function buildDayDashasForPratyantar(input: {
 
 function buildDayDashaWindow(
   periods: VimshottariDayDashaPeriod[],
-  aroundPlanet: PlanetaryBody | null
+  aroundPlanet: ClassicalPlanetaryBody | null
 ) {
   if (!periods.length) {
     return [];

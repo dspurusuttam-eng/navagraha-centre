@@ -23,6 +23,21 @@ export const planetaryBodies = [
   "SATURN",
   "RAHU",
   "KETU",
+  "URANUS",
+  "NEPTUNE",
+  "PLUTO",
+] as const;
+
+export const classicalPlanetaryBodies = [
+  "SUN",
+  "MOON",
+  "MARS",
+  "MERCURY",
+  "JUPITER",
+  "VENUS",
+  "SATURN",
+  "RAHU",
+  "KETU",
 ] as const;
 
 export const chartPoints = ["ASCENDANT"] as const;
@@ -94,6 +109,11 @@ export const yogaKeys = [
   "RAJ_YOGA",
   "DHANA_YOGA",
   "CHANDRA_MANGALA_YOGA",
+  "VIPARITA_RAJ_YOGA",
+  "NEECH_BHANG_RAJ_YOGA",
+  "PANCH_MAHAPURUSH_YOGA",
+  "GAJ_KESARI_YOGA",
+  "BUDHADITYA_YOGA",
 ] as const;
 
 export const yogaStrengths = ["PRESENT", "STRONG"] as const;

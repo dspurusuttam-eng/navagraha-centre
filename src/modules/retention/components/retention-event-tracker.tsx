@@ -26,6 +26,7 @@ export function RetentionEventTracker({
 
     trackEvent("daily_insight_view", payload);
     trackEvent("return_prompt_shown", payload);
+    trackEvent("daily_dashboard_checkin", payload);
     trackEvent("daily_panchang_view", payload);
 
     if (snapshot.panchang.isAvailable) {

@@ -13,6 +13,7 @@ import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { buildPageMetadata } from "@/lib/metadata";
 import { getRashifalSignBySlug, rashifalSigns } from "@/modules/rashifal/content";
+import { RetentionPreferenceBridge } from "@/modules/retention/components/retention-preference-bridge";
 
 type RashifalSignPageProps = {
   params: Promise<{
@@ -72,11 +73,22 @@ export default async function RashifalSignPage({
         feature={`rashifal-sign-${signData.slug}`}
       />
       <AnalyticsEventTracker
+        event="rashifal_view"
+        payload={{
+          page: `/rashifal/${signData.slug}`,
+          feature: `rashifal-sign-view-${signData.slug}`,
+        }}
+      />
+      <AnalyticsEventTracker
         event="rashifal_page_view"
         payload={{
           page: `/rashifal/${signData.slug}`,
           feature: `rashifal-sign-${signData.slug}`,
         }}
+      />
+      <RetentionPreferenceBridge
+        section="rashifal"
+        preferredSignSlug={signData.slug}
       />
 
       <section className="relative overflow-hidden border-b border-[color:var(--color-border)] bg-[linear-gradient(180deg,#fffefb_0%,#fcf4e7_54%,#f8ecd8_100%)]">

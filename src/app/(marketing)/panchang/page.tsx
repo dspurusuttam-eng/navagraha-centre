@@ -1,4 +1,5 @@
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
+import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
 import { TrackedLink } from "@/components/analytics/tracked-link";
 import { AdSlot } from "@/components/monetization/AdSlot";
 import { ConsultationCTA } from "@/components/monetization/ConsultationCTA";
@@ -12,6 +13,7 @@ import { createToolMetadata } from "@/lib/seo/metadata";
 import { getCoreSeoCopy } from "@/lib/seo/seo-config";
 import { getRequestLocale, hasExplicitLocalePrefixInRequest } from "@/modules/localization/request";
 import { PanchangToolPanel } from "@/modules/panchang/components/panchang-tool-panel";
+import { RetentionPreferenceBridge } from "@/modules/retention/components/retention-preference-bridge";
 
 export async function generateMetadata() {
   const locale = await getRequestLocale();
@@ -76,6 +78,11 @@ export default function PanchangPage() {
   return (
     <>
       <PageViewTracker page="/panchang" feature="panchang-page" />
+      <AnalyticsEventTracker
+        event="panchang_view"
+        payload={{ page: "/panchang", feature: "panchang-page" }}
+      />
+      <RetentionPreferenceBridge section="panchang" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

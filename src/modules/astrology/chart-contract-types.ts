@@ -1,3 +1,6 @@
+import type { DivisionalChartReadiness } from "@/modules/astrology/types";
+import type { AstrologyDignityStatus } from "@/modules/astrology/core/types";
+
 export type ChartContractVerificationIssue = {
   code: string;
   message: string;
@@ -38,6 +41,13 @@ export type UnifiedSiderealChart = {
     is_retrograde: boolean;
     is_combust: boolean;
     house: number;
+    speed?: number | null;
+    dignity?: AstrologyDignityStatus;
+    divisionalPlacement?: {
+      code: "D1";
+      sign: string;
+      house: number;
+    } | null;
   }>;
   verification: {
     is_verified_for_chart_logic: boolean;
@@ -45,6 +55,7 @@ export type UnifiedSiderealChart = {
     warnings: ChartContractVerificationIssue[];
     errors: ChartContractVerificationIssue[];
   };
+  divisionalReadiness?: DivisionalChartReadiness[];
 };
 
 export type ChartContractSuccessResponse = {

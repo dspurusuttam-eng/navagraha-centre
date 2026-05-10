@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
+import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
 import { JsonLd } from "@/components/seo/json-ld";
 import { PageHero } from "@/components/site/page-hero";
 import { Badge } from "@/components/ui/badge";
@@ -23,6 +24,7 @@ import {
   getRequestLocale,
   hasExplicitLocalePrefixInRequest,
 } from "@/modules/localization/request";
+import { RetentionPreferenceBridge } from "@/modules/retention/components/retention-preference-bridge";
 
 type DeskLandingPageProps = {
   searchParams?: Promise<{
@@ -126,6 +128,11 @@ export default async function FromTheDeskPage({
   return (
     <>
       <PageViewTracker page="/from-the-desk" feature="from-the-desk-landing" />
+      <AnalyticsEventTracker
+        event="from_the_desk_read"
+        payload={{ page: "/from-the-desk", feature: "from-the-desk-landing" }}
+      />
+      <RetentionPreferenceBridge section="from-the-desk" />
       <JsonLd id="from-the-desk-schema" data={deskSchemas} />
 
       <PageHero

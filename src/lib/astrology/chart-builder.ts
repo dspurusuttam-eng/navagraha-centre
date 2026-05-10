@@ -2,6 +2,7 @@ import "server-only";
 
 import type { AstronomyReadyBirthContext } from "@/lib/astrology/birth-context-engine";
 import { validateAstronomyReadyBirthContext } from "@/lib/astrology/birth-context-validator";
+import { ownSignsByBody, exaltationSignsByBody, debilitationSignsByBody } from "@/lib/astrology/constants";
 import {
   buildWholeSignHouseStructureFromLagnaAndPlanets,
   type HouseNumber,
@@ -9,6 +10,8 @@ import {
 } from "@/lib/astrology/house-engine";
 import { calculateSiderealLagna } from "@/lib/astrology/lagna-engine";
 import { buildPlanetaryVerificationFromContext } from "@/lib/astrology/planetary-verifier";
+import { buildDivisionalChartReadiness } from "@/modules/astrology/divisional";
+import type { PlanetaryBody, ZodiacSign } from "@/modules/astrology/types";
 
 type ChartBuildFailureCode =
   | "INVALID_BIRTH_CONTEXT"
@@ -63,6 +66,7 @@ export type SiderealBirthChart = {
       graha: string | null;
     }>;
   };
+  divisionalReadiness?: ReturnType<typeof buildDivisionalChartReadiness>;
 };
 
 export type SiderealBirthChartBuildFailure = {
@@ -110,6 +114,33 @@ function mapHouseEngineFailureToChartFailureCode(
   }
 
   return "HOUSES_UNAVAILABLE";
+}
+
+function toPlanetaryBody(name: string) {
+  return name.toUpperCase() as PlanetaryBody;
+}
+
+function toZodiacSign(name: string) {
+  return name.toUpperCase() as ZodiacSign;
+}
+
+function resolvePlanetDignity(name: string, sign: string) {
+  const body = toPlanetaryBody(name);
+  const zodiacSign = toZodiacSign(sign);
+
+  if (ownSignsByBody[body]?.includes(zodiacSign)) {
+    return "OWN_SIGN" as const;
+  }
+
+  if (exaltationSignsByBody[body] === zodiacSign) {
+    return "EXALTED" as const;
+  }
+
+  if (debilitationSignsByBody[body] === zodiacSign) {
+    return "DEBILITATED" as const;
+  }
+
+  return "NEUTRAL" as const;
 }
 
 export function buildSiderealBirthChart(
@@ -169,9 +200,15 @@ export function buildSiderealBirthChart(
   const houseByPlanetName = new Map(
     housesResult.data.planets.map((placement) => [placement.planet, placement.house])
   );
+  const rawPlanetByName = new Map(
+    planetaryPipeline.rawResult.success
+      ? planetaryPipeline.rawResult.data.planets.map((planet) => [planet.graha, planet] as const)
+      : []
+  );
 
   const planets = planetaryPipeline.formattedResult.data.planets.map((planet) => {
     const house = houseByPlanetName.get(planet.name);
+    const rawPlanet = rawPlanetByName.get(toPlanetaryBody(planet.name));
 
     if (!house) {
       return null;
@@ -187,6 +224,13 @@ export function buildSiderealBirthChart(
       is_retrograde: planet.is_retrograde,
       is_combust: planet.is_combust,
       house,
+      speed: rawPlanet?.longitude_speed ?? null,
+      dignity: resolvePlanetDignity(planet.name, planet.sign),
+      divisionalPlacement: {
+        code: "D1" as const,
+        sign: planet.sign,
+        house,
+      },
     };
   });
 
@@ -197,6 +241,28 @@ export function buildSiderealBirthChart(
       validation
     );
   }
+
+  const normalizedPlanets = planets.filter(
+    (planet): planet is NonNullable<typeof planet> => planet !== null
+  );
+  const divisionalReadiness = buildDivisionalChartReadiness({
+    lagna: {
+      sign: lagnaResult.data.sign,
+      longitude: lagnaResult.data.longitude,
+      degree_in_sign: lagnaResult.data.degree_in_sign,
+    },
+    houses: housesResult.data.houses,
+    planets: normalizedPlanets.map((planet) => ({
+      name: planet.name,
+      longitude: planet.longitude,
+      sign: planet.sign,
+      degree_in_sign: planet.degree_in_sign,
+      nakshatra: planet.nakshatra,
+      pada: planet.pada,
+      is_retrograde: planet.is_retrograde,
+      house: planet.house,
+    })),
+  });
 
   return {
     success: true,
@@ -231,6 +297,7 @@ export function buildSiderealBirthChart(
         warnings: planetaryPipeline.verification.warnings,
         errors: planetaryPipeline.verification.errors,
       },
+      divisionalReadiness,
     },
   };
 }

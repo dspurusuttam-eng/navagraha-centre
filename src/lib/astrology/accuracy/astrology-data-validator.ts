@@ -219,7 +219,12 @@ export function validatePanchangOutputCompleteness(
   }
 
   checkRequiredString(data, "as_of_date", "panchang.as_of_date", issues);
+  checkRequiredString(data, "panchangDate", "panchang.panchangDate", issues);
+  checkRequiredString(data, "generatedAt", "panchang.generatedAt", issues);
+  checkRequiredString(data, "locationLabel", "panchang.locationLabel", issues);
+  checkRequiredString(data, "timezone", "panchang.timezone", issues);
   checkRequiredString(data, "vara", "panchang.vara", issues);
+  checkRequiredString(data, "dailyTone", "panchang.dailyTone", issues);
   checkRequiredString(data, "paksha", "panchang.paksha", issues);
   checkRequiredString(data, "moon_sign", "panchang.moon_sign", issues);
 
@@ -229,6 +234,9 @@ export function validatePanchangOutputCompleteness(
   const karana = asRecord(data.karana);
   const sunrise = asRecord(data.sunrise);
   const sunset = asRecord(data.sunset);
+  const timingWindows = asRecord(data.timingWindows);
+  const guidance = asRecord(data.dailyGuidance);
+  const regional = asRecord(data.regional);
 
   checkRequiredString(tithi, "name", "panchang.tithi.name", issues);
   checkRequiredString(nakshatra, "name", "panchang.nakshatra.name", issues);
@@ -236,6 +244,26 @@ export function validatePanchangOutputCompleteness(
   checkRequiredString(karana, "name", "panchang.karana.name", issues);
   checkRequiredString(sunrise, "utc", "panchang.sunrise.utc", issues);
   checkRequiredString(sunset, "utc", "panchang.sunset.utc", issues);
+  const moonrise = asRecord(data.moonrise);
+  const moonset = asRecord(data.moonset);
+
+  if (moonrise) {
+    checkRequiredString(
+      moonrise,
+      "utc",
+      "panchang.moonrise.utc",
+      issues,
+    );
+  }
+
+  if (moonset) {
+    checkRequiredString(
+      moonset,
+      "utc",
+      "panchang.moonset.utc",
+      issues,
+    );
+  }
 
   const transitions = asRecord(data.transitions);
 
@@ -274,6 +302,68 @@ export function validatePanchangOutputCompleteness(
     );
   }
 
+  if (!timingWindows) {
+    issues.push(
+      issue(
+        "panchang.timingWindows",
+        "MISSING_TIMING_WINDOWS",
+        "Panchang timing window summary is missing."
+      )
+    );
+  } else {
+    checkRequiredString(
+      asRecord(timingWindows.rahuKaal),
+      "start_utc",
+      "panchang.timingWindows.rahuKaal.start_utc",
+      issues
+    );
+    checkRequiredString(
+      asRecord(timingWindows.gulikaKaal),
+      "start_utc",
+      "panchang.timingWindows.gulikaKaal.start_utc",
+      issues
+    );
+    checkRequiredString(
+      asRecord(timingWindows.yamaganda),
+      "start_utc",
+      "panchang.timingWindows.yamaganda.start_utc",
+      issues
+    );
+    checkRequiredString(
+      asRecord(timingWindows.abhijitMuhurat),
+      "start_utc",
+      "panchang.timingWindows.abhijitMuhurat.start_utc",
+      issues
+    );
+  }
+
+  if (!guidance) {
+    issues.push(
+      issue(
+        "panchang.dailyGuidance",
+        "MISSING_DAILY_GUIDANCE",
+        "Panchang daily guidance summary is missing."
+      )
+    );
+  } else {
+    checkRequiredString(
+      guidance,
+      "dailyTone",
+      "panchang.dailyGuidance.dailyTone",
+      issues
+    );
+  }
+
+  if (!regional) {
+    issues.push(
+      issue(
+        "panchang.regional",
+        "MISSING_REGIONAL_CONTEXT",
+        "Panchang regional readiness block is missing."
+      )
+    );
+  }
+
   return resultFromIssues(issues);
 }
 
@@ -290,6 +380,13 @@ export function validateMuhurtaLiteOutputCompleteness(
   }
 
   checkRequiredString(data, "as_of_date", "muhurtaLite.as_of_date", issues);
+  checkRequiredString(data, "muhuratDate", "muhurtaLite.muhuratDate", issues);
+  checkRequiredString(data, "generatedAt", "muhurtaLite.generatedAt", issues);
+  checkRequiredString(data, "locationLabel", "muhurtaLite.locationLabel", issues);
+  checkRequiredString(data, "timezone", "muhurtaLite.timezone", issues);
+  checkRequiredString(data, "activityType", "muhurtaLite.activityType", issues);
+  checkRequiredString(data, "rating", "muhurtaLite.rating", issues);
+  checkRequiredString(data, "safeSummary", "muhurtaLite.safeSummary", issues);
   checkRequiredString(
     asRecord(data.sunrise),
     "utc",
@@ -308,10 +405,16 @@ export function validateMuhurtaLiteOutputCompleteness(
     "gulika_kaal",
     "yamaganda",
     "abhijit_muhurta",
+    "brahma_muhurta",
   ] as const;
 
   for (const key of timingKeys) {
     const timing = asRecord(data[key]);
+    if (!timing) {
+      if (key === "brahma_muhurta") {
+        continue;
+      }
+    }
     checkRequiredString(
       timing,
       "start_utc",
@@ -336,6 +439,39 @@ export function validateMuhurtaLiteOutputCompleteness(
       `muhurtaLite.${key}.end_local_time`,
       issues
     );
+  }
+
+  const stringArrayKeys = [
+    "goodWindows",
+    "cautionWindows",
+    "avoidWindows",
+    "basis",
+    "panchangFactors",
+  ] as const;
+
+  for (const key of stringArrayKeys) {
+    const value = data[key];
+
+    if (!Array.isArray(value)) {
+      issues.push(
+        issue(
+          `muhurtaLite.${key}`,
+          "INVALID_ARRAY",
+          `Muhurta-lite ${key} is missing or invalid.`
+        )
+      );
+      continue;
+    }
+
+    if (value.some((item) => typeof item !== "string" || !item.trim())) {
+      issues.push(
+        issue(
+          `muhurtaLite.${key}`,
+          "INVALID_ARRAY_ITEMS",
+          `Muhurta-lite ${key} contains invalid items.`
+        )
+      );
+    }
   }
 
   return resultFromIssues(issues);
