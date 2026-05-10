@@ -1,6 +1,7 @@
 export * from "@/modules/localization/config";
 export * from "@/modules/localization/copy";
 export * from "@/modules/localization/runtime";
+export * from "@/modules/localization/routes";
 export {
   getDefaultDictionary,
   getDictionaryValue,

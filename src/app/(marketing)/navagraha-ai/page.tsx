@@ -1,11 +1,11 @@
 import { redirect } from "next/navigation";
 import { createToolMetadata } from "@/lib/seo/metadata";
 import { getCoreSeoCopy } from "@/lib/seo/seo-config";
-import { getLocalizedPath } from "@/modules/localization/config";
 import {
   getRequestLocale,
   hasExplicitLocalePrefixInRequest,
 } from "@/modules/localization/request";
+import { getLocalizedRedirectPath } from "@/modules/localization/routes";
 
 export async function generateMetadata() {
   const locale = await getRequestLocale();
@@ -32,8 +32,8 @@ export default async function NavagrahaAiAliasPage() {
   const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
 
   redirect(
-    getLocalizedPath(locale, "/ai", {
-      forcePrefix: hasExplicitLocalePrefix,
+    getLocalizedRedirectPath(locale, "/ai", {
+      explicitLocalePrefix: hasExplicitLocalePrefix,
     })
   );
 }

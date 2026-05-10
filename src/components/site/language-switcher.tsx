@@ -9,12 +9,15 @@ import {
   detectLocaleFromPathname,
   getIndianLocales,
   getInternationalLocales,
-  getLocalizedPath,
   getLocaleDefinition,
   isLocaleSelectable,
   stripLocaleFromPathname,
 } from "@/modules/localization/config";
 import { globalFooterCopy, globalLocaleCopy } from "@/modules/localization/copy";
+import {
+  getLocalizedRoutePath,
+  getLocaleRouteDescriptor,
+} from "@/modules/localization/routes";
 
 type LanguageSwitcherProps = {
   currentLocale?: string;
@@ -28,7 +31,7 @@ function localizePath(
   search: string
 ) {
   const normalizedPath = stripLocaleFromPathname(pathname ?? "/");
-  const localizedPath = getLocalizedPath(locale, normalizedPath, {
+  const localizedPath = getLocalizedRoutePath(locale, normalizedPath, {
     forcePrefix: true,
   });
 
@@ -61,7 +64,7 @@ function LanguageSwitcherCompact({
     [activeLocale]
   );
   const allLocales = [...indianLocales, ...internationalLocales];
-  const activeDefinition = getLocaleDefinition(activeLocale);
+  const activeDefinition = getLocaleRouteDescriptor(activeLocale);
 
   return (
     <details
@@ -202,7 +205,7 @@ export function LanguageSwitcher({
             Indian Languages
           </p>
           <div className="mt-2 flex flex-wrap gap-2">
-            {indianLocales.map((locale) => {
+          {indianLocales.map((locale) => {
               const selectable = isLocaleSelectable(locale.code);
               const availabilityLabel = getLocaleAvailabilityLabel(
                 locale.availability === "live"

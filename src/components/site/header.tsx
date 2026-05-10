@@ -5,12 +5,13 @@ import { LanguageSwitcher } from "@/components/site/language-switcher";
 import { NavigationLink } from "@/components/site/navigation-link";
 import { buttonStyles } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
-import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
+import { defaultLocale } from "@/modules/localization/config";
 import { getGlobalCopyBundleForLocale } from "@/modules/localization/copy";
 import {
   getRequestLocale,
   hasExplicitLocalePrefixInRequest,
 } from "@/modules/localization/request";
+import { getLocalizedRoutePath } from "@/modules/localization/routes";
 
 type NavigationItem = {
   href: string;
@@ -29,10 +30,9 @@ export async function Header() {
   const copy = await getGlobalCopyBundleForLocale(requestLocale);
 
   const localizeHref = (href: string) =>
-    getLocalizedPath(requestLocale, href, {
+    getLocalizedRoutePath(requestLocale, href, {
       forcePrefix:
-        requestLocale !== defaultLocale ||
-        hasExplicitLocalePrefix,
+        hasExplicitLocalePrefix || requestLocale !== defaultLocale,
     });
 
   const desktopNavigationBeforeTools: readonly NavigationItem[] = [

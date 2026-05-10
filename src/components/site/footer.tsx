@@ -4,12 +4,13 @@ import { GoldSectionDivider } from "@/components/graphics/section-patterns";
 import { LanguageSwitcher } from "@/components/site/language-switcher";
 import { Container } from "@/components/ui/container";
 import { siteConfig } from "@/config/site";
-import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
+import { defaultLocale } from "@/modules/localization/config";
 import { getGlobalCopyBundleForLocale } from "@/modules/localization/copy";
 import {
   getRequestLocale,
   hasExplicitLocalePrefixInRequest,
 } from "@/modules/localization/request";
+import { getLocalizedRoutePath } from "@/modules/localization/routes";
 
 type FooterLink = {
   href: string;
@@ -26,10 +27,9 @@ export async function Footer() {
   const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
   const copy = await getGlobalCopyBundleForLocale(requestLocale);
   const localizeHref = (href: string) =>
-    getLocalizedPath(requestLocale, href, {
+    getLocalizedRoutePath(requestLocale, href, {
       forcePrefix:
-        requestLocale !== defaultLocale ||
-        hasExplicitLocalePrefix,
+        hasExplicitLocalePrefix || requestLocale !== defaultLocale,
     });
 
   const footerColumns: readonly FooterColumn[] = [
