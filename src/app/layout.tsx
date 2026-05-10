@@ -50,6 +50,7 @@ export async function generateMetadata(): Promise<Metadata> {
       default: localized.title,
       template: seoConfig.titleTemplate,
     },
+    manifest: "/manifest.webmanifest",
     icons: {
       icon: [
         { url: "/favicon.ico", sizes: "any" },
