@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -27,6 +27,7 @@ import type {
 } from "@/modules/account/dashboard-ecosystem";
 import { getRashifalSignBySlug } from "@/modules/rashifal/content";
 import { TrackedLink } from "@/components/analytics/tracked-link";
+import { trackDashboardCheckin } from "@/lib/analytics/conversion-events";
 
 type DashboardEcosystemHomeProps = {
   userName: string;
@@ -1126,10 +1127,22 @@ export function DashboardEcosystemHome({
 }: Readonly<DashboardEcosystemHomeProps>) {
   const [storedPreferences, setStoredPreferences] =
     useState<RetentionPreferenceSnapshot | null>(null);
+  const hasTrackedDashboardCheckin = useRef(false);
 
   useEffect(() => {
+    if (hasTrackedDashboardCheckin.current) {
+      return;
+    }
+
     const updatedPreferences = writeRetentionPreferenceSnapshot({
       lastSection: "dashboard",
+    });
+
+    trackDashboardCheckin({
+      route: "/dashboard",
+      section: "dashboard",
+      source: "dashboard-home",
+      status: chartOverview.chart ? "ready" : "no-kundli",
     });
 
     queueMicrotask(() => {
@@ -1137,7 +1150,8 @@ export function DashboardEcosystemHome({
         updatedPreferences ?? readRetentionPreferenceSnapshot()
       );
     });
-  }, []);
+    hasTrackedDashboardCheckin.current = true;
+  }, [chartOverview.chart]);
 
   const onActivateSection = (section: RetentionAction["section"]) => {
     const updatedPreferences = writeRetentionPreferenceSnapshot({

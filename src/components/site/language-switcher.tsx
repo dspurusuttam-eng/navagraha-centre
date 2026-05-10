@@ -19,6 +19,7 @@ import {
   getLocaleRouteDescriptor,
   getPrimaryRouteLocales,
 } from "@/modules/localization/routes";
+import { trackLanguageSwitch } from "@/lib/analytics/conversion-events";
 
 type LanguageSwitcherProps = {
   currentLocale?: string;
@@ -131,7 +132,15 @@ function LanguageSwitcherCompact({
                 })}
                 dir={locale.dir}
                 lang={locale.code}
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  trackLanguageSwitch({
+                    route: targetPathResolver(locale.code),
+                    locale: locale.code,
+                    source: "compact-language-switcher",
+                    section: "header",
+                  });
+                  setOpen(false);
+                }}
               >
                 <span className="min-w-0 flex-1 overflow-hidden text-ellipsis">
                   {locale.code === "en" ? `${locale.nativeLabel} (Default)` : locale.nativeLabel}
@@ -277,6 +286,14 @@ export function LanguageSwitcher({
                   })}
                   dir={locale.dir}
                   lang={locale.code}
+                  onClick={() => {
+                    trackLanguageSwitch({
+                      route: targetPathResolver(locale.code),
+                      locale: locale.code,
+                      source: "language-switcher",
+                      section: "primary",
+                    });
+                  }}
                 >
                   <span className="min-w-0 max-w-full overflow-hidden text-ellipsis">
                     {locale.code === "en"
@@ -336,6 +353,14 @@ export function LanguageSwitcher({
                   })}
                   dir={locale.dir}
                   lang={locale.code}
+                  onClick={() => {
+                    trackLanguageSwitch({
+                      route: targetPathResolver(locale.code),
+                      locale: locale.code,
+                      source: "language-switcher",
+                      section: "indian",
+                    });
+                  }}
                 >
                   <span className="min-w-0 max-w-full overflow-hidden text-ellipsis">
                     {locale.nativeLabel}
@@ -393,6 +418,14 @@ export function LanguageSwitcher({
                   })}
                   dir={locale.dir}
                   lang={locale.code}
+                  onClick={() => {
+                    trackLanguageSwitch({
+                      route: targetPathResolver(locale.code),
+                      locale: locale.code,
+                      source: "language-switcher",
+                      section: "international",
+                    });
+                  }}
                 >
                   <span className="min-w-0 max-w-full overflow-hidden text-ellipsis">
                     {locale.nativeLabel}

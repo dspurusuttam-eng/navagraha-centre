@@ -20,7 +20,7 @@ type AnalyticsState = {
 };
 
 const payloadDenyListPattern =
-  /(password|token|secret|cookie|authorization|birth|dob|latitude|longitude)/i;
+  /(birth|dob|dateofbirth|birthtime|birthplace|latitude|longitude|coordinates|kundliraw|chart|prompt|airesponse|reportcontent|consultationnotes|token|secret|cookie|authorization|password|paymentkey|webhooksecret)/i;
 const maxRecentEvents = 250;
 
 function createInitialCounts() {
@@ -56,7 +56,7 @@ function sanitizePayload(payload: AnalyticsEventPayload): AnalyticsEventPayload 
   const safePayload: AnalyticsEventPayload = {};
 
   for (const [key, value] of Object.entries(payload)) {
-    if (payloadDenyListPattern.test(key)) {
+    if (payloadDenyListPattern.test(key.replace(/[_\s-]/g, ""))) {
       continue;
     }
 
@@ -143,6 +143,19 @@ export function getAnalyticsSummarySnapshot() {
       payment: counts.payment_success,
     },
     conversion: {
+      homepageCtaClick: counts.homepage_cta_click,
+      kundliGenerateClick: counts.kundli_generate_click,
+      dashboardCheckin: counts.dashboard_checkin,
+      rashifalView: counts.rashifal_view,
+      panchangView: counts.panchang_view,
+      toolsHubView: counts.tools_hub_view,
+      reportPreviewClick: counts.report_preview_click,
+      reportUnlockClick: counts.report_unlock_click,
+      aiStartClick: counts.ai_start_click,
+      consultationBookClick: counts.consultation_book_click,
+      languageSwitch: counts.language_switch,
+      pwaInstallPrompt: counts.pwa_install_prompt,
+      pwaInstallSuccess: counts.pwa_install_success,
       generateKundliClick: counts.generate_kundli_click,
       kundliCompleted: counts.kundli_completed,
       aiOpened: counts.ai_opened,
@@ -178,6 +191,12 @@ export function getAnalyticsSummarySnapshot() {
       upgradeCompleted: counts.upgrade_completed,
       premiumFeatureUnlock: counts.premium_feature_unlock,
     },
-    recentEvents: state.recentEvents.slice(0, 25),
+    recentEvents: state.recentEvents.slice(0, 25).map((record) => {
+      const { userId, ...publicRecord } = record;
+
+      void userId;
+
+      return publicRecord;
+    }),
   };
 }
