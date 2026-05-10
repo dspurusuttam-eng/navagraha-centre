@@ -17,6 +17,7 @@ import { globalFooterCopy, globalLocaleCopy } from "@/modules/localization/copy"
 import {
   getLocalizedRoutePath,
   getLocaleRouteDescriptor,
+  getPrimaryRouteLocales,
 } from "@/modules/localization/routes";
 
 type LanguageSwitcherProps = {
@@ -39,12 +40,16 @@ function localizePath(
 }
 
 function groupLocales(currentLocale: string) {
-  const indianLocales = getIndianLocales().filter((locale) => locale.code !== currentLocale);
+  const primaryLocales = getPrimaryRouteLocales();
+  const primaryCodes = new Set(primaryLocales.map((locale) => locale.code));
+  const indianLocales = getIndianLocales().filter(
+    (locale) => locale.code !== currentLocale && !primaryCodes.has(locale.code)
+  );
   const internationalLocales = getInternationalLocales().filter(
     (locale) => locale.code !== currentLocale
   );
 
-  return { indianLocales, internationalLocales };
+  return { primaryLocales, indianLocales, internationalLocales };
 }
 
 function getLocaleAvailabilityLabel(isLive: boolean) {
@@ -59,11 +64,11 @@ function LanguageSwitcherCompact({
   targetPathResolver: (locale: string) => string;
 }) {
   const [open, setOpen] = useState(false);
-  const { indianLocales, internationalLocales } = useMemo(
+  const { primaryLocales, indianLocales, internationalLocales } = useMemo(
     () => groupLocales(activeLocale),
     [activeLocale]
   );
-  const allLocales = [...indianLocales, ...internationalLocales];
+  const allLocales = [...primaryLocales, ...indianLocales, ...internationalLocales];
   const activeDefinition = getLocaleRouteDescriptor(activeLocale);
 
   return (
@@ -92,13 +97,35 @@ function LanguageSwitcherCompact({
             const availabilityLabel = getLocaleAvailabilityLabel(
               locale.availability === "live"
             );
+            const isActive = locale.code === activeLocale;
 
-            return selectable ? (
+            return isActive ? (
+              <span
+                key={locale.code}
+                className={buttonStyles({
+                  tone: locale.code === "en" ? "secondary" : "ghost",
+                  size: "sm",
+                  className: "w-full cursor-default justify-start text-start",
+                })}
+                aria-current="true"
+                dir={locale.dir}
+                lang={locale.code}
+              >
+                <span className="min-w-0 flex-1 overflow-hidden text-ellipsis">
+                  {locale.code === "en"
+                    ? `${locale.nativeLabel} (Default)`
+                    : locale.nativeLabel}
+                </span>
+                <span className="shrink-0 text-[0.62rem] text-[var(--color-ink-muted)] [margin-inline-start:auto]">
+                  Active
+                </span>
+              </span>
+            ) : selectable ? (
               <Link
                 key={locale.code}
                 href={targetPathResolver(locale.code)}
                 className={buttonStyles({
-                  tone: "ghost",
+                  tone: locale.code === "en" ? "secondary" : "ghost",
                   size: "sm",
                   className: "w-full justify-start text-start",
                 })}
@@ -107,7 +134,7 @@ function LanguageSwitcherCompact({
                 onClick={() => setOpen(false)}
               >
                 <span className="min-w-0 flex-1 overflow-hidden text-ellipsis">
-                  {locale.nativeLabel}
+                  {locale.code === "en" ? `${locale.nativeLabel} (Default)` : locale.nativeLabel}
                 </span>
                 <span className="shrink-0 text-[0.62rem] text-[var(--color-ink-muted)] [margin-inline-start:auto]">
                   {availabilityLabel}
@@ -153,7 +180,7 @@ export function LanguageSwitcher({
   const activeLocale = localeFromPath ?? currentLocale;
   const activeDefinition = getLocaleDefinition(activeLocale);
   const search = searchParams.toString();
-  const { indianLocales, internationalLocales } = groupLocales(activeLocale);
+  const { primaryLocales, indianLocales, internationalLocales } = groupLocales(activeLocale);
 
   const targetPathResolver = (locale: string) => localizePath(locale, pathname, search);
 
@@ -202,10 +229,96 @@ export function LanguageSwitcher({
       <div className="mt-4 space-y-3">
         <div>
           <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
+            Primary Languages
+          </p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {primaryLocales.map((locale) => {
+              const selectable = isLocaleSelectable(locale.code);
+              const availabilityLabel = getLocaleAvailabilityLabel(
+                locale.availability === "live"
+              );
+              const isActive = locale.code === activeLocale;
+
+              if (isActive) {
+                return (
+                  <span
+                    key={locale.code}
+                    className={buttonStyles({
+                      tone: locale.code === "en" ? "secondary" : "tertiary",
+                      size: "sm",
+                      className:
+                        "cursor-default border-[rgba(185,139,70,0.34)] bg-[rgba(255,252,246,0.92)] text-start text-[var(--color-ink-body)]",
+                    })}
+                    aria-current="true"
+                    dir={locale.dir}
+                    lang={locale.code}
+                  >
+                    <span className="min-w-0 max-w-full overflow-hidden text-ellipsis">
+                      {locale.code === "en"
+                        ? `${locale.nativeLabel} (Default)`
+                        : locale.nativeLabel}
+                    </span>
+                    <span className="shrink-0 rounded-full bg-[rgba(185,139,70,0.14)] px-2 py-1 text-[0.62rem] text-[var(--color-accent-strong)]">
+                      Active
+                    </span>
+                  </span>
+                );
+              }
+
+              return selectable ? (
+                <Link
+                  key={locale.code}
+                  href={targetPathResolver(locale.code)}
+                  className={buttonStyles({
+                    tone: locale.code === "en" ? "secondary" : "tertiary",
+                    size: "sm",
+                    className:
+                      "border-[rgba(185,139,70,0.34)] bg-[rgba(255,252,246,0.92)] text-start text-[var(--color-ink-body)]",
+                  })}
+                  dir={locale.dir}
+                  lang={locale.code}
+                >
+                  <span className="min-w-0 max-w-full overflow-hidden text-ellipsis">
+                    {locale.code === "en"
+                      ? `${locale.nativeLabel} (Default)`
+                      : locale.nativeLabel}
+                  </span>
+                  <span className="shrink-0 text-[0.62rem] text-[var(--color-ink-muted)]">
+                    {availabilityLabel}
+                  </span>
+                </Link>
+              ) : (
+                <span
+                  key={locale.code}
+                  className={buttonStyles({
+                    tone: "tertiary",
+                    size: "sm",
+                    className:
+                      "cursor-not-allowed border-[rgba(185,139,70,0.34)] bg-[rgba(255,252,246,0.92)] text-start text-[var(--color-ink-body)]",
+                  })}
+                  aria-disabled="true"
+                  dir={locale.dir}
+                  lang={locale.code}
+                  title={globalLocaleCopy.planned}
+                >
+                  <span className="min-w-0 max-w-full overflow-hidden text-ellipsis">
+                    {locale.nativeLabel}
+                  </span>
+                  <span className="shrink-0 text-[0.62rem] text-[var(--color-ink-muted)]">
+                    {availabilityLabel}
+                  </span>
+                </span>
+              );
+            })}
+          </div>
+        </div>
+
+        <div>
+          <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
             Indian Languages
           </p>
           <div className="mt-2 flex flex-wrap gap-2">
-          {indianLocales.map((locale) => {
+            {indianLocales.map((locale) => {
               const selectable = isLocaleSelectable(locale.code);
               const availabilityLabel = getLocaleAvailabilityLabel(
                 locale.availability === "live"

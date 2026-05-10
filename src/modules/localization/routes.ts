@@ -1,6 +1,7 @@
 import {
   defaultLocale,
   getLocaleDefinition,
+  getLiveLocales,
   getLocalizedPath,
   isLocaleSelectable,
   resolveLocale,
@@ -73,4 +74,23 @@ export function getLocalizedRedirectPath(
   return getLocalizedPath(resolvedLocale, pathname, {
     forcePrefix,
   });
+}
+
+export function getPrimaryRouteLocales() {
+  const preferredOrder: SupportedLocale[] = ["en", "as", "hi"];
+  const liveLocales = getLiveLocales();
+  const liveCodes = new Set(liveLocales.map((locale) => locale.code as SupportedLocale));
+
+  return preferredOrder
+    .map((code) => getLocaleDefinition(code))
+    .filter((definition) => liveCodes.has(definition.code as SupportedLocale))
+    .map((definition) => ({
+      code: definition.code as SupportedLocale,
+      label: definition.label,
+      nativeLabel: definition.nativeLabel,
+      dir: definition.dir,
+      availability: definition.availability,
+      selectable: isLocaleSelectable(definition.code),
+      fallbackLocale: definition.fallback,
+    }));
 }
