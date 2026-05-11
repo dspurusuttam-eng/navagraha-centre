@@ -521,7 +521,7 @@ export default async function HomePage() {
               </h1>
               <p className="max-w-[42rem] text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
                 Generate Kundli, explore Rashifal, Panchang, Dasha, Transit,
-                Matchmaking, Remedies and personalized AI guidance — all in one
+                Matchmaking, Remedies and personalized AI guidance - all in one
                 trusted astrology platform.
               </p>
             </div>
@@ -557,7 +557,7 @@ export default async function HomePage() {
                 <Badge
                   key={badge}
                   tone="trust"
-                  className="border border-black/8 bg-white px-3 py-2 text-[0.64rem] uppercase tracking-[0.16em] text-[color:var(--color-ink-strong)] shadow-[0_8px_20px_rgba(17,24,39,0.04)]"
+                  className="border border-black/8 bg-white px-3 py-2 text-[0.64rem] uppercase tracking-[0.12em] text-[color:var(--color-ink-strong)] shadow-[0_8px_20px_rgba(17,24,39,0.04)]"
                 >
                   {badge}
                 </Badge>
@@ -575,7 +575,7 @@ export default async function HomePage() {
             {trustStripItems.map((item) => (
               <span
                 key={item}
-                className="inline-flex min-h-10 items-center gap-2 rounded-full border border-black/8 bg-white px-3.5 py-2 text-[0.64rem] uppercase tracking-[0.16em] text-[color:var(--color-ink-strong)] shadow-[0_8px_20px_rgba(17,24,39,0.04)]"
+                className="inline-flex min-h-10 items-center gap-2 rounded-full border border-black/8 bg-white px-3.5 py-2 text-[0.64rem] uppercase tracking-[0.12em] text-[color:var(--color-ink-strong)] shadow-[0_8px_20px_rgba(17,24,39,0.04)]"
               >
                 <span
                   aria-hidden="true"
@@ -684,7 +684,7 @@ export default async function HomePage() {
                 <Badge
                   key={chip}
                   tone="trust"
-                  className="border border-black/8 bg-white px-3 py-2 text-[0.64rem] uppercase tracking-[0.16em] text-[color:var(--color-ink-strong)] shadow-[0_8px_20px_rgba(17,24,39,0.04)]"
+                  className="border border-black/8 bg-white px-3 py-2 text-[0.64rem] uppercase tracking-[0.12em] text-[color:var(--color-ink-strong)] shadow-[0_8px_20px_rgba(17,24,39,0.04)]"
                 >
                   {chip}
                 </Badge>
@@ -725,7 +725,7 @@ export default async function HomePage() {
               <div className="flex items-center gap-3">
                 <NavagrahaAiIcon className="h-12 w-12" />
                 <div>
-                  <p className="text-[0.68rem] uppercase tracking-[0.18em] text-[color:var(--color-ink-muted)]">
+                  <p className="text-[0.68rem] uppercase tracking-[0.14em] text-[color:var(--color-ink-muted)]">
                     AI Preview
                   </p>
                   <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-ink-strong)]">
@@ -736,7 +736,7 @@ export default async function HomePage() {
               <Badge tone="trust">Safe Preview</Badge>
             </div>
             <div className="rounded-[var(--radius-xl)] border border-black/8 bg-white p-4 shadow-[0_8px_20px_rgba(17,24,39,0.04)]">
-              <p className="text-[0.66rem] uppercase tracking-[0.16em] text-[color:var(--color-ink-muted)]">
+              <p className="text-[0.66rem] uppercase tracking-[0.12em] text-[color:var(--color-ink-muted)]">
                 Guidance layers
               </p>
               <ul className="mt-3 grid gap-2 sm:grid-cols-2">
@@ -956,7 +956,7 @@ export default async function HomePage() {
               <div className="relative flex h-full flex-col gap-6 p-5 sm:p-6 lg:p-7">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-center gap-4">
-                    <div className="relative flex h-20 w-20 items-center justify-center rounded-full border border-[rgba(184,137,67,0.38)] bg-[radial-gradient(circle_at_center,#ffffff_0%,#f2dcaf_100%)] text-[0.95rem] font-semibold tracking-[0.18em] text-[rgba(130,86,25,0.95)] shadow-[0_16px_30px_rgba(37,56,98,0.14)]">
+                    <div className="relative flex h-20 w-20 items-center justify-center rounded-full border border-[rgba(184,137,67,0.38)] bg-[radial-gradient(circle_at_center,#ffffff_0%,#f2dcaf_100%)] text-[0.95rem] font-semibold tracking-[0.14em] text-[rgba(130,86,25,0.95)] shadow-[0_16px_30px_rgba(37,56,98,0.14)]">
                       <span className="absolute inset-2 rounded-full border border-[rgba(184,137,67,0.24)]" />
                       <span className="absolute inset-4 rotate-45 border border-[rgba(184,137,67,0.18)]" />
                       <span className="relative">JPS</span>
@@ -965,7 +965,7 @@ export default async function HomePage() {
                       <Badge tone="trust" className="border border-white/55 bg-white/75 text-[color:var(--color-ink-strong)]">
                         Astrologer Authority
                       </Badge>
-                      <p className="max-w-md text-[0.68rem] uppercase tracking-[0.18em] text-[rgba(19,53,110,0.74)]">
+                      <p className="max-w-md text-[0.68rem] uppercase tracking-[0.14em] text-[rgba(19,53,110,0.74)]">
                         JYOTISH BHASKAR JOY PRAKASH SARMAH
                       </p>
                     </div>
@@ -1030,7 +1030,7 @@ export default async function HomePage() {
                 <div className="flex items-center gap-3">
                   <ConsultationIcon className="h-12 w-12" />
                   <div>
-                    <p className="text-[0.68rem] uppercase tracking-[0.18em] text-[color:var(--color-ink-muted)]">
+                    <p className="text-[0.68rem] uppercase tracking-[0.14em] text-[color:var(--color-ink-muted)]">
                       Consultation
                     </p>
                     <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-ink-strong)]">
@@ -1124,7 +1124,7 @@ export default async function HomePage() {
                   <div className="flex items-center gap-3">
                     {getToolPreviewIcon(card.glyph, "h-12 w-12", card.initials)}
                     <div className="space-y-1">
-                      <p className="text-[0.68rem] uppercase tracking-[0.16em] text-[color:var(--color-ink-muted)]">
+                      <p className="text-[0.68rem] uppercase tracking-[0.12em] text-[color:var(--color-ink-muted)]">
                         {card.status}
                       </p>
                       <h3 className="text-[length:var(--font-size-body-lg)] font-semibold text-[color:var(--color-ink-strong)]">
@@ -1252,7 +1252,7 @@ export default async function HomePage() {
               {futureIntelligenceChips.map((chip) => (
                 <span
                   key={chip}
-                  className="rounded-[var(--radius-lg)] border border-[rgba(184,137,67,0.18)] bg-[rgba(255,253,248,0.88)] px-3 py-2 text-[length:var(--font-size-body-xs)] uppercase tracking-[0.12em] text-[color:var(--color-ink-strong)]"
+                  className="rounded-[var(--radius-lg)] border border-[rgba(184,137,67,0.18)] bg-white px-3 py-2 text-[length:var(--font-size-body-xs)] uppercase tracking-[0.12em] text-[color:var(--color-ink-strong)]"
                 >
                   {chip}
                 </span>
