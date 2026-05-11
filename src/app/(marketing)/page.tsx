@@ -10,31 +10,13 @@ import {
   RashifalIcon,
   ReportIcon,
 } from "@/components/icons/astrology-icons";
-import {
-  ConsultationPlaceholderGraphic,
-  FinalCtaOrnament,
-} from "@/components/graphics/premium-vedic-graphics";
 import { HomepagePremiumHeroVisual } from "@/components/graphics/homepage-premium-hero-visual";
-import {
-  CornerFlourish,
-  GoldSectionDivider,
-  OmMandalaWatermark,
-  ParchmentTextureLayer,
-  SacredGeometryPattern as SectionSacredGeometryPattern,
-  SoftIvoryGlow,
-} from "@/components/graphics/section-patterns";
-import {
-  ConsultationGraphic,
-  EditorialDeskGraphic,
-  PremiumReportsGraphic,
-  SpiritualShopGraphic,
-} from "@/components/graphics/service-graphics";
+import { GoldSectionDivider } from "@/components/graphics/section-patterns";
 import { UtilityIcon } from "@/components/graphics/utility-icons";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
-import { Section } from "@/components/ui/section";
 import { siteConfig } from "@/config/site";
 import { createPageMetadata } from "@/lib/seo/metadata";
 import { getCoreSeoCopy } from "@/lib/seo/seo-config";
@@ -78,20 +60,6 @@ type HomeIcon =
   | "panchang"
   | "calculators";
 
-type HomeCardItem = {
-  icon: HomeIcon;
-  title: string;
-  description: string;
-  href: string;
-  ctaLabel: string;
-  feature: string;
-};
-
-type ServiceCard = HomeCardItem & {
-  label: string;
-  visualVariant: "report" | "consultation" | "editorial" | "shop";
-};
-
 type ToolPreviewStatus = "Available" | "Requires Kundli" | "Preview";
 
 type ToolPreviewGlyph =
@@ -116,29 +84,6 @@ type ToolPreviewItem = {
   glyph: ToolPreviewGlyph;
   initials?: string;
 };
-
-function getHomeIcon(icon: HomeIcon, className?: string) {
-  switch (icon) {
-    case "kundli":
-      return <KundliIcon className={className} />;
-    case "ai":
-      return <NavagrahaAiIcon className={className} />;
-    case "rashifal":
-      return <RashifalIcon className={className} />;
-    case "reports":
-      return <ReportIcon className={className} />;
-    case "consultation":
-      return <ConsultationIcon className={className} />;
-    case "numerology":
-      return <NumerologyIcon className={className} />;
-    case "panchang":
-      return <PanchangIcon className={className} />;
-    case "calculators":
-      return <CalculatorIcon className={className} />;
-    default:
-      return <KundliIcon className={className} />;
-  }
-}
 
 const heroTrustBadges = [
   "Since 1950 Legacy",
@@ -359,63 +304,177 @@ const dailyGuidanceCards: readonly DailyGuidanceCard[] = [
   },
 ] as const;
 
-const reportBenefits = [
-  "Career, Finance & Business",
-  "Marriage & Relationships",
-  "Health & Well-being",
-  "Complete Life Report",
-] as const;
-
-const consultationBadges = [
-  "Verified Astrologer",
-  "Vedic Expertise",
-] as const;
-
-const contentCommerceCards: readonly ServiceCard[] = [
+const premiumReportCards: readonly ToolPreviewItem[] = [
   {
-    icon: "reports",
-    label: "Editorial Desk",
-    title: "From the Desk of J P Sarmah",
-    description: "Articles, remedies, Rashifal context, and spiritual guidance from the editorial desk.",
+    title: "Birth Kundli Report",
+    description: "Structured life mapping from Lagna, houses, planets, and chart context.",
+    href: "/reports",
+    ctaLabel: "View Reports",
+    feature: "home-reports-birth-kundli",
+    status: "Preview",
+    glyph: "kundli",
+  },
+  {
+    title: "Career Report",
+    description: "Focused analysis for work direction, timing, and decision support.",
+    href: "/reports",
+    ctaLabel: "View Reports",
+    feature: "home-reports-career",
+    status: "Preview",
+    glyph: "consultation",
+  },
+  {
+    title: "Marriage Report",
+    description: "Relationship and compatibility insight with calm, practical framing.",
+    href: "/reports",
+    ctaLabel: "View Reports",
+    feature: "home-reports-marriage",
+    status: "Preview",
+    glyph: "compatibility",
+  },
+  {
+    title: "Finance Report",
+    description: "Money-flow, planning, and opportunity context from the chart lens.",
+    href: "/reports",
+    ctaLabel: "View Reports",
+    feature: "home-reports-finance",
+    status: "Preview",
+    glyph: "calculators",
+  },
+  {
+    title: "Health Guidance",
+    description: "Supportive wellness indicators and lifestyle awareness from chart signals.",
+    href: "/reports",
+    ctaLabel: "View Reports",
+    feature: "home-reports-health",
+    status: "Preview",
+    glyph: "panchang",
+  },
+  {
+    title: "Yearly Guidance",
+    description: "A broader annual view that can help with planning and timing.",
+    href: "/reports",
+    ctaLabel: "View Reports",
+    feature: "home-reports-yearly",
+    status: "Preview",
+    glyph: "rashifal",
+  },
+  {
+    title: "Dasha Report",
+    description: "Time-period context that helps interpret current phases more clearly.",
+    href: "/reports",
+    ctaLabel: "View Reports",
+    feature: "home-reports-dasha",
+    status: "Preview",
+    glyph: "calculators",
+  },
+  {
+    title: "Transit Report",
+    description: "Current motion context for day-to-day decisions and awareness.",
+    href: "/reports",
+    ctaLabel: "View Reports",
+    feature: "home-reports-transit",
+    status: "Preview",
+    glyph: "panchang",
+  },
+] as const;
+
+const authorityHighlights = [
+  "Annual Vedic guidance",
+  "Rashifal + Panchang",
+  "Life-direction support",
+] as const;
+
+const consultationFocusChips = [
+  "Kundli Context",
+  "Dasha Review",
+  "Transit Timing",
+  "Life Decisions",
+] as const;
+
+const deskPreviewCards: readonly ToolPreviewItem[] = [
+  {
+    title: "FROM THE DESK OF J P SARMAH",
+    description: "Manually published Daily Rashifal, Monthly Rashifal, Yearly Rashifal, Panchang guidance, spiritual remedies, and educational astrology content.",
     href: "/from-the-desk",
-    ctaLabel: "Read Insights",
-    feature: "home-service-content",
-    visualVariant: "editorial",
+    ctaLabel: "Read From the Desk",
+    feature: "home-desk-editorial",
+    status: "Available",
+    glyph: "reports",
   },
   {
-    icon: "kundli",
-    label: "Spiritual Products",
-    title: "Spiritual Support Shop",
-    description: "Optional Rudraksha, gemstones, malas, yantras, and devotional support products.",
+    title: "Gemstones, Rudraksha & Vedic Items",
+    description: "Optional spiritual support products selected for future remedy commerce and careful guidance flows.",
     href: "/shop",
-    ctaLabel: "Visit Shop",
-    feature: "home-service-shop",
-    visualVariant: "shop",
+    ctaLabel: "Explore Shop",
+    feature: "home-desk-shop",
+    status: "Preview",
+    glyph: "kundli",
   },
 ] as const;
 
-const credibilityItems = [
-  "A Legacy of Vedic Guidance",
-  "Accurate Vedic Calculations",
-  "Expert Astrology Guidance",
-  "Secure & Confidential",
+type FutureRailCard = {
+  title: string;
+  description: string;
+  href?: string;
+  ctaLabel: string;
+  feature: string;
+  statusLabel: string;
+  glyph: ToolPreviewGlyph;
+  initials?: string;
+  ctaMode: "link" | "soon";
+};
+
+const futureRailCards: readonly FutureRailCard[] = [
+  {
+    title: "Astrology Learning",
+    description: "Learn planets, houses, Rashis, Dasha, Panchang, remedies and Vedic astrology basics from NAVAGRAHA CENTRE.",
+    href: "/insights/astrology-guides",
+    ctaLabel: "Explore Lessons",
+    feature: "home-future-learning",
+    statusLabel: "Available",
+    glyph: "generic",
+    initials: "AL",
+    ctaMode: "link",
+  },
+  {
+    title: "NAVAGRAHA Videos & Guidance",
+    description: "Watch astrology lessons, Rashifal guidance and Vedic insights from NAVAGRAHA CENTRE.",
+    ctaLabel: "Videos coming soon",
+    feature: "home-future-videos",
+    statusLabel: "Coming Soon",
+    glyph: "generic",
+    initials: "VID",
+    ctaMode: "soon",
+  },
+  {
+    title: "Gemstones, Rudraksha & Vedic Items",
+    description: "Explore spiritual and astrology-aligned items selected for future NAVAGRAHA remedy commerce.",
+    href: "/shop",
+    ctaLabel: "Explore Shop",
+    feature: "home-future-shop",
+    statusLabel: "Preview",
+    glyph: "generic",
+    initials: "SHOP",
+    ctaMode: "link",
+  },
 ] as const;
 
-function mapServiceToEvent(feature: string) {
-  if (feature.includes("consultation")) {
-    return "consultation_cta_click" as const;
-  }
+const futureIntelligenceChips = [
+  "Kundli NI",
+  "Dasha NI",
+  "Transit NI",
+  "Panchang NI",
+  "Remedy NI",
+  "Numerology NI",
+  "Vastu NI",
+  "Palmistry NI",
+  "Career NI",
+  "Finance NI",
+  "Marriage NI",
+  "Business NI",
+] as const;
 
-  if (feature.includes("shop")) {
-    return "shop_cta_click" as const;
-  }
-
-  if (feature.includes("reports")) {
-    return "report_cta_click" as const;
-  }
-
-  return "cta_click" as const;
-}
 
 export default async function HomePage() {
   const locale = await getRequestLocale();
@@ -531,43 +590,6 @@ export default async function HomePage() {
 
       <GoldSectionDivider />
 
-      <Section tone="light" category="content" contentClassName="py-0">
-        <Card tone="accent" className="grid gap-6 border-[rgba(184,137,67,0.32)] lg:grid-cols-[auto_minmax(0,1fr)] lg:items-center">
-          <ParchmentTextureLayer className="opacity-[var(--pattern-opacity-parchment)]" />
-          <SectionSacredGeometryPattern className="opacity-[0.22]" />
-          <OmMandalaWatermark className="right-0 top-1/2 h-44 w-44 -translate-y-1/2 opacity-[0.1]" />
-          <CornerFlourish position="top-right" className="opacity-70" />
-          <div className="flex items-center justify-center gap-5 sm:justify-start">
-            <ConsultationPlaceholderGraphic
-              monogram="JPS"
-              label="Joy Prakash Sarmah"
-              ariaLabel="Astrologer profile portrait placeholder"
-            />
-            <ConsultationPlaceholderGraphic
-              monogram="HS"
-              label="Hemeswar Sarmah legacy"
-              ariaLabel="Legacy portrait placeholder"
-            />
-          </div>
-          <div className="space-y-3 text-center lg:text-left">
-            <Badge tone="trust">Authority / Legacy</Badge>
-            <h2
-              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-md)] text-[var(--color-ink-strong)]"
-              style={{ letterSpacing: "var(--tracking-display)" }}
-            >
-              Guided by Joy Prakash Sarmah, Chief Astrologer & Authority of NAVAGRAHA CENTRE.
-            </h2>
-            <p className="mx-auto max-w-3xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)] lg:mx-0">
-              Inspired by the legacy of Hemeswar Sarmah, renowned Vedic
-              astrologer and traditional scholar, the centre presents trusted
-              guidance across India through chart-aware interpretation,
-              privacy-conscious tools, and modern intelligence.
-            </p>
-          </div>
-        </Card>
-      </Section>
-
-      <GoldSectionDivider />
 
       <section className="border-b border-black/8 bg-white">
         <Container className="py-12 sm:py-14">
@@ -813,168 +835,321 @@ export default async function HomePage() {
 
       <GoldSectionDivider tone="light" />
 
-      <Section
-        tone="light"
-        category="services"
-        eyebrow="Reports + Consultation"
-        title="Premium guidance paths for deeper life questions."
-        description="Choose a structured report or a human consultation without mixing these service paths into the free utility tools."
-      >
-        <div className="relative overflow-hidden rounded-[var(--radius-2xl)] border border-[rgba(184,137,67,0.2)] bg-[rgba(255,255,255,0.52)] p-4 sm:p-5">
-          <ParchmentTextureLayer className="opacity-[0.2]" />
-          <SectionSacredGeometryPattern className="opacity-[0.18]" />
-          <SoftIvoryGlow className="opacity-[0.66]" />
-          <CornerFlourish position="top-left" className="opacity-60" />
-
-          <div className="relative grid gap-5 lg:grid-cols-2">
-            <Card tone="light" interactive className="flex h-full flex-col gap-5">
-            <div className="flex items-center justify-between gap-3">
-              <ReportIcon className="h-12 w-12" />
-              <Badge tone="trust">Premium Reports</Badge>
-            </div>
-            <PremiumReportsGraphic />
-            <div className="space-y-3">
-              <h3 className="mobile-safe-text text-[length:var(--font-size-title-sm)] font-medium text-[var(--color-ink-strong)]">
-                Premium Reports
-              </h3>
-              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-                In-depth life analysis reports with chart-aware interpretation,
-                predictive context, and practical next steps.
-              </p>
-            </div>
-            <ul className="grid gap-2 sm:grid-cols-2">
-              {reportBenefits.map((benefit) => (
-                <li
-                  key={benefit}
-                  className="rounded-[var(--radius-lg)] border border-[rgba(184,137,67,0.18)] bg-[rgba(255,253,248,0.72)] px-3 py-2 text-[length:var(--font-size-body-xs)] text-[var(--color-ink-body)]"
-                >
-                  {benefit}
-                </li>
-              ))}
-            </ul>
-            <TrackedLink
-              href={localizeHref("/reports")}
-              eventName="report_cta_click"
-              eventPayload={{ page: "/", feature: "home-reports-premium-card" }}
-              className={buttonStyles({
-                size: "sm",
-                tone: "tertiary",
-                className: "mt-auto w-full justify-center",
-              })}
+      <section className="border-b border-black/8 bg-white">
+        <Container className="py-12 sm:py-14">
+          <div className="max-w-3xl space-y-4">
+            <Badge tone="trust" className="w-fit border border-black/8 bg-white">
+              Premium Reports
+            </Badge>
+            <h2
+              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-lg)] text-[color:var(--color-ink-strong)]"
+              style={{
+                letterSpacing: "var(--tracking-display)",
+                lineHeight: "var(--line-height-tight)",
+              }}
             >
-              Explore Reports
-            </TrackedLink>
-            </Card>
-
-            <Card tone="accent" interactive className="flex h-full flex-col gap-5 border-[rgba(184,137,67,0.34)]">
-              <div className="grid gap-5 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-center">
-                <ConsultationGraphic className="h-28" />
-                <div className="space-y-2 text-center sm:text-left">
-                  <Badge tone="trust">Consultation</Badge>
-                  <h3 className="mobile-safe-text text-[length:var(--font-size-title-sm)] font-medium text-[var(--color-ink-strong)]">
-                    Joy Prakash Sarmah
-                  </h3>
-                  <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-                    Chief Astrologer, NAVAGRAHA CENTRE
-                  </p>
-                </div>
-              </div>
-              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-                Personal guidance for nuanced questions, chart interpretation,
-                timing, remedies, and decisions that benefit from human review.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {consultationBadges.map((badge) => (
-                  <span
-                    key={badge}
-                    className="rounded-[var(--radius-pill)] border border-[rgba(184,137,67,0.24)] bg-[rgba(255,255,255,0.7)] px-3 py-2 text-[0.66rem] uppercase tracking-[0.14em] text-[var(--color-trust-text)]"
-                  >
-                    {badge}
-                  </span>
-                ))}
-              </div>
-              <TrackedLink
-                href={localizeHref("/consultation")}
-                eventName="consultation_cta_click"
-                eventPayload={{ page: "/", feature: "home-consultation-premium-card" }}
-                className={buttonStyles({
-                  size: "sm",
-                  tone: "accent",
-                  className: "mt-auto w-full justify-center",
-                })}
-              >
-                Book Consultation
-              </TrackedLink>
-            </Card>
+              Personalized Astrology Reports
+            </h2>
+            <p className="max-w-3xl text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+              Career, Marriage, Finance, Health, Life Path and advanced Vedic
+              insights prepared from Kundli, Dasha, Transit and planetary
+              intelligence.
+            </p>
           </div>
-        </div>
-      </Section>
 
-      <Section
-        tone="muted"
-        category="content"
-        eyebrow="From the Desk + Shop"
-        title="Editorial guidance and optional spiritual support stay in their own lane."
-        description="Read expert-led content or explore spiritual products as optional support, never as fear-based remedy pressure."
-      >
-        <div className="relative overflow-hidden rounded-[var(--radius-2xl)] border border-[rgba(184,137,67,0.2)] bg-[rgba(255,255,255,0.52)] p-4 sm:p-5">
-          <ParchmentTextureLayer className="opacity-[0.18]" />
-          <SectionSacredGeometryPattern className="opacity-[0.16]" />
-          <SoftIvoryGlow className="opacity-[0.64]" />
-          <OmMandalaWatermark className="right-[-2.8rem] bottom-[-2.8rem] h-40 w-40 opacity-[0.08]" />
-          <CornerFlourish position="bottom-left" className="opacity-60" />
-
-          <div className="relative grid gap-5 lg:grid-cols-2">
-            {contentCommerceCards.map((service) => (
-              <Card key={service.title} tone="light" interactive className="flex h-full flex-col gap-4">
-                <div className="flex items-center justify-between gap-3">
-                  {getHomeIcon(service.icon, "h-12 w-12")}
-                  <Badge tone="trust">{service.label}</Badge>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {premiumReportCards.map((report) => (
+              <Card
+                key={report.title}
+                tone="default"
+                interactive
+                className="flex h-full flex-col gap-4 border-black/8 bg-white bg-none shadow-[0_14px_36px_rgba(17,24,39,0.06)] before:opacity-0 hover:border-black/12"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    {getToolPreviewIcon(report.glyph, "h-12 w-12", report.initials)}
+                    <div className="space-y-1">
+                      <h3 className="text-[length:var(--font-size-body-lg)] font-semibold text-[color:var(--color-ink-strong)]">
+                        {report.title}
+                      </h3>
+                    </div>
+                  </div>
+                  <span className="rounded-full border border-[rgba(184,137,67,0.24)] px-2.5 py-1 text-[0.58rem] uppercase tracking-[0.14em] text-[color:var(--color-accent-strong)]">
+                    {report.status}
+                  </span>
                 </div>
-                {service.visualVariant === "editorial" ? <EditorialDeskGraphic /> : null}
-                {service.visualVariant === "shop" ? <SpiritualShopGraphic /> : null}
-                <h3 className="mobile-safe-text text-[length:var(--font-size-title-sm)] font-medium text-[var(--color-ink-strong)]">
-                  {service.title}
-                </h3>
-                <p className="flex-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-                  {service.description}
+
+                <p className="flex-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                  {report.description}
                 </p>
-                {service.visualVariant === "shop" ? (
-                  <p className="rounded-[var(--radius-lg)] border border-[rgba(184,137,67,0.2)] bg-[rgba(255,253,248,0.72)] px-3 py-2 text-[length:var(--font-size-body-xs)] text-[var(--color-trust-text)]">
-                    Optional spiritual support tools
-                  </p>
-                ) : null}
+
                 <TrackedLink
-                  href={localizeHref(service.href)}
-                  eventName={mapServiceToEvent(service.feature)}
-                  eventPayload={{ page: "/", feature: service.feature }}
+                  href={localizeHref(report.href)}
+                  eventName="report_cta_click"
+                  eventPayload={{ page: "/", feature: report.feature, section: "home-reports-preview" }}
                   className={buttonStyles({
                     size: "sm",
-                    tone: "tertiary",
+                    tone: "secondary",
                     className: "w-full justify-center",
                   })}
                 >
-                  {service.ctaLabel}
+                  {report.ctaLabel}
                 </TrackedLink>
               </Card>
             ))}
           </div>
-        </div>
-      </Section>
+
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <TrackedLink
+              href={localizeHref("/reports")}
+              eventName="report_cta_click"
+              eventPayload={{ page: "/", feature: "home-reports-section-primary" }}
+              className={buttonStyles({
+                size: "lg",
+                className: "w-full justify-center sm:w-auto",
+              })}
+            >
+              View Reports
+            </TrackedLink>
+            <TrackedLink
+              href={localizeHref("/kundli")}
+              eventName="cta_click"
+              eventPayload={{ page: "/", feature: "home-reports-section-secondary" }}
+              className={buttonStyles({
+                size: "lg",
+                tone: "secondary",
+                className: "w-full justify-center sm:w-auto",
+              })}
+            >
+              Generate Kundli First
+            </TrackedLink>
+          </div>
+        </Container>
+      </section>
 
       <GoldSectionDivider />
 
-      <section className="relative border-y border-[color:var(--color-border)] bg-[rgba(255,253,248,0.94)] py-6">
-        <ParchmentTextureLayer className="opacity-[0.16]" />
-        <Container>
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            {credibilityItems.map((item) => (
-              <span
-                key={item}
-                className="rounded-[var(--radius-pill)] border border-[rgba(184,137,67,0.28)] bg-[rgba(255,255,255,0.78)] px-4 py-3 text-center text-[0.68rem] uppercase tracking-[0.14em] text-[var(--color-trust-text)] shadow-[var(--shadow-xs)]"
+      <section className="border-b border-black/8 bg-white">
+        <Container className="py-12 sm:py-14">
+          <div className="max-w-3xl space-y-4">
+            <Badge tone="trust" className="w-fit border border-black/8 bg-white">
+              Authority + Consultation
+            </Badge>
+            <h2
+              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-lg)] text-[color:var(--color-ink-strong)]"
+              style={{
+                letterSpacing: "var(--tracking-display)",
+                lineHeight: "var(--line-height-tight)",
+              }}
+            >
+              Guided by JYOTISH BHASKAR JOY PRAKASH SARMAH
+            </h2>
+            <p className="max-w-3xl text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+              The guiding astrologer authority behind NAVAGRAHA CENTRE, paired
+              with human review for important life decisions.
+            </p>
+          </div>
+
+          <div className="mt-8 grid gap-4 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] lg:items-stretch">
+            <Card className="relative overflow-hidden border border-[rgba(95,135,200,0.24)] bg-[linear-gradient(145deg,#f8fbff_0%,#e8f0ff_55%,#dfeaff_100%)] shadow-[0_18px_44px_rgba(19,53,110,0.12)] before:opacity-0">
+              <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(75,118,192,0.16),transparent_32%),radial-gradient(circle_at_82%_20%,rgba(255,255,255,0.48),transparent_24%),radial-gradient(circle_at_72%_82%,rgba(184,137,67,0.12),transparent_30%)]" />
+              <div className="relative flex h-full flex-col gap-6 p-5 sm:p-6 lg:p-7">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="relative flex h-20 w-20 items-center justify-center rounded-full border border-[rgba(184,137,67,0.38)] bg-[radial-gradient(circle_at_center,#ffffff_0%,#f2dcaf_100%)] text-[0.95rem] font-semibold tracking-[0.18em] text-[rgba(130,86,25,0.95)] shadow-[0_16px_30px_rgba(37,56,98,0.14)]">
+                      <span className="absolute inset-2 rounded-full border border-[rgba(184,137,67,0.24)]" />
+                      <span className="absolute inset-4 rotate-45 border border-[rgba(184,137,67,0.18)]" />
+                      <span className="relative">JPS</span>
+                    </div>
+                    <div className="space-y-2">
+                      <Badge tone="trust" className="border border-white/55 bg-white/75 text-[color:var(--color-ink-strong)]">
+                        Astrologer Authority
+                      </Badge>
+                      <p className="max-w-md text-[0.68rem] uppercase tracking-[0.18em] text-[rgba(19,53,110,0.74)]">
+                        JYOTISH BHASKAR JOY PRAKASH SARMAH
+                      </p>
+                    </div>
+                  </div>
+                  <Badge tone="trust" className="border border-[rgba(184,137,67,0.26)] bg-white/85 text-[color:var(--color-ink-strong)]">
+                    ???????? 2026
+                  </Badge>
+                </div>
+
+                <div className="space-y-4">
+                  <h3 className="max-w-2xl text-[length:var(--font-size-title-sm)] font-semibold text-[color:var(--color-ink-strong)]">
+                    The guiding astrologer authority behind NAVAGRAHA CENTRE.
+                  </h3>
+                  <p className="max-w-2xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                    Annual Vedic guidance, Rashifal, Panchang insights and
+                    life-direction support from the astrologer&apos;s desk.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  {authorityHighlights.map((item) => (
+                    <Badge
+                      key={item}
+                      tone="trust"
+                      className="border border-white/60 bg-white px-3 py-2 text-[0.64rem] uppercase tracking-[0.14em] text-[color:var(--color-ink-strong)] shadow-[0_8px_20px_rgba(17,24,39,0.04)]"
+                    >
+                      {item}
+                    </Badge>
+                  ))}
+                </div>
+
+                <div className="mt-auto flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                  <TrackedLink
+                    href={localizeHref("/consultation")}
+                    eventName="consultation_cta_click"
+                    eventPayload={{ page: "/", feature: "home-authority-consult-jps" }}
+                    className={buttonStyles({
+                      size: "lg",
+                      className: "w-full justify-center sm:w-auto",
+                    })}
+                  >
+                    Consult J P Sarmah
+                  </TrackedLink>
+                  <TrackedLink
+                    href={localizeHref("/insights/monthly")}
+                    eventName="cta_click"
+                    eventPayload={{ page: "/", feature: "home-authority-yearly-guidance" }}
+                    className={buttonStyles({
+                      size: "lg",
+                      tone: "secondary",
+                      className: "w-full justify-center sm:w-auto",
+                    })}
+                  >
+                    Explore Yearly Guidance
+                  </TrackedLink>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="flex h-full flex-col gap-5 border-black/8 bg-white shadow-[0_16px_38px_rgba(17,24,39,0.06)] before:opacity-0">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <ConsultationIcon className="h-12 w-12" />
+                  <div>
+                    <p className="text-[0.68rem] uppercase tracking-[0.18em] text-[color:var(--color-ink-muted)]">
+                      Consultation
+                    </p>
+                    <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-ink-strong)]">
+                      Human guidance for important life decisions.
+                    </p>
+                  </div>
+                </div>
+                <Badge tone="trust">Premium Review</Badge>
+              </div>
+              <h3 className="text-[length:var(--font-size-title-sm)] font-semibold text-[color:var(--color-ink-strong)]">
+                Consult with JYOTISH BHASKAR J P SARMAH
+              </h3>
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                Human guidance for important life decisions, supported by
+                Kundli, Dasha, Transit, Panchang and NAVAGRAHA Intelligence
+                context.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {consultationFocusChips.map((chip) => (
+                  <span
+                    key={chip}
+                    className="rounded-[var(--radius-pill)] border border-[rgba(184,137,67,0.24)] bg-white px-3 py-2 text-[0.64rem] uppercase tracking-[0.14em] text-[color:var(--color-trust-text)] shadow-[0_8px_20px_rgba(17,24,39,0.04)]"
+                  >
+                    {chip}
+                  </span>
+                ))}
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <TrackedLink
+                  href={localizeHref("/consultation")}
+                  eventName="consultation_cta_click"
+                  eventPayload={{ page: "/", feature: "home-consultation-primary" }}
+                  className={buttonStyles({
+                    size: "sm",
+                    className: "w-full justify-center",
+                  })}
+                >
+                  Book Consultation
+                </TrackedLink>
+                <TrackedLink
+                  href={localizeHref("/kundli")}
+                  eventName="cta_click"
+                  eventPayload={{ page: "/", feature: "home-consultation-secondary" }}
+                  className={buttonStyles({
+                    size: "sm",
+                    tone: "secondary",
+                    className: "w-full justify-center",
+                  })}
+                >
+                  Generate Kundli First
+                </TrackedLink>
+              </div>
+            </Card>
+          </div>
+        </Container>
+      </section>
+
+      <GoldSectionDivider />
+
+      <section className="border-b border-black/8 bg-white">
+        <Container className="py-12 sm:py-14">
+          <div className="max-w-3xl space-y-4">
+            <Badge tone="trust" className="w-fit border border-black/8 bg-white">
+              From the Desk
+            </Badge>
+            <h2
+              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-lg)] text-[color:var(--color-ink-strong)]"
+              style={{
+                letterSpacing: "var(--tracking-display)",
+                lineHeight: "var(--line-height-tight)",
+              }}
+            >
+              FROM THE DESK OF J P SARMAH
+            </h2>
+            <p className="max-w-3xl text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+              Daily Rashifal, Monthly Rashifal, Yearly Rashifal, Panchang
+              guidance, Vedic astrology insights and spiritual remedies are
+              published manually from the astrologer&apos;s desk.
+            </p>
+          </div>
+
+          <div className="mt-8 grid gap-4 lg:grid-cols-2">
+            {deskPreviewCards.map((card) => (
+              <Card
+                key={card.title}
+                tone="default"
+                interactive
+                className="flex h-full flex-col gap-4 border-black/8 bg-white bg-none shadow-[0_14px_36px_rgba(17,24,39,0.06)] before:opacity-0 hover:border-black/12"
               >
-                {item}
-              </span>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    {getToolPreviewIcon(card.glyph, "h-12 w-12", card.initials)}
+                    <div className="space-y-1">
+                      <p className="text-[0.68rem] uppercase tracking-[0.16em] text-[color:var(--color-ink-muted)]">
+                        {card.status}
+                      </p>
+                      <h3 className="text-[length:var(--font-size-body-lg)] font-semibold text-[color:var(--color-ink-strong)]">
+                        {card.title}
+                      </h3>
+                    </div>
+                  </div>
+                  <Badge tone="trust">Manual</Badge>
+                </div>
+                <p className="flex-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                  {card.description}
+                </p>
+                <TrackedLink
+                  href={localizeHref(card.href)}
+                  eventName={card.feature.includes("shop") ? "shop_cta_click" : "cta_click"}
+                  eventPayload={{ page: "/", feature: card.feature, section: "home-desk" }}
+                  className={buttonStyles({
+                    size: "sm",
+                    tone: card.feature.includes("shop") ? "secondary" : "tertiary",
+                    className: "w-full justify-center",
+                  })}
+                >
+                  {card.ctaLabel}
+                </TrackedLink>
+              </Card>
             ))}
           </div>
         </Container>
@@ -982,60 +1157,163 @@ export default async function HomePage() {
 
       <GoldSectionDivider />
 
-      <Section className="pt-0" tone="transparent">
-        <Card
-          tone="accent"
-          className="relative border-[rgba(184,137,67,0.35)] bg-[linear-gradient(160deg,rgba(255,252,246,0.98)_0%,rgba(246,232,206,0.94)_58%,rgba(239,222,193,0.96)_100%)] shadow-[var(--shadow-md)] lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8"
-        >
-          <ParchmentTextureLayer className="opacity-[var(--pattern-opacity-parchment)]" />
-          <SectionSacredGeometryPattern className="opacity-[0.18]" />
-          <SoftIvoryGlow className="opacity-[0.75]" />
-          <OmMandalaWatermark className="right-[-1.5rem] top-[-1.5rem] h-36 w-36 opacity-[0.11]" />
-          <CornerFlourish position="bottom-right" className="opacity-70" />
-          <FinalCtaOrnament />
-          <div className="space-y-4">
-            <Badge tone="trust">Begin Your Journey</Badge>
+      <section className="border-b border-black/8 bg-white">
+        <Container className="py-12 sm:py-14">
+          <div className="max-w-3xl space-y-4">
+            <Badge tone="trust" className="w-fit border border-black/8 bg-white">
+              Future Rails
+            </Badge>
             <h2
-              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-lg)] text-[var(--color-ink-strong)]"
+              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-lg)] text-[color:var(--color-ink-strong)]"
               style={{
                 letterSpacing: "var(--tracking-display)",
                 lineHeight: "var(--line-height-tight)",
               }}
             >
-              Begin Your Journey of Self-Discovery
+              Future-Ready Premium Rails
             </h2>
-            <p className="max-w-2xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-              The stars have answers. Let&apos;s help you find them.
+            <p className="max-w-3xl text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+              The platform is being prepared for lessons, videos, commerce, and
+              future intelligence tools without pretending those surfaces are
+              already complete.
             </p>
           </div>
 
-          <div className="mt-6 flex w-full flex-col gap-3 sm:w-auto sm:flex-row lg:mt-0">
-            <TrackedLink
-              href={localizeHref("/kundli")}
-              eventName="cta_click"
-              eventPayload={{ page: "/", feature: "final-cta-kundli" }}
-              className={buttonStyles({
-                size: "lg",
-                className: "w-full justify-center sm:w-auto",
-              })}
-            >
-              Generate Your Kundli
-            </TrackedLink>
-            <TrackedLink
-              href={localizeHref("/consultation")}
-              eventName="consultation_cta_click"
-              eventPayload={{ page: "/", feature: "final-cta-consultation" }}
-              className={buttonStyles({
-                size: "lg",
-                tone: "secondary",
-                className: "w-full justify-center sm:w-auto",
-              })}
-            >
-              Consult an Astrologer
-            </TrackedLink>
+          <div className="mt-8 grid gap-4 lg:grid-cols-3">
+            {futureRailCards.map((rail) => (
+              <Card
+                key={rail.title}
+                tone="default"
+                className="flex h-full flex-col gap-4 border-black/8 bg-white shadow-[0_14px_36px_rgba(17,24,39,0.06)] before:opacity-0"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    {getToolPreviewIcon(rail.glyph, "h-12 w-12", rail.initials)}
+                    <div className="space-y-1">
+                      <h3 className="text-[length:var(--font-size-body-lg)] font-semibold text-[color:var(--color-ink-strong)]">
+                        {rail.title}
+                      </h3>
+                    </div>
+                  </div>
+                  <span className="rounded-full border border-[rgba(184,137,67,0.24)] px-2.5 py-1 text-[0.58rem] uppercase tracking-[0.14em] text-[color:var(--color-accent-strong)]">
+                    {rail.statusLabel}
+                  </span>
+                </div>
+                <p className="flex-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                  {rail.description}
+                </p>
+                {rail.ctaMode === "link" ? (
+                  <TrackedLink
+                    href={rail.href ? localizeHref(rail.href) : localizeHref("/")}
+                    eventName="cta_click"
+                    eventPayload={{ page: "/", feature: rail.feature, section: "home-future-rails" }}
+                    className={buttonStyles({
+                      size: "sm",
+                      tone: "secondary",
+                      className: "w-full justify-center",
+                    })}
+                  >
+                    {rail.ctaLabel}
+                  </TrackedLink>
+                ) : (
+                  <span className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-pill)] border border-black/8 bg-white px-[1.125rem] text-[0.72rem] font-medium uppercase tracking-[var(--tracking-label)] text-[color:var(--color-ink-muted)] shadow-[var(--shadow-sm)]">
+                    {rail.ctaLabel}
+                  </span>
+                )}
+              </Card>
+            ))}
           </div>
-        </Card>
-      </Section>
+
+          <Card className="mt-8 border border-[rgba(184,137,67,0.18)] bg-white shadow-[0_12px_30px_rgba(17,24,39,0.04)] before:opacity-0">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div className="space-y-3">
+                <Badge tone="trust">NAVAGRAHA Intelligence</Badge>
+                <p className="max-w-3xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                  NAVAGRAHA Intelligence tools will expand into Kundli NI,
+                  Dasha NI, Transit NI, Panchang NI, Remedy NI, Numerology NI,
+                  Vastu NI, Palmistry NI, Career NI, Finance NI, Marriage NI and
+                  Business NI.
+                </p>
+              </div>
+              <TrackedLink
+                href={localizeHref("/tools")}
+                eventName="cta_click"
+                eventPayload={{ page: "/", feature: "home-future-intelligence-tools" }}
+                className={buttonStyles({
+                  size: "sm",
+                  tone: "secondary",
+                  className: "w-full justify-center sm:w-auto",
+                })}
+              >
+                Explore Tools Hub
+              </TrackedLink>
+            </div>
+            <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+              {futureIntelligenceChips.map((chip) => (
+                <span
+                  key={chip}
+                  className="rounded-[var(--radius-lg)] border border-[rgba(184,137,67,0.18)] bg-[rgba(255,253,248,0.88)] px-3 py-2 text-[length:var(--font-size-body-xs)] uppercase tracking-[0.12em] text-[color:var(--color-ink-strong)]"
+                >
+                  {chip}
+                </span>
+              ))}
+            </div>
+          </Card>
+        </Container>
+      </section>
+
+      <GoldSectionDivider />
+
+      <section className="bg-white">
+        <Container className="py-12 sm:py-14">
+          <Card className="border-black/8 bg-white shadow-[0_18px_44px_rgba(17,24,39,0.06)] before:opacity-0">
+            <div className="flex flex-col gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+              <div className="space-y-4">
+                <Badge tone="trust">Begin Your Journey</Badge>
+                <h2
+                  className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-lg)] text-[color:var(--color-ink-strong)]"
+                  style={{
+                    letterSpacing: "var(--tracking-display)",
+                    lineHeight: "var(--line-height-tight)",
+                  }}
+                >
+                  Begin Your Journey of Self-Discovery
+                </h2>
+                <p className="max-w-2xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                  The stars have answers. Let&apos;s help you find them.
+                </p>
+              </div>
+
+              <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto lg:flex-col xl:flex-row">
+                <TrackedLink
+                  href={localizeHref("/kundli")}
+                  eventName="cta_click"
+                  eventPayload={{ page: "/", feature: "final-cta-kundli" }}
+                  className={buttonStyles({
+                    size: "lg",
+                    className: "w-full justify-center sm:w-auto",
+                  })}
+                >
+                  Generate Your Kundli
+                </TrackedLink>
+                <TrackedLink
+                  href={localizeHref("/consultation")}
+                  eventName="consultation_cta_click"
+                  eventPayload={{ page: "/", feature: "final-cta-consultation" }}
+                  className={buttonStyles({
+                    size: "lg",
+                    tone: "secondary",
+                    className: "w-full justify-center sm:w-auto",
+                  })}
+                >
+                  Consult an Astrologer
+                </TrackedLink>
+              </div>
+            </div>
+          </Card>
+        </Container>
+      </section>
     </>
   );
 }
+
