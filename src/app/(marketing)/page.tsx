@@ -15,7 +15,7 @@ import {
   FinalCtaOrnament,
   SacredGeometryPattern,
 } from "@/components/graphics/premium-vedic-graphics";
-import { HomepageHeroArt } from "@/components/graphics/homepage-hero-art";
+import { HomepagePremiumHeroVisual } from "@/components/graphics/homepage-premium-hero-visual";
 import { NavagrahaAiGraphic } from "@/components/graphics/navagraha-ai-graphic";
 import {
   CornerFlourish,
@@ -42,7 +42,6 @@ import { siteConfig } from "@/config/site";
 import { createPageMetadata } from "@/lib/seo/metadata";
 import { getCoreSeoCopy } from "@/lib/seo/seo-config";
 import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
-import { globalCtaCopy } from "@/modules/localization/copy";
 import {
   getRequestLocale,
   hasExplicitLocalePrefixInRequest,
@@ -97,12 +96,6 @@ type HomeUtilityCardItem = Omit<HomeCardItem, "icon"> & {
   icon: HomeUtilityCardIcon;
 };
 
-type TrustItem = {
-  icon: HomeIcon;
-  label: string;
-  description: string;
-};
-
 type ServiceCard = HomeCardItem & {
   label: string;
   visualVariant: "report" | "consultation" | "editorial" | "shop";
@@ -131,22 +124,11 @@ function getHomeIcon(icon: HomeIcon, className?: string) {
   }
 }
 
-const heroTrustItems: readonly TrustItem[] = [
-  {
-    icon: "consultation",
-    label: "Trusted Guidance",
-    description: "Human-led Vedic guidance with modern platform support.",
-  },
-  {
-    icon: "panchang",
-    label: "Accurate Vedic Calculations",
-    description: "Structured chart, Panchang, and timing tools stay calculation-led.",
-  },
-  {
-    icon: "kundli",
-    label: "Secure & Private",
-    description: "Birth details are handled with privacy-safe production rules.",
-  },
+const heroTrustBadges = [
+  "Since 1950 Legacy",
+  "12-Planet Calculations",
+  "AI + Human Guidance",
+  "Privacy-Safe Astrology",
 ] as const;
 
 const utilities: readonly HomeUtilityCardItem[] = [
@@ -325,16 +307,11 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeStructuredData) }}
       />
 
-      <section className="relative overflow-hidden border-b border-[color:var(--color-border)] bg-[linear-gradient(180deg,#fffefb_0%,#fff8ea_50%,#f7ead2_100%)]">
-        <ParchmentTextureLayer className="opacity-[var(--pattern-opacity-parchment)]" />
-        <SoftIvoryGlow className="opacity-[var(--pattern-opacity-glow)]" />
-        <SectionSacredGeometryPattern className="opacity-[var(--pattern-opacity-geometry)]" />
-        <OmMandalaWatermark className="right-[-4rem] top-10 h-64 w-64 opacity-[var(--pattern-opacity-watermark)]" />
-        <CornerFlourish position="top-left" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(185,139,70,0.2),transparent_32%),radial-gradient(circle_at_82%_10%,rgba(232,198,135,0.2),transparent_30%),radial-gradient(circle_at_72%_88%,rgba(185,139,70,0.14),transparent_36%)]" />
-        <Container className="relative grid gap-10 py-12 sm:py-16 lg:grid-cols-[minmax(0,1.02fr)_minmax(320px,0.98fr)] lg:items-center lg:py-20">
+      <section className="relative overflow-hidden border-b border-black/8 bg-white">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(184,137,67,0.06),transparent_28%),radial-gradient(circle_at_80%_16%,rgba(17,24,39,0.03),transparent_26%),radial-gradient(circle_at_70%_84%,rgba(184,137,67,0.05),transparent_30%)]" />
+        <Container className="relative grid gap-10 py-12 sm:py-16 lg:grid-cols-[minmax(0,1.04fr)_minmax(320px,0.96fr)] lg:items-center lg:py-20">
           <div className="home-reveal home-reveal-delay-1 space-y-7">
-            <Badge tone="trust">ভাগ্য গণনা কাৰ্যালয় Since 1950</Badge>
+            <Badge tone="trust">Since 1950 Legacy</Badge>
             <div className="space-y-5">
               <h1
                 className="max-w-4xl font-[family-name:var(--font-display)] text-[length:var(--font-size-display-md)] text-[var(--color-ink-strong)] sm:text-[length:var(--font-size-display-lg)]"
@@ -343,12 +320,12 @@ export default async function HomePage() {
                   lineHeight: "var(--line-height-tight)",
                 }}
               >
-                Discover Your Destiny. Unlock Your True Potential.
+                Your Complete Vedic Astrology Intelligence Centre
               </h1>
               <p className="max-w-[42rem] text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-                A premium Vedic astrology authority platform combining
-                generational wisdom, AI intelligence, and personalized human
-                guidance.
+                Generate Kundli, explore Rashifal, Panchang, Dasha, Transit,
+                Matchmaking, Remedies and personalized AI guidance — all in one
+                trusted astrology platform.
               </p>
             </div>
 
@@ -362,43 +339,36 @@ export default async function HomePage() {
                   className: "w-full justify-center sm:w-auto",
                 })}
               >
-                {globalCtaCopy.generateKundli}
+                Generate Your Kundli
               </TrackedLink>
               <TrackedLink
-                href={localizeHref("/ai")}
+                href={localizeHref("/tools")}
                 eventName="premium_ai_cta_click"
-                eventPayload={{ page: "/", feature: "hero-secondary-ai" }}
+                eventPayload={{ page: "/", feature: "hero-secondary-tools" }}
                 className={buttonStyles({
                   size: "lg",
                   tone: "secondary",
                   className: "w-full justify-center sm:w-auto",
                 })}
               >
-                Explore NAVAGRAHA AI
+                Explore Astrology Tools
               </TrackedLink>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-3">
-              {heroTrustItems.map((item) => (
-                <div
-                  key={item.label}
-                  className="rounded-[var(--radius-xl)] border border-[rgba(184,137,67,0.22)] bg-[rgba(255,255,255,0.56)] p-3 shadow-[var(--shadow-xs)]"
+            <div className="flex flex-wrap gap-2">
+              {heroTrustBadges.map((badge) => (
+                <Badge
+                  key={badge}
+                  tone="trust"
+                  className="border border-black/8 bg-white px-3 py-2 text-[0.64rem] uppercase tracking-[0.16em] text-[color:var(--color-ink-strong)] shadow-[0_8px_20px_rgba(17,24,39,0.04)]"
                 >
-                  <div className="flex items-center gap-2">
-                    {getHomeIcon(item.icon, "h-7 w-7 shrink-0")}
-                    <p className="mobile-safe-text text-[0.68rem] uppercase tracking-[0.14em] text-[var(--color-trust-text)]">
-                      {item.label}
-                    </p>
-                  </div>
-                  <p className="mt-2 text-[length:var(--font-size-body-xs)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-                    {item.description}
-                  </p>
-                </div>
+                  {badge}
+                </Badge>
               ))}
             </div>
           </div>
 
-          <HomepageHeroArt />
+          <HomepagePremiumHeroVisual />
         </Container>
       </section>
 
