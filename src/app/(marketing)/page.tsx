@@ -13,7 +13,6 @@ import {
 import {
   ConsultationPlaceholderGraphic,
   FinalCtaOrnament,
-  SacredGeometryPattern,
 } from "@/components/graphics/premium-vedic-graphics";
 import { HomepagePremiumHeroVisual } from "@/components/graphics/homepage-premium-hero-visual";
 import { NavagrahaAiGraphic } from "@/components/graphics/navagraha-ai-graphic";
@@ -31,7 +30,6 @@ import {
   PremiumReportsGraphic,
   SpiritualShopGraphic,
 } from "@/components/graphics/service-graphics";
-import type { UtilityIconName } from "@/components/graphics/utility-icons";
 import { UtilityIcon } from "@/components/graphics/utility-icons";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
@@ -81,8 +79,6 @@ type HomeIcon =
   | "panchang"
   | "calculators";
 
-type HomeUtilityCardIcon = UtilityIconName;
-
 type HomeCardItem = {
   icon: HomeIcon;
   title: string;
@@ -92,13 +88,34 @@ type HomeCardItem = {
   feature: string;
 };
 
-type HomeUtilityCardItem = Omit<HomeCardItem, "icon"> & {
-  icon: HomeUtilityCardIcon;
-};
-
 type ServiceCard = HomeCardItem & {
   label: string;
   visualVariant: "report" | "consultation" | "editorial" | "shop";
+};
+
+type ToolPreviewStatus = "Available" | "Requires Kundli" | "Preview";
+
+type ToolPreviewGlyph =
+  | "kundli"
+  | "rashifal"
+  | "panchang"
+  | "reports"
+  | "consultation"
+  | "ai"
+  | "numerology"
+  | "compatibility"
+  | "calculators"
+  | "generic";
+
+type ToolPreviewItem = {
+  title: string;
+  description: string;
+  href: string;
+  ctaLabel: string;
+  feature: string;
+  status: ToolPreviewStatus;
+  glyph: ToolPreviewGlyph;
+  initials?: string;
 };
 
 function getHomeIcon(icon: HomeIcon, className?: string) {
@@ -131,67 +148,164 @@ const heroTrustBadges = [
   "Privacy-Safe Astrology",
 ] as const;
 
-const utilities: readonly HomeUtilityCardItem[] = [
+const trustStripItems = [
+  "Trusted Vedic Guidance",
+  "12-Planet Calculations",
+  "Kundli + Dasha + Transit",
+  "Assamese / English / Hindi Ready",
+  "Secure & Privacy-Safe",
+] as const;
+
+const toolPreviewItems: readonly ToolPreviewItem[] = [
   {
-    icon: "kundli",
-    title: "Kundli",
-    description: "Generate a sidereal birth chart with Lagna, houses, and planetary context.",
+    title: "Free Kundli",
+    description: "Generate a clean sidereal chart with houses, Lagna, and planet context.",
     href: "/kundli",
-    ctaLabel: "Explore",
-    feature: "home-utility-kundli",
+    ctaLabel: "Open Kundli",
+    feature: "home-tools-preview-kundli",
+    status: "Available",
+    glyph: "kundli",
   },
   {
-    icon: "compatibility",
-    title: "Compatibility",
-    description: "Review relationship and marriage matching through structured Vedic signals.",
-    href: "/compatibility",
-    ctaLabel: "Explore",
-    feature: "home-utility-compatibility",
+    title: "Daily Rashifal",
+    description: "See daily guidance across career, love, business, and planning cues.",
+    href: "/daily-rashifal",
+    ctaLabel: "Read Today",
+    feature: "home-tools-preview-rashifal",
+    status: "Available",
+    glyph: "rashifal",
   },
   {
-    icon: "rashifal",
-    title: "Rashifal",
-    description: "Read daily zodiac guidance with Love, Career, Business, and lucky indicators.",
-    href: "/rashifal",
-    ctaLabel: "Explore",
-    feature: "home-utility-rashifal",
-  },
-  {
-    icon: "muhurta",
-    title: "Panchang",
-    description: "Check Tithi, Nakshatra, Yoga, Karana, sunrise, sunset, and day context.",
+    title: "Panchang Today",
+    description: "Check tithi, nakshatra, yoga, karana, and the day's timing context.",
     href: "/panchang",
-    ctaLabel: "Explore",
-    feature: "home-utility-panchang",
+    ctaLabel: "Open Panchang",
+    feature: "home-tools-preview-panchang",
+    status: "Available",
+    glyph: "panchang",
   },
   {
-    icon: "numerology",
+    title: "Dasha Timeline",
+    description: "Review time cycles and understand the current period more clearly.",
+    href: "/tools",
+    ctaLabel: "View Tools Hub",
+    feature: "home-tools-preview-dasha",
+    status: "Preview",
+    glyph: "calculators",
+  },
+  {
+    title: "Transit / Gochar",
+    description: "See current motion context and how it can shape the day ahead.",
+    href: "/insights/transits",
+    ctaLabel: "Open Transit",
+    feature: "home-tools-preview-transit",
+    status: "Available",
+    glyph: "panchang",
+  },
+  {
+    title: "Matchmaking",
+    description: "Review relationship compatibility through a calm Vedic signal flow.",
+    href: "/marriage-compatibility",
+    ctaLabel: "Check Match",
+    feature: "home-tools-preview-matchmaking",
+    status: "Available",
+    glyph: "compatibility",
+  },
+  {
+    title: "Dosha & Yoga",
+    description: "Review dosha and yoga signals with safe remedy guidance nearby.",
+    href: "/compatibility-hub",
+    ctaLabel: "Open Hub",
+    feature: "home-tools-preview-dosha-yoga",
+    status: "Available",
+    glyph: "compatibility",
+  },
+  {
     title: "Numerology",
-    description: "Understand birth, destiny, and name-number patterns in a clean utility flow.",
+    description: "Explore life path, destiny, and name-number patterns in one place.",
     href: "/numerology",
-    ctaLabel: "Explore",
-    feature: "home-utility-numerology",
+    ctaLabel: "Open Numerology",
+    feature: "home-tools-preview-numerology",
+    status: "Available",
+    glyph: "numerology",
   },
   {
-    icon: "calculators",
-    title: "Calculators",
-    description: "Use quick tools for Moon sign, Nakshatra, Lagna, and related checks.",
-    href: "/calculators",
-    ctaLabel: "Explore",
-    feature: "home-utility-calculators",
+    title: "Remedies",
+    description: "Browse optional, cautious guidance for mantra, charity, and worship.",
+    href: "/remedies",
+    ctaLabel: "View Remedies",
+    feature: "home-tools-preview-remedies",
+    status: "Available",
+    glyph: "reports",
   },
   {
-    icon: "panchang",
-    title: "Muhurta / Time Tools",
-    description: "Review Rahu Kaal, Gulika Kaal, Yamaganda, and Abhijit Muhurta.",
-    href: "/muhurta",
-    ctaLabel: "Explore",
-    feature: "home-utility-muhurta",
+    title: "Reports",
+    description: "Preview premium report paths for deeper life guidance and context.",
+    href: "/reports",
+    ctaLabel: "Explore Reports",
+    feature: "home-tools-preview-reports",
+    status: "Available",
+    glyph: "reports",
+  },
+  {
+    title: "Ask NAVAGRAHA AI",
+    description: "Ask for guided chart-aware answers without leaving the homepage flow.",
+    href: "/ai",
+    ctaLabel: "Open AI",
+    feature: "home-tools-preview-ai",
+    status: "Available",
+    glyph: "ai",
+  },
+  {
+    title: "Consultation",
+    description: "Book a guided human consultation when deeper review is needed.",
+    href: "/consultation",
+    ctaLabel: "Book Consultation",
+    feature: "home-tools-preview-consultation",
+    status: "Available",
+    glyph: "consultation",
   },
 ] as const;
 
-function getUtilityIcon(icon: HomeUtilityCardIcon, className?: string) {
-  return <UtilityIcon name={icon} className={className} />;
+function getToolPreviewIcon(
+  glyph: ToolPreviewGlyph,
+  className?: string,
+  initials?: string,
+) {
+  switch (glyph) {
+    case "kundli":
+      return <KundliIcon className={className} />;
+    case "rashifal":
+      return <RashifalIcon className={className} />;
+    case "panchang":
+      return <PanchangIcon className={className} />;
+    case "reports":
+      return <ReportIcon className={className} />;
+    case "consultation":
+      return <ConsultationIcon className={className} />;
+    case "ai":
+      return <NavagrahaAiIcon className={className} />;
+    case "numerology":
+      return <NumerologyIcon className={className} />;
+    case "compatibility":
+      return <UtilityIcon name="compatibility" className={className} />;
+    case "calculators":
+      return <CalculatorIcon className={className} />;
+    case "generic":
+    default:
+      return (
+        <span
+          className={[
+            "inline-flex h-12 w-12 items-center justify-center rounded-full border border-[rgba(184,137,67,0.34)] bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.96)_0%,rgba(247,234,204,0.9)_70%,rgba(238,214,166,0.84)_100%)] text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-[rgba(130,86,25,0.92)] shadow-[0_8px_20px_rgba(121,85,33,0.12)]",
+            className ?? "",
+          ]
+            .filter(Boolean)
+            .join(" ")}
+        >
+          {initials ?? "NC"}
+        </span>
+      );
+  }
 }
 
 const aiFeatureChips = [
@@ -242,26 +356,6 @@ const credibilityItems = [
   "Expert Astrology Guidance",
   "Secure & Confidential",
 ] as const;
-
-function mapFeatureToEvent(feature: string) {
-  if (feature.includes("panchang")) {
-    return "panchang_tool_click" as const;
-  }
-
-  if (feature.includes("numerology")) {
-    return "numerology_tool_click" as const;
-  }
-
-  if (feature.includes("calculators")) {
-    return "calculator_tool_click" as const;
-  }
-
-  if (feature.includes("muhurta")) {
-    return "muhurta_tool_click" as const;
-  }
-
-  return "utility_card_click" as const;
-}
 
 function mapServiceToEvent(feature: string) {
   if (feature.includes("consultation")) {
@@ -372,6 +466,25 @@ export default async function HomePage() {
         </Container>
       </section>
 
+      <section className="border-b border-black/8 bg-white">
+        <Container className="py-4 sm:py-5">
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+            {trustStripItems.map((item) => (
+              <span
+                key={item}
+                className="inline-flex min-h-10 items-center gap-2 rounded-full border border-black/8 bg-white px-3.5 py-2 text-[0.64rem] uppercase tracking-[0.16em] text-[color:var(--color-ink-strong)] shadow-[0_8px_20px_rgba(17,24,39,0.04)]"
+              >
+                <span
+                  aria-hidden="true"
+                  className="h-1.5 w-1.5 rounded-full bg-[var(--color-accent-gold)]"
+                />
+                {item}
+              </span>
+            ))}
+          </div>
+        </Container>
+      </section>
+
       <GoldSectionDivider />
 
       <Section tone="light" category="content" contentClassName="py-0">
@@ -412,41 +525,60 @@ export default async function HomePage() {
 
       <GoldSectionDivider />
 
-      <Section
-        tone="light"
-        category="utilities"
-        eyebrow="Explore Core Astrology Utilities"
-        title="Practical Vedic astrology tools, clearly separated from premium services."
-        description="Start with free utility paths for chart generation, daily guidance, timing, numerology, compatibility, and quick calculators."
-      >
-        <div className="relative overflow-hidden rounded-[var(--radius-2xl)] border border-[rgba(184,137,67,0.2)] bg-[rgba(255,255,255,0.52)] p-4 sm:p-5">
-          <ParchmentTextureLayer className="opacity-[0.2]" />
-          <SectionSacredGeometryPattern className="opacity-[0.2]" />
-          <SoftIvoryGlow className="opacity-[0.7]" />
-          <CornerFlourish position="bottom-right" className="opacity-60" />
-          <OmMandalaWatermark className="left-[-3.5rem] top-1/2 h-40 w-40 -translate-y-1/2 opacity-[0.08]" />
+      <section className="border-b border-black/8 bg-white">
+        <Container className="py-12 sm:py-14">
+          <div className="max-w-3xl space-y-4">
+            <Badge tone="trust" className="w-fit border border-black/8 bg-white">
+              Astrology Tools
+            </Badge>
+            <h2
+              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-lg)] text-[color:var(--color-ink-strong)]"
+              style={{
+                letterSpacing: "var(--tracking-display)",
+                lineHeight: "var(--line-height-tight)",
+              }}
+            >
+              Explore NAVAGRAHA Astrology Tools
+            </h2>
+            <p className="max-w-2xl text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+              Quick entry points into the site&apos;s most-used astrology flows,
+              with clean routing, status-aware fallbacks, and a premium white
+              presentation.
+            </p>
+          </div>
 
-          <div className="relative grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {utilities.map((tool) => (
-              <Card key={tool.title} tone="light" interactive className="flex h-full flex-col gap-4">
-                <SacredGeometryPattern className="opacity-45" />
-                <div className="flex items-center justify-between gap-3">
-                  {getUtilityIcon(tool.icon, "h-12 w-12")}
-                  <Badge tone="neutral">Utility</Badge>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {toolPreviewItems.map((tool) => (
+              <Card
+                key={tool.title}
+                tone="default"
+                interactive
+                className="flex h-full flex-col gap-4 border-black/8 bg-white bg-none shadow-[0_14px_36px_rgba(17,24,39,0.06)] before:opacity-0 hover:border-black/12"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    {getToolPreviewIcon(tool.glyph, "h-12 w-12", tool.initials)}
+                    <div className="space-y-1">
+                      <h3 className="text-[length:var(--font-size-body-lg)] font-medium text-[color:var(--color-ink-strong)]">
+                        {tool.title}
+                      </h3>
+                    </div>
+                  </div>
+                  <span className="rounded-full border border-[rgba(184,137,67,0.24)] px-2.5 py-1 text-[0.58rem] uppercase tracking-[0.14em] text-[color:var(--color-accent-strong)]">
+                    {tool.status}
+                  </span>
                 </div>
-                <h3 className="mobile-safe-text text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
-                  {tool.title}
-                </h3>
-                <p className="flex-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+
+                <p className="flex-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
                   {tool.description}
                 </p>
+
                 <TrackedLink
                   href={localizeHref(tool.href)}
-                  eventName={mapFeatureToEvent(tool.feature)}
-                  eventPayload={{ page: "/", feature: tool.feature }}
+                  eventPayload={{ page: "/", feature: tool.feature, section: "home-tools-preview" }}
                   className={buttonStyles({
                     size: "sm",
-                    tone: "tertiary",
+                    tone: "secondary",
                     className: "w-full justify-center",
                   })}
                 >
@@ -455,23 +587,8 @@ export default async function HomePage() {
               </Card>
             ))}
           </div>
-
-          <div className="relative mt-6">
-            <TrackedLink
-              href={localizeHref("/tools")}
-              eventName="cta_click"
-              eventPayload={{ page: "/", feature: "home-view-all-utilities" }}
-              className={buttonStyles({
-                size: "sm",
-                tone: "secondary",
-                className: "w-full justify-center sm:w-auto",
-              })}
-            >
-              View All Utilities
-            </TrackedLink>
-          </div>
-        </div>
-      </Section>
+        </Container>
+      </section>
 
       <GoldSectionDivider />
 
