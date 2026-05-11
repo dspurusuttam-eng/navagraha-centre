@@ -15,7 +15,6 @@ import {
   FinalCtaOrnament,
 } from "@/components/graphics/premium-vedic-graphics";
 import { HomepagePremiumHeroVisual } from "@/components/graphics/homepage-premium-hero-visual";
-import { NavagrahaAiGraphic } from "@/components/graphics/navagraha-ai-graphic";
 import {
   CornerFlourish,
   GoldSectionDivider,
@@ -308,11 +307,56 @@ function getToolPreviewIcon(
   }
 }
 
-const aiFeatureChips = [
-  "Deep Chart Analysis",
-  "Personalized Answers",
-  "24/7 Guidance",
-  "Vedic Accuracy",
+const aiContextChips = [
+  "Kundli Context",
+  "Dasha",
+  "Transit",
+  "Panchang",
+  "Remedies",
+] as const;
+
+type DailyGuidanceCard = {
+  title: string;
+  description: string;
+  href: string;
+  ctaLabel: string;
+  feature: string;
+  icon: HomeIcon;
+};
+
+const dailyGuidanceCards: readonly DailyGuidanceCard[] = [
+  {
+    title: "Today's Rashifal",
+    description: "Open the daily zodiac guidance flow for practical planning context.",
+    href: "/daily-rashifal",
+    ctaLabel: "Read Rashifal",
+    feature: "home-daily-rashifal",
+    icon: "rashifal",
+  },
+  {
+    title: "Panchang Today",
+    description: "Check tithi, nakshatra, and daily timing context in a simple flow.",
+    href: "/panchang",
+    ctaLabel: "Open Panchang",
+    feature: "home-daily-panchang",
+    icon: "panchang",
+  },
+  {
+    title: "Daily Remedy",
+    description: "Review calm, optional guidance for mantra, charity, and worship.",
+    href: "/remedies",
+    ctaLabel: "View Remedies",
+    feature: "home-daily-remedy",
+    icon: "consultation",
+  },
+  {
+    title: "Current Transit",
+    description: "See the live transit lens that supports daily context and return visits.",
+    href: "/insights/transits",
+    ctaLabel: "Open Transit",
+    feature: "home-daily-transit",
+    icon: "calculators",
+  },
 ] as const;
 
 const reportBenefits = [
@@ -592,60 +636,58 @@ export default async function HomePage() {
 
       <GoldSectionDivider />
 
-      <section className="relative overflow-hidden bg-[linear-gradient(180deg,#100d1f_0%,#090d1f_52%,#1b1029_100%)] py-[var(--space-12)] text-white sm:py-[var(--space-14)]">
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(138,92,246,0.26),transparent_32%),radial-gradient(circle_at_78%_34%,rgba(212,175,55,0.18),transparent_30%),radial-gradient(circle_at_50%_95%,rgba(212,175,55,0.1),transparent_34%)]" />
-        <Container className="relative grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,0.8fr)] lg:items-center">
+      <section className="border-b border-black/8 bg-white">
+        <Container className="grid gap-10 py-12 sm:py-14 lg:grid-cols-[minmax(0,1.04fr)_minmax(20rem,0.96fr)] lg:items-start lg:py-16">
           <div className="space-y-6">
-            <Badge tone="neutral" className="border-[rgba(244,213,143,0.34)] bg-[rgba(255,255,255,0.08)] text-[#f8e4a8]">
+            <Badge tone="trust" className="w-fit border border-black/8 bg-white">
               NAVAGRAHA AI
             </Badge>
             <div className="space-y-4">
               <h2
-                className="max-w-3xl font-[family-name:var(--font-display)] text-[length:var(--font-size-title-lg)] text-white"
+                className="max-w-3xl font-[family-name:var(--font-display)] text-[length:var(--font-size-title-lg)] text-[color:var(--color-ink-strong)]"
                 style={{
                   letterSpacing: "var(--tracking-display)",
                   lineHeight: "var(--line-height-tight)",
                 }}
               >
-                Ask Anything. Get Cosmic Clarity.
+                Ask NAVAGRAHA AI
               </h2>
-              <p className="max-w-2xl text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[#f9efd3]">
-                AI-powered insights based on your birth chart and Vedic wisdom.
-              </p>
-              <p className="inline-flex rounded-[var(--radius-pill)] border border-[rgba(244,213,143,0.26)] bg-[rgba(255,255,255,0.07)] px-4 py-2 text-[0.7rem] uppercase tracking-[0.14em] text-[#f8e4a8]">
-                Powered by your birth chart
+              <p className="max-w-2xl text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                Personalized astrology guidance from Kundli, Dasha, Transit,
+                Panchang and daily context.
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
-              {aiFeatureChips.map((chip) => (
-                <span
+              {aiContextChips.map((chip) => (
+                <Badge
                   key={chip}
-                  className="rounded-[var(--radius-pill)] border border-[rgba(244,213,143,0.24)] bg-[rgba(255,255,255,0.08)] px-3 py-2 text-[0.66rem] uppercase tracking-[0.14em] text-[#f9efd3]"
+                  tone="trust"
+                  className="border border-black/8 bg-white px-3 py-2 text-[0.64rem] uppercase tracking-[0.16em] text-[color:var(--color-ink-strong)] shadow-[0_8px_20px_rgba(17,24,39,0.04)]"
                 >
                   {chip}
-                </span>
+                </Badge>
               ))}
             </div>
             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <TrackedLink
                 href={localizeHref("/ai")}
                 eventName="premium_ai_cta_click"
-                eventPayload={{ page: "/", feature: "ai-dark-panel-primary" }}
+                eventPayload={{ page: "/", feature: "home-ai-primary" }}
                 className={buttonStyles({
                   size: "lg",
                   className: "w-full justify-center sm:w-auto",
                 })}
               >
-                Chat with NAVAGRAHA AI
+                Start AI Guidance
               </TrackedLink>
               <TrackedLink
                 href={localizeHref("/kundli")}
                 eventName="cta_click"
-                eventPayload={{ page: "/", feature: "ai-dark-panel-kundli" }}
+                eventPayload={{ page: "/", feature: "home-ai-secondary" }}
                 className={buttonStyles({
                   size: "lg",
                   tone: "secondary",
-                  className: "w-full justify-center border-[rgba(244,213,143,0.44)] bg-[rgba(255,255,255,0.08)] text-[#f9efd3] hover:bg-[rgba(255,255,255,0.14)]",
+                  className: "w-full justify-center sm:w-auto",
                 })}
               >
                 Generate Kundli First
@@ -653,7 +695,119 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <NavagrahaAiGraphic mode="banner" />
+          <Card
+            tone="default"
+            className="flex h-full flex-col gap-5 border-black/8 bg-white bg-none shadow-[0_18px_44px_rgba(17,24,39,0.06)] before:opacity-0"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <NavagrahaAiIcon className="h-12 w-12" />
+                <div>
+                  <p className="text-[0.68rem] uppercase tracking-[0.18em] text-[color:var(--color-ink-muted)]">
+                    AI Preview
+                  </p>
+                  <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-ink-strong)]">
+                    Context-led, not fabricated
+                  </p>
+                </div>
+              </div>
+              <Badge tone="trust">Safe Preview</Badge>
+            </div>
+            <div className="rounded-[var(--radius-xl)] border border-black/8 bg-white p-4 shadow-[0_8px_20px_rgba(17,24,39,0.04)]">
+              <p className="text-[0.66rem] uppercase tracking-[0.16em] text-[color:var(--color-ink-muted)]">
+                Guidance layers
+              </p>
+              <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+                {aiContextChips.map((chip) => (
+                  <li
+                    key={chip}
+                    className="rounded-[var(--radius-lg)] border border-[rgba(184,137,67,0.18)] px-3 py-2 text-[length:var(--font-size-body-xs)] text-[color:var(--color-ink-body)]"
+                  >
+                    {chip}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {[
+                "No raw prompts exposed",
+                "Chart-aware guidance only",
+                "Safe fallback when data is missing",
+                "Private data stays private",
+              ].map((note) => (
+                <div
+                  key={note}
+                  className="rounded-[var(--radius-lg)] border border-[rgba(184,137,67,0.16)] bg-white px-3 py-3 text-[length:var(--font-size-body-xs)] text-[color:var(--color-ink-body)]"
+                >
+                  {note}
+                </div>
+              ))}
+            </div>
+          </Card>
+        </Container>
+      </section>
+
+      <section className="border-b border-black/8 bg-white">
+        <Container className="py-12 sm:py-14">
+          <div className="max-w-3xl space-y-4">
+            <Badge tone="trust" className="w-fit border border-black/8 bg-white">
+              Daily Guidance
+            </Badge>
+            <h2
+              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-lg)] text-[color:var(--color-ink-strong)]"
+              style={{
+                letterSpacing: "var(--tracking-display)",
+                lineHeight: "var(--line-height-tight)",
+              }}
+            >
+              Daily Guidance for Return Visits
+            </h2>
+            <p className="max-w-2xl text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+              Lightweight daily entry points that keep the homepage useful for
+              repeat visits without fabricating content.
+            </p>
+          </div>
+
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {dailyGuidanceCards.map((card) => (
+              <Card
+                key={card.title}
+                tone="default"
+                interactive
+                className="flex h-full flex-col gap-4 border-black/8 bg-white bg-none shadow-[0_14px_36px_rgba(17,24,39,0.06)] before:opacity-0 hover:border-black/12"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    {getToolPreviewIcon(
+                      card.icon === "consultation" ? "generic" : card.icon,
+                      "h-12 w-12",
+                      card.icon === "consultation" ? "DR" : undefined,
+                    )}
+                    <h3 className="text-[length:var(--font-size-body-lg)] font-medium text-[color:var(--color-ink-strong)]">
+                      {card.title}
+                    </h3>
+                  </div>
+                  <span className="rounded-full border border-[rgba(184,137,67,0.24)] px-2.5 py-1 text-[0.58rem] uppercase tracking-[0.14em] text-[color:var(--color-accent-strong)]">
+                    Daily
+                  </span>
+                </div>
+                <p className="flex-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                  {card.description}
+                </p>
+                <TrackedLink
+                  href={localizeHref(card.href)}
+                  eventPayload={{ page: "/", feature: card.feature, section: "home-daily-guidance" }}
+                  className={buttonStyles({
+                    size: "sm",
+                    tone: "secondary",
+                    className: "w-full justify-center",
+                  })}
+                >
+                  {card.ctaLabel}
+                </TrackedLink>
+              </Card>
+            ))}
+          </div>
         </Container>
       </section>
 
