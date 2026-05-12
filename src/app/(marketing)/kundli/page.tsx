@@ -1,21 +1,45 @@
 import { TrackedLink } from "@/components/analytics/tracked-link";
-import { ConsultationCTA } from "@/components/monetization/ConsultationCTA";
-import { PremiumAICTA } from "@/components/monetization/PremiumAICTA";
-import { ReportCTA } from "@/components/monetization/ReportCTA";
-import { PageHero } from "@/components/site/page-hero";
+import { KundliPageHeroVisual } from "@/components/graphics/kundli-page-visual";
+import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Section } from "@/components/ui/section";
+import { Container } from "@/components/ui/container";
 import { createToolMetadata } from "@/lib/seo/metadata";
 import { getCoreSeoCopy } from "@/lib/seo/seo-config";
+import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
 import { getRequestLocale, hasExplicitLocalePrefixInRequest } from "@/modules/localization/request";
 import {
-  CredibilityMarkersSection,
-  ExpectationSettingSection,
-  SampleProofPreviewSection,
-  ThreeStepProcessSection,
-  TrustIndicatorStrip,
-} from "@/modules/marketing/components/trust-conversion-sections";
+  kundliHeroBadges,
+  kundliNextStepCards,
+  kundliPreviewItems,
+  kundliTrustNote,
+} from "@/modules/kundli/kundli-foundation";
+import { PageViewTracker } from "@/components/analytics/page-view-tracker";
+
+type KundliHeroPreviewItem = (typeof kundliPreviewItems)[number];
+
+function localizeHref(locale: string, hasExplicitLocalePrefix: boolean, href: string) {
+  return getLocalizedPath(locale, href, {
+    forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
+  });
+}
+
+function KundliPreviewCard({ item }: Readonly<{ item: KundliHeroPreviewItem }>) {
+  return (
+    <Card
+      tone="default"
+      className="space-y-3 border-black/8 bg-white shadow-[0_12px_28px_rgba(17,24,39,0.05)] before:opacity-0"
+    >
+      <div className="flex items-center gap-2">
+        <span className="h-2.5 w-2.5 rounded-full bg-[var(--color-accent-gold)]" />
+        <p className="text-[0.64rem] uppercase tracking-[0.14em] text-[color:var(--color-accent-strong)]">
+          {item.title}
+        </p>
+      </div>
+      <p className="text-[0.82rem] leading-6 text-[color:var(--color-ink-body)]">{item.description}</p>
+    </Card>
+  );
+}
 
 export async function generateMetadata() {
   const locale = await getRequestLocale();
@@ -37,133 +61,188 @@ export async function generateMetadata() {
     ],
   });
 }
+
 export const revalidate = 3600;
 
-const kundliTrustIndicators = [
-  "Vedic chart-based system",
-  "Lahiri sidereal foundation",
-  "Human-guided interpretation",
-  "Limited-time free access",
-  "Structured astrology workflow",
-] as const;
+export default async function KundliPage() {
+  const locale = await getRequestLocale();
+  const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
+  const localize = (href: string) => localizeHref(locale, hasExplicitLocalePrefix, href);
 
-export default function KundliPage() {
   return (
     <>
-      <PageHero
-        eyebrow="Kundli Foundation"
-        title="Build your Kundli first, then unlock deeper personalized guidance."
-        description="This route is designed as the primary chart entry. Start with validated birth context and continue into AI, reports, and consultation from one structured foundation."
-        highlights={[
-          "Validated birth context with location, timezone, and UTC normalization.",
-          "Sidereal Lahiri chart pipeline with Lagna and house structure.",
-          "Saved chart continuity across assistant, reports, and consultation surfaces.",
-        ]}
-        note="Deeper personalization begins after Kundli generation and saved-chart continuity."
-        primaryAction={{ href: "/sign-up", label: "Generate Your Kundli" }}
-        secondaryAction={{ href: "/dashboard/onboarding", label: "Continue To Onboarding" }}
-        supportTitle="Chart-First Flow"
-      />
+      <PageViewTracker page="/kundli" feature="kundli-page" />
 
-      <TrustIndicatorStrip items={kundliTrustIndicators} />
+      <main className="min-h-screen bg-[#FFFFFF] text-[#111111]">
+        <section className="border-b border-black/8 bg-white">
+          <Container className="grid gap-10 py-12 lg:grid-cols-[minmax(0,1.06fr)_minmax(300px,0.94fr)] lg:items-center lg:py-14">
+            <div className="space-y-7">
+              <div className="flex flex-wrap gap-2">
+                <Badge tone="trust" className="border border-black/8 bg-white">
+                  NAVAGRAHA CENTRE
+                </Badge>
+                <Badge tone="outline" className="border border-black/8 bg-white text-[color:var(--color-ink-strong)]">
+                  Free Kundli
+                </Badge>
+              </div>
 
-      <ThreeStepProcessSection
-        tone="light"
-        title="How Kundli setup works in three steps."
-        description="One stable process ensures chart quality before interpretation."
-        steps={[
-          {
-            title: "Enter birth details",
-            description:
-              "Provide date, time, and place once through a validated onboarding flow.",
-          },
-          {
-            title: "Generate chart foundation",
-            description:
-              "The system builds your sidereal chart, Lagna, houses, and planetary structure deterministically.",
-          },
-          {
-            title: "Continue with guidance",
-            description:
-              "Use NAVAGRAHA AI, reports, and consultation with the same saved chart context.",
-          },
-        ]}
-      />
+              <div className="space-y-4">
+                <h1
+                  className="max-w-4xl font-[family-name:var(--font-display)] text-[length:var(--font-size-display-md)] text-[color:var(--color-ink-strong)] sm:text-[length:var(--font-size-display-lg)]"
+                  style={{
+                    letterSpacing: "var(--tracking-display)",
+                    lineHeight: "var(--line-height-tight)",
+                  }}
+                >
+                  Free Kundli &amp; Birth Chart
+                </h1>
+                <p className="max-w-[46rem] text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                  Generate your Vedic birth chart with 12-planet positions, Lagna, Nakshatra, Dasha
+                  readiness, Transit context and NAVAGRAHA AI guidance support.
+                </p>
+              </div>
 
-      <Section
-        tone="muted"
-        category="utilities"
-        eyebrow="Kundli Value"
-        title="What you receive immediately after chart generation."
-        description="The output is structured for clarity and continuation, not one-time generic reading."
-      >
-        <div className="grid gap-4 md:grid-cols-3">
-          {[
-            {
-              title: "Lagna + House Structure",
-              description:
-                "A complete whole-sign house model anchored to your Lagna for stable interpretation continuity.",
-            },
-            {
-              title: "Planetary Context",
-              description:
-                "Graha placements, nakshatra references, and house mapping in one reusable chart object.",
-            },
-            {
-              title: "Protected Reuse",
-              description:
-                "The chart is saved and reused for Ask My Chart, reports, and consultation follow-up.",
-            },
-          ].map((item) => (
-            <Card key={item.title} className="space-y-3">
-              <h2 className="text-[length:var(--font-size-body-lg)] text-[var(--color-ink-strong)]">
-                {item.title}
+              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <TrackedLink
+                  href={localize("/sign-up")}
+                  eventName="cta_click"
+                  eventPayload={{ page: "/kundli", feature: "kundli-hero-primary" }}
+                  className={buttonStyles({
+                    tone: "accent",
+                    size: "lg",
+                    className: "w-full justify-center sm:w-auto",
+                  })}
+                >
+                  Generate Kundli
+                </TrackedLink>
+                <TrackedLink
+                  href={localize("/reports")}
+                  eventName="report_cta_click"
+                  eventPayload={{ page: "/kundli", feature: "kundli-hero-secondary" }}
+                  className={buttonStyles({
+                    tone: "secondary",
+                    size: "lg",
+                    className: "w-full justify-center sm:w-auto",
+                  })}
+                >
+                  Explore Kundli Reports
+                </TrackedLink>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {kundliHeroBadges.map((badge) => (
+                  <Badge key={badge} tone="trust" className="border border-black/8 bg-white">
+                    {badge}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+
+            <KundliPageHeroVisual />
+          </Container>
+        </section>
+
+        <section className="border-b border-black/8 bg-white">
+          <Container className="space-y-6 py-10">
+            <div className="space-y-2">
+              <Badge tone="trust" className="border border-black/8 bg-white">
+                Kundli Intelligence Preview
+              </Badge>
+              <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-ink-strong)]">
+                What the Kundli foundation prepares for you
               </h2>
-              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-                {item.description}
+              <p className="max-w-3xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                This preview stays chart-aware without fabricating planetary positions or output data.
+              </p>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {kundliPreviewItems.map((item) => (
+                <KundliPreviewCard key={item.title} item={item} />
+              ))}
+            </div>
+          </Container>
+        </section>
+
+        <section className="border-b border-black/8 bg-white">
+          <Container className="py-10">
+            <Card
+              tone="default"
+              className="space-y-3 border-black/8 bg-white shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0"
+            >
+              <Badge tone="trust" className="border border-black/8 bg-white w-fit">
+                Privacy Note
+              </Badge>
+              <p className="max-w-4xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                {kundliTrustNote}
               </p>
             </Card>
-          ))}
-        </div>
-      </Section>
+          </Container>
+        </section>
 
-      <SampleProofPreviewSection tone="light" />
+        <section className="border-b border-black/8 bg-white">
+          <Container className="space-y-6 py-10">
+            <div className="space-y-2">
+              <Badge tone="trust" className="border border-black/8 bg-white">
+                After Your Kundli
+              </Badge>
+              <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-ink-strong)]">
+                Next steps after the chart is ready
+              </h2>
+              <p className="max-w-3xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                Use the saved Kundli foundation to continue into timing, reports, AI, and human guidance.
+              </p>
+            </div>
 
-      <ExpectationSettingSection tone="transparent" />
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {kundliNextStepCards.map((card) => {
+                const content = (
+                  <Card
+                    tone="default"
+                    className="flex h-full flex-col gap-4 border-black/8 bg-white shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="space-y-2">
+                        <Badge tone="trust" className="border border-black/8 bg-white">
+                          After Kundli
+                        </Badge>
+                        <h3 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-body-lg)] text-[color:var(--color-ink-strong)]">
+                          {card.title}
+                        </h3>
+                      </div>
+                      <Badge tone={card.statusTone ?? "neutral"}>{card.statusLabel}</Badge>
+                    </div>
 
-      <CredibilityMarkersSection
-        pagePath="/kundli"
-        publishedOn="April 22, 2026"
-        updatedOn="April 22, 2026"
-        tone="transparent"
-      />
+                    <p className="flex-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                      {card.description}
+                    </p>
 
-      <Section className="pt-0" tone="transparent">
-        <div className="mb-4 grid gap-4 lg:grid-cols-3">
-          <ConsultationCTA pagePath="/kundli" placement="kundli_footer" />
-          <ReportCTA pagePath="/kundli" placement="kundli_footer" />
-          <PremiumAICTA pagePath="/kundli" placement="kundli_footer" />
-        </div>
+                    <span className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-pill)] border border-[rgba(184,137,67,0.18)] bg-white px-[1.125rem] text-[0.72rem] font-medium uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)] shadow-[0_8px_20px_rgba(17,24,39,0.04)]">
+                      {card.ctaLabel}
+                    </span>
+                  </Card>
+                );
 
-        <Card tone="accent" className="flex flex-wrap items-center gap-3">
-          <TrackedLink
-            href="/sign-up"
-            eventName="cta_click"
-            eventPayload={{ page: "/kundli", feature: "kundli-final-cta-primary" }}
-            className={buttonStyles({ size: "lg" })}
-          >
-            Generate Your Kundli
-          </TrackedLink>
-          <TrackedLink
-            href="/ai"
-            eventName="cta_click"
-            eventPayload={{ page: "/kundli", feature: "kundli-final-cta-ai" }}
-            className={buttonStyles({ size: "lg", tone: "secondary" })}
-          >
-            Try NAVAGRAHA AI
-          </TrackedLink>
-        </Card>
-      </Section>
+                return card.href ? (
+                  <TrackedLink
+                    key={card.title}
+                    href={localize(card.href)}
+                    eventName={card.eventName}
+                    eventPayload={{ page: "/kundli", feature: card.feature }}
+                    className="block h-full"
+                  >
+                    {content}
+                  </TrackedLink>
+                ) : (
+                  <div key={card.title} className="h-full">
+                    {content}
+                  </div>
+                );
+              })}
+            </div>
+          </Container>
+        </section>
+      </main>
     </>
   );
 }
