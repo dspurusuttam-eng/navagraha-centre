@@ -56,8 +56,8 @@ export const kundliNextStepCards: readonly KundliNextStepCard[] = [
   {
     title: "View Dasha Timeline",
     description: "Open your current timing context and continue from the chart foundation.",
-    href: "/dashboard",
-    ctaLabel: "Open Dashboard",
+    href: "/tools",
+    ctaLabel: "Open Tools",
     statusLabel: "Available",
     statusTone: "trust",
     eventName: "cta_click",
@@ -66,7 +66,7 @@ export const kundliNextStepCards: readonly KundliNextStepCard[] = [
   {
     title: "Check Transit / Gochar",
     description: "Review movement-aware context from the saved chart flow.",
-    href: "/dashboard/chart",
+    href: "/tools",
     ctaLabel: "Check Transit",
     statusLabel: "Available",
     statusTone: "trust",
@@ -86,7 +86,7 @@ export const kundliNextStepCards: readonly KundliNextStepCard[] = [
   {
     title: "Ask NAVAGRAHA AI",
     description: "Use the same saved chart context to ask a chart-aware question.",
-    href: "/ai",
+    href: "/tools",
     ctaLabel: "Ask AI",
     statusLabel: "Available",
     statusTone: "trust",

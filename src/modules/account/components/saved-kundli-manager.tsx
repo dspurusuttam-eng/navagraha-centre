@@ -218,7 +218,7 @@ export function SavedKundliManager({
       </Card>
 
       <div className="grid gap-4 lg:grid-cols-[1.08fr_0.92fr]">
-        <Card className="space-y-4 border-black/8 bg-white shadow-[0_18px_46px_rgba(17,24,39,0.06)] before:opacity-0">
+      <Card className="space-y-5 border-black/8 bg-white shadow-[0_18px_46px_rgba(17,24,39,0.06)] before:opacity-0">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="space-y-1">
               <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[#C89B2C]">
@@ -326,11 +326,26 @@ export function SavedKundliManager({
             </div>
           ) : null}
 
-          <div className="grid gap-3">
+        <div className="rounded-[1.25rem] border border-black/8 bg-white p-4 shadow-[0_12px_28px_rgba(17,24,39,0.04)] sm:p-5">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="space-y-1">
+              <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[#C89B2C]">
+                Birth details
+              </p>
+              <p className="text-[0.82rem] text-[color:var(--color-ink-body)]">
+                Required fields are marked for safe Kundli generation.
+              </p>
+            </div>
+            <Badge tone="trust" className="border border-black/8 bg-white">
+              Privacy-Safe
+            </Badge>
+          </div>
+
+          <div className="mt-4 grid gap-3">
             <label className="space-y-1.5 text-sm text-[#111111]">
               <FieldLabel label="Label" />
               <input
-                className="w-full rounded-[var(--radius-lg)] border border-black/10 bg-white px-4 py-3 text-[#111111] outline-none transition placeholder:text-[#8A8A8A] focus:border-[rgba(184,137,67,0.6)] focus:ring-2 focus:ring-[rgba(184,137,67,0.12)]"
+                className="w-full rounded-[var(--radius-lg)] border border-black/12 bg-white px-4 py-3 text-[#111111] outline-none transition placeholder:text-[#8A8A8A] focus:border-[rgba(184,137,67,0.65)] focus:ring-2 focus:ring-[rgba(184,137,67,0.12)]"
                 value={form.label}
                 onChange={(event) => setForm((current) => ({ ...current, label: event.target.value }))}
                 placeholder="Family chart, Jan 1992, or Work profile"
@@ -340,7 +355,7 @@ export function SavedKundliManager({
             <label className="space-y-1.5 text-sm text-[#111111]">
               <FieldLabel label="Gender" tone="Optional" />
               <input
-                className="w-full rounded-[var(--radius-lg)] border border-black/10 bg-white px-4 py-3 text-[#111111] outline-none transition placeholder:text-[#8A8A8A] focus:border-[rgba(184,137,67,0.6)] focus:ring-2 focus:ring-[rgba(184,137,67,0.12)]"
+                className="w-full rounded-[var(--radius-lg)] border border-black/12 bg-white px-4 py-3 text-[#111111] outline-none transition placeholder:text-[#8A8A8A] focus:border-[rgba(184,137,67,0.65)] focus:ring-2 focus:ring-[rgba(184,137,67,0.12)]"
                 value={form.gender ?? ""}
                 onChange={(event) => setForm((current) => ({ ...current, gender: event.target.value || null }))}
                 placeholder="Optional"
@@ -352,7 +367,7 @@ export function SavedKundliManager({
                 <FieldLabel label="Date of Birth" />
                 <input
                   type="date"
-                  className="w-full rounded-[var(--radius-lg)] border border-black/10 bg-white px-4 py-3 text-[#111111] outline-none transition focus:border-[rgba(184,137,67,0.6)] focus:ring-2 focus:ring-[rgba(184,137,67,0.12)]"
+                  className="w-full rounded-[var(--radius-lg)] border border-black/12 bg-white px-4 py-3 text-[#111111] outline-none transition focus:border-[rgba(184,137,67,0.65)] focus:ring-2 focus:ring-[rgba(184,137,67,0.12)]"
                   value={form.dateOfBirth}
                   onChange={(event) => setForm((current) => ({ ...current, dateOfBirth: event.target.value }))}
                 />
@@ -362,7 +377,7 @@ export function SavedKundliManager({
                 <FieldLabel label="Time of Birth" />
                 <input
                   type="time"
-                  className="w-full rounded-[var(--radius-lg)] border border-black/10 bg-white px-4 py-3 text-[#111111] outline-none transition focus:border-[rgba(184,137,67,0.6)] focus:ring-2 focus:ring-[rgba(184,137,67,0.12)]"
+                  className="w-full rounded-[var(--radius-lg)] border border-black/12 bg-white px-4 py-3 text-[#111111] outline-none transition focus:border-[rgba(184,137,67,0.65)] focus:ring-2 focus:ring-[rgba(184,137,67,0.12)]"
                   value={form.timeOfBirth}
                   onChange={(event) => setForm((current) => ({ ...current, timeOfBirth: event.target.value }))}
                 />
@@ -372,7 +387,7 @@ export function SavedKundliManager({
             <label className="space-y-1.5 text-sm text-[#111111]">
               <FieldLabel label="Birth Place" />
               <input
-                className="w-full rounded-[var(--radius-lg)] border border-black/10 bg-white px-4 py-3 text-[#111111] outline-none transition placeholder:text-[#8A8A8A] focus:border-[rgba(184,137,67,0.6)] focus:ring-2 focus:ring-[rgba(184,137,67,0.12)]"
+                className="w-full rounded-[var(--radius-lg)] border border-black/12 bg-white px-4 py-3 text-[#111111] outline-none transition placeholder:text-[#8A8A8A] focus:border-[rgba(184,137,67,0.65)] focus:ring-2 focus:ring-[rgba(184,137,67,0.12)]"
                 value={form.birthPlace}
                 onChange={(event) => setForm((current) => ({ ...current, birthPlace: event.target.value }))}
                 placeholder="City, State, Country"
@@ -383,7 +398,7 @@ export function SavedKundliManager({
               <label className="space-y-1.5 text-sm text-[#111111]">
                 <FieldLabel label="Latitude" tone="Optional" />
                 <input
-                  className="w-full rounded-[var(--radius-lg)] border border-black/10 bg-white px-4 py-3 text-[#111111] outline-none transition placeholder:text-[#8A8A8A] focus:border-[rgba(184,137,67,0.6)] focus:ring-2 focus:ring-[rgba(184,137,67,0.12)]"
+                  className="w-full rounded-[var(--radius-lg)] border border-black/12 bg-white px-4 py-3 text-[#111111] outline-none transition placeholder:text-[#8A8A8A] focus:border-[rgba(184,137,67,0.65)] focus:ring-2 focus:ring-[rgba(184,137,67,0.12)]"
                   value={form.latitude ?? ""}
                   onChange={(event) => setForm((current) => ({ ...current, latitude: event.target.value || null }))}
                   placeholder="Optional"
@@ -393,7 +408,7 @@ export function SavedKundliManager({
               <label className="space-y-1.5 text-sm text-[#111111]">
                 <FieldLabel label="Longitude" tone="Optional" />
                 <input
-                  className="w-full rounded-[var(--radius-lg)] border border-black/10 bg-white px-4 py-3 text-[#111111] outline-none transition placeholder:text-[#8A8A8A] focus:border-[rgba(184,137,67,0.6)] focus:ring-2 focus:ring-[rgba(184,137,67,0.12)]"
+                  className="w-full rounded-[var(--radius-lg)] border border-black/12 bg-white px-4 py-3 text-[#111111] outline-none transition placeholder:text-[#8A8A8A] focus:border-[rgba(184,137,67,0.65)] focus:ring-2 focus:ring-[rgba(184,137,67,0.12)]"
                   value={form.longitude ?? ""}
                   onChange={(event) => setForm((current) => ({ ...current, longitude: event.target.value || null }))}
                   placeholder="Optional"
@@ -404,13 +419,14 @@ export function SavedKundliManager({
             <label className="space-y-1.5 text-sm text-[#111111]">
               <FieldLabel label="Timezone" tone="Optional" />
               <input
-                className="w-full rounded-[var(--radius-lg)] border border-black/10 bg-white px-4 py-3 text-[#111111] outline-none transition placeholder:text-[#8A8A8A] focus:border-[rgba(184,137,67,0.6)] focus:ring-2 focus:ring-[rgba(184,137,67,0.12)]"
+                className="w-full rounded-[var(--radius-lg)] border border-black/12 bg-white px-4 py-3 text-[#111111] outline-none transition placeholder:text-[#8A8A8A] focus:border-[rgba(184,137,67,0.65)] focus:ring-2 focus:ring-[rgba(184,137,67,0.12)]"
                 value={form.timezone ?? ""}
                 onChange={(event) => setForm((current) => ({ ...current, timezone: event.target.value || null }))}
                 placeholder="Optional"
               />
             </label>
           </div>
+        </div>
 
           <div className="flex flex-wrap gap-2 pt-2">
             <button type="button" onClick={handleCreate} className={buttonStyles({ size: "sm", tone: "accent" })}>

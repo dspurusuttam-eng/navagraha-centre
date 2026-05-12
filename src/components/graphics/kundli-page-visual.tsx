@@ -7,11 +7,11 @@ export function KundliPageHeroVisual() {
   return (
     <Card
       tone="default"
-      className="relative overflow-hidden border-black/8 bg-white shadow-[0_24px_64px_rgba(17,24,39,0.08)] before:opacity-0"
+      className="relative overflow-hidden border-black/8 bg-white shadow-[0_22px_58px_rgba(17,24,39,0.07)] before:opacity-0"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_24%,rgba(184,137,67,0.08),transparent_44%),radial-gradient(circle_at_18%_82%,rgba(17,24,39,0.03),transparent_34%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_24%,rgba(184,137,67,0.05),transparent_42%),radial-gradient(circle_at_18%_82%,rgba(17,24,39,0.02),transparent_32%)]" />
 
-      <div className="relative space-y-5 p-5 sm:p-6">
+      <div className="relative space-y-5 p-5 sm:p-6 lg:p-7">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <Badge tone="trust" className="border border-black/8 bg-white">
             Kundli Snapshot
