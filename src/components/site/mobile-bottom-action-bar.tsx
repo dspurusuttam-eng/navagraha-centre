@@ -114,19 +114,19 @@ export function MobileBottomActionBar({
   return (
     <>
       {isHome ? (
-        <div className="fixed inset-x-0 bottom-[4.95rem] z-50 flex justify-center px-3 md:hidden">
+        <div className="fixed inset-x-0 bottom-[4.3rem] z-50 flex justify-center px-3 md:hidden">
           <Link
             href={consultationHref}
-            className="group flex w-full max-w-[22rem] items-center gap-3 rounded-[1.5rem] border border-[rgba(73,116,193,0.32)] bg-[linear-gradient(145deg,#1f4ea8_0%,#234c94_100%)] px-4 py-3 text-white shadow-[0_18px_36px_rgba(19,53,110,0.24)]"
+            className="group flex w-full max-w-[20.5rem] items-center gap-3 rounded-[1.35rem] border border-[rgba(73,116,193,0.32)] bg-[linear-gradient(145deg,#1f4ea8_0%,#234c94_100%)] px-3.5 py-2.5 text-white shadow-[0_16px_32px_rgba(19,53,110,0.22)]"
           >
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[rgba(244,213,143,0.38)] bg-[rgba(255,255,255,0.12)] text-[var(--color-accent-gold)] shadow-[0_10px_24px_rgba(19,53,110,0.12)]">
-              <ConsultationIcon className="h-6 w-6" />
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[rgba(244,213,143,0.38)] bg-[rgba(255,255,255,0.12)] text-[var(--color-accent-gold)] shadow-[0_10px_22px_rgba(19,53,110,0.12)]">
+              <ConsultationIcon className="h-[1.35rem] w-[1.35rem]" />
             </span>
             <span className="min-w-0 flex-1 text-left">
-              <span className="block text-[0.72rem] uppercase tracking-[0.16em] text-[rgba(255,247,229,0.82)]">
+              <span className="block text-[0.68rem] uppercase tracking-[0.12em] text-[rgba(255,247,229,0.84)]">
                 Consult J P Sarmah
               </span>
-              <span className="block text-[0.8rem] font-medium text-white">
+              <span className="block text-[0.75rem] font-medium text-white">
                 JYOTISH BHASKAR guidance
               </span>
             </span>
@@ -136,9 +136,9 @@ export function MobileBottomActionBar({
 
       <nav
         aria-label="Mobile quick actions"
-        className="fixed inset-x-0 bottom-0 z-50 border-t border-black/8 bg-white/98 shadow-[0_-10px_28px_rgba(17,24,39,0.08)] backdrop-blur-xl md:hidden"
+        className="fixed inset-x-0 bottom-0 z-50 border-t border-black/10 bg-white/99 shadow-[0_-12px_30px_rgba(17,24,39,0.1)] backdrop-blur-xl md:hidden"
       >
-        <div className="mx-auto grid max-w-5xl grid-cols-4 px-2 pb-[calc(0.35rem+env(safe-area-inset-bottom))] pt-2">
+        <div className="mx-auto grid max-w-5xl grid-cols-4 px-2 pb-[calc(0.45rem+env(safe-area-inset-bottom))] pt-1.5">
           {bottomActions.map((action) => {
             const active =
               action.href === "/"
@@ -153,21 +153,21 @@ export function MobileBottomActionBar({
                 className={cn(
                   "flex min-w-0 flex-col items-center gap-1.5 rounded-[1.1rem] px-2 py-2 text-center transition [transition-duration:var(--motion-duration-base)]",
                   active
-                    ? "bg-[rgba(184,137,67,0.08)] text-[color:var(--color-accent-strong)]"
+                    ? "bg-[rgba(184,137,67,0.1)] text-[color:var(--color-accent-strong)]"
                     : "text-[color:var(--color-ink-strong)] hover:bg-black/5"
                 )}
               >
                 <span
                   className={cn(
-                    "flex h-9 w-9 items-center justify-center rounded-full border bg-white",
+                    "flex h-10 w-10 items-center justify-center rounded-full border bg-white",
                     active
-                      ? "border-[rgba(184,137,67,0.36)] text-[color:var(--color-accent-strong)] shadow-[0_8px_18px_rgba(184,137,67,0.16)]"
-                      : "border-black/8 text-[color:var(--color-ink-strong)]"
+                      ? "border-[rgba(184,137,67,0.4)] text-[color:var(--color-accent-strong)] shadow-[0_8px_18px_rgba(184,137,67,0.18)]"
+                      : "border-black/10 text-[color:var(--color-ink-strong)]"
                   )}
                 >
                   <BarIcon icon={action.icon} />
                 </span>
-                <span className="text-[0.62rem] font-medium uppercase tracking-[0.12em] leading-none">
+                <span className="text-[0.62rem] font-semibold uppercase tracking-[0.1em] leading-none">
                   {action.label}
                 </span>
                 <span

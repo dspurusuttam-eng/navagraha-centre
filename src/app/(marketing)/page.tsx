@@ -507,20 +507,16 @@ export default async function HomePage() {
 
       <section className="relative overflow-hidden border-b border-black/8 bg-white">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(184,137,67,0.06),transparent_28%),radial-gradient(circle_at_80%_16%,rgba(17,24,39,0.03),transparent_26%),radial-gradient(circle_at_70%_84%,rgba(184,137,67,0.05),transparent_30%)]" />
-        <Container className="relative grid gap-10 py-12 sm:py-16 lg:grid-cols-[minmax(0,1.04fr)_minmax(320px,0.96fr)] lg:items-center lg:py-20">
-          <div className="home-reveal home-reveal-delay-1 space-y-7">
+        <Container className="relative grid gap-8 py-10 sm:py-16 lg:grid-cols-[minmax(0,1.04fr)_minmax(320px,0.96fr)] lg:items-center lg:py-20">
+          <div className="home-reveal home-reveal-delay-1 space-y-6">
             <Badge tone="trust">Since 1950 Legacy</Badge>
-            <div className="space-y-5">
+            <div className="space-y-4">
               <h1
-                className="max-w-4xl font-[family-name:var(--font-display)] text-[length:var(--font-size-display-md)] text-[var(--color-ink-strong)] sm:text-[length:var(--font-size-display-lg)]"
-                style={{
-                  letterSpacing: "var(--tracking-display)",
-                  lineHeight: "var(--line-height-tight)",
-                }}
+                className="max-w-4xl font-[family-name:var(--font-display)] text-[length:var(--font-size-display-md)] text-[var(--color-ink-strong)] tracking-[0.01em] sm:text-[length:var(--font-size-display-lg)] sm:[letter-spacing:var(--tracking-display)]"
               >
                 Your Complete Vedic Astrology Intelligence Centre
               </h1>
-              <p className="max-w-[42rem] text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+              <p className="max-w-[42rem] text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)] sm:text-[length:var(--font-size-body-lg)]">
                 Generate Kundli, explore Rashifal, Panchang, Dasha, Transit,
                 Matchmaking, Remedies and personalized AI guidance - all in one
                 trusted astrology platform.
@@ -558,7 +554,7 @@ export default async function HomePage() {
                 <Badge
                   key={badge}
                   tone="trust"
-                  className="border border-black/8 bg-white px-3 py-2 text-[0.64rem] uppercase tracking-[0.12em] text-[color:var(--color-ink-strong)] shadow-[0_8px_20px_rgba(17,24,39,0.04)]"
+                  className="border border-black/8 bg-white px-2.5 py-1.5 text-[0.58rem] uppercase tracking-[0.08em] text-[color:var(--color-ink-strong)] shadow-[0_8px_20px_rgba(17,24,39,0.04)] sm:px-3 sm:py-2 sm:text-[0.64rem] sm:tracking-[0.12em]"
                 >
                   {badge}
                 </Badge>
@@ -571,12 +567,12 @@ export default async function HomePage() {
       </section>
 
       <section className="border-b border-black/8 bg-white">
-        <Container className="py-4 sm:py-5">
+        <Container className="py-3.5 sm:py-5">
           <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
             {trustStripItems.map((item) => (
               <span
                 key={item}
-                className="inline-flex min-h-10 items-center gap-2 rounded-full border border-black/8 bg-white px-3.5 py-2 text-[0.64rem] uppercase tracking-[0.12em] text-[color:var(--color-ink-strong)] shadow-[0_8px_20px_rgba(17,24,39,0.04)]"
+                className="inline-flex min-h-9 items-center gap-2 rounded-full border border-black/8 bg-white px-3 py-1.5 text-[0.58rem] uppercase tracking-[0.08em] text-[color:var(--color-ink-strong)] shadow-[0_8px_20px_rgba(17,24,39,0.04)] sm:min-h-10 sm:px-3.5 sm:py-2 sm:text-[0.64rem] sm:tracking-[0.12em]"
               >
                 <span
                   aria-hidden="true"
@@ -589,8 +585,12 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      <GoldSectionDivider />
+      <HomepageMobileRails
+        locale={locale}
+        hasExplicitLocalePrefix={hasExplicitLocalePrefix}
+      />
 
+      <GoldSectionDivider />
 
       <section className="border-b border-black/8 bg-white">
         <Container className="py-12 sm:py-14">
@@ -929,11 +929,6 @@ export default async function HomePage() {
       </section>
 
       <GoldSectionDivider />
-
-      <HomepageMobileRails
-        locale={locale}
-        hasExplicitLocalePrefix={hasExplicitLocalePrefix}
-      />
 
       <section className="border-b border-black/8 bg-white">
         <Container className="py-12 sm:py-14">

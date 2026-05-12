@@ -35,21 +35,21 @@ const floatingCards = [
 
 export function HomepagePremiumHeroVisual() {
   return (
-    <div className="relative mx-auto w-full max-w-[38rem]">
+    <div className="relative mx-auto w-full max-w-[34rem] sm:max-w-[38rem]">
       <div className="relative overflow-hidden rounded-[var(--radius-card)] border border-black/8 bg-white shadow-[0_28px_72px_rgba(17,24,39,0.08)]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,rgba(184,137,67,0.08),transparent_48%),radial-gradient(circle_at_50%_72%,rgba(17,24,39,0.03),transparent_50%)]" />
 
-        <div className="relative min-h-[32rem] px-4 py-5 sm:px-6 sm:py-6 lg:min-h-[36rem]">
+        <div className="relative min-h-[27rem] px-4 py-4 sm:min-h-[32rem] sm:px-6 sm:py-6 lg:min-h-[36rem]">
           <div className="flex items-center justify-between gap-3">
-            <span className="text-[0.68rem] uppercase tracking-[0.18em] text-[color:var(--color-ink-muted)]">
+            <span className="text-[0.62rem] uppercase tracking-[0.12em] text-[color:var(--color-ink-muted)] sm:text-[0.68rem] sm:tracking-[0.18em]">
               Premium Astrology Visual
             </span>
-            <span className="rounded-full border border-[rgba(184,137,67,0.24)] bg-white px-3 py-1 text-[0.62rem] uppercase tracking-[0.16em] text-[color:var(--color-ink-strong)] shadow-[0_6px_16px_rgba(17,24,39,0.04)]">
+            <span className="rounded-full border border-[rgba(184,137,67,0.24)] bg-white px-2.5 py-1 text-[0.58rem] uppercase tracking-[0.1em] text-[color:var(--color-ink-strong)] shadow-[0_6px_16px_rgba(17,24,39,0.04)] sm:px-3 sm:text-[0.62rem] sm:tracking-[0.16em]">
               White + Gold
             </span>
           </div>
 
-          <div className="relative mx-auto mt-6 aspect-square w-full max-w-[20rem] sm:max-w-[23rem]">
+          <div className="relative mx-auto mt-5 aspect-square w-full max-w-[18rem] sm:mt-6 sm:max-w-[23rem]">
             <div className="absolute inset-[6%] rounded-full border border-black/8" />
             <div className="absolute inset-[14%] rounded-full border border-black/6" />
             <div className="absolute inset-[22%] rounded-full border border-dashed border-[rgba(184,137,67,0.34)]" />
@@ -92,7 +92,7 @@ export function HomepagePremiumHeroVisual() {
             </div>
           </div>
 
-          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:mt-0">
+          <div className="mt-4 hidden gap-3 sm:grid sm:grid-cols-2 lg:mt-0 lg:grid">
             {floatingCards.map((card, index) => (
               <div
                 key={card.label}

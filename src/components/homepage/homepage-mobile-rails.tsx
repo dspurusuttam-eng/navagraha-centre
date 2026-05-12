@@ -50,23 +50,23 @@ function statusLabel(status: RailStatus) {
 function RailIcon({ item }: Readonly<{ item: RailAction }>) {
   switch (item.icon) {
     case "kundli":
-      return <KundliIcon className="h-11 w-11" />;
+      return <KundliIcon className="h-12 w-12" />;
     case "ai":
-      return <NavagrahaAiIcon className="h-11 w-11" />;
+      return <NavagrahaAiIcon className="h-12 w-12" />;
     case "consultation":
-      return <ConsultationIcon className="h-11 w-11" />;
+      return <ConsultationIcon className="h-12 w-12" />;
     case "report":
-      return <ReportIcon className="h-11 w-11" />;
+      return <ReportIcon className="h-12 w-12" />;
     case "panchang":
-      return <PanchangIcon className="h-11 w-11" />;
+      return <PanchangIcon className="h-12 w-12" />;
     case "rashifal":
-      return <RashifalIcon className="h-11 w-11" />;
+      return <RashifalIcon className="h-12 w-12" />;
     case "utility":
-      return <UtilityIcon name="calculators" className="h-11 w-11" />;
+      return <UtilityIcon name="calculators" className="h-12 w-12" />;
     case "letter":
     default:
       return (
-        <span className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(184,137,67,0.34)] bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.96)_0%,rgba(247,234,204,0.9)_70%,rgba(238,214,166,0.84)_100%)] text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-[rgba(130,86,25,0.92)] shadow-[0_8px_20px_rgba(121,85,33,0.12)]">
+        <span className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-[rgba(184,137,67,0.34)] bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.96)_0%,rgba(247,234,204,0.9)_70%,rgba(238,214,166,0.84)_100%)] text-[0.58rem] font-semibold uppercase tracking-[0.1em] text-[rgba(130,86,25,0.92)] shadow-[0_8px_20px_rgba(121,85,33,0.12)]">
           {item.initials ?? "NC"}
         </span>
       );
@@ -83,20 +83,16 @@ function RailSectionHeader({
   description: string;
 }>) {
   return (
-    <div className="max-w-3xl space-y-4">
+    <div className="max-w-3xl space-y-3 sm:space-y-4">
       <Badge tone="trust" className="w-fit border border-black/8 bg-white">
         {eyebrow}
       </Badge>
       <h2
-        className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-lg)] text-[color:var(--color-ink-strong)]"
-        style={{
-          letterSpacing: "var(--tracking-display)",
-          lineHeight: "var(--line-height-tight)",
-        }}
+        className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-md)] text-[color:var(--color-ink-strong)] tracking-[0.01em] sm:text-[length:var(--font-size-title-lg)] sm:[letter-spacing:var(--tracking-display)]"
       >
         {title}
       </h2>
-      <p className="max-w-3xl text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+      <p className="max-w-3xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-strong)] sm:text-[length:var(--font-size-body-lg)]">
         {description}
       </p>
     </div>
@@ -124,23 +120,23 @@ function RailActionCard({
       interactive={Boolean(href)}
       className={[
         "flex h-full flex-col border-black/8 bg-white bg-none p-3 shadow-[0_14px_36px_rgba(17,24,39,0.06)] before:opacity-0 hover:border-black/12",
-        compact ? "gap-3 sm:p-4" : "gap-4 sm:p-4",
+        compact ? "gap-2.5 sm:p-4" : "gap-4 sm:p-4",
       ].join(" ")}
     >
       <div className="flex items-start justify-between gap-3">
         <RailIcon item={item} />
-        <span className="rounded-full border border-[rgba(184,137,67,0.24)] px-2.5 py-1 text-[0.58rem] uppercase tracking-[0.14em] text-[color:var(--color-accent-strong)]">
+        <span className="rounded-full border border-[rgba(184,137,67,0.24)] px-2.5 py-1 text-[0.54rem] uppercase tracking-[0.1em] text-[color:var(--color-accent-strong)] sm:text-[0.58rem] sm:tracking-[0.14em]">
           {statusLabel(item.status)}
         </span>
       </div>
 
       <div className="space-y-2">
-        <h3 className="text-[length:var(--font-size-body-lg)] font-medium text-[color:var(--color-ink-strong)]">
+        <h3 className="text-[0.72rem] font-medium leading-[1.15] text-[color:var(--color-ink-strong)] sm:text-[length:var(--font-size-body-lg)]">
           {item.title}
         </h3>
         <p
           className={[
-            "text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]",
+            "text-[0.76rem] leading-[1.45] text-[color:var(--color-ink-body)] sm:text-[length:var(--font-size-body-sm)] sm:leading-[var(--line-height-copy)]",
             compact ? "hidden sm:block" : "",
           ]
             .filter(Boolean)
@@ -193,15 +189,15 @@ function ComingSoonCard({
     <Card className="flex h-full flex-col gap-4 border-black/8 bg-white bg-none p-3 shadow-[0_14px_36px_rgba(17,24,39,0.06)] before:opacity-0 sm:p-4">
       <div className="flex items-start justify-between gap-3">
         <RailIcon item={item} />
-        <span className="rounded-full border border-[rgba(184,137,67,0.24)] px-2.5 py-1 text-[0.58rem] uppercase tracking-[0.14em] text-[color:var(--color-accent-strong)]">
+        <span className="rounded-full border border-[rgba(184,137,67,0.24)] px-2.5 py-1 text-[0.54rem] uppercase tracking-[0.1em] text-[color:var(--color-accent-strong)] sm:text-[0.58rem] sm:tracking-[0.14em]">
           {statusLabel(item.status)}
         </span>
       </div>
       <div className="space-y-2">
-        <h3 className="text-[length:var(--font-size-body-lg)] font-medium text-[color:var(--color-ink-strong)]">
+        <h3 className="text-[0.72rem] font-medium leading-[1.15] text-[color:var(--color-ink-strong)] sm:text-[length:var(--font-size-body-lg)]">
           {item.title}
         </h3>
-        <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+        <p className="text-[0.76rem] leading-[1.45] text-[color:var(--color-ink-body)] sm:text-[length:var(--font-size-body-sm)] sm:leading-[var(--line-height-copy)]">
           {item.description}
         </p>
       </div>
@@ -612,8 +608,8 @@ export function HomepageMobileRails({
   hasExplicitLocalePrefix,
 }: Readonly<HomepageMobileRailsProps>) {
   return (
-    <Container className="space-y-10 py-12 sm:py-14 lg:py-16">
-      <section className="space-y-5">
+    <Container className="space-y-8 py-8 sm:py-12 lg:py-14">
+      <section className="space-y-4">
         <RailSectionHeader
           eyebrow="Quick Access"
           title="Quick Astrology Access"
@@ -632,9 +628,9 @@ export function HomepageMobileRails({
         </div>
       </section>
 
-      <section className="space-y-5">
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1.04fr)_minmax(20rem,0.96fr)] lg:items-start">
-          <div className="space-y-5">
+      <section className="space-y-4">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.04fr)_minmax(20rem,0.96fr)] lg:items-start">
+          <div className="space-y-4">
             <RailSectionHeader
               eyebrow="NAVAGRAHA AI"
               title="NAVAGRAHA AI"
@@ -660,7 +656,7 @@ export function HomepageMobileRails({
               <div className="flex items-center gap-3">
                 <NavagrahaAiIcon className="h-12 w-12" />
                 <div>
-                  <p className="text-[0.68rem] uppercase tracking-[0.14em] text-[color:var(--color-ink-muted)]">
+                  <p className="text-[0.62rem] uppercase tracking-[0.1em] text-[color:var(--color-ink-muted)] sm:text-[0.68rem] sm:tracking-[0.14em]">
                     AI Preview
                   </p>
                   <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-ink-strong)]">
@@ -706,13 +702,13 @@ export function HomepageMobileRails({
         </div>
       </section>
 
-      <section className="space-y-5">
+      <section className="space-y-4">
         <RailSectionHeader
           eyebrow="NAVAGRAHA Intelligence"
           title="NAVAGRAHA Intelligence Tools"
           description="An expanding intelligent tools ecosystem under NAVAGRAHA AI. Kundli NI is available; the remaining modules are structured as future intelligence only."
         />
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {niTools.map((item) =>
             item.status === "Coming Soon" ? (
               <ComingSoonCard key={item.title} item={item} />
@@ -728,13 +724,13 @@ export function HomepageMobileRails({
         </div>
       </section>
 
-      <section className="space-y-5">
+      <section className="space-y-4">
         <RailSectionHeader
           eyebrow="Premium Reports"
           title="Premium Astrology Reports"
           description="Career, Marriage, Finance, Health, Life Path and advanced Vedic insights prepared from Kundli, Dasha, Transit and planetary intelligence."
         />
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {reportRailCards.map((item) => (
             <RailActionCard
               key={item.title}
@@ -746,15 +742,15 @@ export function HomepageMobileRails({
         </div>
       </section>
 
-      <section className="space-y-5">
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1.04fr)_minmax(20rem,0.96fr)] lg:items-stretch">
-          <div className="space-y-5">
+      <section className="space-y-4">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.04fr)_minmax(20rem,0.96fr)] lg:items-stretch">
+          <div className="space-y-4">
             <RailSectionHeader
               eyebrow="Authority + Consultation"
               title="Consult JYOTISH BHASKAR J P SARMAH"
               description="Human astrologer guidance supported by Kundli, Dasha, Transit, Panchang and NAVAGRAHA Intelligence context."
             />
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
               {consultationCards.map((item) => (
                 <RailActionCard
                   key={item.title}
@@ -771,10 +767,10 @@ export function HomepageMobileRails({
               aria-hidden="true"
               className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(75,118,192,0.16),transparent_32%),radial-gradient(circle_at_82%_20%,rgba(255,255,255,0.48),transparent_24%),radial-gradient(circle_at_72%_82%,rgba(184,137,67,0.12),transparent_30%)]"
             />
-            <div className="relative flex h-full flex-col gap-6 p-5 sm:p-6 lg:p-7">
+            <div className="relative flex h-full flex-col gap-5 p-4 sm:p-6 lg:p-7">
               <div className="flex items-start justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="relative flex h-20 w-20 items-center justify-center rounded-full border border-[rgba(184,137,67,0.38)] bg-[radial-gradient(circle_at_center,#ffffff_0%,#f2dcaf_100%)] text-[0.95rem] font-semibold tracking-[0.14em] text-[rgba(130,86,25,0.95)] shadow-[0_16px_30px_rgba(37,56,98,0.14)]">
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className="relative flex h-18 w-18 items-center justify-center rounded-full border border-[rgba(184,137,67,0.38)] bg-[radial-gradient(circle_at_center,#ffffff_0%,#f2dcaf_100%)] text-[0.9rem] font-semibold tracking-[0.12em] text-[rgba(130,86,25,0.95)] shadow-[0_16px_30px_rgba(37,56,98,0.14)] sm:h-20 sm:w-20 sm:text-[0.95rem] sm:tracking-[0.14em]">
                     <span className="absolute inset-2 rounded-full border border-[rgba(184,137,67,0.24)]" />
                     <span className="absolute inset-4 rotate-45 border border-[rgba(184,137,67,0.18)]" />
                     <span className="relative">JPS</span>
@@ -783,7 +779,7 @@ export function HomepageMobileRails({
                     <Badge tone="trust" className="border border-white/55 bg-white/75 text-[color:var(--color-ink-strong)]">
                       Astrologer Authority
                     </Badge>
-                    <p className="max-w-md text-[0.68rem] uppercase tracking-[0.14em] text-[rgba(19,53,110,0.74)]">
+                  <p className="max-w-md text-[0.62rem] uppercase tracking-[0.1em] text-[rgba(19,53,110,0.74)] sm:text-[0.68rem] sm:tracking-[0.14em]">
                       JYOTISH BHASKAR JOY PRAKASH SARMAH
                     </p>
                   </div>
@@ -807,7 +803,7 @@ export function HomepageMobileRails({
                   <Badge
                     key={item}
                     tone="trust"
-                    className="border border-white/60 bg-white px-3 py-2 text-[0.64rem] uppercase tracking-[0.14em] text-[color:var(--color-ink-strong)] shadow-[0_8px_20px_rgba(17,24,39,0.04)]"
+                    className="border border-white/60 bg-white px-3 py-2 text-[0.62rem] uppercase tracking-[0.1em] text-[color:var(--color-ink-strong)] shadow-[0_8px_20px_rgba(17,24,39,0.04)] sm:text-[0.64rem] sm:tracking-[0.14em]"
                   >
                     {item}
                   </Badge>
@@ -863,13 +859,13 @@ export function HomepageMobileRails({
         </div>
       </section>
 
-      <section className="space-y-5">
+      <section className="space-y-4">
         <RailSectionHeader
           eyebrow="From the Desk"
           title="Content, Learning, Video and Shop Rails"
           description="Manual publishing, future learning surfaces, and safe commerce previews remain clear and non-fabricated."
         />
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {contentRailCards.map((item) =>
             item.href ? (
               <RailActionCard
