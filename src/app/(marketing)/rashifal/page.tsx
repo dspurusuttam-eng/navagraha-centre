@@ -1,20 +1,125 @@
-import { TrackedLink } from "@/components/analytics/tracked-link";
 import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
-import { AdSlot } from "@/components/monetization/AdSlot";
-import { ConsultationCTA } from "@/components/monetization/ConsultationCTA";
-import { ReportCTA } from "@/components/monetization/ReportCTA";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
+import { TrackedLink } from "@/components/analytics/tracked-link";
+import { AdSlot } from "@/components/monetization/AdSlot";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
-import { Section } from "@/components/ui/section";
 import { createToolMetadata } from "@/lib/seo/metadata";
 import { getCoreSeoCopy } from "@/lib/seo/seo-config";
+import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
 import { getRequestLocale, hasExplicitLocalePrefixInRequest } from "@/modules/localization/request";
 import { rashifalSigns } from "@/modules/rashifal/content";
 import { RetentionPreferenceBridge } from "@/modules/retention/components/retention-preference-bridge";
-import { RevenuePathwaysCard } from "@/modules/subscriptions/components/revenue-readiness-panels";
+
+const rashifalTabs = [
+  {
+    title: "Daily Rashifal",
+    active: true,
+    statusLabel: "Active",
+    description: "Daily sign guidance published from the astrologer's desk.",
+  },
+  {
+    title: "Monthly Rashifal",
+    href: "/monthly-rashifal",
+    statusLabel: "Published",
+    description: "Monthly overview when you want a broader planning lens.",
+  },
+  {
+    title: "Yearly Rashifal",
+    statusLabel: "Coming Soon",
+    description: "Future-ready annual guidance from the same desk workflow.",
+  },
+] as const;
+
+const rashifalGuidanceCards = [
+  {
+    title: "Panchang Today",
+    href: "/panchang",
+    ctaLabel: "Open Panchang",
+    description: "Check timing context before making daily decisions.",
+    feature: "rashifal-guidance-panchang",
+  },
+  {
+    title: "Daily Remedy",
+    href: "/tools",
+    ctaLabel: "View Remedies",
+    description: "Move from daily reading into cautious remedy discovery.",
+    feature: "rashifal-guidance-remedy",
+  },
+  {
+    title: "Ask NAVAGRAHA AI",
+    href: "/tools",
+    ctaLabel: "Ask AI",
+    description: "Use chart-aware support after you read the public forecast.",
+    feature: "rashifal-guidance-ai",
+  },
+  {
+    title: "Generate Kundli",
+    href: "/kundli",
+    ctaLabel: "Open Kundli",
+    description: "Create a saved chart when you want personal guidance.",
+    feature: "rashifal-guidance-kundli",
+  },
+] as const;
+
+function localizeHref(locale: string, hasExplicitLocalePrefix: boolean, href: string) {
+  return getLocalizedPath(locale, href, {
+    forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
+  });
+}
+
+function RashifalSignCard({
+  locale,
+  hasExplicitLocalePrefix,
+  slug,
+  name,
+  icon,
+}: Readonly<{
+  locale: string;
+  hasExplicitLocalePrefix: boolean;
+  slug: string;
+  name: string;
+  icon: string;
+}>) {
+  const href = localizeHref(locale, hasExplicitLocalePrefix, `/rashifal/${slug}`);
+
+  return (
+    <TrackedLink
+      href={href}
+      eventName="rashifal_view"
+      eventPayload={{ page: "/rashifal", feature: `rashifal-sign-${slug}` }}
+      className="block h-full"
+    >
+      <Card
+        tone="default"
+        interactive
+        className="flex h-full flex-col gap-4 border-black/8 bg-white p-4 shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0 hover:border-black/12"
+      >
+        <div className="flex items-start justify-between gap-3">
+          <span className="flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(184,137,67,0.28)] bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.98)_0%,rgba(247,234,204,0.92)_72%,rgba(238,214,166,0.88)_100%)] text-[0.72rem] font-semibold uppercase tracking-[0.1em] text-[color:var(--color-accent-strong)] shadow-[0_10px_22px_rgba(121,85,33,0.12)]">
+            {icon}
+          </span>
+          <Badge tone="trust">Daily</Badge>
+        </div>
+
+        <div className="space-y-2">
+          <h3 className="text-[1rem] font-semibold text-[color:var(--color-ink-strong)]">
+            {name}
+          </h3>
+          <p className="text-[0.8rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+            View Rashifal
+          </p>
+        </div>
+
+        <span className={buttonStyles({ size: "sm", tone: "secondary", className: "w-full justify-center" })}>
+          View Rashifal
+        </span>
+      </Card>
+    </TrackedLink>
+  );
+}
 
 export async function generateMetadata() {
   const locale = await getRequestLocale();
@@ -31,16 +136,18 @@ export async function generateMetadata() {
       "daily rashifal",
       "today horoscope",
       "zodiac signs",
-      "love career business rashifal",
-      "lucky color lucky number lucky time",
+      "monthly rashifal",
+      "yearly rashifal",
     ],
   });
 }
-export const revalidate = 3600;
-const topSixSigns = rashifalSigns.slice(0, 6);
-const bottomSixSigns = rashifalSigns.slice(6);
 
-export default function RashifalPage() {
+export const revalidate = 3600;
+
+export default async function RashifalPage() {
+  const locale = await getRequestLocale();
+  const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
+
   return (
     <>
       <PageViewTracker page="/rashifal" feature="rashifal-page" />
@@ -54,362 +161,302 @@ export default function RashifalPage() {
       />
       <RetentionPreferenceBridge section="rashifal" />
 
-      <section className="relative overflow-hidden border-b border-[color:var(--color-border)] bg-[linear-gradient(180deg,#fffefb_0%,#fcf4e7_54%,#f8ecd8_100%)]">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_10%_14%,rgba(210,166,90,0.2),transparent_34%),radial-gradient(circle_at_86%_16%,rgba(208,164,112,0.16),transparent_34%),radial-gradient(circle_at_70%_88%,rgba(188,145,87,0.12),transparent_38%)]" />
-        <Container className="relative grid gap-8 py-12 sm:py-14 lg:grid-cols-[minmax(0,1.08fr)_minmax(300px,0.92fr)] lg:items-center">
-          <div className="space-y-6">
-            <Badge tone="trust">Daily Rashifal</Badge>
-            <div className="space-y-4">
-              <h1
-                className="font-[family-name:var(--font-display)] text-[length:var(--font-size-display-md)] text-[var(--color-ink-strong)] sm:text-[length:var(--font-size-display-lg)]"
-                style={{
-                  letterSpacing: "var(--tracking-display)",
-                  lineHeight: "var(--line-height-tight)",
-                }}
-              >
-                Today&apos;s Rashifal - Daily Horoscope for All Zodiac Signs
-              </h1>
-              <p className="max-w-[44rem] text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-                Start with public daily Rashifal for all signs, then continue with personalized Kundli-based guidance for deeper clarity.
-              </p>
-            </div>
-            <TrackedLink
-              href="/kundli"
-              eventName="cta_click"
-              eventPayload={{ page: "/rashifal", feature: "rashifal-hero-kundli" }}
-              className={buttonStyles({
-                size: "lg",
-                className: "w-full justify-center sm:w-auto",
-              })}
-            >
-              Generate Your Kundli
-            </TrackedLink>
-          </div>
-
-          <Card className="space-y-4 border-[rgba(184,137,67,0.28)] bg-[linear-gradient(165deg,rgba(255,255,255,0.96)_0%,rgba(248,236,216,0.9)_100%)]">
-            <Badge tone="trust">Today Highlights</Badge>
-            <div className="grid gap-2 sm:grid-cols-2">
-              {[
-                "Career timing gains clarity through discipline.",
-                "Relationships benefit from steady communication.",
-                "Avoid rushed commitments in business matters.",
-                "Use AI follow-up for personal chart context.",
-              ].map((item) => (
-                <div
-                  key={item}
-                  className="rounded-[var(--radius-lg)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.84)] px-3 py-2 text-[0.7rem] uppercase tracking-[0.13em] text-[var(--color-ink-body)]"
-                >
-                  {item}
-                </div>
-              ))}
-            </div>
-          </Card>
-        </Container>
-      </section>
-
-      <Section className="pt-6" tone="transparent">
-        <AdSlot placement="rashifal_after_intro" />
-      </Section>
-
-      <Section
-        tone="light"
-        category="utilities"
-        eyebrow="12 Zodiac Signs"
-        title="Choose your sign and read today&apos;s forecast."
-        description="Each sign includes a compact daily prediction and a full detail page."
-      >
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {rashifalSigns.map((sign) => (
-            <Card
-              key={sign.slug}
-              tone="light"
-              interactive
-              className="flex h-full flex-col gap-4"
-            >
-              <div className="flex items-center justify-between gap-3">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-trust-border)] bg-[var(--color-trust-bg)] text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-[var(--color-trust-text)]">
-                  {sign.icon}
-                </span>
-                <Badge tone="neutral">Sign</Badge>
+      <main className="min-h-screen bg-[#FFFFFF] pb-[calc(6.5rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] md:pb-0">
+        <section className="border-b border-black/8 bg-white">
+          <Container className="grid gap-8 py-10 sm:py-12 lg:grid-cols-[minmax(0,1.08fr)_minmax(300px,0.92fr)] lg:items-center lg:py-14">
+            <div className="space-y-6">
+              <div className="flex flex-wrap gap-2">
+                <Badge tone="trust" className="border border-black/8 bg-white">
+                  Daily Guidance
+                </Badge>
+                <Badge tone="outline" className="border border-black/8 bg-white text-[color:var(--color-ink-strong)]">
+                  From the Desk
+                </Badge>
               </div>
-              <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
-                {sign.name}
-              </h2>
-              <p className="flex-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-                {sign.shortPrediction}
-              </p>
-              <TrackedLink
-                href={`/rashifal/${sign.slug}`}
-                eventName="cta_click"
-                eventPayload={{
-                  page: "/rashifal",
-                  feature: `rashifal-read-full-${sign.slug}`,
-                }}
-                className={buttonStyles({
-                  size: "sm",
-                  tone: "tertiary",
-                  className: "w-full justify-center",
-                })}
-              >
-                Read Full
-              </TrackedLink>
-            </Card>
-          ))}
-        </div>
-      </Section>
 
-      <Section
-        tone="light"
-        category="utilities"
-        eyebrow="Full Rashifal"
-        title="Complete daily Rashifal details for all zodiac signs."
-        description="Love, career, business, and lucky indicators are provided for each sign."
-      >
-        <Card className="content-card mb-6 border-[rgba(184,137,67,0.2)] bg-[rgba(255,255,255,0.9)]">
-          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-            Every sign below follows the same structured daily format: five
-            descriptive lines, dedicated love/career/business guidance, and
-            lucky indicators for quick readability.
-          </p>
-        </Card>
-          <div className="grid gap-4 lg:grid-cols-2">
-            {topSixSigns.map((sign) => (
-              <Card
-                key={`full-${sign.slug}`}
-                tone="light"
-                className="rashifal-section-card space-y-4"
-            >
-              <div className="flex items-center justify-between gap-3">
-                <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
-                  {sign.name} Rashifal
-                </h2>
-                <TrackedLink
-                  href={`/rashifal/${sign.slug}`}
-                  eventName="cta_click"
-                  eventPayload={{
-                    page: "/rashifal",
-                    feature: `rashifal-sign-page-${sign.slug}`,
+              <div className="space-y-3 sm:space-y-4">
+                <h1
+                  className="max-w-4xl font-[family-name:var(--font-display)] text-[length:var(--font-size-display-sm)] text-[color:var(--color-ink-strong)] sm:text-[length:var(--font-size-display-lg)]"
+                  style={{
+                    letterSpacing: "0.01em",
+                    lineHeight: "var(--line-height-tight)",
                   }}
-                  className={buttonStyles({ tone: "ghost", size: "sm" })}
                 >
-                  Open Sign Page
+                  Daily Rashifal
+                </h1>
+                <p className="max-w-[46rem] text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)] sm:text-[length:var(--font-size-body-lg)]">
+                  Read daily, monthly and yearly zodiac guidance published from the astrologer&apos;s desk with Panchang, transit and Vedic astrology context.
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:gap-3">
+                <TrackedLink
+                  href={localizeHref(locale, hasExplicitLocalePrefix, "/daily-rashifal")}
+                  eventName="daily_rashifal_view"
+                  eventPayload={{ page: "/rashifal", feature: "rashifal-hero-daily" }}
+                  className={buttonStyles({
+                    tone: "accent",
+                    size: "lg",
+                    className: "w-full justify-center sm:w-auto",
+                  })}
+                >
+                  Read Today&apos;s Rashifal
+                </TrackedLink>
+                <TrackedLink
+                  href={localizeHref(locale, hasExplicitLocalePrefix, "/panchang")}
+                  eventName="cta_click"
+                  eventPayload={{ page: "/rashifal", feature: "rashifal-hero-panchang" }}
+                  className={buttonStyles({
+                    tone: "secondary",
+                    size: "lg",
+                    className: "w-full justify-center sm:w-auto",
+                  })}
+                >
+                  Explore Panchang
                 </TrackedLink>
               </div>
 
-              <ul className="space-y-2">
-                {sign.fullDescription.map((line) => (
-                  <li
-                    key={line}
-                    className="rounded-[var(--radius-md)] border border-[rgba(184,137,67,0.14)] bg-[rgba(255,255,255,0.84)] px-3 py-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-strong)]"
+              <div className="flex flex-wrap gap-2">
+                {[
+                  "Daily Guidance",
+                  "Panchang Context",
+                  "Vedic Astrology",
+                  "From the Desk",
+                  "Assamese / English / Hindi Ready",
+                ].map((badge) => (
+                  <Badge
+                    key={badge}
+                    tone="trust"
+                    className="border border-black/8 bg-white px-2.5 py-1 text-[0.56rem] uppercase tracking-[0.06em] text-[color:var(--color-ink-strong)] sm:px-3 sm:py-1.5 sm:text-[0.64rem] sm:tracking-[0.1em]"
                   >
-                    {line}
-                  </li>
+                    {badge}
+                  </Badge>
                 ))}
-              </ul>
-
-              <div className="grid gap-3 text-[length:var(--font-size-body-sm)] sm:grid-cols-3">
-                <p>
-                  <span className="font-medium text-[var(--color-ink-strong)]">
-                    Love:
-                  </span>{" "}
-                  {sign.love}
-                </p>
-                <p>
-                  <span className="font-medium text-[var(--color-ink-strong)]">
-                    Career:
-                  </span>{" "}
-                  {sign.career}
-                </p>
-                <p>
-                  <span className="font-medium text-[var(--color-ink-strong)]">
-                    Business:
-                  </span>{" "}
-                  {sign.business}
-                </p>
-                </div>
-                <div className="grid gap-2 text-[length:var(--font-size-body-sm)] sm:grid-cols-3">
-                <p className="rashifal-lucky-chip rounded-[var(--radius-lg)] border px-3 py-2">
-                  <span className="font-medium text-[var(--color-ink-strong)]">
-                    Lucky Color:
-                  </span>{" "}
-                  {sign.luckyColor}
-                </p>
-                <p className="rashifal-lucky-chip rounded-[var(--radius-lg)] border px-3 py-2">
-                  <span className="font-medium text-[var(--color-ink-strong)]">
-                    Lucky Number:
-                  </span>{" "}
-                  {sign.luckyNumber}
-                </p>
-                <p className="rashifal-lucky-chip rounded-[var(--radius-lg)] border px-3 py-2">
-                  <span className="font-medium text-[var(--color-ink-strong)]">
-                    Lucky Time:
-                  </span>{" "}
-                  {sign.luckyTime}
-                </p>
-                </div>
-              </Card>
-            ))}
-
-            <div className="lg:col-span-2">
-              <AdSlot placement="rashifal_mid_content" />
+              </div>
             </div>
 
-            {bottomSixSigns.map((sign) => (
-              <Card
-                key={`full-${sign.slug}`}
-                tone="light"
-                className="rashifal-section-card space-y-4"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
-                    {sign.name} Rashifal
-                  </h2>
-                  <TrackedLink
-                    href={`/rashifal/${sign.slug}`}
-                    eventName="cta_click"
-                    eventPayload={{
-                      page: "/rashifal",
-                      feature: `rashifal-sign-page-${sign.slug}`,
-                    }}
-                    className={buttonStyles({ tone: "ghost", size: "sm" })}
-                  >
-                    Open Sign Page
-                  </TrackedLink>
-                </div>
-
-                <ul className="space-y-2">
-                {sign.fullDescription.map((line) => (
-                  <li
-                    key={line}
-                    className="rounded-[var(--radius-md)] border border-[rgba(184,137,67,0.14)] bg-[rgba(255,255,255,0.84)] px-3 py-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-strong)]"
-                  >
-                    {line}
-                  </li>
-                ))}
-              </ul>
-
-                <div className="grid gap-3 text-[length:var(--font-size-body-sm)] sm:grid-cols-3">
-                  <p>
-                    <span className="font-medium text-[var(--color-ink-strong)]">
-                      Love:
-                    </span>{" "}
-                    {sign.love}
-                  </p>
-                  <p>
-                    <span className="font-medium text-[var(--color-ink-strong)]">
-                      Career:
-                    </span>{" "}
-                    {sign.career}
-                  </p>
-                  <p>
-                    <span className="font-medium text-[var(--color-ink-strong)]">
-                      Business:
-                    </span>{" "}
-                    {sign.business}
-                  </p>
-                </div>
-                <div className="grid gap-2 text-[length:var(--font-size-body-sm)] sm:grid-cols-3">
-                  <p className="rashifal-lucky-chip rounded-[var(--radius-lg)] border px-3 py-2">
-                    <span className="font-medium text-[var(--color-ink-strong)]">
-                      Lucky Color:
-                    </span>{" "}
-                    {sign.luckyColor}
-                  </p>
-                  <p className="rashifal-lucky-chip rounded-[var(--radius-lg)] border px-3 py-2">
-                    <span className="font-medium text-[var(--color-ink-strong)]">
-                      Lucky Number:
-                    </span>{" "}
-                    {sign.luckyNumber}
-                  </p>
-                  <p className="rashifal-lucky-chip rounded-[var(--radius-lg)] border px-3 py-2">
-                    <span className="font-medium text-[var(--color-ink-strong)]">
-                      Lucky Time:
-                    </span>{" "}
-                    {sign.luckyTime}
-                  </p>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </Section>
-
-      <Section className="pt-0" tone="transparent">
-        <div className="grid gap-4 lg:grid-cols-2">
-          <ConsultationCTA pagePath="/rashifal" placement="rashifal_summary" />
-          <ReportCTA pagePath="/rashifal" placement="rashifal_summary" />
-        </div>
-      </Section>
-
-      <Section className="pt-0" tone="transparent">
-        <Card
-          tone="accent"
-          className="border-[rgba(184,137,67,0.34)] bg-[linear-gradient(160deg,rgba(255,252,246,0.98)_0%,rgba(246,232,206,0.94)_58%,rgba(239,222,193,0.96)_100%)] lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-6"
-        >
-          <div className="space-y-3">
-            <Badge tone="accent">Personalized Rashifal</Badge>
-            <h2
-              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-md)] text-[var(--color-ink-strong)]"
-              style={{ letterSpacing: "var(--tracking-display)" }}
+            <Card
+              tone="default"
+              className="space-y-4 border-black/8 bg-white shadow-[0_18px_46px_rgba(17,24,39,0.06)] before:opacity-0"
             >
-              Get personalized Rashifal using your Kundli
-            </h2>
-            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-              Use your verified birth chart to move from general sign-level guidance to personal timing and chart-aware interpretation.
-            </p>
-          </div>
-          <TrackedLink
-            href="/kundli"
-            eventName="cta_click"
-            eventPayload={{
-              page: "/rashifal",
-              feature: "rashifal-personalization-kundli",
-            }}
-            className={buttonStyles({
-              size: "lg",
-              className: "w-full justify-center sm:w-auto",
-            })}
-          >
-            Generate Kundli
-          </TrackedLink>
-        </Card>
-      </Section>
+              <div className="flex items-center justify-between gap-3">
+                <Badge tone="trust" className="border border-black/8 bg-white">
+                  Manual Publishing
+                </Badge>
+                <Badge tone="outline" className="border border-black/8 bg-white text-[color:var(--color-ink-strong)]">
+                  Premium White
+                </Badge>
+              </div>
 
-      <Section className="pt-0" tone="transparent">
-        <Card
-          tone="light"
-          className="border-[rgba(184,137,67,0.24)] bg-[rgba(255,255,255,0.92)] lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-6"
-        >
-          <div className="space-y-3">
-            <Badge tone="trust">NAVAGRAHA AI</Badge>
-            <h2 className="text-[length:var(--font-size-title-md)] font-medium text-[var(--color-ink-strong)]">
-              Ask NAVAGRAHA AI about your day
-            </h2>
-            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-              Continue with chart-aware AI guidance for deeper daily interpretation and practical next-step clarity.
-            </p>
-          </div>
-          <TrackedLink
-            href="/ai"
-            eventName="cta_click"
-            eventPayload={{ page: "/rashifal", feature: "rashifal-ai-free" }}
-            className={buttonStyles({
-              size: "lg",
-              tone: "secondary",
-              className: "w-full justify-center sm:w-auto",
-            })}
-          >
-            Try AI Free
-          </TrackedLink>
-        </Card>
-      </Section>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {[
+                  "Daily Rashifal",
+                  "Monthly Rashifal",
+                  "Yearly Rashifal",
+                  "Panchang context",
+                  "Transit context",
+                  "Human astrologer desk",
+                ].map((item) => (
+                  <div
+                    key={item}
+                    className="rounded-[1.1rem] border border-black/8 bg-white px-3 py-2.5 text-[0.74rem] text-[color:var(--color-ink-body)] shadow-[0_10px_24px_rgba(17,24,39,0.04)]"
+                  >
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </Container>
+        </section>
 
-      <Section className="pt-0" tone="transparent">
-        <RevenuePathwaysCard
-          pagePath="/rashifal"
-          title="Continue from daily Rashifal into deeper guidance"
-          description="Use daily sign insight for free, then continue into reports, consultation, or optional shop support when you need more depth."
-        />
-      </Section>
+        <section className="border-b border-black/8 bg-white">
+          <Container className="py-5 sm:py-7">
+            <div className="grid gap-3 md:grid-cols-3">
+              {rashifalTabs.map((tab) => {
+                if ("active" in tab && tab.active) {
+                  return (
+                    <div
+                      key={tab.title}
+                      className="rounded-[1.1rem] border border-[rgba(184,137,67,0.24)] bg-[linear-gradient(145deg,rgba(255,255,255,0.98)_0%,rgba(248,236,216,0.92)_100%)] p-4 shadow-[0_12px_28px_rgba(17,24,39,0.05)]"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <h2 className="text-[0.8rem] font-semibold uppercase tracking-[0.08em] text-[color:var(--color-ink-strong)]">
+                          {tab.title}
+                        </h2>
+                        <Badge tone="accent">Active</Badge>
+                      </div>
+                      <p className="mt-2 text-[0.82rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                        {tab.description}
+                      </p>
+                    </div>
+                  );
+                }
+
+                if ("href" in tab && tab.href) {
+                  return (
+                    <TrackedLink
+                      key={tab.title}
+                      href={localizeHref(locale, hasExplicitLocalePrefix, tab.href)}
+                      eventName="cta_click"
+                      eventPayload={{ page: "/rashifal", feature: `rashifal-tab-${tab.title.toLowerCase().replace(/\s+/g, "-")}` }}
+                      className="block h-full"
+                    >
+                      <Card
+                        tone="default"
+                        interactive
+                        className="flex h-full flex-col gap-2 border-black/8 bg-white p-4 shadow-[0_12px_28px_rgba(17,24,39,0.05)] before:opacity-0"
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <h2 className="text-[0.8rem] font-semibold uppercase tracking-[0.08em] text-[color:var(--color-ink-strong)]">
+                            {tab.title}
+                          </h2>
+                          <Badge tone="neutral">{tab.statusLabel}</Badge>
+                        </div>
+                        <p className="text-[0.82rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                          {tab.description}
+                        </p>
+                        <span className={buttonStyles({ size: "sm", tone: "secondary", className: "w-full justify-center" })}>
+                          View Rashifal
+                        </span>
+                      </Card>
+                    </TrackedLink>
+                  );
+                }
+
+                return (
+                  <Card
+                    key={tab.title}
+                    className="flex h-full flex-col gap-2 border-black/8 bg-white p-4 shadow-[0_12px_28px_rgba(17,24,39,0.05)] before:opacity-0"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <h2 className="text-[0.8rem] font-semibold uppercase tracking-[0.08em] text-[color:var(--color-ink-strong)]">
+                        {tab.title}
+                      </h2>
+                      <Badge tone="neutral">{tab.statusLabel}</Badge>
+                    </div>
+                    <p className="text-[0.82rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                      {tab.description}
+                    </p>
+                    <span
+                      className={buttonStyles({
+                        size: "sm",
+                        tone: "ghost",
+                        className: "w-full justify-center pointer-events-none opacity-60",
+                      })}
+                      aria-disabled="true"
+                    >
+                      Coming Soon
+                    </span>
+                  </Card>
+                );
+              })}
+            </div>
+          </Container>
+        </section>
+
+        <section className="border-b border-black/8 bg-white">
+          <Container className="py-6 sm:py-7">
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              {rashifalSigns.map((sign) => (
+                <RashifalSignCard
+                  key={sign.slug}
+                  locale={locale}
+                  hasExplicitLocalePrefix={hasExplicitLocalePrefix}
+                  slug={sign.slug}
+                  name={sign.name}
+                  icon={sign.icon}
+                />
+              ))}
+            </div>
+          </Container>
+        </section>
+
+        <section className="pt-6">
+          <AdSlot placement="rashifal_after_intro" />
+        </section>
+
+        <section className="border-b border-black/8 bg-white">
+          <Container className="py-9 sm:py-10">
+            <Card className="space-y-3 border-black/8 bg-white shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0">
+              <Badge tone="trust" className="border border-black/8 bg-white w-fit">
+                FROM THE DESK OF J P SARMAH
+              </Badge>
+              <p className="max-w-4xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                Daily Rashifal, Monthly Rashifal, Yearly Rashifal, Panchang guidance and Vedic astrology insights are manually prepared and published from the astrologer&apos;s desk.
+              </p>
+              <TrackedLink
+                href={localizeHref(locale, hasExplicitLocalePrefix, "/from-the-desk")}
+                eventName="cta_click"
+                eventPayload={{ page: "/rashifal", feature: "rashifal-from-the-desk" }}
+                className={buttonStyles({
+                  size: "sm",
+                  tone: "secondary",
+                  className: "w-full justify-center sm:w-auto",
+                })}
+              >
+                Read From the Desk
+              </TrackedLink>
+            </Card>
+          </Container>
+        </section>
+
+        <section className="border-b border-black/8 bg-white">
+          <Container className="py-9 sm:py-10">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Badge tone="trust" className="border border-black/8 bg-white">
+                  Today&apos;s Guidance Companion
+                </Badge>
+                <p className="max-w-3xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                  Continue from today&apos;s guidance into Panchang timing, remedies, AI support, or a personal chart.
+                </p>
+              </div>
+
+              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                {rashifalGuidanceCards.map((card) => (
+                  <TrackedLink
+                    key={card.title}
+                    href={localizeHref(locale, hasExplicitLocalePrefix, card.href)}
+                    eventName="cta_click"
+                    eventPayload={{ page: "/rashifal", feature: card.feature }}
+                    className="block h-full"
+                  >
+                    <Card
+                      tone="default"
+                      interactive
+                      className="flex h-full flex-col gap-3 border-black/8 bg-white p-4 shadow-[0_12px_28px_rgba(17,24,39,0.05)] before:opacity-0 hover:border-black/12"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(184,137,67,0.28)] bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.98)_0%,rgba(247,234,204,0.92)_72%,rgba(238,214,166,0.88)_100%)] text-[color:var(--color-accent-strong)] shadow-[0_10px_22px_rgba(121,85,33,0.12)]">
+                          {card.title.slice(0, 1)}
+                        </span>
+                        <div className="min-w-0">
+                          <h3 className="text-[0.92rem] font-semibold text-[color:var(--color-ink-strong)]">
+                            {card.title}
+                          </h3>
+                          <p className="text-[0.72rem] uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)]">
+                            Safe navigation
+                          </p>
+                        </div>
+                      </div>
+                      <p className="flex-1 text-[0.82rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                        {card.description}
+                      </p>
+                      <span className={buttonStyles({ size: "sm", tone: "secondary", className: "w-full justify-center" })}>
+                        {card.ctaLabel}
+                      </span>
+                    </Card>
+                  </TrackedLink>
+                ))}
+              </div>
+            </div>
+          </Container>
+        </section>
+
+        <section className="pt-6">
+          <AdSlot placement="rashifal_mid_content" />
+        </section>
+      </main>
     </>
   );
 }
