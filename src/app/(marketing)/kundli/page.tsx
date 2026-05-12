@@ -73,10 +73,10 @@ export default async function KundliPage() {
     <>
       <PageViewTracker page="/kundli" feature="kundli-page" />
 
-      <main className="min-h-screen bg-[#FFFFFF] text-[#111111]">
+      <main className="min-h-screen bg-[#FFFFFF] pb-[calc(6.5rem+env(safe-area-inset-bottom))] text-[#111111] md:pb-0">
         <section className="border-b border-black/8 bg-white">
-          <Container className="grid gap-10 py-12 lg:grid-cols-[minmax(0,1.06fr)_minmax(300px,0.94fr)] lg:items-center lg:py-14">
-            <div className="space-y-7">
+          <Container className="grid gap-8 py-10 sm:py-12 lg:grid-cols-[minmax(0,1.06fr)_minmax(300px,0.94fr)] lg:items-center lg:py-14">
+            <div className="space-y-6 sm:space-y-7">
               <div className="flex flex-wrap gap-2">
                 <Badge tone="trust" className="border border-black/8 bg-white">
                   NAVAGRAHA CENTRE
@@ -86,23 +86,23 @@ export default async function KundliPage() {
                 </Badge>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <h1
-                  className="max-w-4xl font-[family-name:var(--font-display)] text-[length:var(--font-size-display-md)] text-[color:var(--color-ink-strong)] sm:text-[length:var(--font-size-display-lg)]"
+                  className="max-w-4xl font-[family-name:var(--font-display)] text-[length:var(--font-size-display-sm)] text-[color:var(--color-ink-strong)] sm:text-[length:var(--font-size-display-lg)]"
                   style={{
-                    letterSpacing: "var(--tracking-display)",
+                    letterSpacing: "0.01em",
                     lineHeight: "var(--line-height-tight)",
                   }}
                 >
                   Free Kundli &amp; Birth Chart
                 </h1>
-                <p className="max-w-[46rem] text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                <p className="max-w-[46rem] text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)] sm:text-[length:var(--font-size-body-lg)]">
                   Generate your Vedic birth chart with 12-planet positions, Lagna, Nakshatra, Dasha
                   readiness, Transit context and NAVAGRAHA AI guidance support.
                 </p>
               </div>
 
-              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:gap-3">
                 <TrackedLink
                   href={localize("/sign-up")}
                   eventName="cta_click"
@@ -131,7 +131,11 @@ export default async function KundliPage() {
 
               <div className="flex flex-wrap gap-2">
                 {kundliHeroBadges.map((badge) => (
-                  <Badge key={badge} tone="trust" className="border border-black/8 bg-white">
+                  <Badge
+                    key={badge}
+                    tone="trust"
+                    className="border border-black/8 bg-white px-2.5 py-1 text-[0.56rem] uppercase tracking-[0.06em] text-[color:var(--color-ink-strong)] sm:px-3 sm:py-1.5 sm:text-[0.64rem] sm:tracking-[0.1em]"
+                  >
                     {badge}
                   </Badge>
                 ))}
@@ -143,7 +147,7 @@ export default async function KundliPage() {
         </section>
 
         <section className="border-b border-black/8 bg-white">
-          <Container className="space-y-6 py-10">
+          <Container className="space-y-5 py-9 sm:py-10">
             <div className="space-y-2">
               <Badge tone="trust" className="border border-black/8 bg-white">
                 Kundli Intelligence Preview
@@ -156,7 +160,7 @@ export default async function KundliPage() {
               </p>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
               {kundliPreviewItems.map((item) => (
                 <KundliPreviewCard key={item.title} item={item} />
               ))}
@@ -165,7 +169,7 @@ export default async function KundliPage() {
         </section>
 
         <section className="border-b border-black/8 bg-white">
-          <Container className="py-10">
+          <Container className="py-9 sm:py-10">
             <Card
               tone="default"
               className="space-y-3 border-black/8 bg-white shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0"
@@ -181,7 +185,7 @@ export default async function KundliPage() {
         </section>
 
         <section className="border-b border-black/8 bg-white">
-          <Container className="space-y-6 py-10">
+          <Container className="space-y-5 py-9 sm:py-10">
             <div className="space-y-2">
               <Badge tone="trust" className="border border-black/8 bg-white">
                 After Your Kundli
@@ -194,12 +198,12 @@ export default async function KundliPage() {
               </p>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
               {kundliNextStepCards.map((card) => {
                 const content = (
                   <Card
                     tone="default"
-                    className="flex h-full flex-col gap-4 border-black/8 bg-white shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0"
+                    className="flex h-full flex-col gap-3 border-black/8 bg-white shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="space-y-2">
