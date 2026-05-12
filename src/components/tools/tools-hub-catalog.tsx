@@ -157,7 +157,7 @@ export function ToolsHubCatalog({ collections }: Readonly<ToolsHubCatalogProps>)
         </div>
       </section>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
         {filterTabs.map((tab) => {
           const isActive = tab.key === activeFilter;
           const count = filterCounts.get(tab.key) ?? 0;
@@ -169,7 +169,7 @@ export function ToolsHubCatalog({ collections }: Readonly<ToolsHubCatalogProps>)
               onClick={() => setActiveFilter(tab.key)}
               aria-pressed={isActive}
               className={cn(
-                "inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-pill)] border px-4 py-2 text-[0.72rem] font-medium transition",
+                "inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-[var(--radius-pill)] border px-3 py-2 text-center text-[0.72rem] font-medium leading-tight transition sm:w-auto",
                 isActive
                   ? "border-[rgba(184,137,67,0.38)] bg-white text-[color:var(--color-ink-strong)] shadow-[0_10px_24px_rgba(17,24,39,0.06)]"
                   : "border-black/8 bg-white text-[color:var(--color-ink-muted)] hover:border-black/12 hover:text-[color:var(--color-ink-strong)]",
