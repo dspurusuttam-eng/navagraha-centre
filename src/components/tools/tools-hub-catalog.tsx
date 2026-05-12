@@ -13,14 +13,16 @@ import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/cn";
 import { getUtilityStatusLabel, getUtilityStatusTone } from "@/modules/astrology/utilities";
-import {
-  getToolsHubFilterTabs,
-  type ToolsHubCard,
-  type ToolsHubCollection,
-  type ToolsHubFilterKey,
+import { getToolsHubFilterTabs } from "@/modules/astrology/utilities/tools-hub";
+import { getToolsHubRecommendationBlocks } from "@/modules/astrology/utilities/tools-hub-recommendations";
+import type {
+  ToolsHubCard,
+  ToolsHubCollection,
+  ToolsHubFilterKey,
 } from "@/modules/astrology/utilities/tools-hub";
 
 const filterTabs = getToolsHubFilterTabs();
+const recommendationBlocks = getToolsHubRecommendationBlocks();
 
 type ToolsHubCatalogProps = {
   collections: readonly ToolsHubCollection[];
@@ -86,7 +88,75 @@ export function ToolsHubCatalog({ collections }: Readonly<ToolsHubCatalogProps>)
   const activeTab = filterTabs.find((tab) => tab.key === activeFilter) ?? filterTabs[0];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
+      <section className="space-y-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div className="space-y-2">
+            <Badge tone="trust" className="w-fit border border-black/8 bg-white">
+              Quick Pathways
+            </Badge>
+            <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-ink-strong)]">
+              Suggested next steps for different visitor needs
+            </h2>
+            <p className="max-w-3xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+              These blocks keep the tools hub connected to the rest of the site without forcing a single path on every visitor.
+            </p>
+          </div>
+          <Badge tone="outline" className="w-fit border border-black/8 bg-white text-[color:var(--color-ink-strong)]">
+            {recommendationBlocks.length} pathway blocks
+          </Badge>
+        </div>
+
+        <div className="grid gap-4 xl:grid-cols-2">
+          {recommendationBlocks.map((block) => (
+            <Card
+              key={block.key}
+              tone="default"
+              className="flex h-full flex-col gap-4 border-black/8 bg-white shadow-[0_14px_36px_rgba(17,24,39,0.06)] before:opacity-0"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="space-y-2">
+                  <Badge tone="trust" className="w-fit border border-black/8 bg-white">
+                    {block.eyebrow}
+                  </Badge>
+                  <h3 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-body-lg)] text-[color:var(--color-ink-strong)]">
+                    {block.title}
+                  </h3>
+                </div>
+                <Badge tone={block.statusTone ?? "neutral"}>{block.statusLabel}</Badge>
+              </div>
+              <p className="flex-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                {block.description}
+              </p>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <TrackedLink
+                  href={block.primaryHref}
+                  eventName="premium_utility_cta_click"
+                  eventPayload={{ page: "/tools", feature: block.feature }}
+                  className={buttonStyles({ size: "sm", className: "w-full justify-center sm:w-auto" })}
+                >
+                  {block.primaryLabel}
+                </TrackedLink>
+                {block.secondaryHref && block.secondaryLabel ? (
+                  <TrackedLink
+                    href={block.secondaryHref}
+                    eventName="cta_click"
+                    eventPayload={{ page: "/tools", feature: `${block.feature}-secondary` }}
+                    className={buttonStyles({
+                      size: "sm",
+                      tone: "secondary",
+                      className: "w-full justify-center sm:w-auto",
+                    })}
+                  >
+                    {block.secondaryLabel}
+                  </TrackedLink>
+                ) : null}
+              </div>
+            </Card>
+          ))}
+        </div>
+      </section>
+
       <div className="flex flex-wrap gap-2">
         {filterTabs.map((tab) => {
           const isActive = tab.key === activeFilter;
@@ -153,8 +223,9 @@ export function ToolsHubCatalog({ collections }: Readonly<ToolsHubCatalogProps>)
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {collection.cards.map((card) => {
                 const isComingSoon = card.status === "coming soon";
-                const cardTone = getUtilityStatusTone(card.status);
-                const statusLabel = getUtilityStatusLabel(card.status);
+                const statusLabel = card.statusLabel ?? getUtilityStatusLabel(card.status);
+                const statusTone = card.statusTone ?? getUtilityStatusTone(card.status);
+                const metaTone = card.metaTone ?? "outline";
 
                 return (
                   <Card
@@ -175,8 +246,14 @@ export function ToolsHubCatalog({ collections }: Readonly<ToolsHubCatalogProps>)
                           </h4>
                         </div>
                       </div>
-                      <Badge tone={cardTone}>{statusLabel}</Badge>
+                      <Badge tone={statusTone}>{statusLabel}</Badge>
                     </div>
+
+                    {card.metaLabel ? (
+                      <Badge tone={metaTone} className="w-fit border border-black/8 bg-white text-[color:var(--color-ink-strong)]">
+                        {card.metaLabel}
+                      </Badge>
+                    ) : null}
 
                     <p className="flex-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
                       {card.description}

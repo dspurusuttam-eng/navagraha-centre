@@ -1,4 +1,5 @@
-﻿import type { UtilityIconName } from "@/components/graphics/utility-icons";
+import type { UtilityIconName } from "@/components/graphics/utility-icons";
+import type { BadgeTone } from "@/components/ui/badge";
 import type { TrackedEventName } from "@/lib/analytics/types";
 import type { UtilityHubStatus } from "@/modules/astrology/utilities/hub";
 
@@ -21,6 +22,10 @@ export type ToolsHubCard = {
   fallbackHref?: string;
   ctaLabel: string;
   status: UtilityHubStatus;
+  statusLabel?: string;
+  statusTone?: BadgeTone;
+  metaLabel?: string;
+  metaTone?: BadgeTone;
   filterKey: Exclude<ToolsHubFilterKey, "all">;
   icon: UtilityIconName | "ai" | "report" | "consultation";
   feature: string;
@@ -66,7 +71,7 @@ export const toolsHubFilterTabs: readonly ToolsHubFilterTab[] = [
   },
   {
     key: "ai-ni",
-    label: "AI / NI",
+    label: "NAVAGRAHA Intelligence",
     description: "NAVAGRAHA AI and future intelligence modules.",
   },
   {
@@ -81,12 +86,12 @@ export const toolsHubFilterTabs: readonly ToolsHubFilterTab[] = [
   },
   {
     key: "shop-remedies",
-    label: "Shop / Remedies",
+    label: "Remedies / Shop",
     description: "Optional spiritual support, items, and remedy pathways.",
   },
   {
     key: "services",
-    label: "Services",
+    label: "Consultation",
     description: "Consultation and human-guided premium support.",
   },
   {
@@ -208,6 +213,8 @@ export const toolsHubCollections: readonly ToolsHubCollection[] = [
         key: "dosha-detection",
         title: "Dosha Detection",
         description: "Check calm dosha context with optional support mapping nearby.",
+        metaLabel: "Premium Report",
+        metaTone: "accent",
         href: "/reports",
         fallbackHref: "/dashboard/chart",
         ctaLabel: "View Dosha",
@@ -221,6 +228,8 @@ export const toolsHubCollections: readonly ToolsHubCollection[] = [
         key: "yoga-detection",
         title: "Yoga Detection",
         description: "Review structural and supportive yoga patterns in the chart.",
+        metaLabel: "Premium Report",
+        metaTone: "accent",
         href: "/reports",
         fallbackHref: "/dashboard/chart",
         ctaLabel: "View Yoga",
@@ -260,6 +269,8 @@ export const toolsHubCollections: readonly ToolsHubCollection[] = [
         key: "reports",
         title: "Reports",
         description: "Move into premium report continuity when you want deeper context.",
+        metaLabel: "Premium Report",
+        metaTone: "accent",
         href: "/reports",
         fallbackHref: "/dashboard/reports",
         ctaLabel: "Explore Reports",
@@ -282,6 +293,8 @@ export const toolsHubCollections: readonly ToolsHubCollection[] = [
         key: "kundli-ni",
         title: "Kundli NI",
         description: "Future chart intelligence layer for deeper guidance.",
+        metaLabel: "Future Intelligence",
+        metaTone: "outline",
         ctaLabel: "Coming Soon",
         status: "coming soon",
         filterKey: "ai-ni",
@@ -293,6 +306,8 @@ export const toolsHubCollections: readonly ToolsHubCollection[] = [
         key: "dasha-ni",
         title: "Dasha NI",
         description: "Future intelligence for time-cycle interpretation.",
+        metaLabel: "Future Intelligence",
+        metaTone: "outline",
         ctaLabel: "Coming Soon",
         status: "coming soon",
         filterKey: "ai-ni",
@@ -304,6 +319,8 @@ export const toolsHubCollections: readonly ToolsHubCollection[] = [
         key: "transit-ni",
         title: "Transit NI",
         description: "Future intelligence for movement-aware timing.",
+        metaLabel: "Future Intelligence",
+        metaTone: "outline",
         ctaLabel: "Coming Soon",
         status: "coming soon",
         filterKey: "ai-ni",
@@ -315,6 +332,8 @@ export const toolsHubCollections: readonly ToolsHubCollection[] = [
         key: "panchang-ni",
         title: "Panchang NI",
         description: "Future intelligence for day context and planning.",
+        metaLabel: "Future Intelligence",
+        metaTone: "outline",
         ctaLabel: "Coming Soon",
         status: "coming soon",
         filterKey: "ai-ni",
@@ -326,6 +345,8 @@ export const toolsHubCollections: readonly ToolsHubCollection[] = [
         key: "remedy-ni",
         title: "Remedy NI",
         description: "Future intelligence for optional support pathways.",
+        metaLabel: "Future Intelligence",
+        metaTone: "outline",
         ctaLabel: "Coming Soon",
         status: "coming soon",
         filterKey: "ai-ni",
@@ -337,6 +358,8 @@ export const toolsHubCollections: readonly ToolsHubCollection[] = [
         key: "numerology-ni",
         title: "Numerology NI",
         description: "Future intelligence for number-based guidance.",
+        metaLabel: "Future Intelligence",
+        metaTone: "outline",
         ctaLabel: "Coming Soon",
         status: "coming soon",
         filterKey: "ai-ni",
@@ -348,6 +371,8 @@ export const toolsHubCollections: readonly ToolsHubCollection[] = [
         key: "career-ni",
         title: "Career NI",
         description: "Future intelligence for work and direction support.",
+        metaLabel: "Future Intelligence",
+        metaTone: "outline",
         ctaLabel: "Coming Soon",
         status: "coming soon",
         filterKey: "ai-ni",
@@ -359,6 +384,8 @@ export const toolsHubCollections: readonly ToolsHubCollection[] = [
         key: "finance-ni",
         title: "Finance NI",
         description: "Future intelligence for financial context and planning.",
+        metaLabel: "Future Intelligence",
+        metaTone: "outline",
         ctaLabel: "Coming Soon",
         status: "coming soon",
         filterKey: "ai-ni",
@@ -370,6 +397,8 @@ export const toolsHubCollections: readonly ToolsHubCollection[] = [
         key: "marriage-ni",
         title: "Marriage NI",
         description: "Future intelligence for relationship support.",
+        metaLabel: "Future Intelligence",
+        metaTone: "outline",
         ctaLabel: "Coming Soon",
         status: "coming soon",
         filterKey: "ai-ni",
@@ -381,6 +410,8 @@ export const toolsHubCollections: readonly ToolsHubCollection[] = [
         key: "business-ni",
         title: "Business NI",
         description: "Future intelligence for ventures and strategic decisions.",
+        metaLabel: "Future Intelligence",
+        metaTone: "outline",
         ctaLabel: "Coming Soon",
         status: "coming soon",
         filterKey: "ai-ni",
@@ -392,6 +423,8 @@ export const toolsHubCollections: readonly ToolsHubCollection[] = [
         key: "vastu-ni",
         title: "Vastu NI",
         description: "Future intelligence for space and directional context.",
+        metaLabel: "Future Intelligence",
+        metaTone: "outline",
         ctaLabel: "Coming Soon",
         status: "coming soon",
         filterKey: "ai-ni",
@@ -403,6 +436,8 @@ export const toolsHubCollections: readonly ToolsHubCollection[] = [
         key: "palmistry-ni",
         title: "Palmistry NI",
         description: "Future intelligence for palm-based reading support.",
+        metaLabel: "Future Intelligence",
+        metaTone: "outline",
         ctaLabel: "Coming Soon",
         status: "coming soon",
         filterKey: "ai-ni",
@@ -414,6 +449,8 @@ export const toolsHubCollections: readonly ToolsHubCollection[] = [
         key: "face-reading-ni",
         title: "Face Reading NI",
         description: "Future intelligence for face reading support.",
+        metaLabel: "Future Intelligence",
+        metaTone: "outline",
         ctaLabel: "Coming Soon",
         status: "coming soon",
         filterKey: "ai-ni",
@@ -434,6 +471,8 @@ export const toolsHubCollections: readonly ToolsHubCollection[] = [
         key: "from-the-desk",
         title: "From the Desk",
         description: "Read manually published Rashifal, Panchang, and remedies content.",
+        metaLabel: "Learning",
+        metaTone: "trust",
         href: "/from-the-desk",
         fallbackHref: "/from-the-desk",
         ctaLabel: "Read From the Desk",
@@ -447,6 +486,8 @@ export const toolsHubCollections: readonly ToolsHubCollection[] = [
         key: "astrology-learning",
         title: "Astrology Learning",
         description: "Learn planets, houses, Rashis, Dasha, Panchang, and remedies.",
+        metaLabel: "Coming Soon",
+        metaTone: "outline",
         ctaLabel: "Coming Soon",
         status: "coming soon",
         filterKey: "learning",
@@ -471,6 +512,8 @@ export const toolsHubCollections: readonly ToolsHubCollection[] = [
         key: "monthly-rashifal",
         title: "Monthly Rashifal",
         description: "Use broader monthly context for planning and return visits.",
+        metaLabel: "Learning",
+        metaTone: "trust",
         href: "/monthly-rashifal",
         fallbackHref: "/monthly-rashifal",
         ctaLabel: "Read Monthly",
@@ -484,6 +527,8 @@ export const toolsHubCollections: readonly ToolsHubCollection[] = [
         key: "yearly-rashifal",
         title: "Yearly Rashifal",
         description: "Yearly guidance will live here when the route is added.",
+        metaLabel: "Coming Soon",
+        metaTone: "outline",
         ctaLabel: "Coming Soon",
         status: "coming soon",
         filterKey: "coming-soon",
@@ -495,6 +540,8 @@ export const toolsHubCollections: readonly ToolsHubCollection[] = [
         key: "panchang-guidance",
         title: "Panchang Guidance",
         description: "Keep daily timing guidance readable from the content lane.",
+        metaLabel: "Daily Guidance",
+        metaTone: "trust",
         href: "/panchang",
         fallbackHref: "/panchang",
         ctaLabel: "Open Panchang",
@@ -528,6 +575,8 @@ export const toolsHubCollections: readonly ToolsHubCollection[] = [
         key: "consultation",
         title: "Consultation with JYOTISH BHASKAR J P SARMAH",
         description: "Book human guidance for important life decisions and chart review.",
+        metaLabel: "Premium Service",
+        metaTone: "trust",
         href: "/consultation",
         fallbackHref: "/consultation",
         ctaLabel: "Book Consultation",
@@ -541,6 +590,8 @@ export const toolsHubCollections: readonly ToolsHubCollection[] = [
         key: "gemstones",
         title: "Gemstones, Rudraksha & Vedic Items",
         description: "Explore optional spiritual support products and remedy-aligned items.",
+        metaLabel: "Optional",
+        metaTone: "trust",
         href: "/shop",
         fallbackHref: "/shop",
         ctaLabel: "Explore Shop",
@@ -554,6 +605,8 @@ export const toolsHubCollections: readonly ToolsHubCollection[] = [
         key: "spiritual-guidance",
         title: "Optional Remedy Guidance",
         description: "Use calm support language for mantra, charity, and worship pathways.",
+        metaLabel: "Available",
+        metaTone: "trust",
         href: "/remedies",
         fallbackHref: "/remedies",
         ctaLabel: "View Remedies",
@@ -567,6 +620,8 @@ export const toolsHubCollections: readonly ToolsHubCollection[] = [
         key: "future-videos",
         title: "Video Guidance / YouTube",
         description: "Video and social guidance will be added when real channels and assets are ready.",
+        metaLabel: "Coming Soon",
+        metaTone: "outline",
         ctaLabel: "Coming Soon",
         status: "coming soon",
         filterKey: "coming-soon",
@@ -578,6 +633,95 @@ export const toolsHubCollections: readonly ToolsHubCollection[] = [
   },
 ] as const;
 
+
+export const toolsHubRecommendationBlocks: readonly {
+  key: string;
+  eyebrow: string;
+  title: string;
+  description: string;
+  primaryHref: string;
+  primaryLabel: string;
+  secondaryHref?: string;
+  secondaryLabel?: string;
+  feature: string;
+  statusLabel: string;
+  statusTone?: BadgeTone;
+}[] = [
+  {
+    key: "new-user-kundli",
+    eyebrow: "Start here",
+    title: "New user? Start with Free Kundli",
+    description:
+      "Create the chart foundation first, then continue into Dasha, Transit, Reports, or AI when the chart is ready.",
+    primaryHref: "/kundli",
+    primaryLabel: "Generate Kundli",
+    secondaryHref: "/panchang",
+    secondaryLabel: "View Panchang",
+    feature: "tools-hub-recommendation-kundli",
+    statusLabel: "Available",
+    statusTone: "trust",
+  },
+  {
+    key: "post-kundli-path",
+    eyebrow: "After Kundli",
+    title: "Explore Dasha, Transit and Reports",
+    description:
+      "Use the saved Kundli to continue into timing, planetary movement, and premium report continuity.",
+    primaryHref: "/dashboard",
+    primaryLabel: "View Dashboard",
+    secondaryHref: "/reports",
+    secondaryLabel: "Open Reports",
+    feature: "tools-hub-recommendation-post-kundli",
+    statusLabel: "Requires Kundli",
+    statusTone: "neutral",
+  },
+  {
+    key: "daily-visitor-path",
+    eyebrow: "Daily visitor",
+    title: "Check Rashifal, Panchang and Daily Remedy",
+    description:
+      "Keep the homepage useful for return visits with practical daily guidance and optional support pathways.",
+    primaryHref: "/rashifal",
+    primaryLabel: "Read Rashifal",
+    secondaryHref: "/remedies",
+    secondaryLabel: "Open Remedies",
+    feature: "tools-hub-recommendation-daily",
+    statusLabel: "Available",
+    statusTone: "trust",
+  },
+  {
+    key: "human-guidance-path",
+    eyebrow: "Human guidance",
+    title: "Need human guidance? Consult J P Sarmah",
+    description:
+      "Use a human review path for important decisions, supported by chart context and NAVAGRAHA Intelligence.",
+    primaryHref: "/consultation",
+    primaryLabel: "Book Consultation",
+    secondaryHref: "/from-the-desk",
+    secondaryLabel: "Read From the Desk",
+    feature: "tools-hub-recommendation-consultation",
+    statusLabel: "Premium Service",
+    statusTone: "accent",
+  },
+  {
+    key: "future-intelligence-path",
+    eyebrow: "Future intelligence",
+    title: "Explore future NAVAGRAHA Intelligence tools",
+    description:
+      "Follow the expanding AI-assisted roadmap for Kundli NI, Dasha NI, Transit NI, Panchang NI, Remedy NI, Numerology NI and more.",
+    primaryHref: "/ai",
+    primaryLabel: "Ask NAVAGRAHA AI",
+    secondaryHref: "/tools",
+    secondaryLabel: "Browse Tools",
+    feature: "tools-hub-recommendation-future-ni",
+    statusLabel: "Future Intelligence",
+    statusTone: "outline",
+  },
+] as const;
+
+export function getToolsHubRecommendationBlocks() {
+  return toolsHubRecommendationBlocks;
+}
 export function getToolsHubCollections() {
   return toolsHubCollections;
 }
