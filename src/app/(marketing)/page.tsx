@@ -13,6 +13,7 @@ import {
 import { HomepagePremiumHeroVisual } from "@/components/graphics/homepage-premium-hero-visual";
 import { GoldSectionDivider } from "@/components/graphics/section-patterns";
 import { UtilityIcon } from "@/components/graphics/utility-icons";
+import { HomepageMobileRails } from "@/components/homepage/homepage-mobile-rails";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -928,6 +929,11 @@ export default async function HomePage() {
       </section>
 
       <GoldSectionDivider />
+
+      <HomepageMobileRails
+        locale={locale}
+        hasExplicitLocalePrefix={hasExplicitLocalePrefix}
+      />
 
       <section className="border-b border-black/8 bg-white">
         <Container className="py-12 sm:py-14">
