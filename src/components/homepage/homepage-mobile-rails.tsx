@@ -28,6 +28,15 @@ type RailAction = {
   eventName?: "cta_click" | "premium_ai_cta_click" | "consultation_cta_click" | "report_cta_click" | "utility_card_click" | "rashifal_view";
 };
 
+type QuickAccessItem = {
+  title: string;
+  href: string;
+  icon: RailAction["icon"];
+  feature: string;
+  eventName?: RailAction["eventName"];
+  initials?: string;
+};
+
 export type HomepageMobileRailsProps = {
   locale: SupportedLocale;
   hasExplicitLocalePrefix: boolean;
@@ -88,14 +97,74 @@ function RailSectionHeader({
         {eyebrow}
       </Badge>
       <h2
-        className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-md)] text-[color:var(--color-ink-strong)] tracking-[0.01em] sm:text-[length:var(--font-size-title-lg)] sm:[letter-spacing:var(--tracking-display)]"
+        className="font-sans text-[length:var(--font-size-title-md)] font-semibold tracking-[0.01em] text-[color:var(--color-ink-strong)] sm:text-[length:var(--font-size-title-lg)]"
       >
         {title}
       </h2>
-      <p className="max-w-3xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-strong)] sm:text-[length:var(--font-size-body-lg)]">
+      <p className="max-w-3xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)] sm:text-[length:var(--font-size-body-lg)]">
         {description}
       </p>
     </div>
+  );
+}
+
+function QuickAccessIcon({ item }: Readonly<{ item: QuickAccessItem }>) {
+  switch (item.icon) {
+    case "kundli":
+      return <KundliIcon className="h-7 w-7" />;
+    case "ai":
+      return <NavagrahaAiIcon className="h-7 w-7" />;
+    case "consultation":
+      return <ConsultationIcon className="h-7 w-7" />;
+    case "report":
+      return <ReportIcon className="h-7 w-7" />;
+    case "panchang":
+      return <PanchangIcon className="h-7 w-7" />;
+    case "rashifal":
+      return <RashifalIcon className="h-7 w-7" />;
+    case "utility":
+      return <UtilityIcon name="calculators" className="h-7 w-7" />;
+    case "letter":
+    default:
+      return (
+        <span className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(184,137,67,0.34)] bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.96)_0%,rgba(247,234,204,0.9)_70%,rgba(238,214,166,0.84)_100%)] text-[0.56rem] font-semibold uppercase tracking-[0.08em] text-[rgba(130,86,25,0.92)] shadow-[0_8px_20px_rgba(121,85,33,0.12)]">
+          {item.initials ?? "NC"}
+        </span>
+      );
+  }
+}
+
+function QuickAccessTile({
+  item,
+  locale,
+  hasExplicitLocalePrefix,
+}: Readonly<{
+  item: QuickAccessItem;
+  locale: SupportedLocale;
+  hasExplicitLocalePrefix: boolean;
+}>) {
+  const href = localizeHref(locale, hasExplicitLocalePrefix, item.href);
+
+  return (
+    <TrackedLink
+      href={href}
+      eventName={item.eventName ?? "cta_click"}
+      eventPayload={{ page: "/", feature: item.feature }}
+      className="group block h-full"
+    >
+      <Card
+        tone="default"
+        interactive
+        className="flex h-full min-h-[5.85rem] flex-col items-center justify-center gap-2.5 border-black/8 bg-white px-2.5 py-3 text-center shadow-[0_14px_36px_rgba(17,24,39,0.06)] before:opacity-0 hover:border-black/12"
+      >
+        <span className="flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(184,137,67,0.32)] bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.98)_0%,rgba(247,234,204,0.92)_72%,rgba(238,214,166,0.88)_100%)] text-[color:var(--color-accent-strong)] shadow-[0_10px_24px_rgba(121,85,33,0.12)]">
+          <QuickAccessIcon item={item} />
+        </span>
+        <span className="font-sans text-[0.68rem] font-semibold leading-[1.1] tracking-[0.01em] text-[color:var(--color-ink-strong)] sm:text-[0.74rem]">
+          {item.title}
+        </span>
+      </Card>
+    </TrackedLink>
   );
 }
 
@@ -125,18 +194,18 @@ function RailActionCard({
     >
       <div className="flex items-start justify-between gap-3">
         <RailIcon item={item} />
-        <span className="rounded-full border border-[rgba(184,137,67,0.24)] px-2.5 py-1 text-[0.54rem] uppercase tracking-[0.1em] text-[color:var(--color-accent-strong)] sm:text-[0.58rem] sm:tracking-[0.14em]">
+        <span className="rounded-full border border-[rgba(184,137,67,0.24)] px-2.5 py-1 text-[0.54rem] uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)] sm:text-[0.58rem] sm:tracking-[0.1em]">
           {statusLabel(item.status)}
         </span>
       </div>
 
       <div className="space-y-2">
-        <h3 className="text-[0.72rem] font-medium leading-[1.15] text-[color:var(--color-ink-strong)] sm:text-[length:var(--font-size-body-lg)]">
+        <h3 className="font-sans text-[0.76rem] font-semibold leading-[1.12] tracking-[0.01em] text-[color:var(--color-ink-strong)] sm:text-[length:var(--font-size-body-lg)]">
           {item.title}
         </h3>
         <p
           className={[
-            "text-[0.76rem] leading-[1.45] text-[color:var(--color-ink-body)] sm:text-[length:var(--font-size-body-sm)] sm:leading-[var(--line-height-copy)]",
+            "text-[0.74rem] leading-[1.42] text-[color:var(--color-ink-body)] sm:text-[length:var(--font-size-body-sm)] sm:leading-[var(--line-height-copy)]",
             compact ? "hidden sm:block" : "",
           ]
             .filter(Boolean)
@@ -189,15 +258,15 @@ function ComingSoonCard({
     <Card className="flex h-full flex-col gap-4 border-black/8 bg-white bg-none p-3 shadow-[0_14px_36px_rgba(17,24,39,0.06)] before:opacity-0 sm:p-4">
       <div className="flex items-start justify-between gap-3">
         <RailIcon item={item} />
-        <span className="rounded-full border border-[rgba(184,137,67,0.24)] px-2.5 py-1 text-[0.54rem] uppercase tracking-[0.1em] text-[color:var(--color-accent-strong)] sm:text-[0.58rem] sm:tracking-[0.14em]">
+        <span className="rounded-full border border-[rgba(184,137,67,0.24)] px-2.5 py-1 text-[0.54rem] uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)] sm:text-[0.58rem] sm:tracking-[0.1em]">
           {statusLabel(item.status)}
         </span>
       </div>
       <div className="space-y-2">
-        <h3 className="text-[0.72rem] font-medium leading-[1.15] text-[color:var(--color-ink-strong)] sm:text-[length:var(--font-size-body-lg)]">
+        <h3 className="font-sans text-[0.76rem] font-semibold leading-[1.12] tracking-[0.01em] text-[color:var(--color-ink-strong)] sm:text-[length:var(--font-size-body-lg)]">
           {item.title}
         </h3>
-        <p className="text-[0.76rem] leading-[1.45] text-[color:var(--color-ink-body)] sm:text-[length:var(--font-size-body-sm)] sm:leading-[var(--line-height-copy)]">
+        <p className="text-[0.74rem] leading-[1.42] text-[color:var(--color-ink-body)] sm:text-[length:var(--font-size-body-sm)] sm:leading-[var(--line-height-copy)]">
           {item.description}
         </p>
       </div>
@@ -215,85 +284,61 @@ function ComingSoonCard({
   );
 }
 
-const quickAccessItems: readonly RailAction[] = [
+const quickAccessItems: readonly QuickAccessItem[] = [
   {
     title: "Kundli",
-    description: "Birth chart foundation.",
     href: "/kundli",
-    ctaLabel: "Open",
     icon: "kundli",
-    status: "Available",
     feature: "home-mobile-rail-kundli",
     eventName: "cta_click",
   },
   {
-    title: "Matchmaking",
-    description: "Compatibility flow.",
+    title: "Milan",
     href: "/matchmaking",
-    ctaLabel: "Open",
     icon: "utility",
-    status: "Available",
     feature: "home-mobile-rail-matchmaking",
     eventName: "utility_card_click",
   },
   {
     title: "Rashifal",
-    description: "Daily sign guidance.",
     href: "/rashifal",
-    ctaLabel: "Open",
     icon: "rashifal",
-    status: "Available",
     feature: "home-mobile-rail-rashifal",
     eventName: "rashifal_view",
   },
   {
     title: "Panchang",
-    description: "Daily timing context.",
     href: "/panchang",
-    ctaLabel: "Open",
     icon: "panchang",
-    status: "Available",
     feature: "home-mobile-rail-panchang",
     eventName: "cta_click",
   },
   {
     title: "Reports",
-    description: "Premium guidance.",
     href: "/reports",
-    ctaLabel: "Open",
     icon: "report",
-    status: "Premium / Report",
     feature: "home-mobile-rail-reports",
     eventName: "report_cta_click",
   },
   {
-    title: "Consultation",
-    description: "Human review.",
+    title: "Consult",
     href: "/consultation",
-    ctaLabel: "Open",
     icon: "consultation",
-    status: "Available",
     feature: "home-mobile-rail-consultation",
     eventName: "consultation_cta_click",
   },
   {
     title: "Remedies",
-    description: "Optional support.",
     href: "/tools",
-    ctaLabel: "Open",
     icon: "utility",
-    status: "Available",
     feature: "home-mobile-rail-remedies",
     eventName: "utility_card_click",
   },
   {
     title: "Shop",
-    description: "Future commerce.",
     href: "/shop",
-    ctaLabel: "Open",
     icon: "letter",
     initials: "SHOP",
-    status: "Available",
     feature: "home-mobile-rail-shop",
     eventName: "utility_card_click",
   },
@@ -608,21 +653,20 @@ export function HomepageMobileRails({
   hasExplicitLocalePrefix,
 }: Readonly<HomepageMobileRailsProps>) {
   return (
-    <Container className="space-y-8 py-8 sm:py-12 lg:py-14">
+    <Container className="space-y-7 py-7 sm:py-10 lg:py-12">
       <section className="space-y-4">
         <RailSectionHeader
           eyebrow="Quick Access"
           title="Quick Astrology Access"
           description="Fast-entry rails for the most-used astrology flows, shaped for mobile-first discovery and premium white visibility."
         />
-        <div className="grid grid-cols-4 gap-2 sm:gap-3 xl:grid-cols-8">
+        <div className="grid grid-cols-4 gap-2 sm:gap-3 lg:grid-cols-8">
           {quickAccessItems.map((item) => (
-            <RailActionCard
+            <QuickAccessTile
               key={item.title}
               item={item}
               locale={locale}
               hasExplicitLocalePrefix={hasExplicitLocalePrefix}
-              compact
             />
           ))}
         </div>

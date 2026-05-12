@@ -567,6 +567,68 @@ export default async function HomePage() {
       </section>
 
       <section className="border-b border-black/8 bg-white">
+        <Container className="py-5 sm:py-7">
+          <Card
+            tone="default"
+            className="overflow-hidden border-[rgba(73,116,193,0.22)] bg-[linear-gradient(145deg,#1f4ea8_0%,#234c94_100%)] shadow-[0_18px_44px_rgba(19,53,110,0.2)] before:opacity-0"
+          >
+            <div className="grid gap-4 p-4 sm:p-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(244,213,143,0.34)] bg-[rgba(255,255,255,0.12)] text-[var(--color-accent-gold)] shadow-[0_10px_22px_rgba(19,53,110,0.12)]">
+                    <ConsultationIcon className="h-[1.35rem] w-[1.35rem]" />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-[0.68rem] uppercase tracking-[0.08em] text-[rgba(255,247,229,0.82)]">
+                      Consult J P Sarmah
+                    </p>
+                    <h2 className="font-sans text-[length:var(--font-size-title-sm)] font-semibold tracking-[0.01em] text-white sm:text-[length:var(--font-size-title-md)]">
+                      JYOTISH BHASKAR guidance
+                    </h2>
+                  </div>
+                </div>
+
+                <p className="max-w-2xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[rgba(255,247,229,0.9)]">
+                  Human astrologer guidance supported by Kundli, Dasha, Transit,
+                  Panchang and NAVAGRAHA Intelligence context.
+                </p>
+
+                <div className="flex flex-wrap gap-2">
+                  {consultationFocusChips.map((chip) => (
+                    <span
+                      key={chip}
+                      className="rounded-[var(--radius-pill)] border border-[rgba(244,213,143,0.24)] bg-[rgba(255,255,255,0.08)] px-3 py-1.5 text-[0.62rem] uppercase tracking-[0.06em] text-[rgba(255,247,229,0.88)]"
+                    >
+                      {chip}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <TrackedLink
+                href={localizeHref("/consultation")}
+                eventName="consultation_cta_click"
+                eventPayload={{ page: "/", feature: "home-homepage-consultation-static" }}
+                className={buttonStyles({
+                  size: "lg",
+                  tone: "secondary",
+                  className:
+                    "w-full justify-center border border-[rgba(244,213,143,0.3)] bg-white text-[color:var(--color-accent-strong)] shadow-[0_12px_28px_rgba(19,53,110,0.16)] lg:w-auto",
+                })}
+              >
+                Book Consultation
+              </TrackedLink>
+            </div>
+          </Card>
+        </Container>
+      </section>
+
+      <HomepageMobileRails
+        locale={locale}
+        hasExplicitLocalePrefix={hasExplicitLocalePrefix}
+      />
+
+      <section className="border-b border-black/8 bg-white">
         <Container className="py-3.5 sm:py-5">
           <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
             {trustStripItems.map((item) => (
@@ -584,11 +646,6 @@ export default async function HomePage() {
           </div>
         </Container>
       </section>
-
-      <HomepageMobileRails
-        locale={locale}
-        hasExplicitLocalePrefix={hasExplicitLocalePrefix}
-      />
 
       <GoldSectionDivider />
 

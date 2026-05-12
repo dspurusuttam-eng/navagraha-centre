@@ -13,7 +13,7 @@ export default async function MarketingLayout({
   const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
 
   return (
-    <div className="min-h-dvh pb-[calc(5.75rem+env(safe-area-inset-bottom))] md:pb-0">
+    <div className="min-h-dvh pb-[calc(6.5rem+env(safe-area-inset-bottom))] md:pb-0">
       <div className="min-w-0">{children}</div>
       <MobileBottomActionBar
         locale={locale}

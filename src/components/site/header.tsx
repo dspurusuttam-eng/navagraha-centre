@@ -63,7 +63,7 @@ export async function Header() {
       data-nosnippet
       className="sticky top-0 z-50 border-b border-black/8 bg-white/95 shadow-[0_8px_24px_rgba(17,24,39,0.06)] backdrop-blur-xl"
     >
-      <div className="border-b border-black/6 bg-white">
+      <div className="hidden border-b border-black/6 bg-white xl:block">
         <Container className="flex flex-wrap items-center justify-between gap-2 py-1.5">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
             {topTrustItems.map((item) => (
@@ -135,10 +135,10 @@ export async function Header() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2 xl:hidden">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto_auto_auto] items-center gap-1.5 xl:hidden">
           <Link
             href={localizeHref("/")}
-            className="mr-auto"
+            className="min-w-0 shrink-0 transition [transition-duration:var(--motion-duration-base)] hover:opacity-90"
           >
             <NavagrahaLogo variant="mobile" priority />
           </Link>
@@ -156,7 +156,9 @@ export async function Header() {
             <span>Ask AI</span>
           </TrackedLink>
 
-          <details className="group relative">
+          <LanguageSwitcher variant="compact" />
+
+          <details className="group relative justify-self-end">
             <summary
               aria-label={copy.navigation.menu}
               className={buttonStyles({
