@@ -107,10 +107,12 @@ function RailActionCard({
   item,
   locale,
   hasExplicitLocalePrefix,
+  compact = false,
 }: Readonly<{
   item: RailAction;
   locale: SupportedLocale;
   hasExplicitLocalePrefix: boolean;
+  compact?: boolean;
 }>) {
   const href = item.href
     ? localizeHref(locale, hasExplicitLocalePrefix, item.href)
@@ -120,7 +122,10 @@ function RailActionCard({
     <Card
       tone="default"
       interactive={Boolean(href)}
-      className="flex h-full flex-col gap-4 border-black/8 bg-white bg-none p-3 shadow-[0_14px_36px_rgba(17,24,39,0.06)] before:opacity-0 hover:border-black/12 sm:p-4"
+      className={[
+        "flex h-full flex-col border-black/8 bg-white bg-none p-3 shadow-[0_14px_36px_rgba(17,24,39,0.06)] before:opacity-0 hover:border-black/12",
+        compact ? "gap-3 sm:p-4" : "gap-4 sm:p-4",
+      ].join(" ")}
     >
       <div className="flex items-start justify-between gap-3">
         <RailIcon item={item} />
@@ -133,7 +138,14 @@ function RailActionCard({
         <h3 className="text-[length:var(--font-size-body-lg)] font-medium text-[color:var(--color-ink-strong)]">
           {item.title}
         </h3>
-        <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+        <p
+          className={[
+            "text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]",
+            compact ? "hidden sm:block" : "",
+          ]
+            .filter(Boolean)
+            .join(" ")}
+        >
           {item.description}
         </p>
       </div>
@@ -141,8 +153,13 @@ function RailActionCard({
       <span
         className={buttonStyles({
           size: "sm",
-          tone: item.status === "Coming Soon" || item.status === "Future Intelligence" ? "ghost" : "secondary",
-          className: "w-full justify-center",
+          tone:
+            item.status === "Coming Soon" || item.status === "Future Intelligence"
+              ? "ghost"
+              : "secondary",
+          className: compact
+            ? "hidden w-full justify-center sm:inline-flex"
+            : "w-full justify-center",
         })}
         aria-disabled={item.status === "Coming Soon" || item.status === "Future Intelligence"}
       >
@@ -609,6 +626,7 @@ export function HomepageMobileRails({
               item={item}
               locale={locale}
               hasExplicitLocalePrefix={hasExplicitLocalePrefix}
+              compact
             />
           ))}
         </div>
