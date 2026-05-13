@@ -10,6 +10,7 @@ import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
 import { createToolMetadata } from "@/lib/seo/metadata";
+import { cn } from "@/lib/cn";
 import { getCoreSeoCopy } from "@/lib/seo/seo-config";
 import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
 import { getRequestLocale, hasExplicitLocalePrefixInRequest } from "@/modules/localization/request";
@@ -81,120 +82,109 @@ const panchangUtilities = [
     href: "#panchang-tool",
     icon: "DP",
     statusLabel: "Open",
-    ctaLabel: "Open Utility",
+    ctaLabel: "Open",
     feature: "panchang-utility-daily",
-    description: "Open the verified daily timing panel for the current Panchang flow.",
+    description: "Open the verified daily timing panel.",
   },
   {
     title: "Monthly Calendar",
-    href: "#panchang-tool",
+    href: undefined,
     icon: "MC",
-    statusLabel: "Open",
-    ctaLabel: "Open Utility",
+    statusLabel: "Coming Soon",
+    ctaLabel: "Coming Soon",
     feature: "panchang-utility-monthly-calendar",
-    description: "Use the same Panchang entry point for calendar-aware daily planning.",
+    description: "Monthly calendar planning is being prepared.",
   },
   {
     title: "Hindu Calendar",
-    href: "#panchang-tool",
+    href: undefined,
     icon: "HC",
-    statusLabel: "Open",
-    ctaLabel: "Open Utility",
+    statusLabel: "Coming Soon",
+    ctaLabel: "Coming Soon",
     feature: "panchang-utility-hindu-calendar",
-    description: "Keep the calendar context close to the core daily timing flow.",
+    description: "Hindu calendar view is being prepared.",
   },
   {
     title: "Hora",
-    href: "#panchang-tool",
+    href: undefined,
     icon: "HO",
-    statusLabel: "Open",
-    ctaLabel: "Open Utility",
+    statusLabel: "Coming Soon",
+    ctaLabel: "Coming Soon",
     feature: "panchang-utility-hora",
-    description: "Navigate into the same Panchang flow when checking hourly timing context.",
+    description: "Hora planning tools are being prepared.",
   },
   {
     title: "Choghadiya",
-    href: "#panchang-tool",
+    href: undefined,
     icon: "CH",
-    statusLabel: "Open",
-    ctaLabel: "Open Utility",
+    statusLabel: "Coming Soon",
+    ctaLabel: "Coming Soon",
     feature: "panchang-utility-choghadiya",
-    description: "Stay in the daily timing flow while reviewing planning windows.",
+    description: "Choghadiya timing tools are being prepared.",
   },
   {
     title: "Rahu Kaal",
-    href: "#panchang-tool",
+    href: undefined,
     icon: "RK",
-    statusLabel: "Open",
-    ctaLabel: "Open Utility",
+    statusLabel: "Coming Soon",
+    ctaLabel: "Coming Soon",
     feature: "panchang-utility-rahu-kaal",
-    description: "Open the Panchang timing panel for in-day caution windows.",
+    description: "Rahu Kaal timing details are being prepared.",
   },
   {
     title: "Panchak",
-    href: "#panchang-tool",
+    href: undefined,
     icon: "PA",
-    statusLabel: "Open",
-    ctaLabel: "Open Utility",
+    statusLabel: "Coming Soon",
+    ctaLabel: "Coming Soon",
     feature: "panchang-utility-panchak",
-    description: "Keep Panchak awareness inside the same verified Panchang flow.",
+    description: "Panchak awareness tools are being prepared.",
   },
   {
     title: "Bhadra",
-    href: "#panchang-tool",
+    href: undefined,
     icon: "BH",
-    statusLabel: "Open",
-    ctaLabel: "Open Utility",
+    statusLabel: "Coming Soon",
+    ctaLabel: "Coming Soon",
     feature: "panchang-utility-bhadra",
-    description: "Review timing caution in the same daily Panchang surface.",
+    description: "Bhadra timing tools are being prepared.",
   },
   {
     title: "Muhurat",
-    href: "#panchang-tool",
+    href: undefined,
     icon: "MU",
-    statusLabel: "Open",
-    ctaLabel: "Open Utility",
+    statusLabel: "Coming Soon",
+    ctaLabel: "Coming Soon",
     feature: "panchang-utility-muhurat",
-    description: "Continue into the existing Panchang flow for timing support.",
+    description: "Muhurat planning tools are being prepared.",
   },
   {
     title: "Festival Calendar",
-    href: "#panchang-tool",
+    href: undefined,
     icon: "FC",
-    statusLabel: "Open",
-    ctaLabel: "Open Utility",
+    statusLabel: "Coming Soon",
+    ctaLabel: "Coming Soon",
     feature: "panchang-utility-festival-calendar",
-    description: "Keep festival-aware planning inside the same timing layer.",
+    description: "Festival calendar planning is being prepared.",
   },
   {
     title: "Lagna Table",
-    href: "#panchang-tool",
+    href: undefined,
     icon: "LT",
-    statusLabel: "Open",
-    ctaLabel: "Open Utility",
+    statusLabel: "Coming Soon",
+    ctaLabel: "Coming Soon",
     feature: "panchang-utility-lagna-table",
-    description: "Use the existing Panchang path when you need lagna-aware timing context.",
+    description: "Lagna table tools are being prepared.",
   },
   {
     title: "Panchang NI",
     href: "/tools",
     icon: "NI",
-    statusLabel: "Open",
+    statusLabel: "AI Tool",
     ctaLabel: "Open Tools",
     feature: "panchang-utility-ni",
-    description: "Move into NAVAGRAHA AI tools where Panchang NI belongs as a sub-tool.",
+    description: "Move into NAVAGRAHA AI tools for Panchang NI.",
   },
-] as const;
-
-const panchangTodayCards = [
-  "Tithi",
-  "Nakshatra",
-  "Yoga",
-  "Karana",
-  "Sunrise",
-  "Sunset",
-  "Rahu Kaal",
-  "Abhijit Muhurat",
 ] as const;
 
 const panchangGuidanceLinks = [
@@ -202,36 +192,42 @@ const panchangGuidanceLinks = [
     title: "Read Daily Rashifal",
     href: "/rashifal",
     icon: "DR",
+    subtitle: "Daily predictions",
     feature: "panchang-guidance-rashifal",
   },
   {
     title: "Generate Kundli",
     href: "/kundli",
     icon: "KU",
+    subtitle: "Birth chart",
     feature: "panchang-guidance-kundli",
   },
   {
     title: "Ask NAVAGRAHA AI",
     href: "/tools",
     icon: "AI",
+    subtitle: "AI astrology help",
     feature: "panchang-guidance-ai",
   },
   {
     title: "View Reports",
     href: "/reports",
     icon: "RP",
+    subtitle: "Detailed reports",
     feature: "panchang-guidance-reports",
   },
   {
     title: "Consult JYOTISH BHASKAR J P SARMAH",
     href: "/consultation",
     icon: "CS",
+    subtitle: "Personal consultation",
     feature: "panchang-guidance-consultation",
   },
   {
     title: "Explore Panchang NI",
     href: "/tools",
     icon: "NI",
+    subtitle: "AI panchang insights",
     feature: "panchang-guidance-ni",
   },
 ] as const;
@@ -242,6 +238,7 @@ function PanchangGuidanceCard({
   title,
   href,
   icon,
+  subtitle,
   feature,
 }: Readonly<{
   locale: string;
@@ -249,11 +246,13 @@ function PanchangGuidanceCard({
   title: string;
   href: string;
   icon: string;
+  subtitle: string;
   feature: string;
 }>) {
   const localizedHref = getLocalizedPath(locale, href, {
     forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
   });
+  const isAiCard = feature.includes("ai") || feature.includes("ni");
 
   return (
     <TrackedLink
@@ -265,18 +264,26 @@ function PanchangGuidanceCard({
       <Card
         tone="default"
         interactive
-        className="flex h-full min-h-[8.75rem] flex-col justify-between gap-3 border-black/8 bg-white p-4 shadow-[0_12px_28px_rgba(17,24,39,0.05)] before:opacity-0 hover:border-black/12"
+        className="flex h-full min-h-[7.5rem] flex-col justify-between gap-2.5 border-[rgba(184,137,67,0.2)] bg-white p-3 shadow-[0_10px_22px_rgba(17,24,39,0.045)] before:opacity-0 hover:border-[rgba(184,137,67,0.3)]"
       >
-        <div className="flex items-start gap-3">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[rgba(184,137,67,0.28)] bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.98)_0%,rgba(247,234,204,0.92)_72%,rgba(238,214,166,0.88)_100%)] text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)] shadow-[0_10px_22px_rgba(121,85,33,0.12)]">
+        <div className="flex flex-col gap-2">
+          <span className={cn(
+            "flex h-9 w-9 shrink-0 items-center justify-center rounded-full border text-[0.67rem] font-semibold uppercase tracking-[0.08em] shadow-[0_10px_18px_rgba(121,85,33,0.12)]",
+            isAiCard
+              ? "border-[rgba(73,112,210,0.3)] bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.98)_0%,rgba(221,231,255,0.92)_72%,rgba(181,198,255,0.88)_100%)] text-[color:var(--color-accent-strong)]"
+              : "border-[rgba(184,137,67,0.3)] bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.98)_0%,rgba(247,234,204,0.92)_72%,rgba(238,214,166,0.88)_100%)] text-[color:var(--color-accent-strong)]"
+          )}>
             {icon}
           </span>
-          <div className="min-w-0">
-            <h3 className="text-[0.95rem] font-semibold leading-tight text-[color:var(--color-ink-strong)]">
+          <div className="min-w-0 space-y-1">
+            <h3 className="text-[0.88rem] font-semibold leading-tight text-[color:var(--color-ink-strong)]">
               {title}
             </h3>
-            <p className="mt-1 text-[0.72rem] uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)]">
-              Daily Guidance
+            <p className={cn(
+              "text-[0.68rem] leading-[1.35] text-[color:var(--color-ink-body)]",
+              isAiCard && "text-[color:var(--color-ink-body)]"
+            )}>
+              {subtitle}
             </p>
           </div>
         </div>
@@ -284,8 +291,8 @@ function PanchangGuidanceCard({
         <span
           className={buttonStyles({
             size: "sm",
-            tone: "secondary",
-            className: "w-full justify-center",
+            tone: isAiCard ? "tertiary" : "secondary",
+            className: "w-full justify-center min-h-9 px-3 text-[0.67rem] uppercase tracking-[0.06em]",
           })}
         >
           Open
@@ -309,19 +316,75 @@ function PanchangUtilityCard({
   locale: string;
   hasExplicitLocalePrefix: boolean;
   title: string;
-  href: string;
+  href?: string;
   icon: string;
   statusLabel: string;
   ctaLabel: string;
   description: string;
   feature: string;
 }>) {
+  const isComingSoon = statusLabel === "Coming Soon";
+  const isAiTool = statusLabel === "AI Tool";
+  const linkHref = href ?? "#";
   const localizedHref =
-    href.startsWith("#") || href.startsWith("/")
-      ? getLocalizedPath(locale, href, {
+    !isComingSoon && linkHref.startsWith("#")
+      ? getLocalizedPath(locale, linkHref, {
           forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
         })
-      : href;
+      : linkHref;
+
+  const badgeTone =
+    statusLabel === "Coming Soon"
+      ? "neutral"
+      : statusLabel === "AI Tool"
+        ? "accent"
+        : "trust";
+
+  const card = (
+    <Card
+      tone="default"
+      interactive={!isComingSoon}
+      className="flex h-full min-h-[7.75rem] flex-col justify-between gap-2.5 border-[rgba(184,137,67,0.2)] bg-white p-3 shadow-[0_10px_22px_rgba(17,24,39,0.045)] before:opacity-0 hover:border-[rgba(184,137,67,0.3)]"
+    >
+      <div className="flex flex-col gap-2">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[rgba(184,137,67,0.3)] bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.98)_0%,rgba(247,234,204,0.92)_72%,rgba(238,214,166,0.88)_100%)] text-[0.67rem] font-semibold uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)] shadow-[0_10px_18px_rgba(121,85,33,0.12)]">
+          {icon}
+        </span>
+        <div className="min-w-0 space-y-1">
+          <h3 className="text-[0.88rem] font-semibold leading-tight text-[color:var(--color-ink-strong)]">
+            {title}
+          </h3>
+          <p className="text-[0.68rem] leading-[1.35] text-[color:var(--color-ink-body)]">
+            {description}
+          </p>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Badge
+          tone={badgeTone}
+          className="w-fit border border-[rgba(184,137,67,0.18)] bg-white text-[0.6rem] uppercase tracking-[0.06em] text-[color:var(--color-accent-strong)]"
+        >
+          {statusLabel}
+        </Badge>
+
+        <span
+          className={buttonStyles({
+            size: "sm",
+            tone: isComingSoon ? "secondary" : isAiTool ? "tertiary" : "accent",
+            className:
+              "w-full justify-center min-h-9 px-3 text-[0.67rem] uppercase tracking-[0.06em]",
+          })}
+        >
+          {ctaLabel}
+        </span>
+      </div>
+    </Card>
+  );
+
+  if (isComingSoon) {
+    return <div className="block h-full">{card}</div>;
+  }
 
   return (
     <TrackedLink
@@ -330,39 +393,7 @@ function PanchangUtilityCard({
       eventPayload={{ page: "/panchang", feature }}
       className="block h-full"
     >
-      <Card
-        tone="default"
-        interactive
-        className="flex h-full min-h-[9.5rem] flex-col justify-between gap-3 border-black/8 bg-white p-4 shadow-[0_12px_28px_rgba(17,24,39,0.05)] before:opacity-0 hover:border-black/12"
-      >
-        <div className="flex items-start gap-3">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[rgba(184,137,67,0.28)] bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.98)_0%,rgba(247,234,204,0.92)_72%,rgba(238,214,166,0.88)_100%)] text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)] shadow-[0_10px_22px_rgba(121,85,33,0.12)]">
-            {icon}
-          </span>
-          <div className="min-w-0 space-y-1">
-            <h3 className="text-[0.95rem] font-semibold leading-tight text-[color:var(--color-ink-strong)]">
-              {title}
-            </h3>
-            <Badge tone="trust" className="border border-black/8 bg-white text-[0.64rem] uppercase tracking-[0.07em] text-[color:var(--color-accent-strong)]">
-              {statusLabel}
-            </Badge>
-          </div>
-        </div>
-
-        <p className="text-[0.8rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-          {description}
-        </p>
-
-        <span
-          className={buttonStyles({
-            size: "sm",
-            tone: "secondary",
-            className: "w-full justify-center",
-          })}
-        >
-          {ctaLabel}
-        </span>
-      </Card>
+      {card}
     </TrackedLink>
   );
 }
@@ -424,9 +455,9 @@ export default async function PanchangPage() {
         category="utilities"
         eyebrow="Panchang Utilities"
         title="Quick access to daily timing, calendar, muhurat and Vedic planning tools."
-        description="Use the compact utility grid to move through the existing Panchang timing flow without fake data or broken routes."
+        description="Use compact utility cards to move through the verified Panchang timing flow."
       >
-        <div className="grid grid-cols-2 gap-2.5 md:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-4">
           {panchangUtilities.map((utility) => (
             <PanchangUtilityCard
               key={utility.title}
@@ -447,36 +478,36 @@ export default async function PanchangPage() {
       <Section
         tone="light"
         category="utilities"
-        eyebrow="Today’s Panchang"
-        title="Today’s Panchang"
+        eyebrow="Today&apos;s Panchang"
+        title="Today&apos;s Panchang"
         description="Daily Panchang details will appear here when verified Panchang data is available."
       >
-        <div className="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-4">
-          {panchangTodayCards.map((label) => (
-            <Card
-              key={label}
-              tone="default"
-              className="space-y-3 border-black/8 bg-white p-4 shadow-[0_12px_28px_rgba(17,24,39,0.05)] before:opacity-0"
-            >
-              <div className="flex items-center gap-3">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[rgba(184,137,67,0.28)] bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.98)_0%,rgba(247,234,204,0.92)_72%,rgba(238,214,166,0.88)_100%)] text-[0.7rem] font-semibold uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)] shadow-[0_10px_22px_rgba(121,85,33,0.12)]">
-                  {label.slice(0, 2)}
-                </span>
-                <div className="min-w-0">
-                  <h3 className="text-[0.95rem] font-semibold leading-tight text-[color:var(--color-ink-strong)]">
-                    {label}
-                  </h3>
-                  <Badge tone="trust" className="mt-1 border border-black/8 bg-white text-[0.64rem] uppercase tracking-[0.07em] text-[color:var(--color-accent-strong)]">
-                    Pending
-                  </Badge>
-                </div>
+        <Card
+          tone="default"
+          className="border-[rgba(184,137,67,0.2)] bg-white p-4 shadow-[0_12px_28px_rgba(17,24,39,0.05)] before:opacity-0 sm:p-5"
+        >
+          <div className="flex items-start gap-3">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[rgba(184,137,67,0.28)] bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.98)_0%,rgba(247,234,204,0.92)_72%,rgba(238,214,166,0.88)_100%)] text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)] shadow-[0_10px_22px_rgba(121,85,33,0.12)]">
+              PM
+            </span>
+            <div className="min-w-0 flex-1 space-y-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <h3 className="text-[0.96rem] font-semibold leading-tight text-[color:var(--color-ink-strong)]">
+                  Today&apos;s Panchang
+                </h3>
+                <Badge
+                  tone="trust"
+                  className="border border-[rgba(184,137,67,0.18)] bg-white text-[0.62rem] uppercase tracking-[0.06em] text-[color:var(--color-accent-strong)]"
+                >
+                  Safe Mode
+                </Badge>
               </div>
-              <p className="text-[0.82rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+              <p className="text-[0.84rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
                 Verified Panchang data will be published soon.
               </p>
-            </Card>
-          ))}
-        </div>
+            </div>
+          </div>
+        </Card>
       </Section>
 
       <Section
@@ -486,7 +517,7 @@ export default async function PanchangPage() {
         title="Continue Your Daily Vedic Guidance"
         description="Move into the next safe action without fake Panchang data or broken routes."
       >
-        <div className="grid grid-cols-2 gap-2.5 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
           {panchangGuidanceLinks.map((item) => (
             <PanchangGuidanceCard
               key={item.title}
@@ -495,6 +526,7 @@ export default async function PanchangPage() {
               title={item.title}
               href={item.href}
               icon={item.icon}
+              subtitle={item.subtitle}
               feature={item.feature}
             />
           ))}
@@ -765,3 +797,4 @@ export default async function PanchangPage() {
     </>
   );
 }
+
