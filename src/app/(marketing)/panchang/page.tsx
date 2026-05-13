@@ -232,6 +232,67 @@ const panchangGuidanceLinks = [
   },
 ] as const;
 
+const panchangIntroCtas = [
+  {
+    href: "#panchang-tool",
+    label: "View Daily Panchang",
+    feature: "panchang-intro-view-daily",
+    eventName: "cta_click" as const,
+  },
+  {
+    href: "/tools",
+    label: "Ask NAVAGRAHA AI",
+    feature: "panchang-intro-ask-ai",
+    eventName: "cta_click" as const,
+  },
+  {
+    href: "/kundli",
+    label: "Generate Kundli",
+    feature: "panchang-intro-generate-kundli",
+    eventName: "cta_click" as const,
+  },
+] as const;
+
+function PanchangIntroActions({
+  locale,
+  hasExplicitLocalePrefix,
+}: Readonly<{
+  locale: string;
+  hasExplicitLocalePrefix: boolean;
+}>) {
+  return (
+    <Section className="pt-0" tone="transparent">
+      <Card
+        tone="light"
+        className="grid gap-2 border-[rgba(184,137,67,0.18)] bg-white p-3 shadow-[0_10px_22px_rgba(17,24,39,0.045)] sm:grid-cols-3"
+      >
+        {panchangIntroCtas.map((item) => {
+          const href = getLocalizedPath(locale, item.href, {
+            forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
+          });
+
+          return (
+            <TrackedLink
+              key={item.label}
+              href={href}
+              eventName={item.eventName}
+              eventPayload={{ page: "/panchang", feature: item.feature }}
+              className={buttonStyles({
+                size: "sm",
+                tone: item.label === "Ask NAVAGRAHA AI" ? "tertiary" : "secondary",
+                className:
+                  "min-h-10 w-full justify-center px-3 text-[0.69rem] uppercase tracking-[0.06em]",
+              })}
+            >
+              {item.label}
+            </TrackedLink>
+          );
+        })}
+      </Card>
+    </Section>
+  );
+}
+
 function PanchangGuidanceCard({
   locale,
   hasExplicitLocalePrefix,
@@ -420,7 +481,7 @@ export default async function PanchangPage() {
       <PageHero
         eyebrow="Daily Panchang Utility"
         title="Panchang Today"
-        description="View daily Panchang guidance with tithi, nakshatra, yoga, karana, sunrise, sunset, timing context and Vedic daily planning support."
+        description="Verified daily Panchang guidance for timing, planning, and Vedic daily context."
         highlights={[
           "Daily Panchang",
           "Tithi + Nakshatra",
@@ -450,12 +511,17 @@ export default async function PanchangPage() {
         supportTitle="Panchang Today"
       />
 
+      <PanchangIntroActions
+        locale={locale}
+        hasExplicitLocalePrefix={hasExplicitLocalePrefix}
+      />
+
       <Section
         tone="light"
         category="utilities"
         eyebrow="Panchang Utilities"
-        title="Quick access to daily timing, calendar, muhurat and Vedic planning tools."
-        description="Use compact utility cards to move through the verified Panchang timing flow."
+        title="Panchang Utilities"
+        description="Quick access to verified daily timing, calendar, muhurat, and planning tools."
       >
         <div className="grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-4">
           {panchangUtilities.map((utility) => (
@@ -480,7 +546,7 @@ export default async function PanchangPage() {
         category="utilities"
         eyebrow="Today&apos;s Panchang"
         title="Today&apos;s Panchang"
-        description="Daily Panchang details will appear here when verified Panchang data is available."
+        description="Verified Panchang details appear here when the source data is available."
       >
         <Card
           tone="default"
@@ -553,7 +619,7 @@ export default async function PanchangPage() {
         category="utilities"
         eyebrow="How It Works"
         title="Three focused steps behind this Panchang engine."
-        description="The flow is lightweight, deterministic, and aligned with current astrology engine conventions."
+        description="Lightweight, deterministic, and aligned with current astrology engine conventions."
       >
         <div className="grid gap-4 md:grid-cols-3">
           {[
@@ -591,7 +657,7 @@ export default async function PanchangPage() {
         category="utilities"
         eyebrow="Daily Use"
         title="Use Panchang as a practical daily timing layer."
-        description="Keep the flow simple: check the core factors, note transition windows, then continue into deeper chart-aware tools when needed."
+        description="Check the core factors, note transition windows, then continue into deeper chart-aware tools when needed."
       >
         <div className="grid gap-4 lg:grid-cols-3">
           <Card tone="light" className="space-y-3">
@@ -635,7 +701,7 @@ export default async function PanchangPage() {
         tone="muted"
         eyebrow="Panchang FAQ"
         title="Common questions about daily Panchang usage."
-        description="These answers are intentionally concise and practical for everyday checking."
+        description="Concise, practical answers for everyday checking."
       >
         <div className="grid gap-4 md:grid-cols-2">
           {panchangFaqEntries.map((entry) => (
@@ -656,7 +722,7 @@ export default async function PanchangPage() {
         category="utilities"
         eyebrow="Related Tools"
         title="Continue from Panchang into complementary guidance surfaces."
-        description="Internal links are kept focused so you can move into the right next tool without clutter."
+        description="Move into the right next tool without clutter."
       >
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {[
