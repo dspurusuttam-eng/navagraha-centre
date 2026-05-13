@@ -11,6 +11,7 @@ import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
 import { createToolMetadata } from "@/lib/seo/metadata";
 import { getCoreSeoCopy } from "@/lib/seo/seo-config";
+import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
 import { getRequestLocale, hasExplicitLocalePrefixInRequest } from "@/modules/localization/request";
 import { PanchangToolPanel } from "@/modules/panchang/components/panchang-tool-panel";
 import { RetentionPreferenceBridge } from "@/modules/retention/components/retention-preference-bridge";
@@ -74,7 +75,302 @@ const panchangFaqStructuredData = {
   })),
 } as const;
 
-export default function PanchangPage() {
+const panchangUtilities = [
+  {
+    title: "Daily Panchang",
+    href: "#panchang-tool",
+    icon: "DP",
+    statusLabel: "Open",
+    ctaLabel: "Open Utility",
+    feature: "panchang-utility-daily",
+    description: "Open the verified daily timing panel for the current Panchang flow.",
+  },
+  {
+    title: "Monthly Calendar",
+    href: "#panchang-tool",
+    icon: "MC",
+    statusLabel: "Open",
+    ctaLabel: "Open Utility",
+    feature: "panchang-utility-monthly-calendar",
+    description: "Use the same Panchang entry point for calendar-aware daily planning.",
+  },
+  {
+    title: "Hindu Calendar",
+    href: "#panchang-tool",
+    icon: "HC",
+    statusLabel: "Open",
+    ctaLabel: "Open Utility",
+    feature: "panchang-utility-hindu-calendar",
+    description: "Keep the calendar context close to the core daily timing flow.",
+  },
+  {
+    title: "Hora",
+    href: "#panchang-tool",
+    icon: "HO",
+    statusLabel: "Open",
+    ctaLabel: "Open Utility",
+    feature: "panchang-utility-hora",
+    description: "Navigate into the same Panchang flow when checking hourly timing context.",
+  },
+  {
+    title: "Choghadiya",
+    href: "#panchang-tool",
+    icon: "CH",
+    statusLabel: "Open",
+    ctaLabel: "Open Utility",
+    feature: "panchang-utility-choghadiya",
+    description: "Stay in the daily timing flow while reviewing planning windows.",
+  },
+  {
+    title: "Rahu Kaal",
+    href: "#panchang-tool",
+    icon: "RK",
+    statusLabel: "Open",
+    ctaLabel: "Open Utility",
+    feature: "panchang-utility-rahu-kaal",
+    description: "Open the Panchang timing panel for in-day caution windows.",
+  },
+  {
+    title: "Panchak",
+    href: "#panchang-tool",
+    icon: "PA",
+    statusLabel: "Open",
+    ctaLabel: "Open Utility",
+    feature: "panchang-utility-panchak",
+    description: "Keep Panchak awareness inside the same verified Panchang flow.",
+  },
+  {
+    title: "Bhadra",
+    href: "#panchang-tool",
+    icon: "BH",
+    statusLabel: "Open",
+    ctaLabel: "Open Utility",
+    feature: "panchang-utility-bhadra",
+    description: "Review timing caution in the same daily Panchang surface.",
+  },
+  {
+    title: "Muhurat",
+    href: "#panchang-tool",
+    icon: "MU",
+    statusLabel: "Open",
+    ctaLabel: "Open Utility",
+    feature: "panchang-utility-muhurat",
+    description: "Continue into the existing Panchang flow for timing support.",
+  },
+  {
+    title: "Festival Calendar",
+    href: "#panchang-tool",
+    icon: "FC",
+    statusLabel: "Open",
+    ctaLabel: "Open Utility",
+    feature: "panchang-utility-festival-calendar",
+    description: "Keep festival-aware planning inside the same timing layer.",
+  },
+  {
+    title: "Lagna Table",
+    href: "#panchang-tool",
+    icon: "LT",
+    statusLabel: "Open",
+    ctaLabel: "Open Utility",
+    feature: "panchang-utility-lagna-table",
+    description: "Use the existing Panchang path when you need lagna-aware timing context.",
+  },
+  {
+    title: "Panchang NI",
+    href: "/tools",
+    icon: "NI",
+    statusLabel: "Open",
+    ctaLabel: "Open Tools",
+    feature: "panchang-utility-ni",
+    description: "Move into NAVAGRAHA AI tools where Panchang NI belongs as a sub-tool.",
+  },
+] as const;
+
+const panchangTodayCards = [
+  "Tithi",
+  "Nakshatra",
+  "Yoga",
+  "Karana",
+  "Sunrise",
+  "Sunset",
+  "Rahu Kaal",
+  "Abhijit Muhurat",
+] as const;
+
+const panchangGuidanceLinks = [
+  {
+    title: "Read Daily Rashifal",
+    href: "/rashifal",
+    icon: "DR",
+    feature: "panchang-guidance-rashifal",
+  },
+  {
+    title: "Generate Kundli",
+    href: "/kundli",
+    icon: "KU",
+    feature: "panchang-guidance-kundli",
+  },
+  {
+    title: "Ask NAVAGRAHA AI",
+    href: "/tools",
+    icon: "AI",
+    feature: "panchang-guidance-ai",
+  },
+  {
+    title: "View Reports",
+    href: "/reports",
+    icon: "RP",
+    feature: "panchang-guidance-reports",
+  },
+  {
+    title: "Consult JYOTISH BHASKAR J P SARMAH",
+    href: "/consultation",
+    icon: "CS",
+    feature: "panchang-guidance-consultation",
+  },
+  {
+    title: "Explore Panchang NI",
+    href: "/tools",
+    icon: "NI",
+    feature: "panchang-guidance-ni",
+  },
+] as const;
+
+function PanchangGuidanceCard({
+  locale,
+  hasExplicitLocalePrefix,
+  title,
+  href,
+  icon,
+  feature,
+}: Readonly<{
+  locale: string;
+  hasExplicitLocalePrefix: boolean;
+  title: string;
+  href: string;
+  icon: string;
+  feature: string;
+}>) {
+  const localizedHref = getLocalizedPath(locale, href, {
+    forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
+  });
+
+  return (
+    <TrackedLink
+      href={localizedHref}
+      eventName="cta_click"
+      eventPayload={{ page: "/panchang", feature }}
+      className="block h-full"
+    >
+      <Card
+        tone="default"
+        interactive
+        className="flex h-full min-h-[8.75rem] flex-col justify-between gap-3 border-black/8 bg-white p-4 shadow-[0_12px_28px_rgba(17,24,39,0.05)] before:opacity-0 hover:border-black/12"
+      >
+        <div className="flex items-start gap-3">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[rgba(184,137,67,0.28)] bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.98)_0%,rgba(247,234,204,0.92)_72%,rgba(238,214,166,0.88)_100%)] text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)] shadow-[0_10px_22px_rgba(121,85,33,0.12)]">
+            {icon}
+          </span>
+          <div className="min-w-0">
+            <h3 className="text-[0.95rem] font-semibold leading-tight text-[color:var(--color-ink-strong)]">
+              {title}
+            </h3>
+            <p className="mt-1 text-[0.72rem] uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)]">
+              Daily Guidance
+            </p>
+          </div>
+        </div>
+
+        <span
+          className={buttonStyles({
+            size: "sm",
+            tone: "secondary",
+            className: "w-full justify-center",
+          })}
+        >
+          Open
+        </span>
+      </Card>
+    </TrackedLink>
+  );
+}
+
+function PanchangUtilityCard({
+  locale,
+  hasExplicitLocalePrefix,
+  title,
+  href,
+  icon,
+  statusLabel,
+  ctaLabel,
+  description,
+  feature,
+}: Readonly<{
+  locale: string;
+  hasExplicitLocalePrefix: boolean;
+  title: string;
+  href: string;
+  icon: string;
+  statusLabel: string;
+  ctaLabel: string;
+  description: string;
+  feature: string;
+}>) {
+  const localizedHref =
+    href.startsWith("#") || href.startsWith("/")
+      ? getLocalizedPath(locale, href, {
+          forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
+        })
+      : href;
+
+  return (
+    <TrackedLink
+      href={localizedHref}
+      eventName="cta_click"
+      eventPayload={{ page: "/panchang", feature }}
+      className="block h-full"
+    >
+      <Card
+        tone="default"
+        interactive
+        className="flex h-full min-h-[9.5rem] flex-col justify-between gap-3 border-black/8 bg-white p-4 shadow-[0_12px_28px_rgba(17,24,39,0.05)] before:opacity-0 hover:border-black/12"
+      >
+        <div className="flex items-start gap-3">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[rgba(184,137,67,0.28)] bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.98)_0%,rgba(247,234,204,0.92)_72%,rgba(238,214,166,0.88)_100%)] text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)] shadow-[0_10px_22px_rgba(121,85,33,0.12)]">
+            {icon}
+          </span>
+          <div className="min-w-0 space-y-1">
+            <h3 className="text-[0.95rem] font-semibold leading-tight text-[color:var(--color-ink-strong)]">
+              {title}
+            </h3>
+            <Badge tone="trust" className="border border-black/8 bg-white text-[0.64rem] uppercase tracking-[0.07em] text-[color:var(--color-accent-strong)]">
+              {statusLabel}
+            </Badge>
+          </div>
+        </div>
+
+        <p className="text-[0.8rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+          {description}
+        </p>
+
+        <span
+          className={buttonStyles({
+            size: "sm",
+            tone: "secondary",
+            className: "w-full justify-center",
+          })}
+        >
+          {ctaLabel}
+        </span>
+      </Card>
+    </TrackedLink>
+  );
+}
+
+export default async function PanchangPage() {
+  const locale = await getRequestLocale();
+  const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
+
   return (
     <>
       <PageViewTracker page="/panchang" feature="panchang-page" />
@@ -92,18 +388,19 @@ export default function PanchangPage() {
 
       <PageHero
         eyebrow="Daily Panchang Utility"
-        title="Daily Panchang factors in one clean, reusable, chart-consistent format."
-        description="Generate Tithi, Vara, Nakshatra, Yoga, Karana, sunrise, sunset, and moon sign for your selected date and place."
+        title="Panchang Today"
+        description="View daily Panchang guidance with tithi, nakshatra, yoga, karana, sunrise, sunset, timing context and Vedic daily planning support."
         highlights={[
-          "Deterministic Panchang output using sidereal/Lahiri system alignment.",
-          "Timezone-aware sunrise and sunset for location-specific daily context.",
-          "Advanced timing utilities include Rahu Kaal, Gulika Kaal, Yamaganda, and Abhijit Muhurta.",
-          "Structured output ready for future AI, report, and content integration.",
+          "Daily Panchang",
+          "Tithi + Nakshatra",
+          "Yoga + Karana",
+          "Vedic Timing",
+          "Daily Guidance",
         ]}
         note="Panchang is a timing reference layer and should be used with practical judgment for important decisions."
         primaryAction={{
           href: "#panchang-tool",
-          label: "Start Free Analysis",
+          label: "View Today's Panchang",
           eventName: "cta_click",
           eventPayload: {
             page: "/panchang",
@@ -111,16 +408,98 @@ export default function PanchangPage() {
           },
         }}
         secondaryAction={{
-          href: "/ai",
-          label: "Try NAVAGRAHA AI",
+          href: "/rashifal",
+          label: "Read Daily Rashifal",
           eventName: "cta_click",
           eventPayload: {
             page: "/panchang",
             feature: "panchang-hero-secondary",
           },
         }}
-        supportTitle="Daily Panchang Snapshot"
+        supportTitle="Panchang Today"
       />
+
+      <Section
+        tone="light"
+        category="utilities"
+        eyebrow="Panchang Utilities"
+        title="Quick access to daily timing, calendar, muhurat and Vedic planning tools."
+        description="Use the compact utility grid to move through the existing Panchang timing flow without fake data or broken routes."
+      >
+        <div className="grid grid-cols-2 gap-2.5 md:grid-cols-3 xl:grid-cols-4">
+          {panchangUtilities.map((utility) => (
+            <PanchangUtilityCard
+              key={utility.title}
+              locale={locale}
+              hasExplicitLocalePrefix={hasExplicitLocalePrefix}
+              title={utility.title}
+              href={utility.href}
+              icon={utility.icon}
+              statusLabel={utility.statusLabel}
+              ctaLabel={utility.ctaLabel}
+              description={utility.description}
+              feature={utility.feature}
+            />
+          ))}
+        </div>
+      </Section>
+
+      <Section
+        tone="light"
+        category="utilities"
+        eyebrow="Today’s Panchang"
+        title="Today’s Panchang"
+        description="Daily Panchang details will appear here when verified Panchang data is available."
+      >
+        <div className="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-4">
+          {panchangTodayCards.map((label) => (
+            <Card
+              key={label}
+              tone="default"
+              className="space-y-3 border-black/8 bg-white p-4 shadow-[0_12px_28px_rgba(17,24,39,0.05)] before:opacity-0"
+            >
+              <div className="flex items-center gap-3">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[rgba(184,137,67,0.28)] bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.98)_0%,rgba(247,234,204,0.92)_72%,rgba(238,214,166,0.88)_100%)] text-[0.7rem] font-semibold uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)] shadow-[0_10px_22px_rgba(121,85,33,0.12)]">
+                  {label.slice(0, 2)}
+                </span>
+                <div className="min-w-0">
+                  <h3 className="text-[0.95rem] font-semibold leading-tight text-[color:var(--color-ink-strong)]">
+                    {label}
+                  </h3>
+                  <Badge tone="trust" className="mt-1 border border-black/8 bg-white text-[0.64rem] uppercase tracking-[0.07em] text-[color:var(--color-accent-strong)]">
+                    Pending
+                  </Badge>
+                </div>
+              </div>
+              <p className="text-[0.82rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                Verified Panchang data will be published soon.
+              </p>
+            </Card>
+          ))}
+        </div>
+      </Section>
+
+      <Section
+        tone="light"
+        category="utilities"
+        eyebrow="Continue Guidance"
+        title="Continue Your Daily Vedic Guidance"
+        description="Move into the next safe action without fake Panchang data or broken routes."
+      >
+        <div className="grid grid-cols-2 gap-2.5 md:grid-cols-3">
+          {panchangGuidanceLinks.map((item) => (
+            <PanchangGuidanceCard
+              key={item.title}
+              locale={locale}
+              hasExplicitLocalePrefix={hasExplicitLocalePrefix}
+              title={item.title}
+              href={item.href}
+              icon={item.icon}
+              feature={item.feature}
+            />
+          ))}
+        </div>
+      </Section>
 
       <Section
         tone="light"
