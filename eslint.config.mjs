@@ -12,6 +12,7 @@ const eslintConfig = defineConfig([
     // Default ignores of eslint-config-next:
     ".next/**",
     ".next*/**",
+    ".vercel/**",
     "out/**",
     "build/**",
     "next-env.d.ts",

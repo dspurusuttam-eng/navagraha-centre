@@ -1,4 +1,4 @@
-import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
+﻿import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import { TrackedLink } from "@/components/analytics/tracked-link";
 import { AdSlot } from "@/components/monetization/AdSlot";
@@ -16,20 +16,19 @@ import { RetentionPreferenceBridge } from "@/modules/retention/components/retent
 const rashifalTabs = [
   {
     title: "Daily Rashifal",
+    href: "#daily-rashifal",
     active: true,
     statusLabel: "Active",
-    description: "Daily sign guidance published from the astrologer's desk.",
   },
   {
     title: "Monthly Rashifal",
-    href: "/monthly-rashifal",
-    statusLabel: "Published",
-    description: "Monthly overview when you want a broader planning lens.",
+    href: "#monthly-rashifal",
+    statusLabel: "Coming Soon",
   },
   {
     title: "Yearly Rashifal",
+    href: "#yearly-rashifal",
     statusLabel: "Coming Soon",
-    description: "Future-ready annual guidance from the same desk workflow.",
   },
 ] as const;
 
@@ -64,6 +63,8 @@ const rashifalGuidanceCards = [
   },
 ] as const;
 
+const hasRashifalContent = rashifalSigns.length > 0;
+
 function localizeHref(locale: string, hasExplicitLocalePrefix: boolean, href: string) {
   return getLocalizedPath(locale, href, {
     forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
@@ -95,26 +96,34 @@ function RashifalSignCard({
       <Card
         tone="default"
         interactive
-        className="flex h-full flex-col gap-4 border-black/8 bg-white p-4 shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0 hover:border-black/12"
+        className="flex h-full min-h-[15rem] flex-col gap-3 border-black/8 bg-white p-4 shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0 hover:border-black/12 sm:min-h-[16rem]"
       >
-        <div className="flex items-start justify-between gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(184,137,67,0.28)] bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.98)_0%,rgba(247,234,204,0.92)_72%,rgba(238,214,166,0.88)_100%)] text-[0.72rem] font-semibold uppercase tracking-[0.1em] text-[color:var(--color-accent-strong)] shadow-[0_10px_22px_rgba(121,85,33,0.12)]">
+        <div className="flex items-start gap-3">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[rgba(184,137,67,0.28)] bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.98)_0%,rgba(247,234,204,0.92)_72%,rgba(238,214,166,0.88)_100%)] text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)] shadow-[0_10px_22px_rgba(121,85,33,0.12)]">
             {icon}
           </span>
-          <Badge tone="trust">Daily</Badge>
+          <div className="min-w-0 flex-1 space-y-1">
+            <h3 className="text-[0.98rem] font-semibold leading-tight text-[color:var(--color-ink-strong)]">
+              {name}
+            </h3>
+            <Badge tone="trust" className="border border-black/8 bg-white">
+              Daily Guidance
+            </Badge>
+          </div>
         </div>
 
-        <div className="space-y-2">
-          <h3 className="text-[1rem] font-semibold text-[color:var(--color-ink-strong)]">
-            {name}
-          </h3>
-          <p className="text-[0.8rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-            View Rashifal
-          </p>
-        </div>
+        <p className="text-[0.82rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+          {`${name} guidance is kept concise and readable for a fast daily scan, with manual astrologer-desk context and no fake preview text.`}
+        </p>
 
-        <span className={buttonStyles({ size: "sm", tone: "secondary", className: "w-full justify-center" })}>
-          View Rashifal
+        <span
+          className={buttonStyles({
+            size: "sm",
+            tone: "accent",
+            className: "w-full justify-center",
+          })}
+        >
+          Read Rashifal
         </span>
       </Card>
     </TrackedLink>
@@ -161,10 +170,10 @@ export default async function RashifalPage() {
       />
       <RetentionPreferenceBridge section="rashifal" />
 
-      <main className="min-h-screen bg-[#FFFFFF] pb-[calc(6.5rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] md:pb-0">
+      <main className="min-h-screen bg-[#FFFFFF] pb-[calc(7.2rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] md:pb-0">
         <section className="border-b border-black/8 bg-white">
-          <Container className="grid gap-8 py-10 sm:py-12 lg:grid-cols-[minmax(0,1.08fr)_minmax(300px,0.92fr)] lg:items-center lg:py-14">
-            <div className="space-y-6">
+          <Container className="grid gap-6 py-8 sm:py-10 lg:grid-cols-[minmax(0,1.08fr)_minmax(300px,0.92fr)] lg:items-center lg:py-12">
+            <div className="space-y-4 sm:space-y-5">
               <div className="flex flex-wrap gap-2">
                 <Badge tone="trust" className="border border-black/8 bg-white">
                   Daily Guidance
@@ -174,7 +183,7 @@ export default async function RashifalPage() {
                 </Badge>
               </div>
 
-              <div className="space-y-3 sm:space-y-4">
+              <div className="space-y-2.5 sm:space-y-4">
                 <h1
                   className="max-w-4xl font-[family-name:var(--font-display)] text-[length:var(--font-size-display-sm)] text-[color:var(--color-ink-strong)] sm:text-[length:var(--font-size-display-lg)]"
                   style={{
@@ -189,7 +198,7 @@ export default async function RashifalPage() {
                 </p>
               </div>
 
-              <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:gap-3">
+              <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-3">
                 <TrackedLink
                   href={localizeHref(locale, hasExplicitLocalePrefix, "/daily-rashifal")}
                   eventName="daily_rashifal_view"
@@ -216,7 +225,7 @@ export default async function RashifalPage() {
                 </TrackedLink>
               </div>
 
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 {[
                   "Daily Guidance",
                   "Panchang Context",
@@ -227,7 +236,7 @@ export default async function RashifalPage() {
                   <Badge
                     key={badge}
                     tone="trust"
-                    className="border border-black/8 bg-white px-2.5 py-1 text-[0.56rem] uppercase tracking-[0.06em] text-[color:var(--color-ink-strong)] sm:px-3 sm:py-1.5 sm:text-[0.64rem] sm:tracking-[0.1em]"
+                    className="border border-black/8 bg-white px-2 py-1 text-[0.56rem] uppercase tracking-[0.05em] text-[color:var(--color-ink-strong)] sm:px-3 sm:py-1.5 sm:text-[0.64rem] sm:tracking-[0.1em]"
                   >
                     {badge}
                   </Badge>
@@ -270,84 +279,52 @@ export default async function RashifalPage() {
         </section>
 
         <section className="border-b border-black/8 bg-white">
-          <Container className="py-5 sm:py-7">
-            <div className="grid gap-3 md:grid-cols-3">
+          <Container className="py-4 sm:py-6">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3">
               {rashifalTabs.map((tab) => {
-                if ("active" in tab && tab.active) {
-                  return (
-                    <div
-                      key={tab.title}
-                      className="rounded-[1.1rem] border border-[rgba(184,137,67,0.24)] bg-[linear-gradient(145deg,rgba(255,255,255,0.98)_0%,rgba(248,236,216,0.92)_100%)] p-4 shadow-[0_12px_28px_rgba(17,24,39,0.05)]"
-                    >
-                      <div className="flex items-center justify-between gap-2">
-                        <h2 className="text-[0.8rem] font-semibold uppercase tracking-[0.08em] text-[color:var(--color-ink-strong)]">
-                          {tab.title}
-                        </h2>
-                        <Badge tone="accent">Active</Badge>
-                      </div>
-                      <p className="mt-2 text-[0.82rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                        {tab.description}
-                      </p>
-                    </div>
-                  );
-                }
-
-                if ("href" in tab && tab.href) {
-                  return (
-                    <TrackedLink
-                      key={tab.title}
-                      href={localizeHref(locale, hasExplicitLocalePrefix, tab.href)}
-                      eventName="cta_click"
-                      eventPayload={{ page: "/rashifal", feature: `rashifal-tab-${tab.title.toLowerCase().replace(/\s+/g, "-")}` }}
-                      className="block h-full"
-                    >
-                      <Card
-                        tone="default"
-                        interactive
-                        className="flex h-full flex-col gap-2 border-black/8 bg-white p-4 shadow-[0_12px_28px_rgba(17,24,39,0.05)] before:opacity-0"
-                      >
-                        <div className="flex items-center justify-between gap-2">
-                          <h2 className="text-[0.8rem] font-semibold uppercase tracking-[0.08em] text-[color:var(--color-ink-strong)]">
-                            {tab.title}
-                          </h2>
-                          <Badge tone="neutral">{tab.statusLabel}</Badge>
-                        </div>
-                        <p className="text-[0.82rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                          {tab.description}
-                        </p>
-                        <span className={buttonStyles({ size: "sm", tone: "secondary", className: "w-full justify-center" })}>
-                          View Rashifal
-                        </span>
-                      </Card>
-                    </TrackedLink>
-                  );
-                }
+                const isActive = "active" in tab && tab.active;
+                const tabClassName = isActive
+                  ? "border-[rgba(184,137,67,0.32)] bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(247,234,204,0.96)_100%)] text-[color:var(--color-ink-strong)] shadow-[0_12px_26px_rgba(17,24,39,0.06)]"
+                  : "border-black/8 bg-white text-[color:var(--color-ink-strong)]";
 
                 return (
-                  <Card
+                  <TrackedLink
                     key={tab.title}
-                    className="flex h-full flex-col gap-2 border-black/8 bg-white p-4 shadow-[0_12px_28px_rgba(17,24,39,0.05)] before:opacity-0"
+                    href={localizeHref(locale, hasExplicitLocalePrefix, tab.href)}
+                    eventName="cta_click"
+                    eventPayload={{
+                      page: "/rashifal",
+                      feature: `rashifal-tab-${tab.title.toLowerCase().replace(/\s+/g, "-")}`,
+                    }}
+                    className="block h-full"
                   >
-                    <div className="flex items-center justify-between gap-2">
-                      <h2 className="text-[0.8rem] font-semibold uppercase tracking-[0.08em] text-[color:var(--color-ink-strong)]">
-                        {tab.title}
-                      </h2>
-                      <Badge tone="neutral">{tab.statusLabel}</Badge>
-                    </div>
-                    <p className="text-[0.82rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                      {tab.description}
-                    </p>
-                    <span
-                      className={buttonStyles({
-                        size: "sm",
-                        tone: "ghost",
-                        className: "w-full justify-center pointer-events-none opacity-60",
-                      })}
-                      aria-disabled="true"
+                    <Card
+                      tone="default"
+                      interactive
+                      className={`flex h-full min-h-[5.1rem] flex-col justify-between gap-1.5 border px-3 py-3 text-left before:opacity-0 ${tabClassName}`}
                     >
-                      Coming Soon
-                    </span>
-                  </Card>
+                      <div className="space-y-1">
+                        <h2 className="text-[0.96rem] font-semibold leading-tight sm:text-[1rem]">
+                          {tab.title}
+                        </h2>
+                        <p className="text-[0.66rem] uppercase tracking-[0.07em] text-[color:var(--color-accent-strong)] sm:text-[0.72rem]">
+                          {isActive ? "Active" : tab.statusLabel}
+                        </p>
+                      </div>
+                      <span
+                        className={`inline-flex items-center justify-between gap-2 text-[0.7rem] font-medium uppercase tracking-[0.09em] ${
+                          isActive
+                            ? "text-[color:var(--color-accent-strong)]"
+                            : "text-[color:var(--color-ink-strong)]"
+                        }`}
+                      >
+                        {isActive ? "Open reading" : "Coming Soon"}
+                        <span className="text-[0.85rem]" aria-hidden="true">
+                          â†’
+                        </span>
+                      </span>
+                    </Card>
+                  </TrackedLink>
                 );
               })}
             </div>
@@ -355,7 +332,7 @@ export default async function RashifalPage() {
         </section>
 
         <section className="border-b border-black/8 bg-white">
-          <Container className="py-6 sm:py-7">
+          <Container className="py-5 sm:py-7">
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
               {rashifalSigns.map((sign) => (
                 <RashifalSignCard
@@ -371,12 +348,153 @@ export default async function RashifalPage() {
           </Container>
         </section>
 
+        <section className="border-b border-black/8 bg-white scroll-mt-24" id="daily-rashifal">
+          <Container className="py-7 sm:py-9" id="rashifal-reading">
+            <div className="space-y-3">
+              <div className="space-y-2">
+                <h2 className="text-[length:var(--font-size-title-md)] font-semibold text-[color:var(--color-ink-strong)] sm:text-[length:var(--font-size-title-lg)]">
+                  Today&apos;s Rashifal Reading
+                </h2>
+                <p className="max-w-3xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                  Daily Rashifal content is manually published from the astrologer&apos;s desk. Select your zodiac sign and read the latest available guidance.
+                </p>
+              </div>
+
+              {hasRashifalContent ? (
+                <div className="grid gap-2.5 md:grid-cols-2 xl:grid-cols-3">
+                  {rashifalSigns.map((sign) => {
+                    const signHref = localizeHref(locale, hasExplicitLocalePrefix, `/rashifal/${sign.slug}`);
+
+                    return (
+                      <TrackedLink
+                        key={sign.slug}
+                        href={signHref}
+                        eventName="cta_click"
+                        eventPayload={{ page: "/rashifal", feature: `rashifal-reading-${sign.slug}` }}
+                        className="block h-full"
+                      >
+                        <Card
+                          tone="default"
+                          interactive
+                          className="flex h-full flex-col gap-4 border-black/8 bg-white p-4 shadow-[0_12px_28px_rgba(17,24,39,0.05)] before:opacity-0 hover:border-black/12"
+                        >
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-3">
+                              <span className="flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(184,137,67,0.28)] bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.98)_0%,rgba(247,234,204,0.92)_72%,rgba(238,214,166,0.88)_100%)] text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)] shadow-[0_10px_22px_rgba(121,85,33,0.12)]">
+                                {sign.icon}
+                              </span>
+                              <div className="min-w-0">
+                                <h3 className="text-[0.95rem] font-semibold text-[color:var(--color-ink-strong)]">
+                                  {sign.name}
+                                </h3>
+                                <p className="text-[0.72rem] uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)]">
+                                  Select your sign
+                                </p>
+                              </div>
+                            </div>
+                            <Badge tone="neutral" className="shrink-0">
+                              Reading
+                            </Badge>
+                          </div>
+
+                          <p className="text-[0.82rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                            {sign.shortPrediction}
+                          </p>
+
+                          <div className="grid gap-2 rounded-[1rem] border border-black/8 bg-white p-2.5 text-[0.74rem] text-[color:var(--color-ink-body)] shadow-[0_8px_20px_rgba(17,24,39,0.04)] sm:grid-cols-3 sm:p-3">
+                            <div>
+                              <p className="uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)]">Love</p>
+                              <p className="mt-1 line-clamp-3">{sign.love}</p>
+                            </div>
+                            <div>
+                              <p className="uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)]">Career</p>
+                              <p className="mt-1 line-clamp-3">{sign.career}</p>
+                            </div>
+                            <div>
+                              <p className="uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)]">Business</p>
+                              <p className="mt-1 line-clamp-3">{sign.business}</p>
+                            </div>
+                          </div>
+
+                          <div className="flex flex-wrap gap-2">
+                            <Badge tone="trust" className="border border-black/8 bg-white">
+                              {sign.luckyColor}
+                            </Badge>
+                            <Badge tone="outline" className="border border-black/8 bg-white text-[color:var(--color-ink-strong)]">
+                              Lucky {sign.luckyNumber}
+                            </Badge>
+                            <Badge tone="outline" className="border border-black/8 bg-white text-[color:var(--color-ink-strong)]">
+                              {sign.luckyTime}
+                            </Badge>
+                          </div>
+
+                          <span
+                            className={buttonStyles({
+                              size: "sm",
+                              tone: "secondary",
+                              className: "w-full justify-center",
+                            })}
+                          >
+                            Read Rashifal
+                          </span>
+                        </Card>
+                      </TrackedLink>
+                    );
+                  })}
+                </div>
+              ) : (
+                <Card className="border-black/8 bg-white p-4 shadow-[0_12px_28px_rgba(17,24,39,0.05)] before:opacity-0">
+                  <p className="text-[0.88rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-strong)]">
+                    Today&apos;s Rashifal will be published from the desk soon.
+                  </p>
+                </Card>
+              )}
+            </div>
+          </Container>
+        </section>
+
+        <section className="border-b border-black/8 bg-white scroll-mt-24" id="monthly-rashifal">
+          <Container className="py-7 sm:py-9">
+            <Card className="space-y-3 border-black/8 bg-white p-4 shadow-[0_12px_28px_rgba(17,24,39,0.05)] before:opacity-0">
+              <div className="flex items-center justify-between gap-3">
+                <Badge tone="trust" className="border border-black/8 bg-white">
+                  Monthly Rashifal
+                </Badge>
+                <Badge tone="outline" className="border border-black/8 bg-white text-[color:var(--color-ink-strong)]">
+                  Coming Soon
+                </Badge>
+              </div>
+              <p className="text-[0.88rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-strong)]">
+                Monthly Rashifal will be published from the desk soon.
+              </p>
+            </Card>
+          </Container>
+        </section>
+
+        <section className="border-b border-black/8 bg-white scroll-mt-24" id="yearly-rashifal">
+          <Container className="py-7 sm:py-9">
+            <Card className="space-y-3 border-black/8 bg-white p-4 shadow-[0_12px_28px_rgba(17,24,39,0.05)] before:opacity-0">
+              <div className="flex items-center justify-between gap-3">
+                <Badge tone="trust" className="border border-black/8 bg-white">
+                  Yearly Rashifal
+                </Badge>
+                <Badge tone="outline" className="border border-black/8 bg-white text-[color:var(--color-ink-strong)]">
+                  Coming Soon
+                </Badge>
+              </div>
+              <p className="text-[0.88rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-strong)]">
+                Yearly Rashifal will be published from the desk soon.
+              </p>
+            </Card>
+          </Container>
+        </section>
+
         <section className="pt-6">
           <AdSlot placement="rashifal_after_intro" />
         </section>
 
         <section className="border-b border-black/8 bg-white">
-          <Container className="py-9 sm:py-10">
+          <Container className="py-7 sm:py-9">
             <Card className="space-y-3 border-black/8 bg-white shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0">
               <Badge tone="trust" className="border border-black/8 bg-white w-fit">
                 FROM THE DESK OF J P SARMAH
@@ -401,8 +519,8 @@ export default async function RashifalPage() {
         </section>
 
         <section className="border-b border-black/8 bg-white">
-          <Container className="py-9 sm:py-10">
-            <div className="space-y-4">
+          <Container className="py-7 sm:py-9">
+            <div className="space-y-3">
               <div className="space-y-2">
                 <Badge tone="trust" className="border border-black/8 bg-white">
                   Today&apos;s Guidance Companion
@@ -412,7 +530,7 @@ export default async function RashifalPage() {
                 </p>
               </div>
 
-              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <div className="grid gap-2.5 md:grid-cols-2 xl:grid-cols-4">
                 {rashifalGuidanceCards.map((card) => (
                   <TrackedLink
                     key={card.title}
@@ -424,7 +542,7 @@ export default async function RashifalPage() {
                     <Card
                       tone="default"
                       interactive
-                      className="flex h-full flex-col gap-3 border-black/8 bg-white p-4 shadow-[0_12px_28px_rgba(17,24,39,0.05)] before:opacity-0 hover:border-black/12"
+                      className="flex h-full flex-col gap-3 border-black/8 bg-white p-3.5 shadow-[0_12px_28px_rgba(17,24,39,0.05)] before:opacity-0 hover:border-black/12 sm:p-4"
                     >
                       <div className="flex items-center gap-3">
                         <span className="flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(184,137,67,0.28)] bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.98)_0%,rgba(247,234,204,0.92)_72%,rgba(238,214,166,0.88)_100%)] text-[color:var(--color-accent-strong)] shadow-[0_10px_22px_rgba(121,85,33,0.12)]">
@@ -460,3 +578,4 @@ export default async function RashifalPage() {
     </>
   );
 }
+
