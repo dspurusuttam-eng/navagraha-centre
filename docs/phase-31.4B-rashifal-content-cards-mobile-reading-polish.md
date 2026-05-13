@@ -5,6 +5,7 @@
 - 31.4B-2 zodiac cards polish completed
 - 31.4B-3 mobile app-like category tabs completed
 - 31.4B-4 mobile layout polish completed
+- 31.4B-Hotfix completed
 - Not deployed
 - Not committed
 
@@ -13,7 +14,7 @@
 - `docs/phase-31.4B-rashifal-content-cards-mobile-reading-polish.md`
 
 ## Reading Section Result
-- Added the `Today’s Rashifal Reading` section below the zodiac grid.
+- Added the `Today's Rashifal Reading` section below the zodiac grid.
 - The section uses the exact requested subheading and remains pure-white, bright, and mobile-readable.
 - Existing Rashifal content data is shown directly from the astrologer-desk data source without inventing new prediction copy.
 
@@ -38,6 +39,11 @@
 - Daily Rashifal is active by default and anchors to the existing reading section.
 - Monthly and Yearly Rashifal are shown as clean empty states because there is no live content wired in for them yet.
 - The tabs are rendered as compact, tappable app buttons with strong active-state visibility on mobile.
+
+## Hotfix Result
+- Encoding cleanup result: the broken `Â†’` glyph was removed from the tab cards.
+- Status text cleanup result: the Daily / Monthly / Yearly cards now show one status label and one CTA label instead of cluttered repeated status text.
+- Zodiac description cleanup result: each zodiac card now uses `Read the latest manually published daily guidance from the astrologer’s desk.`
 
 ## Mobile Issues Fixed
 - Reduced excessive vertical spacing across the hero, tabs, zodiac grid, reading section, and companion blocks.

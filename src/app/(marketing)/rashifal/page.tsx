@@ -19,16 +19,19 @@ const rashifalTabs = [
     href: "#daily-rashifal",
     active: true,
     statusLabel: "Active",
+    ctaLabel: "Open Reading",
   },
   {
     title: "Monthly Rashifal",
     href: "#monthly-rashifal",
     statusLabel: "Coming Soon",
+    ctaLabel: "Coming Soon",
   },
   {
     title: "Yearly Rashifal",
     href: "#yearly-rashifal",
     statusLabel: "Coming Soon",
+    ctaLabel: "Coming Soon",
   },
 ] as const;
 
@@ -113,7 +116,7 @@ function RashifalSignCard({
         </div>
 
         <p className="text-[0.82rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-          {`${name} guidance is kept concise and readable for a fast daily scan, with manual astrologer-desk context and no fake preview text.`}
+          Read the latest manually published daily guidance from the astrologer&apos;s desk.
         </p>
 
         <span
@@ -307,22 +310,24 @@ export default async function RashifalPage() {
                         <h2 className="text-[0.96rem] font-semibold leading-tight sm:text-[1rem]">
                           {tab.title}
                         </h2>
-                        <p className="text-[0.66rem] uppercase tracking-[0.07em] text-[color:var(--color-accent-strong)] sm:text-[0.72rem]">
-                          {isActive ? "Active" : tab.statusLabel}
-                        </p>
                       </div>
-                      <span
-                        className={`inline-flex items-center justify-between gap-2 text-[0.7rem] font-medium uppercase tracking-[0.09em] ${
-                          isActive
-                            ? "text-[color:var(--color-accent-strong)]"
-                            : "text-[color:var(--color-ink-strong)]"
-                        }`}
-                      >
-                        {isActive ? "Open reading" : "Coming Soon"}
-                        <span className="text-[0.85rem]" aria-hidden="true">
-                          â†’
+                      <div className="flex items-center justify-between gap-2">
+                        <Badge
+                          tone={isActive ? "trust" : "outline"}
+                          className="border border-black/8 bg-white text-[0.66rem] uppercase tracking-[0.07em] text-[color:var(--color-accent-strong)]"
+                        >
+                          {tab.statusLabel}
+                        </Badge>
+                        <span
+                          className={`text-[0.7rem] font-medium uppercase tracking-[0.09em] ${
+                            isActive
+                              ? "text-[color:var(--color-accent-strong)]"
+                              : "text-[color:var(--color-ink-strong)]"
+                          }`}
+                        >
+                          {tab.ctaLabel}
                         </span>
-                      </span>
+                      </div>
                     </Card>
                   </TrackedLink>
                 );
