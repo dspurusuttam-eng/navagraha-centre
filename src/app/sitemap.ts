@@ -95,6 +95,7 @@ const staticRoutes: readonly StaticRouteDefinition[] = [
   { path: "/navagraha-ai", changeFrequency: "weekly", priority: 0.9 },
   { path: "/reports", changeFrequency: "weekly", priority: 0.9 },
   { path: "/consultation", changeFrequency: "weekly", priority: 0.9 },
+  { path: "/dosha-yoga", changeFrequency: "weekly", priority: 0.85 },
   { path: "/shop", changeFrequency: "weekly", priority: 0.7 },
   { path: "/from-the-desk", changeFrequency: "daily", priority: 0.8 },
   { path: "/articles", changeFrequency: "daily", priority: 0.8 },
