@@ -184,7 +184,7 @@ export function NumerologyToolPanel() {
 
           <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Button size="lg" type="submit" className="w-full sm:w-auto">
-              Generate Numerology Profile
+              Calculate Numerology
             </Button>
             <Button
               size="lg"
@@ -199,6 +199,20 @@ export function NumerologyToolPanel() {
         </form>
       </Card>
 
+      {!hasResult ? (
+        <Card tone="light" className="space-y-3 border-[rgba(184,137,67,0.2)]">
+          <Badge tone="neutral">Calculation preparing</Badge>
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+            Enter a valid date of birth to prepare Life Path and Destiny
+            output. Add a name, business name, mobile number, or vehicle
+            number only when you want the corresponding readiness layer.
+          </p>
+          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+            No number is shown until the calculator receives valid input.
+          </p>
+        </Card>
+      ) : null}
+
       {hasResult && result ? (
         <div className="space-y-5">
           <Card
@@ -206,7 +220,7 @@ export function NumerologyToolPanel() {
             className="utility-result-card space-y-5"
           >
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <Badge tone="accent">Premium Numerology Summary</Badge>
+              <Badge tone="accent">Numerology Summary</Badge>
               <p className="utility-data-chip rounded-[var(--radius-pill)] border px-3 py-1 text-[0.7rem] uppercase tracking-[var(--tracking-label)]">
                 Dominant Number: {result.premiumSummary.dominantNumber.number}
               </p>
@@ -233,7 +247,7 @@ export function NumerologyToolPanel() {
             <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
               Calculated from your provided date of birth
               {result.normalizedName ? " and name" : ""}. Output stays
-              deterministic and ready for deeper AI/report integration.
+              verified and ready for deeper AI/report integration.
             </p>
           </Card>
 
@@ -327,7 +341,7 @@ export function NumerologyToolPanel() {
           </Card>
 
           <Card tone="light" className="utility-panel-card space-y-4">
-            <Badge tone="accent">Premium Guidance Notes</Badge>
+            <Badge tone="accent">Guidance Notes</Badge>
             <div className="grid gap-4 md:grid-cols-2">
               <InsightList
                 title="Harmony Notes"
@@ -356,7 +370,7 @@ export function NumerologyToolPanel() {
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
               <TrackedLink
-                href="/ai?tool=numerology"
+                href="/navagraha-ai"
                 eventName="premium_utility_cta_click"
                 eventPayload={{
                   page: "/numerology",
@@ -367,7 +381,7 @@ export function NumerologyToolPanel() {
                   className: "w-full justify-center sm:w-auto",
                 })}
               >
-                Try NAVAGRAHA AI
+                Ask NAVAGRAHA AI
               </TrackedLink>
               <TrackedLink
                 href="/reports"
@@ -382,7 +396,7 @@ export function NumerologyToolPanel() {
                   className: "w-full justify-center sm:w-auto",
                 })}
               >
-                Get Free Report
+                View Reports
               </TrackedLink>
               <TrackedLink
                 href="/consultation"
