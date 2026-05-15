@@ -25,7 +25,7 @@ export async function generateMetadata() {
   return createToolMetadata({
     title: "NAVAGRAHA Astrology Tools | Kundli, Reports & AI",
     description:
-      "Explore Kundli, Rashifal, Panchang, Dasha, Transit, Matchmaking, Numerology, Remedies, Reports, NAVAGRAHA Intelligence and future premium astrology utilities in one place.",
+      "Explore Kundli, Panchang, Rashifal, Dasha, Transit, Matchmaking, Dosha + Yoga, Numerology, Muhurat / Calendar, Remedies, Reports, NAVAGRAHA AI, Consultation, and future premium astrology utilities in one place.",
     path: "/tools",
     locale,
     explicitLocalePrefix: hasExplicitLocalePrefix,
@@ -36,9 +36,13 @@ export async function generateMetadata() {
       "dasha tools",
       "transit tools",
       "matchmaking tools",
+      "dosha yoga tools",
       "panchang tools",
       "numerology tools",
+      "muhurat calendar tools",
       "remedy tools",
+      "navagraha ai",
+      "consultation",
       "navagraha intelligence",
       "astrology command center",
     ],

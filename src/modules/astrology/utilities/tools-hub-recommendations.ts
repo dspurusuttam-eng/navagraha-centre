@@ -32,11 +32,11 @@ export const toolsHubRecommendationBlocks: readonly ToolsHubRecommendationBlock[
   {
     key: "post-kundli-path",
     eyebrow: "After Kundli",
-    title: "Explore Dasha, Transit and Reports",
+    title: "Explore Dasha, Reports and Follow-up Guidance",
     description:
-      "Use the saved Kundli to continue into timing, planetary movement, and premium report continuity.",
-    primaryHref: "/dashboard",
-    primaryLabel: "View Dashboard",
+      "Use the public timing tools to continue into Dasha, reports, and consultation when the chart is ready.",
+    primaryHref: "/dasha",
+    primaryLabel: "Open Dasha",
     secondaryHref: "/reports",
     secondaryLabel: "Open Reports",
     feature: "tools-hub-recommendation-post-kundli",
