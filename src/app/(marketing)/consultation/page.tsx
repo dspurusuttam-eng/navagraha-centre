@@ -229,11 +229,11 @@ export default async function ConsultationPage({
               </div>
 
               <div className="mt-auto">
-                <TrackedLink
-                  href={`/dashboard/consultations/book?package=${item.slug}`}
-                  eventName="consultation_started"
-                  eventPayload={{
-                    page: "/consultation",
+              <TrackedLink
+                href="/consultation"
+                eventName="consultation_started"
+                eventPayload={{
+                  page: "/consultation",
                     feature: `consultation-package-${item.slug}`,
                   }}
                   className={buttonStyles({ tone: "secondary", size: "sm" })}
@@ -299,7 +299,7 @@ export default async function ConsultationPage({
           </div>
           <div className="flex flex-wrap gap-3">
             <TrackedLink
-              href="/dashboard/consultations/book"
+              href="/consultation"
               eventName="consultation_started"
               eventPayload={{
                 page: "/consultation",
@@ -356,7 +356,7 @@ export default async function ConsultationPage({
       <AstrologerAuthoritySection
         pagePath="/consultation"
         tone="light"
-        ctaHref="/dashboard/consultations/book"
+        ctaHref="/consultation"
         ctaLabel="Continue To Booking"
       />
 

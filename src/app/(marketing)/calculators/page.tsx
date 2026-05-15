@@ -91,7 +91,7 @@ export default function CalculatorsPage() {
           </div>
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
             <TrackedLink
-              href="/muhurta"
+              href="/muhurat"
               eventName="muhurta_tool_click"
               eventPayload={{
                 page: "/calculators",

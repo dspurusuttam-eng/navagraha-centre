@@ -264,11 +264,11 @@ export default function DashaPage() {
                 >
                   Generate Kundli
                 </TrackedLink>
-                <TrackedLink
-                  href="/dashboard/onboarding"
-                  eventName="cta_click"
-                  eventPayload={{ page: "/dasha", feature: "dasha-birth-onboarding" }}
-                  className={buttonStyles({
+              <TrackedLink
+                href="/kundli"
+                eventName="cta_click"
+                eventPayload={{ page: "/dasha", feature: "dasha-birth-onboarding" }}
+                className={buttonStyles({
                     size: "sm",
                     tone: "secondary",
                     className: "w-full justify-center",

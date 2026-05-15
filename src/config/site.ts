@@ -26,11 +26,11 @@ const siteName = publicEnvironment.siteName;
 const marketingNav = [
   { href: "/", label: globalNavigationCopy.home },
   { href: "/kundli", label: globalNavigationCopy.kundli },
-  { href: "/compatibility", label: globalNavigationCopy.compatibility },
+  { href: "/matchmaking", label: globalNavigationCopy.compatibility },
   { href: "/rashifal", label: globalNavigationCopy.rashifal },
   { href: "/tools", label: globalNavigationCopy.tools },
   { href: "/panchang", label: globalNavigationCopy.panchang },
-  { href: "/muhurta", label: globalNavigationCopy.timeTools },
+  { href: "/muhurat", label: globalNavigationCopy.timeTools },
   { href: "/ai", label: globalNavigationCopy.ai },
   { href: "/numerology", label: globalFooterCopy.links.numerology },
   { href: "/calculators", label: globalNavigationCopy.calculators },
@@ -59,11 +59,11 @@ const foundationNav = [
 
 const offeringsNav = [
   { href: "/sign-up", label: globalCtaCopy.generateKundli },
-  { href: "/marriage-compatibility", label: globalNavigationCopy.compatibility },
+  { href: "/matchmaking", label: globalNavigationCopy.compatibility },
   { href: "/daily-rashifal", label: globalNavigationCopy.dailyRashifal },
   { href: "/tools", label: globalFooterCopy.links.allTools },
   { href: "/panchang", label: globalNavigationCopy.panchang },
-  { href: "/muhurta", label: globalNavigationCopy.timeTools },
+  { href: "/muhurat", label: globalNavigationCopy.timeTools },
   { href: "/numerology", label: globalFooterCopy.links.numerology },
   { href: "/calculators", label: globalNavigationCopy.calculators },
   { href: "/career-report", label: globalNavigationCopy.reports },

@@ -520,23 +520,23 @@ export default function MatchmakingPage() {
                 If you already have saved charts, continue through the protected dashboard flow. Public compatibility should not expose another user&apos;s birth details.
               </p>
               <div className="grid gap-2">
-                <TrackedLink
-                  href="/dashboard/kundli"
-                  eventName="cta_click"
-                  eventPayload={{ page: "/matchmaking", feature: "matchmaking-open-saved-kundli" }}
-                  className={buttonStyles({
+              <TrackedLink
+                href="/kundli"
+                eventName="cta_click"
+                eventPayload={{ page: "/matchmaking", feature: "matchmaking-open-saved-kundli" }}
+                className={buttonStyles({
                     size: "sm",
                     tone: "accent",
                     className: "w-full justify-center",
                   })}
                 >
                   Open Saved Kundli
-                </TrackedLink>
-                <TrackedLink
-                  href="/dashboard/onboarding"
-                  eventName="cta_click"
-                  eventPayload={{ page: "/matchmaking", feature: "matchmaking-set-active-kundli" }}
-                  className={buttonStyles({
+              </TrackedLink>
+              <TrackedLink
+                href="/kundli"
+                eventName="cta_click"
+                eventPayload={{ page: "/matchmaking", feature: "matchmaking-set-active-kundli" }}
+                className={buttonStyles({
                     size: "sm",
                     tone: "secondary",
                     className: "w-full justify-center",

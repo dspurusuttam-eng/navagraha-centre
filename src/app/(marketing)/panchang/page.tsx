@@ -736,7 +736,7 @@ export default async function PanchangPage() {
               eventName: "utility_card_click" as const,
             },
             {
-              href: "/muhurta",
+              href: "/muhurat",
               label: "Open Muhurta-lite",
               title: "Muhurta-lite",
               description:

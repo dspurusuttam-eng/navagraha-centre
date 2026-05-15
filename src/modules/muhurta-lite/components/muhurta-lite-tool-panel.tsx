@@ -19,6 +19,10 @@ type MuhurtaLiteApiSuccessPayload = {
   data?: MuhurtaLiteOutput;
 };
 
+type MuhurtaLiteToolPanelProps = {
+  pagePath?: string;
+};
+
 function getLocalTodayIso() {
   const now = new Date();
   const year = now.getFullYear();
@@ -92,7 +96,9 @@ function InsightList({
   );
 }
 
-export function MuhurtaLiteToolPanel() {
+export function MuhurtaLiteToolPanel({
+  pagePath = "/muhurta",
+}: MuhurtaLiteToolPanelProps) {
   const [formState, setFormState] = useState<MuhurtaLiteFormState>(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -122,7 +128,7 @@ export function MuhurtaLiteToolPanel() {
     setResult(null);
     setErrorMessage(null);
     trackEvent("cta_click", {
-      page: "/muhurta",
+      page: pagePath,
       feature: "muhurta-today-shortcut",
     });
     focusDateInput();
@@ -133,7 +139,7 @@ export function MuhurtaLiteToolPanel() {
     setResult(null);
     setErrorMessage(null);
     trackEvent("cta_click", {
-      page: "/muhurta",
+      page: pagePath,
       feature: "muhurta-reset",
     });
   }
@@ -142,7 +148,7 @@ export function MuhurtaLiteToolPanel() {
     setResult(null);
     setErrorMessage(null);
     trackEvent("cta_click", {
-      page: "/muhurta",
+      page: pagePath,
       feature: "muhurta-check-another-date",
     });
     focusDateInput();
@@ -167,7 +173,7 @@ export function MuhurtaLiteToolPanel() {
       setResult(null);
       setErrorMessage(outcome.message);
       trackEvent("cta_click", {
-        page: "/muhurta",
+        page: pagePath,
         feature: "muhurta-calculate-error",
       });
       return;
@@ -175,7 +181,7 @@ export function MuhurtaLiteToolPanel() {
 
     setResult(outcome.data);
     trackEvent("cta_click", {
-      page: "/muhurta",
+      page: pagePath,
       feature: "muhurta-calculate-success",
     });
   }
@@ -391,7 +397,7 @@ export function MuhurtaLiteToolPanel() {
               <TrackedLink
                 href="/panchang"
                 eventName="cta_click"
-                eventPayload={{ page: "/muhurta", feature: "muhurta-result-panchang" }}
+                eventPayload={{ page: pagePath, feature: "muhurta-result-panchang" }}
                 className={buttonStyles({
                   size: "sm",
                   className: "w-full justify-center sm:w-auto",
@@ -402,7 +408,7 @@ export function MuhurtaLiteToolPanel() {
               <TrackedLink
                 href="/kundli"
                 eventName="cta_click"
-                eventPayload={{ page: "/muhurta", feature: "muhurta-result-kundli" }}
+                eventPayload={{ page: pagePath, feature: "muhurta-result-kundli" }}
                 className={buttonStyles({
                   size: "sm",
                   tone: "secondary",
@@ -414,7 +420,7 @@ export function MuhurtaLiteToolPanel() {
               <TrackedLink
                 href="/ai"
                 eventName="cta_click"
-                eventPayload={{ page: "/muhurta", feature: "muhurta-result-ai" }}
+                eventPayload={{ page: pagePath, feature: "muhurta-result-ai" }}
                 className={buttonStyles({
                   size: "sm",
                   tone: "secondary",

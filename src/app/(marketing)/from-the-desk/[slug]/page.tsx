@@ -61,7 +61,7 @@ function getContextualCtas(entry: ContentEntry) {
 
   if (entry.category === "Compatibility") {
     return [
-      { href: "/compatibility", label: "Open Compatibility Tool" },
+      { href: "/matchmaking", label: "Open Compatibility Tool" },
       { href: "/reports", label: "View Full Compatibility Reports" },
     ] as const;
   }
@@ -69,7 +69,7 @@ function getContextualCtas(entry: ContentEntry) {
   if (entry.category === "Panchang") {
     return [
       { href: "/panchang", label: "Open Panchang Tool" },
-      { href: "/muhurta", label: "Check Time Tools" },
+      { href: "/muhurat", label: "Check Time Tools" },
     ] as const;
   }
 

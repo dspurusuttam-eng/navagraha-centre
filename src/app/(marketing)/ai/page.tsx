@@ -121,7 +121,7 @@ const aiTools = [
     description:
       "Protected assistant surface for direct chart-aware questions after your chart foundation is ready.",
     bestFor: "Follow-up questions",
-    href: "/dashboard/ask-my-chart",
+    href: "/ai",
     ctaLabel: "Ask My Chart",
   },
 ] as const;
@@ -309,7 +309,7 @@ export default function AiPage() {
 
             <div className="flex flex-col gap-3 sm:flex-row">
               <TrackedLink
-                href="/dashboard/ask-my-chart"
+                href="/ai"
                 eventName="cta_click"
                 eventPayload={{ page: "/ai", feature: "ai-hero-ask-my-chart" }}
                 className={buttonStyles({
@@ -592,7 +592,7 @@ export default function AiPage() {
               description:
                 "Deeper follow-up questions, saved chart continuity, and report-oriented interpretation paths.",
               cta: "Ask My Chart",
-              href: "/dashboard/ask-my-chart",
+              href: "/ai",
             },
             {
               title: "Report / Consultation Depth",
@@ -735,7 +735,7 @@ export default function AiPage() {
 
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
             <TrackedLink
-              href="/dashboard/ask-my-chart"
+              href="/ai"
               eventName="cta_click"
               eventPayload={{ page: "/ai", feature: "ai-final-cta-ask-my-chart" }}
               className={buttonStyles({

@@ -465,7 +465,7 @@ function TransitPageContent() {
             </div>
             <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row lg:justify-end">
               <TrackedLink
-                href="/dashboard/onboarding"
+                href="/kundli"
                 eventName="cta_click"
                 eventPayload={{ page: "/transit", feature: "transit-set-active-kundli" }}
                 className={buttonStyles({
@@ -477,7 +477,7 @@ function TransitPageContent() {
                 Set Active Kundli
               </TrackedLink>
               <TrackedLink
-                href="/dashboard/kundli/new"
+                href="/kundli"
                 eventName="cta_click"
                 eventPayload={{ page: "/transit", feature: "transit-generate-kundli" }}
                 className={buttonStyles({
