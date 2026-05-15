@@ -107,14 +107,16 @@ function getCompanionEvents(
     companionEvents.push("rashifal_view");
   }
 
-  if (
-    normalizedPath.startsWith("/panchang") ||
-    normalizedPath.startsWith("/muhurta") ||
-    normalizedFeature.includes("panchang") ||
-    normalizedFeature.includes("muhurta")
-  ) {
-    companionEvents.push("panchang_view");
-  }
+    if (
+      normalizedPath.startsWith("/panchang") ||
+      normalizedPath.startsWith("/muhurat") ||
+      normalizedPath.startsWith("/muhurta") ||
+      normalizedFeature.includes("panchang") ||
+      normalizedFeature.includes("muhurat") ||
+      normalizedFeature.includes("muhurta")
+    ) {
+      companionEvents.push("panchang_view");
+    }
 
   if (normalizedPath.startsWith("/ai") || normalizedFeature.includes("ai")) {
     companionEvents.push("ai_start_click");

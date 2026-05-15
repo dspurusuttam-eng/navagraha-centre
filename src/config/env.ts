@@ -65,6 +65,16 @@ function isValidUrl(value: string) {
   }
 }
 
+function isLocalhostUrl(value: string) {
+  try {
+    const hostname = new URL(value).hostname.toLowerCase();
+
+    return hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1";
+  } catch {
+    return false;
+  }
+}
+
 function getStringValue(env: RawEnvironment, key: string) {
   const value = env[key];
 
@@ -148,9 +158,15 @@ export function getPublicEnvironment(env: RawEnvironment = process.env) {
     getStringValue(env, "VERCEL_PROJECT_PRODUCTION_URL") ||
     getStringValue(env, "VERCEL_URL");
   const fallbackSiteUrl = productionHost ? toHttpsUrl(productionHost) : "";
+  const configuredPublicSiteUrl =
+    configuredSiteUrl && !isLocalhostUrl(configuredSiteUrl)
+      ? configuredSiteUrl
+      : "";
   const siteUrl = isVercelProduction(env)
     ? productionPublicEnvironment.siteUrl
-    : configuredSiteUrl || fallbackSiteUrl || defaultPublicEnvironment.siteUrl;
+    : configuredPublicSiteUrl ||
+      fallbackSiteUrl ||
+      productionPublicEnvironment.siteUrl;
 
   return {
     siteUrl,

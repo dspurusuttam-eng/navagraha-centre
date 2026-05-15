@@ -5,6 +5,7 @@ import {
   getLocaleDefinition,
   type SupportedLocale,
 } from "@/modules/localization/config";
+import { getPublicEnvironment } from "@/config/env";
 
 type CoreSeoLocaleCopy = {
   title: string;
@@ -55,7 +56,7 @@ function sanitizeSocialUrl(value?: string | null) {
 
 export const seoConfig = {
   siteName: "NAVAGRAHA CENTRE",
-  siteUrl: normalizeSiteUrl(process.env.NEXT_PUBLIC_SITE_URL),
+  siteUrl: normalizeSiteUrl(getPublicEnvironment().siteUrl),
   defaultLocale,
   supportedLocales: getEnabledLocales().map((locale) => locale.code),
   primaryLocales: ["as", "hi", "en"] as const,

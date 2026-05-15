@@ -41,8 +41,8 @@ export async function Footer() {
         { href: localizeHref("/panchang"), label: copy.navigation.panchang },
         { href: localizeHref("/numerology"), label: copy.footer.links.numerology },
         { href: localizeHref("/calculators"), label: copy.navigation.calculators },
-        { href: localizeHref("/muhurta"), label: copy.footer.links.muhurtaLite },
-        { href: localizeHref("/compatibility"), label: copy.navigation.compatibility },
+        { href: localizeHref("/muhurat"), label: copy.footer.links.muhurtaLite },
+        { href: localizeHref("/matchmaking"), label: copy.navigation.compatibility },
       ],
     },
     {

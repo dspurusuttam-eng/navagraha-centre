@@ -475,7 +475,7 @@ export function CalculatorsBundlePanel() {
               <CalculatorResultView data={results["compatibility-quick"]} />
               <div className="grid gap-2 sm:grid-cols-2">
                 <TrackedLink
-                  href="/compatibility"
+                  href="/matchmaking"
                   eventName="utility_card_click"
                   eventPayload={{
                     page: "/calculators",

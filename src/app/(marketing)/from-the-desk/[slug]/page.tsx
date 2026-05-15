@@ -29,6 +29,7 @@ import {
   getRequestLocale,
   hasExplicitLocalePrefixInRequest,
 } from "@/modules/localization/request";
+import { seoConfig } from "@/lib/seo/seo-config";
 import { RetentionPreferenceBridge } from "@/modules/retention/components/retention-preference-bridge";
 
 type DeskArticleDetailPageProps = {
@@ -211,7 +212,7 @@ export default async function DeskArticleDetailPage({
   });
   const practicalGuidance = getPracticalGuidance(entry);
   const contextualCtas = getContextualCtas(entry);
-  const publicUrl = `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://navagrahacentre.com"}${localizeHref(entry.path)}`;
+  const publicUrl = `${seoConfig.siteUrl}${localizeHref(entry.path)}`;
   const shareLinks = buildShareLinks(publicUrl, entry.title);
 
   return (

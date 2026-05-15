@@ -56,7 +56,9 @@ function shouldIndexPath(path: string) {
     path.startsWith("/api") ||
     path.startsWith("/private") ||
     path.startsWith("/users") ||
-    path.startsWith("/shop/cart")
+    path.startsWith("/shop/cart") ||
+    path.startsWith("/compatibility") ||
+    path.startsWith("/muhurta")
   );
 }
 

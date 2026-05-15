@@ -97,7 +97,7 @@ function InsightList({
 }
 
 export function MuhurtaLiteToolPanel({
-  pagePath = "/muhurta",
+  pagePath = "/muhurat",
 }: MuhurtaLiteToolPanelProps) {
   const [formState, setFormState] = useState<MuhurtaLiteFormState>(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
