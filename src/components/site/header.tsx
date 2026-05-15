@@ -122,7 +122,7 @@ export async function Header() {
               Ask NAVAGRAHA AI
             </TrackedLink>
             <Link
-              href={localizeHref("/dashboard")}
+              href={localizeHref("/sign-in")}
               className={buttonStyles({
                 tone: "ghost",
                 size: "sm",
@@ -197,7 +197,7 @@ export async function Header() {
                 </div>
                 <div className="mt-1 grid gap-2 border-t border-black/6 pt-3">
                   <Link
-                    href={localizeHref("/dashboard")}
+                    href={localizeHref("/sign-in")}
                     className={buttonStyles({
                       tone: "ghost",
                       size: "sm",
