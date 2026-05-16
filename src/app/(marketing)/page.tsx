@@ -100,7 +100,7 @@ const categoryTabs = [
   { label: "Home", href: "#top" },
   { label: "Daily", href: "#daily" },
   { label: "Kundli", href: "/kundli" },
-  { label: "NI", href: "#navagraha-intelligence" },
+  { label: "Ask NI", href: "#navagraha-intelligence" },
   { label: "Reports", href: "/reports" },
   { label: "Consultation", href: "/consultation" },
   { label: "Puja", href: "#vedic-services" },

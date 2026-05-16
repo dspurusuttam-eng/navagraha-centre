@@ -38,24 +38,26 @@ export async function Header() {
   const desktopNavigationPrimary: readonly NavigationItem[] = [
     { href: localizeHref("/"), label: "Home" },
     { href: localizeHref("/kundli"), label: "Kundli" },
-    { href: localizeHref("/rashifal"), label: "Rashifal" },
-    { href: localizeHref("/panchang"), label: "Panchang" },
+    { href: localizeHref("/rashifal"), label: "Daily Guidance" },
     { href: localizeHref("/tools"), label: "Tools" },
     { href: localizeHref("/reports"), label: "Reports" },
     { href: localizeHref("/consultation"), label: "Consultation" },
-    { href: localizeHref("/from-the-desk"), label: "From the Desk" },
+    { href: localizeHref("/articles"), label: "Learn" },
+    { href: localizeHref("/sign-in"), label: "Account" },
   ] as const;
 
   const mobileMenuItems: readonly NavigationItem[] = [
     { href: localizeHref("/"), label: "Home" },
     { href: localizeHref("/kundli"), label: "Kundli" },
-    { href: localizeHref("/rashifal"), label: "Rashifal" },
+    { href: localizeHref("/rashifal"), label: "Daily Guidance" },
     { href: localizeHref("/panchang"), label: "Panchang" },
     { href: localizeHref("/tools"), label: "Tools" },
     { href: localizeHref("/reports"), label: "Reports" },
     { href: localizeHref("/consultation"), label: "Consultation" },
     { href: localizeHref("/shop"), label: "Shop" },
-    { href: localizeHref("/from-the-desk"), label: "From the Desk" },
+    { href: localizeHref("/articles"), label: "Learn" },
+    { href: localizeHref("/ai"), label: "Ask NI" },
+    { href: localizeHref("/sign-in"), label: "Account" },
   ] as const;
 
   return (
@@ -94,45 +96,19 @@ export async function Header() {
 
           <nav
             aria-label="Primary navigation"
-            className="flex flex-1 items-center justify-center gap-0.5"
+            className="flex flex-1 items-center justify-end gap-0.5"
           >
             {desktopNavigationPrimary.map((item) => (
               <NavigationLink
                 key={item.href}
                 href={item.href}
-                className="min-h-10 rounded-none border-x-transparent border-t-transparent border-b-[2px] border-b-transparent bg-transparent px-2 text-[0.68rem] font-medium tracking-[0.14em] !text-[color:var(--color-ink-strong)] shadow-none hover:bg-transparent hover:!text-black 2xl:px-2.5"
+                className="min-h-10 rounded-none border-x-transparent border-t-transparent border-b-[2px] border-b-transparent bg-transparent px-1.5 text-[0.64rem] font-medium tracking-[0.1em] !text-[color:var(--color-ink-strong)] shadow-none hover:bg-transparent hover:!text-black 2xl:px-2.5"
                 activeClassName="rounded-none border-x-transparent border-t-transparent border-b-[2px] border-b-[var(--color-accent-gold)] bg-transparent !text-black shadow-none"
               >
                 {item.label}
               </NavigationLink>
             ))}
           </nav>
-
-          <div className="flex items-center gap-2">
-            <TrackedLink
-              href={localizeHref("/ai")}
-              eventName="premium_ai_cta_click"
-              eventPayload={{ page: "global-header", feature: "header-ask-navagraha-ai" }}
-              className={buttonStyles({
-                tone: "accent",
-                size: "sm",
-                className: "whitespace-nowrap",
-              })}
-            >
-              Ask NAVAGRAHA AI
-            </TrackedLink>
-            <Link
-              href={localizeHref("/sign-in")}
-              className={buttonStyles({
-                tone: "ghost",
-                size: "sm",
-                className:
-                  "whitespace-nowrap border border-black/10 bg-white text-[color:var(--color-ink-strong)] shadow-none hover:border-black/15 hover:bg-black/5",
-              })}
-            >
-              Login / Account
-            </Link>
-          </div>
         </div>
 
         <div className="grid grid-cols-[minmax(0,1fr)_auto_auto_auto] items-center gap-1.5 xl:hidden">
@@ -146,14 +122,14 @@ export async function Header() {
           <TrackedLink
             href={localizeHref("/ai")}
             eventName="premium_ai_cta_click"
-            eventPayload={{ page: "global-header-mobile", feature: "header-ask-ai" }}
+            eventPayload={{ page: "global-header-mobile", feature: "header-ask-ni" }}
             className={buttonStyles({
               tone: "accent",
               size: "sm",
               className: "shrink-0 px-2.5 text-[0.64rem] sm:px-3",
             })}
           >
-            <span>Ask AI</span>
+            <span>Ask NI</span>
           </TrackedLink>
 
           <LanguageSwitcher variant="compact" />
@@ -205,7 +181,7 @@ export async function Header() {
                         "w-full justify-center border border-black/10 bg-white text-[color:var(--color-ink-strong)]",
                     })}
                   >
-                    Login / Account
+                    Account
                   </Link>
                 </div>
               </nav>
