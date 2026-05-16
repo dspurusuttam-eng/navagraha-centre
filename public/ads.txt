@@ -1,5 +1,3 @@
 # NAVAGRAHA CENTRE ads.txt
 # No authorized digital advertising sellers are configured yet.
-# Add the Google-provided AdSense seller record only after publisher approval.
-# Required format after approval:
-# google.com, pub-REAL_PUBLISHER_ID, DIRECT, f08c47fec0942fa0
+# Add the real Google AdSense seller record only after account approval and publisher ID verification.
