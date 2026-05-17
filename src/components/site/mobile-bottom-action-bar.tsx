@@ -270,6 +270,10 @@ export function MobileBottomActionBar({
     },
   ];
 
+  const closeToolsAfterRouteSelection = () => {
+    window.setTimeout(() => setToolsOpen(false), 0);
+  };
+
   if (hideForPaths.has(pathname)) {
     return null;
   }
@@ -436,7 +440,7 @@ export function MobileBottomActionBar({
 
               <Link
                 href={toolsNavigation.allToolsHref}
-                onClick={() => setToolsOpen(false)}
+                onClick={closeToolsAfterRouteSelection}
                 className="inline-flex min-h-11 w-full items-center justify-center rounded-[var(--radius-pill)] border border-[rgba(185,139,70,0.42)] bg-[rgba(185,139,70,0.1)] px-4 text-center text-[0.72rem] font-semibold uppercase tracking-[0.1em] text-[color:var(--color-accent-strong)] transition hover:bg-[rgba(185,139,70,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
               >
                 View all tools

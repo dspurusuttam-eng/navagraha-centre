@@ -35,6 +35,10 @@ export function ToolsMegaMenu({ navigation }: Readonly<ToolsMegaMenuProps>) {
   const toolsActive =
     currentPath === toolsPath || currentPath.startsWith(`${toolsPath}/`) || open;
 
+  const closeAfterRouteSelection = () => {
+    window.setTimeout(() => setOpen(false), 0);
+  };
+
   const filteredNavigation = useMemo(() => {
     const normalizedQuery = query.trim();
 
@@ -138,7 +142,7 @@ export function ToolsMegaMenu({ navigation }: Readonly<ToolsMegaMenuProps>) {
               </label>
               <Link
                 href={navigation.allToolsHref}
-                onClick={() => setOpen(false)}
+                onClick={closeAfterRouteSelection}
                 className="mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-[var(--radius-pill)] border border-[rgba(185,139,70,0.42)] bg-[rgba(185,139,70,0.1)] px-4 text-center text-[0.72rem] font-semibold uppercase tracking-[0.1em] text-[color:var(--color-accent-strong)] transition hover:bg-[rgba(185,139,70,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
               >
                 View all tools
