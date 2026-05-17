@@ -54,13 +54,10 @@ export async function Header() {
     { href: localizeHref("/"), label: "Home" },
     { href: localizeHref("/kundli"), label: "Kundli" },
     { href: localizeHref("/rashifal"), label: "Daily Guidance" },
-    { href: localizeHref("/panchang"), label: "Panchang" },
     { href: localizeHref("/tools"), label: "Tools" },
     { href: localizeHref("/reports"), label: "Reports" },
     { href: localizeHref("/consultation"), label: "Consultation" },
-    { href: localizeHref("/shop"), label: "Shop" },
     { href: localizeHref("/articles"), label: "Learn" },
-    { href: localizeHref("/ai"), label: "Ask NI" },
     { href: localizeHref("/sign-in"), label: "Account" },
   ] as const;
 
@@ -178,19 +175,6 @@ export async function Header() {
                     Language
                   </p>
                   <LanguageSwitcher variant="compact" />
-                </div>
-                <div className="mt-1 grid gap-2 border-t border-black/6 pt-3">
-                  <Link
-                    href={localizeHref("/sign-in")}
-                    className={buttonStyles({
-                      tone: "ghost",
-                      size: "sm",
-                      className:
-                        "w-full justify-center border border-black/10 bg-white text-[color:var(--color-ink-strong)]",
-                    })}
-                  >
-                    Account
-                  </Link>
                 </div>
               </nav>
             </div>

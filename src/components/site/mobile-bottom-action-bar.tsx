@@ -248,7 +248,7 @@ export function MobileBottomActionBar({
       ],
     },
     {
-      title: "Services",
+      title: "Services and learning",
       links: [
         { label: "Consultation", href: localizeHref(locale, hasExplicitLocalePrefix, "/consultation") },
         { label: "Shop", href: localizeHref(locale, hasExplicitLocalePrefix, "/shop") },
@@ -257,7 +257,7 @@ export function MobileBottomActionBar({
       ],
     },
     {
-      title: "Account and policies",
+      title: "Company / Support",
       links: [
         { label: "Sign-in", href: localizeHref(locale, hasExplicitLocalePrefix, "/sign-in") },
         { label: "About", href: localizeHref(locale, hasExplicitLocalePrefix, "/about") },
@@ -304,7 +304,7 @@ export function MobileBottomActionBar({
                   More
                 </p>
                 <p className="mt-1 text-[0.82rem] leading-5 text-[color:var(--color-ink-body)]">
-                  Daily guidance, services, learning, account and policies.
+                  Daily guidance, services, learning, account and support.
                 </p>
               </div>
               <button
