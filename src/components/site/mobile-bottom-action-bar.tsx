@@ -2,12 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import {
   CalculatorIcon,
   KundliIcon,
   PanchangIcon,
 } from "@/components/icons/astrology-icons";
+import {
+  buildLocalizedToolsNavigation,
+  type ToolsNavigationGroup,
+  type ToolsNavigationModel,
+} from "@/components/site/tools-navigation-data";
 import { defaultLocale, getLocalizedPath, type SupportedLocale } from "@/modules/localization/config";
 import { cn } from "@/lib/cn";
 
@@ -15,7 +20,13 @@ type BottomLinkAction = {
   type: "link";
   label: string;
   href: string;
-  icon: "home" | "kundli" | "panchang" | "tools";
+  icon: "home" | "kundli" | "panchang";
+};
+
+type BottomToolsAction = {
+  type: "tools";
+  label: string;
+  icon: "tools";
 };
 
 type BottomMoreAction = {
@@ -24,7 +35,7 @@ type BottomMoreAction = {
   icon: "more";
 };
 
-type BottomAction = BottomLinkAction | BottomMoreAction;
+type BottomAction = BottomLinkAction | BottomToolsAction | BottomMoreAction;
 
 type MoreSection = {
   title: string;
@@ -120,18 +131,68 @@ function isActiveHref(pathname: string, href: string) {
     : pathname === normalizedHref || pathname.startsWith(`${normalizedHref}/`);
 }
 
+function matchesToolQuery(value: string, query: string) {
+  return value.toLowerCase().includes(query.toLowerCase());
+}
+
+function filterToolsNavigation(
+  navigation: ToolsNavigationModel,
+  query: string,
+): ToolsNavigationModel {
+  const normalizedQuery = query.trim();
+
+  if (!normalizedQuery) {
+    return navigation;
+  }
+
+  const groups: ToolsNavigationGroup[] = navigation.groups
+    .map((group) => ({
+      ...group,
+      items: group.items.filter(
+        (item) =>
+          matchesToolQuery(item.label, normalizedQuery) ||
+          matchesToolQuery(item.description, normalizedQuery) ||
+          matchesToolQuery(group.title, normalizedQuery),
+      ),
+    }))
+    .filter((group) => group.items.length > 0);
+  const popularTools = navigation.popularTools.filter((item) =>
+    matchesToolQuery(`${item.label} ${item.description}`, normalizedQuery),
+  );
+
+  return {
+    ...navigation,
+    popularTools,
+    groups,
+  };
+}
+
 export function MobileBottomActionBar({
   locale,
   hasExplicitLocalePrefix,
 }: Readonly<MobileBottomActionBarProps>) {
   const pathname = normalizePathname(usePathname());
+  const [toolsOpen, setToolsOpen] = useState(false);
+  const [toolsQuery, setToolsQuery] = useState("");
   const [moreOpen, setMoreOpen] = useState(false);
+  const toolsMenuTitleId = useId();
   const moreMenuTitleId = useId();
 
   const homeHref = localizeHref(locale, hasExplicitLocalePrefix, "/");
   const toolsHref = localizeHref(locale, hasExplicitLocalePrefix, "/tools");
   const kundliHref = localizeHref(locale, hasExplicitLocalePrefix, "/kundli");
   const panchangHref = localizeHref(locale, hasExplicitLocalePrefix, "/panchang");
+  const toolsNavigation = useMemo(
+    () =>
+      buildLocalizedToolsNavigation((href) =>
+        localizeHref(locale, hasExplicitLocalePrefix, href),
+      ),
+    [locale, hasExplicitLocalePrefix],
+  );
+  const filteredToolsNavigation = useMemo(
+    () => filterToolsNavigation(toolsNavigation, toolsQuery),
+    [toolsNavigation, toolsQuery],
+  );
 
   const hideForPaths = new Set(
     [
@@ -148,12 +209,13 @@ export function MobileBottomActionBar({
   );
 
   useEffect(() => {
-    if (!moreOpen) {
+    if (!toolsOpen && !moreOpen) {
       return;
     }
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
+        setToolsOpen(false);
         setMoreOpen(false);
       }
     };
@@ -166,13 +228,13 @@ export function MobileBottomActionBar({
       document.body.style.overflow = originalOverflow;
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [moreOpen]);
+  }, [toolsOpen, moreOpen]);
 
   const bottomActions: readonly BottomAction[] = [
     { type: "link", label: "Home", href: homeHref, icon: "home" },
     { type: "link", label: "Kundli", href: kundliHref, icon: "kundli" },
     { type: "link", label: "Panchang", href: panchangHref, icon: "panchang" },
-    { type: "link", label: "Tools", href: toolsHref, icon: "tools" },
+    { type: "tools", label: "Tools", icon: "tools" },
     { type: "more", label: "More", icon: "more" },
   ];
 
@@ -219,7 +281,7 @@ export function MobileBottomActionBar({
           <button
             type="button"
             aria-label="Close More menu"
-            className="fixed inset-0 z-40 bg-black/18 md:hidden"
+            className="fixed inset-0 z-40 bg-black/18 xl:hidden"
             onClick={() => setMoreOpen(false)}
           />
           <div
@@ -227,7 +289,7 @@ export function MobileBottomActionBar({
             role="dialog"
             aria-modal="true"
             aria-labelledby={`${moreMenuTitleId}-title`}
-            className="fixed inset-x-3 bottom-[calc(6.15rem+env(safe-area-inset-bottom))] z-[60] max-h-[min(68vh,32rem)] overflow-y-auto rounded-[1.35rem] border border-black/10 bg-[rgba(255,254,250,0.98)] p-4 shadow-[0_22px_60px_rgba(17,24,39,0.22)] backdrop-blur-xl md:hidden"
+            className="fixed inset-x-3 bottom-[calc(6.15rem+env(safe-area-inset-bottom))] z-[60] max-h-[min(68vh,32rem)] overflow-y-auto rounded-[1.35rem] border border-black/10 bg-[rgba(255,254,250,0.98)] p-4 shadow-[0_22px_60px_rgba(17,24,39,0.22)] backdrop-blur-xl xl:hidden"
           >
             <div className="flex items-start justify-between gap-3">
               <div>
@@ -274,14 +336,127 @@ export function MobileBottomActionBar({
           </div>
         </>
       ) : null}
+      {toolsOpen ? (
+        <>
+          <button
+            type="button"
+            aria-label="Close Tools drawer"
+            className="fixed inset-0 z-40 bg-black/18 xl:hidden"
+            onClick={() => setToolsOpen(false)}
+          />
+          <div
+            id={toolsMenuTitleId}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={`${toolsMenuTitleId}-title`}
+            className="fixed inset-x-3 bottom-[calc(6.15rem+env(safe-area-inset-bottom))] top-[4.75rem] z-[60] overflow-y-auto rounded-[1.35rem] border border-black/10 bg-[rgba(255,254,250,0.98)] p-4 shadow-[0_22px_60px_rgba(17,24,39,0.22)] backdrop-blur-xl xl:hidden"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p
+                  id={`${toolsMenuTitleId}-title`}
+                  className="text-[0.74rem] font-semibold uppercase tracking-[0.14em] text-[color:var(--color-trust-text)]"
+                >
+                  NAVAGRAHA Tools
+                </p>
+                <p className="mt-1 text-[0.82rem] leading-5 text-[color:var(--color-ink-body)]">
+                  Vedic astrology utilities and guidance.
+                </p>
+              </div>
+              <button
+                type="button"
+                className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-black/10 bg-white text-[color:var(--color-ink-strong)]"
+                aria-label="Close Tools drawer"
+                onClick={() => setToolsOpen(false)}
+              >
+                <span aria-hidden="true">X</span>
+              </button>
+            </div>
+
+            <label className="mt-4 block">
+              <span className="sr-only">Find a tool</span>
+              <input
+                type="search"
+                value={toolsQuery}
+                onChange={(event) => setToolsQuery(event.target.value)}
+                placeholder="Find a tool"
+                className="min-h-11 w-full rounded-[var(--radius-lg)] border border-black/10 bg-white px-3 text-[0.82rem] text-[color:var(--color-ink-strong)] outline-none transition placeholder:text-[color:var(--color-ink-muted)] focus:border-[rgba(185,139,70,0.5)] focus:ring-2 focus:ring-[color:var(--color-accent-ring)]"
+              />
+            </label>
+
+            <div className="mt-4 grid gap-5">
+              <section className="grid gap-2">
+                <p className="px-1 text-[0.64rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-ink-muted)]">
+                  Quick access
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  {filteredToolsNavigation.popularTools.map((item) => (
+                    <Link
+                      key={`mobile-popular-${item.key}`}
+                      href={item.href}
+                      onClick={() => setToolsOpen(false)}
+                      className="min-h-11 rounded-[var(--radius-lg)] border border-black/8 bg-white px-3 py-2 text-[0.78rem] font-semibold text-[color:var(--color-ink-strong)] shadow-[0_8px_22px_rgba(17,24,39,0.05)] transition hover:border-[rgba(185,139,70,0.34)] hover:bg-[rgba(185,139,70,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              </section>
+
+              {filteredToolsNavigation.groups.length ? (
+                filteredToolsNavigation.groups.map((section) => (
+                  <section key={`mobile-tools-${section.key}`} className="grid gap-2">
+                    <div className="px-1">
+                      <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-ink-muted)]">
+                        {section.title}
+                      </p>
+                      <p className="mt-1 text-[0.72rem] leading-4 text-[color:var(--color-ink-body)]">
+                        {section.description}
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {section.items.map((link) => (
+                        <Link
+                          key={`mobile-tools-${section.key}-${link.key}`}
+                          href={link.href}
+                          onClick={() => setToolsOpen(false)}
+                          className="min-h-11 rounded-[var(--radius-lg)] border border-black/8 bg-white px-3 py-2 text-[0.78rem] font-semibold text-[color:var(--color-ink-strong)] shadow-[0_8px_22px_rgba(17,24,39,0.05)] transition hover:border-[rgba(185,139,70,0.34)] hover:bg-[rgba(185,139,70,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </section>
+                ))
+              ) : (
+                <p className="rounded-[var(--radius-lg)] border border-black/8 bg-white px-4 py-3 text-[0.82rem] text-[color:var(--color-ink-body)]">
+                  No matching tools found.
+                </p>
+              )}
+
+              <Link
+                href={toolsNavigation.allToolsHref}
+                onClick={() => setToolsOpen(false)}
+                className="inline-flex min-h-11 w-full items-center justify-center rounded-[var(--radius-pill)] border border-[rgba(185,139,70,0.42)] bg-[rgba(185,139,70,0.1)] px-4 text-center text-[0.72rem] font-semibold uppercase tracking-[0.1em] text-[color:var(--color-accent-strong)] transition hover:bg-[rgba(185,139,70,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
+              >
+                View all tools
+              </Link>
+            </div>
+          </div>
+        </>
+      ) : null}
       <nav
         aria-label="Mobile quick actions"
-        className="fixed inset-x-0 bottom-0 z-50 border-t border-black/12 bg-white shadow-[0_-14px_34px_rgba(17,24,39,0.12)] backdrop-blur-xl md:hidden"
+        className="fixed inset-x-0 bottom-0 z-50 border-t border-black/12 bg-white shadow-[0_-14px_34px_rgba(17,24,39,0.12)] backdrop-blur-xl xl:hidden"
       >
         <div className="mx-auto grid max-w-5xl grid-cols-5 px-1.5 pb-[calc(0.45rem+env(safe-area-inset-bottom))] pt-1.5">
           {bottomActions.map((action) => {
             const active =
-              action.type === "more" ? moreOpen : isActiveHref(pathname, action.href);
+              action.type === "more"
+                ? moreOpen
+                : action.type === "tools"
+                  ? toolsOpen || isActiveHref(pathname, toolsHref)
+                  : isActiveHref(pathname, action.href);
             const actionClassName = cn(
               "flex min-w-0 flex-col items-center gap-1.25 rounded-[1.1rem] px-1.5 py-2 text-center transition [transition-duration:var(--motion-duration-base)]",
               active
@@ -320,7 +495,28 @@ export function MobileBottomActionBar({
                   aria-expanded={moreOpen}
                   aria-controls={moreMenuTitleId}
                   className={actionClassName}
-                  onClick={() => setMoreOpen((current) => !current)}
+                  onClick={() => {
+                    setToolsOpen(false);
+                    setMoreOpen((current) => !current);
+                  }}
+                >
+                  {content}
+                </button>
+              );
+            }
+
+            if (action.type === "tools") {
+              return (
+                <button
+                  key={action.label}
+                  type="button"
+                  aria-expanded={toolsOpen}
+                  aria-controls={toolsMenuTitleId}
+                  className={actionClassName}
+                  onClick={() => {
+                    setMoreOpen(false);
+                    setToolsOpen((current) => !current);
+                  }}
                 >
                   {content}
                 </button>

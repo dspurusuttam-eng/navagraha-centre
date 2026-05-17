@@ -3,6 +3,8 @@ import { TrackedLink } from "@/components/analytics/tracked-link";
 import { NavagrahaLogo } from "@/components/brand/navagraha-logo";
 import { LanguageSwitcher } from "@/components/site/language-switcher";
 import { NavigationLink } from "@/components/site/navigation-link";
+import { ToolsMegaMenu } from "@/components/site/tools-mega-menu";
+import { buildLocalizedToolsNavigation } from "@/components/site/tools-navigation-data";
 import { buttonStyles } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { defaultLocale } from "@/modules/localization/config";
@@ -45,6 +47,8 @@ export async function Header() {
     { href: localizeHref("/articles"), label: "Learn" },
     { href: localizeHref("/sign-in"), label: "Account" },
   ] as const;
+
+  const toolsNavigation = buildLocalizedToolsNavigation(localizeHref);
 
   const mobileMenuItems: readonly NavigationItem[] = [
     { href: localizeHref("/"), label: "Home" },
@@ -98,16 +102,20 @@ export async function Header() {
             aria-label="Primary navigation"
             className="flex flex-1 items-center justify-end gap-0.5"
           >
-            {desktopNavigationPrimary.map((item) => (
-              <NavigationLink
-                key={item.href}
-                href={item.href}
-                className="min-h-10 rounded-none border-x-transparent border-t-transparent border-b-[2px] border-b-transparent bg-transparent px-1.5 text-[0.64rem] font-medium tracking-[0.1em] !text-[color:var(--color-ink-strong)] shadow-none hover:bg-transparent hover:!text-black 2xl:px-2.5"
-                activeClassName="rounded-none border-x-transparent border-t-transparent border-b-[2px] border-b-[var(--color-accent-gold)] bg-transparent !text-black shadow-none"
-              >
-                {item.label}
-              </NavigationLink>
-            ))}
+            {desktopNavigationPrimary.map((item) =>
+              item.label === "Tools" ? (
+                <ToolsMegaMenu key={item.href} navigation={toolsNavigation} />
+              ) : (
+                <NavigationLink
+                  key={item.href}
+                  href={item.href}
+                  className="min-h-10 rounded-none border-x-transparent border-t-transparent border-b-[2px] border-b-transparent bg-transparent px-1.5 text-[0.64rem] font-medium tracking-[0.1em] !text-[color:var(--color-ink-strong)] shadow-none hover:bg-transparent hover:!text-black 2xl:px-2.5"
+                  activeClassName="rounded-none border-x-transparent border-t-transparent border-b-[2px] border-b-[var(--color-accent-gold)] bg-transparent !text-black shadow-none"
+                >
+                  {item.label}
+                </NavigationLink>
+              )
+            )}
           </nav>
         </div>
 
