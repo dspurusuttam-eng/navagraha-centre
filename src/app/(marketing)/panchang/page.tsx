@@ -4,10 +4,10 @@ import { TrackedLink } from "@/components/analytics/tracked-link";
 import { AdSlot } from "@/components/monetization/AdSlot";
 import { ConsultationCTA } from "@/components/monetization/ConsultationCTA";
 import { ReportCTA } from "@/components/monetization/ReportCTA";
-import { PageHero } from "@/components/site/page-hero";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { createToolMetadata } from "@/lib/seo/metadata";
 import { cn } from "@/lib/cn";
@@ -54,7 +54,7 @@ const panchangFaqEntries = [
   {
     question: "Should I check Panchang or Rashifal first?",
     answer:
-      "Use Panchang for daily timing context first, then open Rashifal for sign-level guidance and NAVAGRAHA AI for chart-aware interpretation.",
+      "Use Panchang for daily timing context first, then open Rashifal for sign-level guidance or Ask NI for AI-guided Vedic assistance.",
   },
   {
     question: "Can I use this without creating an account?",
@@ -78,135 +78,99 @@ const panchangFaqStructuredData = {
 
 const panchangUtilities = [
   {
-    title: "Daily Panchang",
+    title: "Today's Panchang",
     href: "#panchang-tool",
     icon: "DP",
-    statusLabel: "Open",
-    ctaLabel: "Open",
+    statusLabel: "Live",
+    ctaLabel: "View today",
     feature: "panchang-utility-daily",
-    description: "Open the verified daily timing panel.",
-  },
-  {
-    title: "Monthly Calendar",
-    href: undefined,
-    icon: "MC",
-    statusLabel: "Coming Soon",
-    ctaLabel: "Coming Soon",
-    feature: "panchang-utility-monthly-calendar",
-    description: "Monthly calendar planning is being prepared.",
-  },
-  {
-    title: "Hindu Calendar",
-    href: undefined,
-    icon: "HC",
-    statusLabel: "Coming Soon",
-    ctaLabel: "Coming Soon",
-    feature: "panchang-utility-hindu-calendar",
-    description: "Hindu calendar view is being prepared.",
-  },
-  {
-    title: "Hora",
-    href: undefined,
-    icon: "HO",
-    statusLabel: "Coming Soon",
-    ctaLabel: "Coming Soon",
-    feature: "panchang-utility-hora",
-    description: "Hora planning tools are being prepared.",
-  },
-  {
-    title: "Choghadiya",
-    href: undefined,
-    icon: "CH",
-    statusLabel: "Coming Soon",
-    ctaLabel: "Coming Soon",
-    feature: "panchang-utility-choghadiya",
-    description: "Choghadiya timing tools are being prepared.",
-  },
-  {
-    title: "Rahu Kaal",
-    href: undefined,
-    icon: "RK",
-    statusLabel: "Coming Soon",
-    ctaLabel: "Coming Soon",
-    feature: "panchang-utility-rahu-kaal",
-    description: "Rahu Kaal timing details are being prepared.",
-  },
-  {
-    title: "Panchak",
-    href: undefined,
-    icon: "PA",
-    statusLabel: "Coming Soon",
-    ctaLabel: "Coming Soon",
-    feature: "panchang-utility-panchak",
-    description: "Panchak awareness tools are being prepared.",
-  },
-  {
-    title: "Bhadra",
-    href: undefined,
-    icon: "BH",
-    statusLabel: "Coming Soon",
-    ctaLabel: "Coming Soon",
-    feature: "panchang-utility-bhadra",
-    description: "Bhadra timing tools are being prepared.",
+    description: "Open the daily calculation panel for date and place.",
   },
   {
     title: "Muhurat",
-    href: undefined,
+    href: "/muhurat",
     icon: "MU",
-    statusLabel: "Coming Soon",
-    ctaLabel: "Coming Soon",
+    statusLabel: "Route-safe",
+    ctaLabel: "Open Muhurat",
     feature: "panchang-utility-muhurat",
-    description: "Muhurat planning tools are being prepared.",
+    description: "Continue from daily timing into muhurat planning.",
   },
   {
-    title: "Festival Calendar",
-    href: undefined,
-    icon: "FC",
-    statusLabel: "Coming Soon",
-    ctaLabel: "Coming Soon",
-    feature: "panchang-utility-festival-calendar",
-    description: "Festival calendar planning is being prepared.",
+    title: "Rashifal",
+    href: "/rashifal",
+    icon: "RA",
+    statusLabel: "Route-safe",
+    ctaLabel: "Read Rashifal",
+    feature: "panchang-utility-rashifal",
+    description: "Read sign-level guidance after checking day timing.",
   },
   {
-    title: "Lagna Table",
-    href: undefined,
-    icon: "LT",
-    statusLabel: "Coming Soon",
-    ctaLabel: "Coming Soon",
-    feature: "panchang-utility-lagna-table",
-    description: "Lagna table tools are being prepared.",
+    title: "Transit",
+    href: "/transit",
+    icon: "TR",
+    statusLabel: "Route-safe",
+    ctaLabel: "Open Transit",
+    feature: "panchang-utility-transit",
+    description: "Review broader movement context with the transit tool.",
   },
   {
-    title: "Panchang NI",
-    href: "/tools",
+    title: "Dasha",
+    href: "/dasha",
+    icon: "DA",
+    statusLabel: "Route-safe",
+    ctaLabel: "Open Dasha",
+    feature: "panchang-utility-dasha",
+    description: "Connect daily timing with long-period timing context.",
+  },
+  {
+    title: "Ask NI",
+    href: "/ai",
     icon: "NI",
-    statusLabel: "AI Tool",
-    ctaLabel: "Open Tools",
+    statusLabel: "Route-safe",
+    ctaLabel: "Ask NI",
     feature: "panchang-utility-ni",
-    description: "Move into NAVAGRAHA AI tools for Panchang NI.",
+    description: "Use NAVAGRAHA Intelligence for AI-guided Vedic assistance.",
+  },
+  {
+    title: "Reports",
+    href: "/reports",
+    icon: "RP",
+    statusLabel: "Route-safe",
+    ctaLabel: "View Reports",
+    feature: "panchang-utility-reports",
+    description: "Move into structured reports when deeper review is needed.",
+  },
+  {
+    title: "Consultation",
+    href: "/consultation",
+    icon: "CS",
+    statusLabel: "Route-safe",
+    ctaLabel: "Consult",
+    feature: "panchang-utility-consultation",
+    description: "Use human guidance for decisions that need context.",
   },
 ] as const;
 
 const panchangGuidanceLinks = [
   {
-    title: "Read Daily Rashifal",
+    title: "Read Rashifal",
     href: "/rashifal",
     icon: "DR",
-    subtitle: "Daily predictions",
+    subtitle: "Daily sign guidance",
     feature: "panchang-guidance-rashifal",
   },
   {
-    title: "Generate Kundli",
-    href: "/kundli",
-    icon: "KU",
-    subtitle: "Birth chart",
-    feature: "panchang-guidance-kundli",
+    title: "Explore Muhurat",
+    href: "/muhurat",
+    icon: "MU",
+    subtitle: "Auspicious timing",
+    feature: "panchang-guidance-muhurat",
   },
   {
-    title: "Ask NAVAGRAHA AI",
-    href: "/tools",
-    icon: "AI",
-    subtitle: "AI astrology help",
+    title: "Ask NI",
+    href: "/ai",
+    icon: "NI",
+    subtitle: "NAVAGRAHA Intelligence",
     feature: "panchang-guidance-ai",
   },
   {
@@ -217,41 +181,96 @@ const panchangGuidanceLinks = [
     feature: "panchang-guidance-reports",
   },
   {
-    title: "Consult JYOTISH BHASKAR J P SARMAH",
+    title: "Consultation",
     href: "/consultation",
     icon: "CS",
-    subtitle: "Personal consultation",
+    subtitle: "Human-led guidance",
     feature: "panchang-guidance-consultation",
   },
   {
-    title: "Explore Panchang NI",
+    title: "Tools Hub",
     href: "/tools",
-    icon: "NI",
-    subtitle: "AI panchang insights",
-    feature: "panchang-guidance-ni",
+    icon: "TH",
+    subtitle: "All astrology tools",
+    feature: "panchang-guidance-tools",
   },
 ] as const;
 
 const panchangIntroCtas = [
   {
     href: "#panchang-tool",
-    label: "View Daily Panchang",
+    label: "View Today's Panchang",
     feature: "panchang-intro-view-daily",
     eventName: "cta_click" as const,
   },
   {
-    href: "/tools",
-    label: "Ask NAVAGRAHA AI",
+    href: "/ai",
+    label: "Ask NI",
     feature: "panchang-intro-ask-ai",
     eventName: "cta_click" as const,
   },
   {
-    href: "/kundli",
-    label: "Generate Kundli",
-    feature: "panchang-intro-generate-kundli",
+    href: "/muhurat",
+    label: "Explore Muhurat",
+    feature: "panchang-intro-muhurat",
+    eventName: "cta_click" as const,
+  },
+  {
+    href: "/rashifal",
+    label: "Read Rashifal",
+    feature: "panchang-intro-rashifal",
     eventName: "cta_click" as const,
   },
 ] as const;
+
+const panchangSummaryItems = [
+  {
+    title: "Tithi",
+    description: "Calculated in the daily Panchang panel.",
+  },
+  {
+    title: "Nakshatra",
+    description: "Shown after date and place are resolved.",
+  },
+  {
+    title: "Yoga",
+    description: "Generated from the existing Panchang engine.",
+  },
+  {
+    title: "Karana",
+    description: "Displayed from calculated Panchang output.",
+  },
+  {
+    title: "Sunrise",
+    description: "Resolved by location and timezone in the tool.",
+  },
+  {
+    title: "Sunset",
+    description: "Resolved by location and timezone in the tool.",
+  },
+  {
+    title: "Rahu Kaal",
+    description: "Available when advanced timings return.",
+  },
+  {
+    title: "Abhijit Muhurat",
+    description: "Available when advanced timings return.",
+  },
+] as const;
+
+function localizePanchangHref(
+  locale: string,
+  hasExplicitLocalePrefix: boolean,
+  href: string
+) {
+  if (href.startsWith("#")) {
+    return href;
+  }
+
+  return getLocalizedPath(locale, href, {
+    forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
+  });
+}
 
 function PanchangIntroActions({
   locale,
@@ -264,12 +283,14 @@ function PanchangIntroActions({
     <Section className="pt-0" tone="transparent">
       <Card
         tone="light"
-        className="grid gap-2 border-[rgba(184,137,67,0.18)] bg-white p-3 shadow-[0_10px_22px_rgba(17,24,39,0.045)] sm:grid-cols-3"
+        className="grid gap-2 border-[rgba(184,137,67,0.18)] bg-white p-3 shadow-[0_10px_22px_rgba(17,24,39,0.045)] sm:grid-cols-2 lg:grid-cols-4"
       >
         {panchangIntroCtas.map((item) => {
-          const href = getLocalizedPath(locale, item.href, {
-            forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
-          });
+          const href = localizePanchangHref(
+            locale,
+            hasExplicitLocalePrefix,
+            item.href
+          );
 
           return (
             <TrackedLink
@@ -279,7 +300,7 @@ function PanchangIntroActions({
               eventPayload={{ page: "/panchang", feature: item.feature }}
               className={buttonStyles({
                 size: "sm",
-                tone: item.label === "Ask NAVAGRAHA AI" ? "tertiary" : "secondary",
+                tone: item.label === "Ask NI" ? "tertiary" : "secondary",
                 className:
                   "min-h-10 w-full justify-center px-3 text-[0.69rem] uppercase tracking-[0.06em]",
               })}
@@ -310,9 +331,11 @@ function PanchangGuidanceCard({
   subtitle: string;
   feature: string;
 }>) {
-  const localizedHref = getLocalizedPath(locale, href, {
-    forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
-  });
+  const localizedHref = localizePanchangHref(
+    locale,
+    hasExplicitLocalePrefix,
+    href
+  );
   const isAiCard = feature.includes("ai") || feature.includes("ni");
 
   return (
@@ -385,19 +408,17 @@ function PanchangUtilityCard({
   feature: string;
 }>) {
   const isComingSoon = statusLabel === "Coming Soon";
-  const isAiTool = statusLabel === "AI Tool";
+  const isAiTool = feature.includes("ai") || feature.includes("ni");
   const linkHref = href ?? "#";
   const localizedHref =
-    !isComingSoon && linkHref.startsWith("#")
-      ? getLocalizedPath(locale, linkHref, {
-          forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
-        })
+    !isComingSoon
+      ? localizePanchangHref(locale, hasExplicitLocalePrefix, linkHref)
       : linkHref;
 
   const badgeTone =
     statusLabel === "Coming Soon"
       ? "neutral"
-      : statusLabel === "AI Tool"
+      : isAiTool
         ? "accent"
         : "trust";
 
@@ -459,6 +480,180 @@ function PanchangUtilityCard({
   );
 }
 
+function PanchangFirstScreen({
+  locale,
+  hasExplicitLocalePrefix,
+}: Readonly<{
+  locale: string;
+  hasExplicitLocalePrefix: boolean;
+}>) {
+  const primaryHref = localizePanchangHref(
+    locale,
+    hasExplicitLocalePrefix,
+    "#panchang-tool"
+  );
+  const askNiHref = localizePanchangHref(locale, hasExplicitLocalePrefix, "/ai");
+  const muhuratHref = localizePanchangHref(
+    locale,
+    hasExplicitLocalePrefix,
+    "/muhurat"
+  );
+  const rashifalHref = localizePanchangHref(
+    locale,
+    hasExplicitLocalePrefix,
+    "/rashifal"
+  );
+
+  return (
+    <section className="border-b border-[rgba(155,122,74,0.16)] bg-[linear-gradient(180deg,#fffefb_0%,#ffffff_100%)]">
+      <Container className="grid gap-6 py-8 sm:py-10 lg:grid-cols-[minmax(0,1.04fr)_minmax(300px,0.96fr)] lg:items-center lg:py-12">
+        <div className="space-y-4 sm:space-y-5">
+          <div className="flex flex-wrap gap-2">
+            <Badge tone="trust" className="border border-black/8 bg-white">
+              Daily Timing
+            </Badge>
+            <Badge
+              tone="outline"
+              className="border border-black/8 bg-white text-[color:var(--color-ink-strong)]"
+            >
+              Panchang Calculation
+            </Badge>
+          </div>
+
+          <div className="space-y-2.5 sm:space-y-4">
+            <h1
+              className="max-w-4xl font-[family-name:var(--font-display)] text-[length:var(--font-size-display-sm)] text-[color:var(--color-ink-strong)] sm:text-[length:var(--font-size-display-lg)]"
+              style={{
+                letterSpacing: "0.01em",
+                lineHeight: "var(--line-height-tight)",
+              }}
+            >
+              Panchang
+            </h1>
+            <p className="max-w-[48rem] text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)] sm:text-[length:var(--font-size-body-lg)]">
+              Daily tithi, nakshatra, yoga, karana, sunrise/sunset, auspicious timing, and Vedic day guidance from the existing Panchang calculation flow.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-3">
+            <TrackedLink
+              href={primaryHref}
+              eventName="cta_click"
+              eventPayload={{ page: "/panchang", feature: "panchang-hero-view-today" }}
+              className={buttonStyles({
+                tone: "accent",
+                size: "lg",
+                className: "w-full justify-center sm:w-auto",
+              })}
+            >
+              View Today&apos;s Panchang
+            </TrackedLink>
+            <TrackedLink
+              href={askNiHref}
+              eventName="cta_click"
+              eventPayload={{ page: "/panchang", feature: "panchang-hero-ask-ni" }}
+              className={buttonStyles({
+                tone: "secondary",
+                size: "lg",
+                className: "w-full justify-center sm:w-auto",
+              })}
+            >
+              Ask NI
+            </TrackedLink>
+            <TrackedLink
+              href={muhuratHref}
+              eventName="cta_click"
+              eventPayload={{ page: "/panchang", feature: "panchang-hero-muhurat" }}
+              className={buttonStyles({
+                tone: "secondary",
+                size: "lg",
+                className: "w-full justify-center sm:w-auto",
+              })}
+            >
+              Explore Muhurat
+            </TrackedLink>
+            <TrackedLink
+              href={rashifalHref}
+              eventName="cta_click"
+              eventPayload={{ page: "/panchang", feature: "panchang-hero-rashifal" }}
+              className={buttonStyles({
+                tone: "secondary",
+                size: "lg",
+                className: "w-full justify-center sm:w-auto",
+              })}
+            >
+              Read Rashifal
+            </TrackedLink>
+          </div>
+
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
+            {[
+              "Tithi",
+              "Nakshatra",
+              "Yoga",
+              "Karana",
+              "Sunrise / Sunset",
+              "Rahu Kaal",
+              "Abhijit Muhurat",
+              "Ask NI follow-up",
+            ].map((badge) => (
+              <Badge
+                key={badge}
+                tone="trust"
+                className="border border-black/8 bg-white px-2 py-1 text-[0.56rem] uppercase tracking-[0.05em] text-[color:var(--color-ink-strong)] sm:px-3 sm:py-1.5 sm:text-[0.64rem] sm:tracking-[0.1em]"
+              >
+                {badge}
+              </Badge>
+            ))}
+          </div>
+        </div>
+
+        <Card
+          tone="default"
+          className="space-y-4 border-[rgba(155,122,74,0.18)] bg-white shadow-[0_18px_46px_rgba(17,24,39,0.06)] before:opacity-0"
+        >
+          <div className="flex items-center justify-between gap-3">
+            <Badge tone="trust" className="border border-black/8 bg-white">
+              Start here
+            </Badge>
+            <Badge
+              tone="outline"
+              className="border border-black/8 bg-white text-[color:var(--color-ink-strong)]"
+            >
+              Calculation panel
+            </Badge>
+          </div>
+
+          <div className="space-y-2">
+            <h2 className="text-[length:var(--font-size-title-sm)] font-semibold text-[color:var(--color-ink-strong)]">
+              Calculate the day first, then choose the next action.
+            </h2>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+              Enter date and place in the panel below to view calculated values for the selected day.
+            </p>
+          </div>
+
+          <div className="grid gap-2 sm:grid-cols-2">
+            {panchangSummaryItems.slice(0, 6).map((item) => (
+              <div
+                key={item.title}
+                className="rounded-[1.1rem] border border-black/8 bg-white px-3 py-2.5 shadow-[0_10px_24px_rgba(17,24,39,0.04)]"
+              >
+                <p className="text-[0.74rem] font-semibold text-[color:var(--color-ink-strong)]">
+                  {item.title}
+                </p>
+                <p className="mt-1 text-[0.68rem] leading-[1.35] text-[color:var(--color-ink-body)]">
+                  {item.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </Container>
+    </section>
+  );
+}
+
 export default async function PanchangPage() {
   const locale = await getRequestLocale();
   const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
@@ -478,37 +673,10 @@ export default async function PanchangPage() {
         }}
       />
 
-      <PageHero
-        eyebrow="Daily Panchang Utility"
-        title="Panchang Today"
-        description="Verified daily Panchang guidance for timing, planning, and Vedic daily context."
-        highlights={[
-          "Daily Panchang",
-          "Tithi + Nakshatra",
-          "Yoga + Karana",
-          "Vedic Timing",
-          "Daily Guidance",
-        ]}
-        note="Panchang is a timing reference layer and should be used with practical judgment for important decisions."
-        primaryAction={{
-          href: "#panchang-tool",
-          label: "View Today's Panchang",
-          eventName: "cta_click",
-          eventPayload: {
-            page: "/panchang",
-            feature: "panchang-hero-primary",
-          },
-        }}
-        secondaryAction={{
-          href: "/rashifal",
-          label: "Read Daily Rashifal",
-          eventName: "cta_click",
-          eventPayload: {
-            page: "/panchang",
-            feature: "panchang-hero-secondary",
-          },
-        }}
-        supportTitle="Panchang Today"
+      <main className="min-h-screen bg-[linear-gradient(180deg,#fffefb_0%,#ffffff_28%,#fbf6ed_100%)] pb-[calc(7.2rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] xl:pb-0">
+      <PanchangFirstScreen
+        locale={locale}
+        hasExplicitLocalePrefix={hasExplicitLocalePrefix}
       />
 
       <PanchangIntroActions
@@ -519,9 +687,9 @@ export default async function PanchangPage() {
       <Section
         tone="light"
         category="utilities"
-        eyebrow="Panchang Utilities"
-        title="Panchang Utilities"
-        description="Quick access to verified daily timing, calendar, muhurat, and planning tools."
+        eyebrow="Panchang Shortcuts"
+        title="Move from daily timing into the right next tool."
+        description="Quick access to route-safe Panchang, muhurat, Rashifal, timing, reporting, and consultation surfaces."
       >
         <div className="grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-4">
           {panchangUtilities.map((utility) => (
@@ -544,36 +712,34 @@ export default async function PanchangPage() {
       <Section
         tone="light"
         category="utilities"
-        eyebrow="Today&apos;s Panchang"
-        title="Today&apos;s Panchang"
-        description="Verified Panchang details appear here when the source data is available."
+        eyebrow="Panchang Summary"
+        title="Daily Panchang structure"
+        description="These are the core values the calculation panel resolves after date and place are entered."
       >
-        <Card
-          tone="default"
-          className="border-[rgba(184,137,67,0.2)] bg-white p-4 shadow-[0_12px_28px_rgba(17,24,39,0.05)] before:opacity-0 sm:p-5"
-        >
-          <div className="flex items-start gap-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[rgba(184,137,67,0.28)] bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.98)_0%,rgba(247,234,204,0.92)_72%,rgba(238,214,166,0.88)_100%)] text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)] shadow-[0_10px_22px_rgba(121,85,33,0.12)]">
-              PM
-            </span>
-            <div className="min-w-0 flex-1 space-y-2">
-              <div className="flex flex-wrap items-center gap-2">
-                <h3 className="text-[0.96rem] font-semibold leading-tight text-[color:var(--color-ink-strong)]">
-                  Today&apos;s Panchang
-                </h3>
-                <Badge
-                  tone="trust"
-                  className="border border-[rgba(184,137,67,0.18)] bg-white text-[0.62rem] uppercase tracking-[0.06em] text-[color:var(--color-accent-strong)]"
-                >
-                  Safe Mode
-                </Badge>
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
+          {panchangSummaryItems.map((item) => (
+            <Card
+              key={item.title}
+              tone="default"
+              className="flex min-h-[7.2rem] flex-col justify-between gap-3 border-[rgba(184,137,67,0.2)] bg-white p-3 shadow-[0_10px_22px_rgba(17,24,39,0.045)] before:opacity-0"
+            >
+              <div className="space-y-1">
+                <p className="text-[0.86rem] font-semibold leading-tight text-[color:var(--color-ink-strong)]">
+                  {item.title}
+                </p>
+                <p className="text-[0.68rem] leading-[1.35] text-[color:var(--color-ink-body)]">
+                  {item.description}
+                </p>
               </div>
-              <p className="text-[0.84rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                Verified Panchang data will be published soon.
-              </p>
-            </div>
-          </div>
-        </Card>
+              <Badge
+                tone="outline"
+                className="w-fit border border-black/8 bg-white text-[0.58rem] uppercase tracking-[0.06em] text-[color:var(--color-accent-strong)]"
+              >
+                Calculated
+              </Badge>
+            </Card>
+          ))}
+        </div>
       </Section>
 
       <Section
@@ -581,7 +747,7 @@ export default async function PanchangPage() {
         category="utilities"
         eyebrow="Continue Guidance"
         title="Continue Your Daily Vedic Guidance"
-        description="Move into the next safe action without fake Panchang data or broken routes."
+        description="Move into the next route-safe action after checking daily timing."
       >
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
           {panchangGuidanceLinks.map((item) => (
@@ -684,7 +850,7 @@ export default async function PanchangPage() {
               Add personalization when needed
             </h2>
             <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-              Continue into Kundli, NAVAGRAHA AI, and consultation when you need chart-level interpretation beyond daily timing.
+              Continue into Kundli, Ask NI, and consultation when you need chart-level interpretation beyond daily timing.
             </p>
           </Card>
         </div>
@@ -737,8 +903,8 @@ export default async function PanchangPage() {
             },
             {
               href: "/muhurat",
-              label: "Open Muhurta-lite",
-              title: "Muhurta-lite",
+              label: "Open Muhurat",
+              title: "Muhurat",
               description:
                 "Focused daily timing windows for Rahu Kaal, Gulika Kaal, Yamaganda, and Abhijit Muhurta.",
               feature: "panchang-related-muhurta",
@@ -764,7 +930,7 @@ export default async function PanchangPage() {
             },
             {
               href: "/reports",
-              label: "Get Free Report",
+              label: "View Reports",
               title: "Premium Reports",
               description:
                 "Move from daily signals into deeper structured interpretation and planning.",
@@ -821,10 +987,10 @@ export default async function PanchangPage() {
                 lineHeight: "var(--line-height-tight)",
               }}
             >
-              Move from daily Panchang into chart and AI guidance.
+              Move from daily Panchang into chart and NAVAGRAHA Intelligence guidance.
             </h2>
             <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-              Use Panchang for daily timing context, then continue with Kundli and NAVAGRAHA AI for deeper personal interpretation.
+              Use Panchang for daily timing context, then continue with Kundli and NAVAGRAHA Intelligence for AI-guided interpretation.
             </p>
           </div>
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
@@ -855,11 +1021,12 @@ export default async function PanchangPage() {
                 className: "w-full justify-center sm:w-auto",
               })}
             >
-              Explore NAVAGRAHA AI
+              Ask NI
             </TrackedLink>
           </div>
         </Card>
       </Section>
+      </main>
     </>
   );
 }
