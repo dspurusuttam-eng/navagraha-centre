@@ -13,25 +13,75 @@ import { getRequestLocale, hasExplicitLocalePrefixInRequest } from "@/modules/lo
 import { rashifalSigns } from "@/modules/rashifal/content";
 import { RetentionPreferenceBridge } from "@/modules/retention/components/retention-preference-bridge";
 
-const rashifalTabs = [
+const rashifalVedicNames: Record<string, string> = {
+  aries: "Mesh",
+  taurus: "Vrishabh",
+  gemini: "Mithun",
+  cancer: "Kark",
+  leo: "Singh",
+  virgo: "Kanya",
+  libra: "Tula",
+  scorpio: "Vrishchik",
+  sagittarius: "Dhanu",
+  capricorn: "Makar",
+  aquarius: "Kumbh",
+  pisces: "Meen",
+};
+
+const rashifalCategoryCards = [
   {
     title: "Daily Rashifal",
     href: "#daily-rashifal",
     active: true,
-    statusLabel: "Active",
-    ctaLabel: "Open Reading",
+    statusLabel: "Live",
+    ctaLabel: "Read today",
+    description: "Start with the current sign-wise daily guidance.",
+  },
+  {
+    title: "Weekly Rashifal",
+    statusLabel: "Planned",
+    ctaLabel: "Coming soon",
+    description: "A weekly view is planned; no public route is linked yet.",
   },
   {
     title: "Monthly Rashifal",
-    href: "#monthly-rashifal",
-    statusLabel: "Coming Soon",
-    ctaLabel: "Coming Soon",
+    href: "/monthly-rashifal",
+    statusLabel: "Available",
+    ctaLabel: "Open monthly",
+    description: "Use the existing monthly route when you want a broader view.",
   },
   {
     title: "Yearly Rashifal",
-    href: "#yearly-rashifal",
-    statusLabel: "Coming Soon",
-    ctaLabel: "Coming Soon",
+    statusLabel: "Planned",
+    ctaLabel: "Coming soon",
+    description: "A yearly public route is not linked until it is ready.",
+  },
+  {
+    title: "Love Rashifal",
+    statusLabel: "Planned",
+    ctaLabel: "Coming soon",
+    description: "Relationship guidance remains inside each sign reading for now.",
+  },
+  {
+    title: "Career / Finance Guidance",
+    statusLabel: "Included",
+    ctaLabel: "Select sign",
+    href: "#daily-rashifal",
+    description: "Career, business and practical guidance are included per sign.",
+  },
+  {
+    title: "Panchang-supported Daily Guidance",
+    statusLabel: "Route-safe",
+    ctaLabel: "Open Panchang",
+    href: "/panchang",
+    description: "Check daily timing context before reading sign guidance.",
+  },
+  {
+    title: "Ask NI for Guidance",
+    statusLabel: "Route-safe",
+    ctaLabel: "Ask NI",
+    href: "/ai",
+    description: "Use NAVAGRAHA Intelligence for AI-guided Vedic assistance.",
   },
 ] as const;
 
@@ -44,17 +94,17 @@ const rashifalGuidanceCards = [
     feature: "rashifal-guidance-panchang",
   },
   {
-    title: "Daily Remedy",
-    href: "/tools",
+    title: "Remedies",
+    href: "/remedies",
     ctaLabel: "View Remedies",
     description: "Move from daily reading into cautious remedy discovery.",
     feature: "rashifal-guidance-remedy",
   },
   {
-    title: "Ask NAVAGRAHA AI",
-    href: "/tools",
-    ctaLabel: "Ask AI",
-    description: "Use chart-aware support after you read the public forecast.",
+    title: "Ask NI",
+    href: "/ai",
+    ctaLabel: "Ask NI",
+    description: "Use NAVAGRAHA Intelligence after you read the public forecast.",
     feature: "rashifal-guidance-ai",
   },
   {
@@ -69,6 +119,10 @@ const rashifalGuidanceCards = [
 const hasRashifalContent = rashifalSigns.length > 0;
 
 function localizeHref(locale: string, hasExplicitLocalePrefix: boolean, href: string) {
+  if (href.startsWith("#")) {
+    return href;
+  }
+
   return getLocalizedPath(locale, href, {
     forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
   });
@@ -88,6 +142,7 @@ function RashifalSignCard({
   icon: string;
 }>) {
   const href = localizeHref(locale, hasExplicitLocalePrefix, `/rashifal/${slug}`);
+  const vedicName = rashifalVedicNames[slug] ?? name;
 
   return (
     <TrackedLink
@@ -99,7 +154,7 @@ function RashifalSignCard({
       <Card
         tone="default"
         interactive
-        className="flex h-full min-h-[15rem] flex-col gap-3 border-black/8 bg-white p-4 shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0 hover:border-black/12 sm:min-h-[16rem]"
+        className="flex h-full min-h-[12rem] flex-col gap-3 border-black/8 bg-white p-4 shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0 hover:border-black/12 sm:min-h-[13rem]"
       >
         <div className="flex items-start gap-3">
           <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[rgba(184,137,67,0.28)] bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.98)_0%,rgba(247,234,204,0.92)_72%,rgba(238,214,166,0.88)_100%)] text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)] shadow-[0_10px_22px_rgba(121,85,33,0.12)]">
@@ -109,14 +164,14 @@ function RashifalSignCard({
             <h3 className="text-[0.98rem] font-semibold leading-tight text-[color:var(--color-ink-strong)]">
               {name}
             </h3>
-            <Badge tone="trust" className="border border-black/8 bg-white">
-              Daily Guidance
-            </Badge>
+            <p className="text-[0.72rem] uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)]">
+              {vedicName}
+            </p>
           </div>
         </div>
 
         <p className="text-[0.82rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-          Read the latest manually published daily guidance from the astrologer&apos;s desk.
+          Select this sign to read the latest manually published daily guidance.
         </p>
 
         <span
@@ -126,7 +181,7 @@ function RashifalSignCard({
             className: "w-full justify-center",
           })}
         >
-          Read Rashifal
+          Read Today&apos;s Rashifal
         </span>
       </Card>
     </TrackedLink>
@@ -173,16 +228,16 @@ export default async function RashifalPage() {
       />
       <RetentionPreferenceBridge section="rashifal" />
 
-      <main className="min-h-screen bg-[#FFFFFF] pb-[calc(7.2rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] md:pb-0">
-        <section className="border-b border-black/8 bg-white">
-          <Container className="grid gap-6 py-8 sm:py-10 lg:grid-cols-[minmax(0,1.08fr)_minmax(300px,0.92fr)] lg:items-center lg:py-12">
+      <main className="min-h-screen bg-[linear-gradient(180deg,#fffefb_0%,#ffffff_28%,#fbf6ed_100%)] pb-[calc(7.2rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] md:pb-0">
+        <section className="border-b border-[rgba(155,122,74,0.16)] bg-[linear-gradient(180deg,#fffefb_0%,#ffffff_100%)]">
+          <Container className="grid gap-6 py-8 sm:py-10 lg:grid-cols-[minmax(0,1.02fr)_minmax(300px,0.98fr)] lg:items-center lg:py-12">
             <div className="space-y-4 sm:space-y-5">
               <div className="flex flex-wrap gap-2">
                 <Badge tone="trust" className="border border-black/8 bg-white">
                   Daily Guidance
                 </Badge>
                 <Badge tone="outline" className="border border-black/8 bg-white text-[color:var(--color-ink-strong)]">
-                  From the Desk
+                  Moon-sign style
                 </Badge>
               </div>
 
@@ -194,16 +249,16 @@ export default async function RashifalPage() {
                     lineHeight: "var(--line-height-tight)",
                   }}
                 >
-                  Daily Rashifal
+                  Rashifal
                 </h1>
                 <p className="max-w-[46rem] text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)] sm:text-[length:var(--font-size-body-lg)]">
-                  Read daily, monthly and yearly zodiac guidance published from the astrologer&apos;s desk with Panchang, transit and Vedic astrology context.
+                  Daily zodiac guidance with moon-sign style reading, Panchang context, and practical Vedic direction without guaranteed outcomes.
                 </p>
               </div>
 
               <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-3">
                 <TrackedLink
-                  href={localizeHref(locale, hasExplicitLocalePrefix, "/daily-rashifal")}
+                  href={localizeHref(locale, hasExplicitLocalePrefix, "#daily-rashifal")}
                   eventName="daily_rashifal_view"
                   eventPayload={{ page: "/rashifal", feature: "rashifal-hero-daily" }}
                   className={buttonStyles({
@@ -213,6 +268,18 @@ export default async function RashifalPage() {
                   })}
                 >
                   Read Today&apos;s Rashifal
+                </TrackedLink>
+                <TrackedLink
+                  href={localizeHref(locale, hasExplicitLocalePrefix, "/ai")}
+                  eventName="cta_click"
+                  eventPayload={{ page: "/rashifal", feature: "rashifal-hero-ask-ni" }}
+                  className={buttonStyles({
+                    tone: "secondary",
+                    size: "lg",
+                    className: "w-full justify-center sm:w-auto",
+                  })}
+                >
+                  Ask NI
                 </TrackedLink>
                 <TrackedLink
                   href={localizeHref(locale, hasExplicitLocalePrefix, "/panchang")}
@@ -233,8 +300,8 @@ export default async function RashifalPage() {
                   "Daily Guidance",
                   "Panchang Context",
                   "Vedic Astrology",
-                  "From the Desk",
-                  "Assamese / English / Hindi Ready",
+                  "Sign Selection",
+                  "J P Sarmah Desk",
                 ].map((badge) => (
                   <Badge
                     key={badge}
@@ -249,25 +316,34 @@ export default async function RashifalPage() {
 
             <Card
               tone="default"
-              className="space-y-4 border-black/8 bg-white shadow-[0_18px_46px_rgba(17,24,39,0.06)] before:opacity-0"
+              className="space-y-4 border-[rgba(155,122,74,0.18)] bg-white shadow-[0_18px_46px_rgba(17,24,39,0.06)] before:opacity-0"
             >
               <div className="flex items-center justify-between gap-3">
                 <Badge tone="trust" className="border border-black/8 bg-white">
-                  Manual Publishing
+                  Start here
                 </Badge>
                 <Badge tone="outline" className="border border-black/8 bg-white text-[color:var(--color-ink-strong)]">
-                  Premium White
+                  Route-safe
                 </Badge>
+              </div>
+
+              <div className="space-y-2">
+                <h2 className="text-[length:var(--font-size-title-sm)] font-semibold text-[color:var(--color-ink-strong)]">
+                  Choose a sign, then refine with timing context.
+                </h2>
+                <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                  Rashifal stays public and sign-based. For personal chart context, continue into Kundli or Ask NI.
+                </p>
               </div>
 
               <div className="grid gap-2 sm:grid-cols-2">
                 {[
+                  "12 zodiac signs",
                   "Daily Rashifal",
-                  "Monthly Rashifal",
-                  "Yearly Rashifal",
-                  "Panchang context",
-                  "Transit context",
-                  "Human astrologer desk",
+                  "Love / career / business notes",
+                  "Panchang-supported flow",
+                  "Ask NI follow-up",
+                  "J P Sarmah Desk",
                 ].map((item) => (
                   <div
                     key={item}
@@ -281,54 +357,81 @@ export default async function RashifalPage() {
           </Container>
         </section>
 
-        <section className="border-b border-black/8 bg-white">
-          <Container className="py-4 sm:py-6">
-            <div className="grid grid-cols-3 gap-2 sm:gap-3">
-              {rashifalTabs.map((tab) => {
-                const isActive = "active" in tab && tab.active;
-                const tabClassName = isActive
-                  ? "border-[rgba(184,137,67,0.32)] bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(247,234,204,0.96)_100%)] text-[color:var(--color-ink-strong)] shadow-[0_12px_26px_rgba(17,24,39,0.06)]"
-                  : "border-black/8 bg-white text-[color:var(--color-ink-strong)]";
+        <section className="border-b border-[rgba(155,122,74,0.14)] bg-white">
+          <Container className="space-y-4 py-5 sm:py-7">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+              <div className="space-y-1.5">
+                <h2 className="text-[length:var(--font-size-title-md)] font-semibold text-[color:var(--color-ink-strong)]">
+                  Rashifal categories
+                </h2>
+                <p className="max-w-2xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                  Use live routes where available. Planned categories stay visible without linking to unready pages.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
+              {rashifalCategoryCards.map((category) => {
+                const isLinked = "href" in category && Boolean(category.href);
+                const isActive = "active" in category && category.active;
+                const categoryContent = (
+                  <Card
+                    tone="default"
+                    interactive={isLinked}
+                    className={`flex h-full min-h-[9.25rem] flex-col justify-between gap-3 border px-3.5 py-3.5 text-left before:opacity-0 sm:p-4 ${
+                      isActive
+                        ? "border-[rgba(184,137,67,0.32)] bg-[linear-gradient(180deg,rgba(255,255,255,0.99)_0%,rgba(247,234,204,0.96)_100%)] shadow-[0_12px_26px_rgba(17,24,39,0.06)]"
+                        : "border-black/8 bg-white"
+                    }`}
+                  >
+                    <div className="space-y-2">
+                      <div className="flex items-start justify-between gap-2">
+                        <h3 className="text-[0.96rem] font-semibold leading-tight text-[color:var(--color-ink-strong)] sm:text-[1rem]">
+                          {category.title}
+                        </h3>
+                        <Badge
+                          tone={isActive ? "trust" : "outline"}
+                          className="shrink-0 border border-black/8 bg-white text-[0.62rem] uppercase tracking-[0.07em] text-[color:var(--color-accent-strong)]"
+                        >
+                          {category.statusLabel}
+                        </Badge>
+                      </div>
+                      <p className="text-[0.78rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                        {category.description}
+                      </p>
+                    </div>
+                    <span
+                      className={`text-[0.7rem] font-semibold uppercase tracking-[0.09em] ${
+                        isLinked
+                          ? "text-[color:var(--color-accent-strong)]"
+                          : "text-[color:var(--color-ink-muted)]"
+                      }`}
+                    >
+                      {category.ctaLabel}
+                    </span>
+                  </Card>
+                );
+
+                if (!isLinked) {
+                  return (
+                    <div key={category.title} className="h-full" aria-disabled="true">
+                      {categoryContent}
+                    </div>
+                  );
+                }
 
                 return (
                   <TrackedLink
-                    key={tab.title}
-                    href={localizeHref(locale, hasExplicitLocalePrefix, tab.href)}
+                    key={category.title}
+                    href={localizeHref(locale, hasExplicitLocalePrefix, category.href)}
                     eventName="cta_click"
                     eventPayload={{
                       page: "/rashifal",
-                      feature: `rashifal-tab-${tab.title.toLowerCase().replace(/\s+/g, "-")}`,
+                      feature: `rashifal-category-${category.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
                     }}
                     className="block h-full"
                   >
-                    <Card
-                      tone="default"
-                      interactive
-                      className={`flex h-full min-h-[5.1rem] flex-col justify-between gap-1.5 border px-3 py-3 text-left before:opacity-0 ${tabClassName}`}
-                    >
-                      <div className="space-y-1">
-                        <h2 className="text-[0.96rem] font-semibold leading-tight sm:text-[1rem]">
-                          {tab.title}
-                        </h2>
-                      </div>
-                      <div className="flex items-center justify-between gap-2">
-                        <Badge
-                          tone={isActive ? "trust" : "outline"}
-                          className="border border-black/8 bg-white text-[0.66rem] uppercase tracking-[0.07em] text-[color:var(--color-accent-strong)]"
-                        >
-                          {tab.statusLabel}
-                        </Badge>
-                        <span
-                          className={`text-[0.7rem] font-medium uppercase tracking-[0.09em] ${
-                            isActive
-                              ? "text-[color:var(--color-accent-strong)]"
-                              : "text-[color:var(--color-ink-strong)]"
-                          }`}
-                        >
-                          {tab.ctaLabel}
-                        </span>
-                      </div>
-                    </Card>
+                    {categoryContent}
                   </TrackedLink>
                 );
               })}
@@ -336,8 +439,16 @@ export default async function RashifalPage() {
           </Container>
         </section>
 
-        <section className="border-b border-black/8 bg-white">
-          <Container className="py-5 sm:py-7">
+        <section className="border-b border-[rgba(155,122,74,0.14)] bg-white">
+          <Container className="space-y-4 py-6 sm:py-8">
+            <div className="space-y-1.5">
+              <h2 className="text-[length:var(--font-size-title-md)] font-semibold text-[color:var(--color-ink-strong)]">
+                Select your zodiac sign
+              </h2>
+              <p className="max-w-2xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                English and Vedic sign labels are used for selection only; predictions remain on the sign reading pages.
+              </p>
+            </div>
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
               {rashifalSigns.map((sign) => (
                 <RashifalSignCard
@@ -353,10 +464,13 @@ export default async function RashifalPage() {
           </Container>
         </section>
 
-        <section className="border-b border-black/8 bg-white scroll-mt-24" id="daily-rashifal">
+        <section className="border-b border-[rgba(155,122,74,0.14)] bg-white scroll-mt-24" id="daily-rashifal">
           <Container className="py-7 sm:py-9" id="rashifal-reading">
             <div className="space-y-3">
               <div className="space-y-2">
+                <Badge tone="trust" className="w-fit border border-black/8 bg-white">
+                  Daily Rashifal
+                </Badge>
                 <h2 className="text-[length:var(--font-size-title-md)] font-semibold text-[color:var(--color-ink-strong)] sm:text-[length:var(--font-size-title-lg)]">
                   Today&apos;s Rashifal Reading
                 </h2>
@@ -397,7 +511,7 @@ export default async function RashifalPage() {
                                 </p>
                               </div>
                             </div>
-                            <Badge tone="neutral" className="shrink-0">
+                            <Badge tone="trust" className="shrink-0 border border-black/8 bg-white">
                               Reading
                             </Badge>
                           </div>
@@ -458,47 +572,11 @@ export default async function RashifalPage() {
           </Container>
         </section>
 
-        <section className="border-b border-black/8 bg-white scroll-mt-24" id="monthly-rashifal">
-          <Container className="py-7 sm:py-9">
-            <Card className="space-y-3 border-black/8 bg-white p-4 shadow-[0_12px_28px_rgba(17,24,39,0.05)] before:opacity-0">
-              <div className="flex items-center justify-between gap-3">
-                <Badge tone="trust" className="border border-black/8 bg-white">
-                  Monthly Rashifal
-                </Badge>
-                <Badge tone="outline" className="border border-black/8 bg-white text-[color:var(--color-ink-strong)]">
-                  Coming Soon
-                </Badge>
-              </div>
-              <p className="text-[0.88rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-strong)]">
-                Monthly Rashifal will be published from the desk soon.
-              </p>
-            </Card>
-          </Container>
-        </section>
-
-        <section className="border-b border-black/8 bg-white scroll-mt-24" id="yearly-rashifal">
-          <Container className="py-7 sm:py-9">
-            <Card className="space-y-3 border-black/8 bg-white p-4 shadow-[0_12px_28px_rgba(17,24,39,0.05)] before:opacity-0">
-              <div className="flex items-center justify-between gap-3">
-                <Badge tone="trust" className="border border-black/8 bg-white">
-                  Yearly Rashifal
-                </Badge>
-                <Badge tone="outline" className="border border-black/8 bg-white text-[color:var(--color-ink-strong)]">
-                  Coming Soon
-                </Badge>
-              </div>
-              <p className="text-[0.88rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-strong)]">
-                Yearly Rashifal will be published from the desk soon.
-              </p>
-            </Card>
-          </Container>
-        </section>
-
         <section className="pt-6">
           <AdSlot placement="rashifal_after_intro" />
         </section>
 
-        <section className="border-b border-black/8 bg-white">
+        <section className="border-b border-[rgba(155,122,74,0.14)] bg-white">
           <Container className="py-7 sm:py-9">
             <Card className="space-y-3 border-black/8 bg-white shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0">
               <Badge tone="trust" className="border border-black/8 bg-white w-fit">
@@ -523,7 +601,7 @@ export default async function RashifalPage() {
           </Container>
         </section>
 
-        <section className="border-b border-black/8 bg-white">
+        <section className="border-b border-[rgba(155,122,74,0.14)] bg-white">
           <Container className="py-7 sm:py-9">
             <div className="space-y-3">
               <div className="space-y-2">
@@ -531,7 +609,7 @@ export default async function RashifalPage() {
                   Today&apos;s Guidance Companion
                 </Badge>
                 <p className="max-w-3xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                  Continue from today&apos;s guidance into Panchang timing, remedies, AI support, or a personal chart.
+                  Continue from today&apos;s guidance into Panchang timing, remedies, Ask NI, or a personal chart.
                 </p>
               </div>
 
