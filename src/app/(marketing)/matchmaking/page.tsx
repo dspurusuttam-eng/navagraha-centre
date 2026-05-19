@@ -9,287 +9,348 @@ import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { createToolMetadata } from "@/lib/seo/metadata";
 
-type BirthField = {
-  key: string;
-  label: string;
-  placeholder: string;
-  type: "text" | "date" | "time";
-  optional?: boolean;
-  inputMode?: "text" | "decimal";
-};
-
-const heroBadges = [
-  "Guna Milan Ready",
-  "Manglik Safe Mode",
-  "Saved Kundli Protected",
-  "Privacy-Safe",
-] as const;
-
-const birthFields: readonly BirthField[] = [
-  { key: "full-name", label: "Full name", placeholder: "Enter full name", type: "text" },
-  { key: "date-of-birth", label: "Date of birth", placeholder: "Select date", type: "date" },
-  { key: "time-of-birth", label: "Time of birth", placeholder: "Select time", type: "time" },
-  { key: "birth-place", label: "Birth place", placeholder: "City, state, country", type: "text" },
+const matchmakingIntroCtas = [
   {
-    key: "latitude",
-    label: "Latitude",
-    placeholder: "Optional",
-    type: "text",
-    optional: true,
-    inputMode: "decimal",
-  },
-  {
-    key: "longitude",
-    label: "Longitude",
-    placeholder: "Optional",
-    type: "text",
-    optional: true,
-    inputMode: "decimal",
-  },
-  {
-    key: "timezone",
-    label: "Timezone",
-    placeholder: "Optional",
-    type: "text",
-    optional: true,
-  },
-] as const;
-
-const gunaReadinessCards = [
-  {
-    title: "Varna",
-    status: "Pending",
-    summary: "Ready when verified charts are connected.",
-  },
-  {
-    title: "Vashya",
-    status: "Pending",
-    summary: "Ready when verified charts are connected.",
-  },
-  {
-    title: "Tara",
-    status: "Pending",
-    summary: "Ready when verified charts are connected.",
-  },
-  {
-    title: "Yoni",
-    status: "Pending",
-    summary: "Ready when verified charts are connected.",
-  },
-  {
-    title: "Graha Maitri",
-    status: "Pending",
-    summary: "Ready when verified charts are connected.",
-  },
-  {
-    title: "Gana",
-    status: "Pending",
-    summary: "Ready when verified charts are connected.",
-  },
-  {
-    title: "Bhakoot",
-    status: "Pending",
-    summary: "Ready when verified charts are connected.",
-  },
-  {
-    title: "Nadi",
-    status: "Pending",
-    summary: "Ready when verified charts are connected.",
-  },
-] as const;
-
-const manglikReadinessCards = [
-  {
-    title: "Lagna reference",
-    status: "Pending",
-    summary: "Verified chart context is required before Manglik comparison appears.",
-  },
-  {
-    title: "Moon reference",
-    status: "Pending",
-    summary: "Verified chart context is required before Manglik comparison appears.",
-  },
-  {
-    title: "Venus reference",
-    status: "Pending",
-    summary: "Verified chart context is required before Manglik comparison appears.",
-  },
-] as const;
-
-const resultUiSlots = [
-  {
-    title: "Total score",
-    label: "Guna Milan",
-    value: "Calculation preparing",
-    note: "Verified Ashtakoot output will appear only after protected chart pairing is available.",
-  },
-  {
-    title: "Ashtakoot breakdown",
-    label: "Guna Milan",
-    value: "Hidden safely",
-    note: "No points or score lines are fabricated while the public page is in safe mode.",
-  },
-  {
-    title: "Manglik status",
-    label: "Manglik",
-    value: "Analysis preparing",
-    note: "Lagna, Moon, and Venus references stay in safe mode until verified data is supplied.",
-  },
-  {
-    title: "Compatibility summary",
-    label: "Summary",
-    value: "Safe fallback",
-    note: "Consultation is recommended for complex or ambiguous relationship contexts.",
-  },
-] as const;
-
-const nextActionCtas = [
-  {
-    href: "/kundli",
-    label: "Generate Kundli",
-    feature: "matchmaking-generate-kundli",
+    href: "#matchmaking-structure",
+    label: "Start Matchmaking",
+    feature: "matchmaking-hero-start",
     tone: "accent" as const,
   },
   {
-    href: "/navagraha-ai",
-    label: "Ask NAVAGRAHA AI",
-    feature: "matchmaking-ask-ai",
+    href: "/ai",
+    label: "Ask NI",
+    feature: "matchmaking-hero-ask-ni",
+    tone: "secondary" as const,
+  },
+  {
+    href: "/kundli",
+    label: "Open Kundli",
+    feature: "matchmaking-hero-open-kundli",
+    tone: "secondary" as const,
+  },
+  {
+    href: "/reports",
+    label: "View Reports",
+    feature: "matchmaking-hero-view-reports",
     tone: "secondary" as const,
   },
   {
     href: "/consultation",
     label: "Book Consultation",
-    feature: "matchmaking-book-consultation",
-    tone: "secondary" as const,
-  },
-  {
-    href: "/reports",
-    label: "View Marriage Report",
-    feature: "matchmaking-view-report",
+    feature: "matchmaking-hero-book-consultation",
     tone: "secondary" as const,
   },
 ] as const;
 
-function BirthDetailCard({
+const matchmakingStructureCards = [
+  {
+    title: "Kundli Matching",
+    label: "Chart pairing",
+    description:
+      "Matchmaking begins with two verified birth-chart foundations, not public placeholder verdicts.",
+  },
+  {
+    title: "Guna Milan",
+    label: "Ashtakoot layer",
+    description:
+      "The public page stays structure-only until protected chart pairing can produce real Guna output.",
+  },
+  {
+    title: "Manglik / Dosha Check",
+    label: "Compatibility caution",
+    description:
+      "Dosha-sensitive comparison must come from verified chart context, not from manually written labels.",
+  },
+  {
+    title: "Emotional Compatibility",
+    label: "Relationship context",
+    description:
+      "Emotional harmony belongs in chart-aware interpretation, not a fabricated percentage score.",
+  },
+  {
+    title: "Family & Marriage Harmony",
+    label: "Practical guidance",
+    description:
+      "The page frames relationship readiness calmly without promising an outcome or guarantee.",
+  },
+  {
+    title: "Timing Guidance",
+    label: "Marriage timing",
+    description:
+      "Timing context should connect with Kundli, Dasha, and Muhurat when protected data is ready.",
+  },
+  {
+    title: "Report Support",
+    label: "Deeper review",
+    description:
+      "Structured reports remain the route-safe path for deeper compatibility review.",
+  },
+  {
+    title: "Consultation Support",
+    label: "Human review",
+    description:
+      "Sensitive relationship questions can move into consultation without exposing private chart data publicly.",
+  },
+] as const;
+
+const matchmakingReadinessCards = [
+  {
+    title: "Birth details for both people",
+    status: "Required",
+    description:
+      "Date, time, and place are required before protected compatibility comparison can begin.",
+  },
+  {
+    title: "Chart pairing",
+    status: "Protected",
+    description:
+      "Pairing remains inside safe chart flows so no public cross-user data is exposed.",
+  },
+  {
+    title: "Guna score output",
+    status: "Hidden safely",
+    description:
+      "No fake Guna Milan score, partial points, or public numeric verdict appears here.",
+  },
+  {
+    title: "Manglik comparison",
+    status: "Preparing",
+    description:
+      "Manglik and dosha-sensitive comparison stays calm and hidden until verified chart context exists.",
+  },
+  {
+    title: "Compatibility summary",
+    status: "Safe mode",
+    description:
+      "The page avoids fake harmony percentages, certainty claims, or marriage guarantees.",
+  },
+  {
+    title: "Private chart continuity",
+    status: "Protected",
+    description:
+      "Saved charts, raw JSON, and detailed result history remain outside the public route.",
+  },
+] as const;
+
+const matchmakingShortcutCards = [
+  {
+    title: "Kundli",
+    href: "/kundli",
+    icon: "KU",
+    ctaLabel: "Open Kundli",
+    feature: "matchmaking-shortcut-kundli",
+    description: "Start from the natal chart before reading compatibility.",
+  },
+  {
+    title: "Reports",
+    href: "/reports",
+    icon: "RP",
+    ctaLabel: "View Reports",
+    feature: "matchmaking-shortcut-reports",
+    description: "Use structured reports for deeper relationship review.",
+  },
+  {
+    title: "Consultation",
+    href: "/consultation",
+    icon: "CS",
+    ctaLabel: "Book Consultation",
+    feature: "matchmaking-shortcut-consultation",
+    description: "Move into human-led review for sensitive marriage questions.",
+  },
+  {
+    title: "Ask NI",
+    href: "/ai",
+    icon: "NI",
+    ctaLabel: "Ask NI",
+    feature: "matchmaking-shortcut-ai",
+    description: "Use NAVAGRAHA Intelligence for AI-guided compatibility context.",
+  },
+  {
+    title: "Dosha / Yoga",
+    href: "/dosha-yoga",
+    icon: "DY",
+    ctaLabel: "Review Dosha / Yoga",
+    feature: "matchmaking-shortcut-dosha-yoga",
+    description: "Check related chart indicators through the safe public layer.",
+  },
+  {
+    title: "Remedies",
+    href: "/remedies",
+    icon: "RE",
+    ctaLabel: "Open Remedies",
+    feature: "matchmaking-shortcut-remedies",
+    description: "Keep remedies practical and route-safe without fear-based claims.",
+  },
+  {
+    title: "Muhurat",
+    href: "/muhurat",
+    icon: "MU",
+    ctaLabel: "Explore Muhurat",
+    feature: "matchmaking-shortcut-muhurat",
+    description: "Use Muhurat when timing questions become relevant later.",
+  },
+  {
+    title: "Tools",
+    href: "/tools",
+    icon: "TH",
+    ctaLabel: "Open Tools",
+    feature: "matchmaking-shortcut-tools",
+    description: "Return to the full tools hub without leaving the public shell.",
+  },
+] as const;
+
+const guidanceCards = [
+  {
+    title: "Relationship fit stays chart-aware",
+    body:
+      "Compatibility is not reduced to a public percentage. Emotional, family, and marriage context need verified chart pairing.",
+  },
+  {
+    title: "Timing should stay practical",
+    body:
+      "Marriage timing questions belong with Kundli, Dasha, Muhurat, and consultation support, not a one-line public verdict.",
+  },
+  {
+    title: "Public page remains privacy-safe",
+    body:
+      "No partner data, raw chart JSON, or saved private comparison history is exposed on this route.",
+  },
+] as const;
+
+export const metadata = createToolMetadata({
+  title: "Matchmaking / Guna Milan",
+  description:
+    "Explore a safe Matchmaking foundation for Kundli matching, Guna Milan, relationship compatibility, and Vedic marriage guidance without fake public scores.",
+  path: "/matchmaking",
+  keywords: [
+    "matchmaking",
+    "kundli matching",
+    "guna milan",
+    "marriage compatibility",
+    "vedic marriage guidance",
+  ],
+});
+
+export const revalidate = 3600;
+
+function MatchmakingStructureCard({
   title,
-  prefix,
+  label,
+  description,
 }: Readonly<{
   title: string;
-  prefix: "boy" | "girl";
+  label: string;
+  description: string;
 }>) {
   return (
     <Card
       tone="default"
-      className="space-y-4 border-black/8 bg-white shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0"
+      className="flex min-h-[8.8rem] flex-col justify-between gap-3 border-[rgba(184,137,67,0.2)] bg-white p-3 shadow-[0_10px_22px_rgba(17,24,39,0.045)] before:opacity-0"
     >
-      <div className="flex flex-wrap items-start justify-between gap-3">
+      <div className="space-y-1.5">
+        <p className="text-[0.88rem] font-semibold leading-tight text-[color:var(--color-ink-strong)]">
+          {title}
+        </p>
+        <p className="text-[0.66rem] uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)]">
+          {label}
+        </p>
+        <p className="text-[0.7rem] leading-[1.4] text-[color:var(--color-ink-body)]">
+          {description}
+        </p>
+      </div>
+      <Badge
+        tone="outline"
+        className="w-fit border border-black/8 bg-white text-[0.58rem] uppercase tracking-[0.06em] text-[color:var(--color-accent-strong)]"
+      >
+        Structure only
+      </Badge>
+    </Card>
+  );
+}
+
+function MatchmakingStatusCard({
+  title,
+  status,
+  description,
+}: Readonly<{
+  title: string;
+  status: string;
+  description: string;
+}>) {
+  return (
+    <Card
+      tone="default"
+      className="flex h-full flex-col gap-3 border-black/8 bg-white p-4 shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0"
+    >
+      <div className="flex items-start justify-between gap-3">
         <div className="space-y-1">
           <p className="text-[0.68rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
-            Birth details
+            Matchmaking Status
           </p>
           <h3 className="text-[length:var(--font-size-body-lg)] font-semibold text-[color:var(--color-ink-strong)]">
             {title}
           </h3>
         </div>
-        <Badge tone="trust" className="border border-black/8 bg-white">
-          Safe Mode
-        </Badge>
-      </div>
-
-      <p className="text-[0.88rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-        Required fields are birth date, birth time, and birth place. Latitude, longitude, and timezone stay optional until a verified pairing is connected.
-      </p>
-
-      <div className="grid gap-3">
-        {birthFields.map((field) => {
-          const inputId = `${prefix}-${field.key}`;
-
-          return (
-            <label key={inputId} className="space-y-1.5">
-              <span className="flex flex-wrap items-center gap-2">
-                <span className="text-[0.68rem] uppercase tracking-[0.08em] text-[#111111]">
-                  {field.label}
-                </span>
-                <Badge
-                  tone={field.optional ? "outline" : "accent"}
-                  className="border border-black/8 bg-white"
-                >
-                  {field.optional ? "Optional" : "Required"}
-                </Badge>
-              </span>
-              <input
-                id={inputId}
-                name={inputId}
-                type={field.type}
-                inputMode={field.inputMode}
-                className="min-h-11 w-full rounded-[var(--radius-lg)] border border-black/12 bg-white px-4 py-3 text-[#111111] outline-none transition placeholder:text-[#8A8A8A] focus:border-[rgba(184,137,67,0.65)] focus:ring-2 focus:ring-[rgba(184,137,67,0.12)]"
-                placeholder={field.placeholder}
-                aria-label={`${title} ${field.label}`}
-              />
-            </label>
-          );
-        })}
-      </div>
-
-      <div className="rounded-[1rem] border border-[rgba(184,137,67,0.18)] bg-white px-4 py-3">
-        <p className="text-[0.68rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
-          Validation
-        </p>
-        <p className="mt-2 text-[0.88rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-          Missing date, time, or place keeps compatibility in calculation-preparing mode. No cross-user chart data is exposed here.
-        </p>
-      </div>
-    </Card>
-  );
-}
-
-function ReadinessCard({
-  title,
-  status,
-  summary,
-}: Readonly<{
-  title: string;
-  status: string;
-  summary: string;
-}>) {
-  return (
-    <Card
-      tone="default"
-      className="flex h-full flex-col gap-3 border-black/8 bg-white p-4 shadow-[0_10px_24px_rgba(17,24,39,0.04)] before:opacity-0"
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div className="space-y-1">
-          <p className="text-[0.68rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
-            Readiness
-          </p>
-          <h4 className="text-[length:var(--font-size-body-lg)] font-semibold text-[color:var(--color-ink-strong)]">
-            {title}
-          </h4>
-        </div>
         <Badge tone="neutral">{status}</Badge>
       </div>
       <p className="text-[0.88rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-        {summary}
+        {description}
       </p>
     </Card>
   );
 }
 
-export const metadata = createToolMetadata({
-  title: "Kundli Matching / Compatibility",
-  description:
-    "Compare two birth charts with safe Guna Milan, Manglik readiness, and verified chart pairing only. No fake scores or fear-based verdicts are shown.",
-  path: "/matchmaking",
-  keywords: [
-    "kundli matching",
-    "guna milan",
-    "manglik compatibility",
-    "marriage compatibility",
-    "vedic relationship astrology",
-  ],
-});
+function MatchmakingShortcutCard({
+  title,
+  href,
+  icon,
+  ctaLabel,
+  feature,
+  description,
+}: Readonly<(typeof matchmakingShortcutCards)[number]>) {
+  return (
+    <TrackedLink
+      href={href}
+      eventName="cta_click"
+      eventPayload={{ page: "/matchmaking", feature }}
+      className="group block h-full"
+    >
+      <Card
+        tone="default"
+        interactive
+        className="flex h-full min-h-[12rem] flex-col gap-3 border-black/8 bg-white p-4 shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0 hover:border-[rgba(184,137,67,0.28)]"
+      >
+        <div className="flex items-start gap-3">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[rgba(184,137,67,0.28)] bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.98)_0%,rgba(247,234,204,0.92)_72%,rgba(238,214,166,0.88)_100%)] text-[0.68rem] font-semibold uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)] shadow-[0_10px_22px_rgba(121,85,33,0.12)]">
+            {icon}
+          </span>
+          <div className="min-w-0 flex-1 space-y-1">
+            <h3 className="text-[0.98rem] font-semibold leading-tight text-[color:var(--color-ink-strong)]">
+              {title}
+            </h3>
+            <p className="text-[0.68rem] uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)]">
+              Route-safe
+            </p>
+          </div>
+        </div>
 
-export const revalidate = 3600;
+        <p className="text-[0.8rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+          {description}
+        </p>
+
+        <span
+          className={buttonStyles({
+            size: "sm",
+            tone: title === "Ask NI" ? "tertiary" : "secondary",
+            className: "mt-auto w-full justify-center",
+          })}
+        >
+          {ctaLabel}
+        </span>
+      </Card>
+    </TrackedLink>
+  );
+}
 
 export default function MatchmakingPage() {
   return (
@@ -300,23 +361,29 @@ export default function MatchmakingPage() {
         payload={{ page: "/matchmaking", feature: "matchmaking-page" }}
       />
 
-      <main className="min-h-screen bg-[#FFFFFF] pb-[calc(7rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] md:pb-0">
-        <section className="border-b border-black/8 bg-white">
-          <Container className="grid gap-8 py-10 sm:py-12 lg:grid-cols-[minmax(0,1.08fr)_minmax(300px,0.92fr)] lg:items-center lg:py-14">
-            <div className="space-y-6">
+      <main className="min-h-screen bg-[linear-gradient(180deg,#fffefb_0%,#ffffff_28%,#fbf6ed_100%)] pb-[calc(7.2rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] xl:pb-0">
+        <section className="border-b border-[rgba(155,122,74,0.16)] bg-[linear-gradient(180deg,#fffefb_0%,#ffffff_100%)]">
+          <Container className="grid gap-6 py-8 sm:py-10 lg:grid-cols-[minmax(0,1.04fr)_minmax(300px,0.96fr)] lg:items-center lg:py-12">
+            <div className="space-y-4 sm:space-y-5">
               <div className="flex flex-wrap gap-2">
                 <Badge tone="trust" className="border border-black/8 bg-white">
-                  NAVAGRAHA CENTRE
+                  Matchmaking
                 </Badge>
-                <Badge tone="outline" className="border border-black/8 bg-white text-[color:var(--color-ink-strong)]">
-                  Kundli Matching / Compatibility
+                <Badge
+                  tone="outline"
+                  className="border border-black/8 bg-white text-[color:var(--color-ink-strong)]"
+                >
+                  Kundli Matching
                 </Badge>
-                <Badge tone="accent" className="border border-[rgba(184,137,67,0.18)] bg-white">
+                <Badge
+                  tone="outline"
+                  className="border border-black/8 bg-white text-[color:var(--color-ink-strong)]"
+                >
                   Guna Milan
                 </Badge>
               </div>
 
-              <div className="space-y-3 sm:space-y-4">
+              <div className="space-y-2.5 sm:space-y-4">
                 <h1
                   className="max-w-4xl font-[family-name:var(--font-display)] text-[length:var(--font-size-display-sm)] text-[color:var(--color-ink-strong)] sm:text-[length:var(--font-size-display-lg)]"
                   style={{
@@ -324,27 +391,15 @@ export default function MatchmakingPage() {
                     lineHeight: "var(--line-height-tight)",
                   }}
                 >
-                  Kundli Matching / Compatibility
+                  Matchmaking
                 </h1>
-                <p className="max-w-[46rem] text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)] sm:text-[length:var(--font-size-body-lg)]">
-                  Compare two verified birth charts with calm Guna Milan and Manglik readiness. The public foundation stays honest: it never fabricates a score, dosha result, or marriage outcome.
+                <p className="max-w-[48rem] text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)] sm:text-[length:var(--font-size-body-lg)]">
+                  Kundli matching, Guna Milan, relationship compatibility, and Vedic marriage guidance presented through a calm, privacy-safe public foundation.
                 </p>
               </div>
 
-              <div className="flex flex-wrap gap-2">
-                {heroBadges.map((badge) => (
-                  <Badge
-                    key={badge}
-                    tone="outline"
-                    className="border border-black/8 bg-white text-[color:var(--color-ink-strong)]"
-                  >
-                    {badge}
-                  </Badge>
-                ))}
-              </div>
-
-              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                {nextActionCtas.map((cta) => (
+              <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-3">
+                {matchmakingIntroCtas.map((cta) => (
                   <TrackedLink
                     key={cta.label}
                     href={cta.href}
@@ -353,46 +408,84 @@ export default function MatchmakingPage() {
                     className={buttonStyles({
                       size: "lg",
                       tone: cta.tone,
-                      className: "w-full justify-center",
+                      className: "w-full justify-center sm:w-auto",
                     })}
                   >
                     {cta.label}
                   </TrackedLink>
                 ))}
               </div>
+
+              <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                {[
+                  "Chart pairing",
+                  "Guna Milan",
+                  "Dosha check",
+                  "Timing guidance",
+                  "Ask NI follow-up",
+                ].map((label) => (
+                  <Badge
+                    key={label}
+                    tone="trust"
+                    className="border border-black/8 bg-white px-2 py-1 text-[0.56rem] uppercase tracking-[0.05em] text-[color:var(--color-ink-strong)] sm:px-3 sm:py-1.5 sm:text-[0.64rem] sm:tracking-[0.1em]"
+                  >
+                    {label}
+                  </Badge>
+                ))}
+              </div>
             </div>
 
-            <Card className="space-y-4 border-black/8 bg-white shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0">
-              <div className="flex flex-wrap items-start gap-4">
+            <Card
+              tone="default"
+              className="space-y-4 border-[rgba(155,122,74,0.18)] bg-white shadow-[0_18px_46px_rgba(17,24,39,0.06)] before:opacity-0"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <Badge tone="trust" className="border border-black/8 bg-white">
+                  Start here
+                </Badge>
+                <Badge
+                  tone="outline"
+                  className="border border-black/8 bg-white text-[color:var(--color-ink-strong)]"
+                >
+                  Safe-mode public shell
+                </Badge>
+              </div>
+
+              <div className="flex items-start gap-4">
                 <UtilityIcon name="compatibility" className="h-16 w-16 shrink-0" />
                 <div className="space-y-2">
-                  <Badge tone="trust" className="border border-black/8 bg-white">
-                    Calculation Preparing
-                  </Badge>
-                  <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-ink-strong)]">
-                    Verified compatibility output appears only after chart pairing is ready
+                  <h2 className="text-[length:var(--font-size-title-sm)] font-semibold text-[color:var(--color-ink-strong)]">
+                    Begin with two verified birth foundations, not a public score.
                   </h2>
                   <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                    This foundation stays safe by keeping the public result layer empty until a verified chart context is available.
+                    This page does not invent compatibility percentages, Guna Milan points, dosha verdicts, or marriage outcomes. It prepares the route-safe structure before deeper protected comparison.
                   </p>
                 </div>
               </div>
 
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="rounded-[var(--radius-xl)] border border-[rgba(184,137,67,0.18)] bg-white p-4">
-                  <p className="text-[0.68rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
+              <div className="grid gap-2 sm:grid-cols-3">
+                <div className="rounded-[1.1rem] border border-[rgba(184,137,67,0.18)] bg-white px-3 py-2.5 shadow-[0_10px_24px_rgba(17,24,39,0.04)]">
+                  <p className="text-[0.66rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
                     Guna Milan
                   </p>
-                  <p className="mt-2 text-[0.88rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                    No fake score or Ashtakoot points are shown until verified charts are connected.
+                  <p className="mt-1.5 text-[0.76rem] leading-[1.45] text-[color:var(--color-ink-body)]">
+                    Visible only after verified chart pairing.
                   </p>
                 </div>
-                <div className="rounded-[var(--radius-xl)] border border-[rgba(184,137,67,0.18)] bg-white p-4">
-                  <p className="text-[0.68rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
-                    Manglik
+                <div className="rounded-[1.1rem] border border-[rgba(184,137,67,0.18)] bg-white px-3 py-2.5 shadow-[0_10px_24px_rgba(17,24,39,0.04)]">
+                  <p className="text-[0.66rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
+                    Manglik / Dosha
                   </p>
-                  <p className="mt-2 text-[0.88rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                    Lagna, Moon, and Venus references remain in safe mode until verified data is supplied.
+                  <p className="mt-1.5 text-[0.76rem] leading-[1.45] text-[color:var(--color-ink-body)]">
+                    Safe until protected comparison is ready.
+                  </p>
+                </div>
+                <div className="rounded-[1.1rem] border border-[rgba(184,137,67,0.18)] bg-white px-3 py-2.5 shadow-[0_10px_24px_rgba(17,24,39,0.04)]">
+                  <p className="text-[0.66rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
+                    Human Review
+                  </p>
+                  <p className="mt-1.5 text-[0.76rem] leading-[1.45] text-[color:var(--color-ink-body)]">
+                    Reports and consultation remain the careful next step.
                   </p>
                 </div>
               </div>
@@ -401,112 +494,57 @@ export default function MatchmakingPage() {
         </section>
 
         <Section
-          tone="transparent"
-          category="utilities"
-          eyebrow="Birth Details"
-          title="Enter both birth profiles before moving into verified compatibility."
-          description="The public page shows Boy and Girl input readiness, but protected chart pairing stays inside safe chart flows."
-        >
-          <div className="grid gap-4 xl:grid-cols-2">
-            <BirthDetailCard title="Boy birth details" prefix="boy" />
-            <BirthDetailCard title="Girl birth details" prefix="girl" />
-          </div>
-        </Section>
-
-        <Section
+          id="matchmaking-structure"
           tone="light"
           category="utilities"
-          eyebrow="Result UI Readiness"
-          title="Result panels stay visible without inventing a compatibility verdict."
-          description="The public interface is ready for verified Guna Milan and Manglik output, but it remains in safe fallback mode until both charts are properly connected."
+          eyebrow="Matchmaking Structure"
+          title="Read the compatibility layers without fabricated scores or partner verdicts."
+          description="These cards show the structure of the Matchmaking flow while keeping all scoring, partner data, and prediction layers frozen."
         >
-          <div className="grid gap-4 lg:grid-cols-2">
-            {resultUiSlots.map((slot) => (
-              <Card
-                key={slot.title}
-                tone="default"
-                className="space-y-3 border-black/8 bg-white shadow-[0_12px_28px_rgba(17,24,39,0.045)] before:opacity-0"
-              >
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div className="space-y-1">
-                    <p className="text-[0.68rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
-                      {slot.label}
-                    </p>
-                    <h3 className="text-[length:var(--font-size-body-lg)] font-semibold text-[color:var(--color-ink-strong)]">
-                      {slot.title}
-                    </h3>
-                  </div>
-                  <Badge tone="neutral">{slot.value}</Badge>
-                </div>
-                <p className="text-[0.88rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                  {slot.note}
-                </p>
-              </Card>
+          <div className="grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-4">
+            {matchmakingStructureCards.map((item) => (
+              <MatchmakingStructureCard
+                key={item.title}
+                title={item.title}
+                label={item.label}
+                description={item.description}
+              />
             ))}
           </div>
         </Section>
 
         <Section
-          tone="light"
+          tone="transparent"
           category="utilities"
-          eyebrow="Compatibility Summary"
-          title="Compatibility stays in calculation-preparing mode until verified chart pairing is available."
-          description="The summary panel remains honest and safe. It does not fabricate a Guna Milan score, Manglik verdict, or marriage certainty."
+          eyebrow="Readiness"
+          title="The public flow stays honest about what must exist before compatibility appears."
+          description="Birth context, protected chart pairing, and private comparison remain separate from the public shell."
         >
-          <div className="grid gap-4 lg:grid-cols-[minmax(0,1.02fr)_minmax(300px,0.98fr)]">
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,1.02fr)_minmax(280px,0.98fr)]">
             <Card
               tone="default"
               className="space-y-4 border-black/8 bg-white shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0"
             >
               <div className="space-y-2">
                 <Badge tone="trust" className="border border-black/8 bg-white">
-                  Safe Empty State
+                  Compatibility Readiness
                 </Badge>
                 <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-ink-strong)]">
-                  Verified compatibility output will appear after chart pairing is connected
+                  Matchmaking output stays hidden until both chart foundations are ready.
                 </h2>
                 <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                  No public score, no fear-based verdict, and no cross-user data exposure are shown here.
+                  The page keeps structure visible while withholding fake Guna scores, dosha verdicts, and partner-level conclusions.
                 </p>
               </div>
 
-              <div className="grid gap-3 sm:grid-cols-2">
-                {[
-                  {
-                    label: "Guna Milan",
-                    value: "Pending",
-                    note: "Ashtakoot output remains hidden until verified charts exist.",
-                  },
-                  {
-                    label: "Manglik",
-                    value: "Pending",
-                    note: "Lagna, Moon, and Venus checks stay in safe mode.",
-                  },
-                  {
-                    label: "Saved Kundli",
-                    value: "Protected",
-                    note: "Comparison support lives in the dashboard only.",
-                  },
-                  {
-                    label: "Public score",
-                    value: "Hidden",
-                    note: "No numeric compatibility score is fabricated.",
-                  },
-                ].map((item) => (
-                  <div
-                    key={item.label}
-                    className="rounded-[var(--radius-xl)] border border-[rgba(184,137,67,0.18)] bg-white p-4"
-                  >
-                    <p className="text-[0.68rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
-                      {item.label}
-                    </p>
-                    <p className="mt-2 text-[length:var(--font-size-body-lg)] font-semibold text-[color:var(--color-ink-strong)]">
-                      {item.value}
-                    </p>
-                  <p className="mt-2 text-[0.88rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                      {item.note}
-                    </p>
-                  </div>
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                {matchmakingReadinessCards.map((item) => (
+                  <MatchmakingStatusCard
+                    key={item.title}
+                    title={item.title}
+                    status={item.status}
+                    description={item.description}
+                  />
                 ))}
               </div>
             </Card>
@@ -515,86 +553,134 @@ export default function MatchmakingPage() {
               tone="accent"
               className="space-y-4 border-[rgba(184,137,67,0.2)] bg-white shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0"
             >
-              <Badge tone="accent">Saved Kundli Comparison</Badge>
-              <p className="text-[0.92rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                If you already have saved charts, continue through the protected dashboard flow. Public compatibility should not expose another user&apos;s birth details.
-              </p>
-              <div className="grid gap-2">
-              <TrackedLink
-                href="/kundli"
-                eventName="cta_click"
-                eventPayload={{ page: "/matchmaking", feature: "matchmaking-open-saved-kundli" }}
-                className={buttonStyles({
+              <Badge tone="accent">Safe Public Guidance</Badge>
+              <div className="space-y-2">
+                <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-ink-strong)]">
+                  Ask NI for context, then move into reports or consultation when the question becomes personal.
+                </h2>
+                <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                  NAVAGRAHA Intelligence is AI-guided assistance for understanding compatibility themes. Joy Prakash Sarmah remains the human authority for careful interpretation.
+                </p>
+              </div>
+
+              <div className="grid gap-3">
+                {guidanceCards.map((item) => (
+                  <div
+                    key={item.title}
+                    className="rounded-[1rem] border border-[rgba(184,137,67,0.18)] bg-white px-4 py-3"
+                  >
+                    <p className="text-[0.68rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
+                      Guidance
+                    </p>
+                    <h3 className="mt-2 text-[length:var(--font-size-body-lg)] font-semibold text-[color:var(--color-ink-strong)]">
+                      {item.title}
+                    </h3>
+                    <p className="mt-2 text-[0.88rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                      {item.body}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
+                <TrackedLink
+                  href="/ai"
+                  eventName="cta_click"
+                  eventPayload={{ page: "/matchmaking", feature: "matchmaking-ni-panel" }}
+                  className={buttonStyles({
                     size: "sm",
                     tone: "accent",
                     className: "w-full justify-center",
                   })}
                 >
-                  Open Saved Kundli
-              </TrackedLink>
-              <TrackedLink
-                href="/kundli"
-                eventName="cta_click"
-                eventPayload={{ page: "/matchmaking", feature: "matchmaking-set-active-kundli" }}
-                className={buttonStyles({
+                  Ask NI
+                </TrackedLink>
+                <TrackedLink
+                  href="/consultation"
+                  eventName="cta_click"
+                  eventPayload={{
+                    page: "/matchmaking",
+                    feature: "matchmaking-consultation-panel",
+                  }}
+                  className={buttonStyles({
                     size: "sm",
                     tone: "secondary",
                     className: "w-full justify-center",
                   })}
                 >
-                  Set Active Kundli
+                  Book Consultation
                 </TrackedLink>
-                <TrackedLink
-                  href="/consultation"
-                  eventName="cta_click"
-                  eventPayload={{ page: "/matchmaking", feature: "matchmaking-consultation-fallback" }}
-                  className={buttonStyles({
-                    size: "sm",
-                    tone: "ghost",
-                    className: "w-full justify-center",
-                  })}
-                >
-                  Consultation Fallback
-                </TrackedLink>
-              </div>
-              <div className="rounded-[1rem] border border-[rgba(184,137,67,0.18)] bg-white px-4 py-3">
-                <p className="text-[0.68rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
-                  Privacy Note
-                </p>
-                <p className="mt-2 text-[0.88rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                  Cross-user saved Kundli access, raw chart JSON, and private birth data are never exposed on this public page.
-                </p>
               </div>
             </Card>
           </div>
         </Section>
 
         <Section
-          tone="transparent"
+          tone="light"
           category="utilities"
-          eyebrow="Guna Milan Readiness"
-          title="Eight kootas stay visible as readiness markers until verified output is connected."
-          description="The public surface is deliberately modest: it signals what will appear later, without inventing any Ashtakoot score."
+          eyebrow="Route-safe Shortcuts"
+          title="Continue into the right compatibility support surface."
+          description="These shortcuts stay on existing public routes and avoid fake compatibility outputs."
         >
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {gunaReadinessCards.map((card) => (
-              <ReadinessCard key={card.title} {...card} />
+          <div className="grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-4">
+            {matchmakingShortcutCards.map((shortcut) => (
+              <MatchmakingShortcutCard key={shortcut.title} {...shortcut} />
             ))}
           </div>
         </Section>
 
         <Section
-          tone="light"
-          category="utilities"
-          eyebrow="Manglik Compatibility"
-          title="Manglik readiness stays grounded in verified Lagna, Moon, and Venus references."
-          description="No fear-based verdicts are shown. The page keeps Manglik context practical and consultation-ready."
+          tone="transparent"
+          category="content"
+          eyebrow="Trust & Conversion"
+          title="Use structured support when the relationship question needs a deeper reading."
+          description="Reports and consultation are the route-safe next steps when compatibility needs chart-aware interpretation."
         >
-          <div className="grid gap-4 md:grid-cols-3">
-            {manglikReadinessCards.map((card) => (
-              <ReadinessCard key={card.title} {...card} />
-            ))}
-          </div>
+          <Card
+            tone="default"
+            className="flex flex-col gap-4 border-[rgba(184,137,67,0.2)] bg-white p-5 shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <div className="max-w-2xl space-y-2">
+              <Badge tone="trust" className="border border-black/8 bg-white">
+                J P Sarmah Desk
+              </Badge>
+              <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-ink-strong)]">
+                Keep compatibility decisions grounded in verified chart context.
+              </h2>
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                This page does not promise marriage success, urgent certainty, or a public compatibility guarantee. Use reports or consultation when the question needs careful human review.
+              </p>
+            </div>
+            <div className="flex w-full flex-col gap-2 sm:w-auto sm:min-w-[13rem]">
+              <TrackedLink
+                href="/reports"
+                eventName="cta_click"
+                eventPayload={{ page: "/matchmaking", feature: "matchmaking-trust-reports" }}
+                className={buttonStyles({
+                  size: "sm",
+                  tone: "accent",
+                  className: "w-full justify-center",
+                })}
+              >
+                View Reports
+              </TrackedLink>
+              <TrackedLink
+                href="/consultation"
+                eventName="cta_click"
+                eventPayload={{
+                  page: "/matchmaking",
+                  feature: "matchmaking-trust-consultation",
+                }}
+                className={buttonStyles({
+                  size: "sm",
+                  tone: "secondary",
+                  className: "w-full justify-center",
+                })}
+              >
+                Book Consultation
+              </TrackedLink>
+            </div>
+          </Card>
         </Section>
       </main>
     </>
