@@ -307,7 +307,7 @@ export default async function ToolsHubPage() {
                   className: "w-full justify-center lg:w-auto",
                 })}
               >
-                Explore NAVAGRAHA AI
+                Ask NI
               </TrackedLink>
             </div>
           </Card>
