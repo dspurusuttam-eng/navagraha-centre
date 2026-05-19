@@ -146,15 +146,21 @@ const yogaResultCards = [
 
 const actionCtas = [
   {
-    href: "/kundli",
-    label: "Generate Kundli",
-    feature: "dosha-yoga-generate-kundli",
+    href: "#dosha-yoga-structure",
+    label: "Explore Dosha & Yoga",
+    feature: "dosha-yoga-explore-structure",
     tone: "accent" as const,
   },
   {
-    href: "/navagraha-ai",
-    label: "Ask NAVAGRAHA AI",
-    feature: "dosha-yoga-ask-ai",
+    href: "/ai",
+    label: "Ask NI",
+    feature: "dosha-yoga-ask-ni",
+    tone: "secondary" as const,
+  },
+  {
+    href: "/kundli",
+    label: "Open Kundli",
+    feature: "dosha-yoga-open-kundli",
     tone: "secondary" as const,
   },
   {
@@ -168,6 +174,57 @@ const actionCtas = [
     label: "Book Consultation",
     feature: "dosha-yoga-book-consultation",
     tone: "secondary" as const,
+  },
+] as const;
+
+const doshaYogaStructureCards = [
+  {
+    title: "Manglik Dosha",
+    label: "Mars placement",
+    description:
+      "Presented as a chart-dependent layer only. No public Manglik verdict or severity is invented.",
+  },
+  {
+    title: "Kaal Sarp Dosha",
+    label: "Node axis",
+    description:
+      "Requires verified Rahu-Ketu and planetary context before any result can be shown.",
+  },
+  {
+    title: "Pitru Dosha",
+    label: "Ancestral pattern",
+    description:
+      "Kept in safe educational mode without fear-based prediction or forced remedy language.",
+  },
+  {
+    title: "Graha Dosha",
+    label: "Planetary stress",
+    description:
+      "Uses structure-only labels until a protected Kundli flow can support real analysis.",
+  },
+  {
+    title: "Raj Yoga",
+    label: "Supportive yoga",
+    description:
+      "A verified chart is needed before any supportive yoga claim can appear.",
+  },
+  {
+    title: "Dhan Yoga",
+    label: "Prosperity pattern",
+    description:
+      "No wealth promise is made. The page only names the analysis layer safely.",
+  },
+  {
+    title: "Marriage / Career Yoga",
+    label: "Life-area support",
+    description:
+      "Relationship and profession themes stay interpretive and chart-dependent.",
+  },
+  {
+    title: "Report / Consultation Support",
+    label: "Deeper review",
+    description:
+      "Sensitive dosha and yoga questions can move into reports or consultation without public private-data exposure.",
   },
 ] as const;
 
@@ -233,6 +290,41 @@ function ReadinessStateCard({
   );
 }
 
+function StructureCard({
+  title,
+  label,
+  description,
+}: Readonly<{
+  title: string;
+  label: string;
+  description: string;
+}>) {
+  return (
+    <Card
+      tone="default"
+      className="flex min-h-[8.6rem] flex-col justify-between gap-3 border-[rgba(184,137,67,0.2)] bg-white p-3 shadow-[0_10px_22px_rgba(17,24,39,0.045)] before:opacity-0"
+    >
+      <div className="space-y-1.5">
+        <p className="text-[0.88rem] font-semibold leading-tight text-[color:var(--color-ink-strong)]">
+          {title}
+        </p>
+        <p className="text-[0.66rem] uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)]">
+          {label}
+        </p>
+        <p className="text-[0.7rem] leading-[1.4] text-[color:var(--color-ink-body)]">
+          {description}
+        </p>
+      </div>
+      <Badge
+        tone="outline"
+        className="w-fit border border-black/8 bg-white text-[0.58rem] uppercase tracking-[0.06em] text-[color:var(--color-accent-strong)]"
+      >
+        Structure only
+      </Badge>
+    </Card>
+  );
+}
+
 function ResultStateCard({
   title,
   value,
@@ -266,9 +358,9 @@ function ResultStateCard({
 }
 
 export const metadata = createToolMetadata({
-  title: "Dosha & Yoga Checker",
+  title: "Dosha & Yoga",
   description:
-    "Review dosha and yoga readiness in a calm public foundation. Verified analysis appears only after protected chart context is available.",
+    "Explore Vedic dosha awareness, yoga structure, and Kundli-based guidance without fake public results.",
   path: "/dosha-yoga",
   keywords: [
     "dosha checker",
@@ -315,10 +407,10 @@ export default function DoshaYogaPage() {
                     lineHeight: "var(--line-height-tight)",
                   }}
                 >
-                  Dosha & Yoga Checker
+                  Dosha & Yoga
                 </h1>
                 <p className="max-w-[46rem] text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)] sm:text-[length:var(--font-size-body-lg)]">
-                  Review dosha and yoga readiness in a calm public foundation. Verified analysis appears only after protected chart context is available.
+                  Vedic combinations, dosha awareness, yogas, and guidance through Kundli-based analysis, presented without public fake results.
                 </p>
               </div>
 
@@ -347,10 +439,10 @@ export default function DoshaYogaPage() {
                   Safe Public Foundation
                 </Badge>
                 <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-ink-strong)]">
-                  No fabricated dosha or yoga outcomes
+                  Understand the layers before any result appears
                 </h2>
                 <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                  This page keeps the reading calm and route-safe. It will only show verified output after a protected chart context is connected.
+                  This page keeps dosha and yoga exploration calm, route-safe, and chart-dependent. Verified output can appear only after protected Kundli context is connected.
                 </p>
               </div>
 
@@ -375,6 +467,26 @@ export default function DoshaYogaPage() {
             </Card>
           </Container>
         </section>
+
+        <Section
+          id="dosha-yoga-structure"
+          tone="light"
+          category="utilities"
+          eyebrow="Dosha & Yoga Structure"
+          title="Review the main dosha and yoga layers without fabricated outcomes."
+          description="These cards show the analysis structure only. They do not create dosha results, yoga results, severity levels, remedies, or predictions."
+        >
+          <div className="grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-4">
+            {doshaYogaStructureCards.map((item) => (
+              <StructureCard
+                key={item.title}
+                title={item.title}
+                label={item.label}
+                description={item.description}
+              />
+            ))}
+          </div>
+        </Section>
 
         <Section
           tone="transparent"

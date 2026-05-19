@@ -67,60 +67,72 @@ const remedyReadinessItems = [
 
 const remedyCategoryCards: readonly RemedyCategoryCard[] = [
   {
-    title: "Gemstone",
-    status: "Analysis preparing",
+    title: "Mantra Guidance",
+    status: "Structure only",
     description:
-      "Personalized gemstone analysis is still preparing. When protected chart context is connected, the page can point you toward the live shop category without inventing a prescription.",
-    href: "/shop#shop-gemstones",
-    ctaLabel: "Open Shop",
+      "Mantra support stays advisory and chart-dependent, without promising a fixed outcome.",
+    href: "/ai",
+    ctaLabel: "Ask NI",
   },
   {
-    title: "Rudraksha",
-    status: "Analysis preparing",
+    title: "Puja / Hawan / Yagya",
+    status: "Structure only",
     description:
-      "Personalized Rudraksha analysis is still preparing. Optional spiritual support stays consultation-led and never becomes a forced purchase or guaranteed fix.",
-    href: "/shop#shop-rudraksha",
-    ctaLabel: "Open Shop",
+      "Ritual guidance remains optional and consultation-led, not a guaranteed cure or package claim.",
+    href: "/consultation",
+    ctaLabel: "Book Consultation",
+    tone: "secondary",
   },
   {
-    title: "Mala",
-    status: "Analysis preparing",
+    title: "Daan / Charity",
+    status: "Structure only",
     description:
-      "Personalized mala analysis is still preparing. The public page stays calm and only points to the real catalog when you want to browse.",
-    href: "/shop#shop-malas",
-    ctaLabel: "Open Shop",
+      "Charity guidance is framed as voluntary spiritual discipline, not fear-based pressure.",
+    href: "/consultation",
+    ctaLabel: "Book Consultation",
+    tone: "secondary",
   },
   {
-    title: "Mantra",
-    status: "Analysis preparing",
+    title: "Gemstone Guidance",
+    status: "Structure only",
     description:
-      "Personalized mantra analysis is still preparing. Any future guidance stays optional, reflective, and free of outcome guarantees.",
-    href: "/shop#shop-mantra-remedies",
-    ctaLabel: "Open Shop",
+      "Gemstone discussion stays review-based and does not invent a recommendation, price, or prescription.",
+    href: "/reports",
+    ctaLabel: "View Reports",
+    tone: "secondary",
   },
   {
-    title: "Charity / Donation",
-    status: "Analysis preparing",
+    title: "Rudraksha / Mala",
+    status: "Structure only",
     description:
-      "Personalized charity guidance is still preparing. Support remains voluntary, proportional, and advisory rather than compulsory.",
+      "Spiritual support objects remain optional and should be reviewed with verified chart context.",
     href: "/consultation",
     ctaLabel: "Book Consultation",
     tone: "secondary",
   },
   {
     title: "Fasting / Vrat",
-    status: "Analysis preparing",
+    status: "Structure only",
     description:
-      "Personalized fasting guidance is still preparing. The public page avoids any claim that fasting is mandatory or that harm follows if it is skipped.",
-    href: "/navagraha-ai",
-    ctaLabel: "Ask NAVAGRAHA AI",
+      "Fasting and discipline remain reflective practices only, never mandatory or fear-driven.",
+    href: "/ai",
+    ctaLabel: "Ask NI",
     tone: "secondary",
   },
   {
-    title: "Spiritual Discipline",
-    status: "Analysis preparing",
+    title: "Dosha Remedies",
+    status: "Structure only",
     description:
-      "Personalized discipline guidance is still preparing. Reflection, pacing, and routine stay supportive only, never as cures or guarantees.",
+      "Dosha-related remedy discussion must stay linked to verified dosha context and avoid fake cures.",
+    href: "/dosha-yoga",
+    ctaLabel: "Review Dosha & Yoga",
+    tone: "secondary",
+  },
+  {
+    title: "Consultation Support",
+    status: "Structure only",
+    description:
+      "Sensitive remedy decisions can move into human-led review without public private-data exposure.",
     href: "/consultation",
     ctaLabel: "Book Consultation",
     tone: "secondary",
@@ -129,25 +141,31 @@ const remedyCategoryCards: readonly RemedyCategoryCard[] = [
 
 const heroActions = [
   {
-    href: "/kundli",
-    label: "Generate Kundli",
+    href: "#remedies-structure",
+    label: "Explore Remedies",
     tone: "accent" as const,
-    feature: "remedies-hero-kundli",
+    feature: "remedies-hero-explore",
   },
   {
-    href: "/shop",
-    label: "Open Shop",
+    href: "/ai",
+    label: "Ask NI",
     tone: "secondary" as const,
-    feature: "remedies-hero-shop",
+    feature: "remedies-hero-ask-ni",
   },
 ] as const;
 
 const nextActions = [
   {
-    href: "/navagraha-ai",
-    label: "Ask NAVAGRAHA AI",
+    href: "/ai",
+    label: "Ask NI",
     tone: "secondary" as const,
-    feature: "remedies-next-ai",
+    feature: "remedies-next-ask-ni",
+  },
+  {
+    href: "/kundli",
+    label: "Open Kundli",
+    tone: "secondary" as const,
+    feature: "remedies-next-kundli",
   },
   {
     href: "/reports",
@@ -160,12 +178,6 @@ const nextActions = [
     label: "Book Consultation",
     tone: "secondary" as const,
     feature: "remedies-next-consultation",
-  },
-  {
-    href: "/shop",
-    label: "Browse Shop",
-    tone: "accent" as const,
-    feature: "remedies-next-shop",
   },
 ] as const;
 
@@ -306,19 +318,54 @@ export default async function RemediesPage() {
 
       <main className="min-h-screen bg-[#FFFFFF] pb-[calc(7rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] md:pb-0">
         <PageHero
-          eyebrow="Astrology Remedies"
-          title="Optional spiritual remedies, presented with restraint and care."
-          description="Explore gemstone, Rudraksha, mala, mantra, donation, fasting, and spiritual discipline guidance as supportive pathways only. No remedy is guaranteed, and no fear-based pressure is used."
+          eyebrow="Remedies"
+          title="Remedies"
+          description="Vedic remedy guidance for mantra, puja, daan, discipline, gemstones, and spiritual correction, presented as advisory support only."
           highlights={[
-            "Guidance stays consultation-led and optional.",
-            "Shop connections use live catalog categories only.",
-            "Health, money, and legal decisions always remain outside remedy claims.",
+            "Ask NI provides AI-guided context through NAVAGRAHA Intelligence.",
+            "Kundli, reports, and consultation remain the safe paths for personal review.",
+            "No remedy is framed as a cure, guarantee, or urgent purchase.",
           ]}
-          note="Use remedies as a reflective support layer, not as a cure or a certainty claim. If a case is complex, consultation is the safer next step."
+          note="Use remedies as a reflective support layer, not as a medical, legal, financial, or life-outcome guarantee."
           primaryAction={heroActions[0]}
           secondaryAction={heroActions[1]}
-          supportTitle="Remedy Trust Markers"
+          supportTitle="Remedy Safety Markers"
         />
+
+        <Section
+          id="remedies-structure"
+          tone="light"
+          category="utilities"
+          eyebrow="Remedy Structure"
+          title="Choose the support style first, then continue through a safe route."
+          description="These remedy cards are structure-only. They do not create personalized remedies, gemstone prescriptions, puja packages, prices, testimonials, or guaranteed outcomes."
+        >
+          <div className="space-y-5">
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              {nextActions.map((cta) => (
+                <TrackedLink
+                  key={cta.label}
+                  href={cta.href}
+                  eventName="cta_click"
+                  eventPayload={{ page: "/remedies", feature: `${cta.feature}-top` }}
+                  className={buttonStyles({
+                    size: "lg",
+                    tone: cta.label === "Ask NI" ? "accent" : cta.tone,
+                    className: "w-full justify-center",
+                  })}
+                >
+                  {cta.label}
+                </TrackedLink>
+              ))}
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              {remedyCategoryCards.map((item) => (
+                <RemedyCategoryCard key={item.title} item={item} />
+              ))}
+            </div>
+          </div>
+        </Section>
 
         <Section
           tone="transparent"
@@ -399,20 +446,6 @@ export default async function RemediesPage() {
                 </div>
               </div>
             </Card>
-          </div>
-        </Section>
-
-        <Section
-          tone="light"
-          category="utilities"
-          eyebrow="Remedy Categories"
-          title="Choose the support style first, then continue into the live category or consultation."
-          description="Categories stay in analysis-preparing mode until protected chart context is available. Shop links go only to existing live categories."
-        >
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {remedyCategoryCards.map((item) => (
-              <RemedyCategoryCard key={item.title} item={item} />
-            ))}
           </div>
         </Section>
 
