@@ -23,6 +23,34 @@ function matchesQuery(value: string, query: string) {
   return value.toLowerCase().includes(query.toLowerCase());
 }
 
+function getToolAccentClass(key: string) {
+  if (key === "ask-ni") {
+    return "border-[rgba(0,109,255,0.42)] bg-[rgba(0,215,255,0.08)] text-[color:var(--color-text-primary)] shadow-[0_8px_20px_rgba(0,109,255,0.1)] hover:border-[rgba(0,109,255,0.58)] hover:bg-[rgba(0,215,255,0.12)]";
+  }
+
+  if (key === "remedies") {
+    return "border-[rgba(16,132,95,0.32)] bg-white text-[color:var(--color-text-primary)] hover:border-[rgba(16,132,95,0.52)] hover:bg-[rgba(16,132,95,0.08)]";
+  }
+
+  if (key.includes("muhurat") || key === "articles") {
+    return "border-[rgba(224,173,31,0.34)] bg-white text-[color:var(--color-text-primary)] hover:border-[rgba(224,173,31,0.56)] hover:bg-[rgba(224,173,31,0.09)]";
+  }
+
+  if (key === "consultation" || key === "from-the-desk") {
+    return "border-[rgba(122,16,34,0.28)] bg-white text-[color:var(--color-text-primary)] hover:border-[rgba(122,16,34,0.5)] hover:bg-[rgba(122,16,34,0.07)]";
+  }
+
+  if (key === "reports") {
+    return "border-[rgba(185,139,70,0.3)] bg-[color:var(--color-report-pearl)] text-[color:var(--color-text-primary)] hover:border-[rgba(185,139,70,0.5)] hover:bg-white";
+  }
+
+  if (key === "dosha-yoga") {
+    return "border-[rgba(217,74,61,0.3)] bg-white text-[color:var(--color-text-primary)] hover:border-[rgba(217,74,61,0.52)] hover:bg-[rgba(217,74,61,0.07)]";
+  }
+
+  return "border-[rgba(185,139,70,0.22)] bg-white text-[color:var(--color-text-primary)] hover:border-[rgba(185,139,70,0.42)] hover:bg-[rgba(185,139,70,0.08)]";
+}
+
 export function ToolsMegaMenu({ navigation }: Readonly<ToolsMegaMenuProps>) {
   const pathname = usePathname();
   const currentPath = stripLocaleFromPathname(pathname ?? "/");
@@ -120,14 +148,14 @@ export function ToolsMegaMenu({ navigation }: Readonly<ToolsMegaMenuProps>) {
       {open ? (
         <div
           id={menuId}
-          className="fixed left-1/2 top-[9rem] z-[70] w-[min(74rem,calc(100vw-2rem))] -translate-x-1/2 overflow-hidden rounded-[1.35rem] border border-black/10 bg-[rgba(255,254,250,0.98)] p-4 text-left shadow-[0_24px_70px_rgba(17,24,39,0.18)] backdrop-blur-xl"
+          className="fixed left-1/2 top-[9rem] z-[70] w-[min(74rem,calc(100vw-2rem))] -translate-x-1/2 overflow-hidden rounded-[1.35rem] border border-[rgba(185,139,70,0.32)] bg-white p-4 text-left shadow-[0_24px_70px_rgba(5,5,5,0.16)] backdrop-blur-xl"
         >
           <div className="grid gap-4 lg:grid-cols-[minmax(16rem,0.74fr)_minmax(0,1.26fr)]">
-            <div className="rounded-[1.1rem] border border-[rgba(184,137,67,0.18)] bg-white p-4 shadow-[0_10px_26px_rgba(17,24,39,0.05)]">
-              <p className="text-[0.64rem] font-semibold uppercase tracking-[0.14em] text-[color:var(--color-trust-text)]">
+            <div className="rounded-[1.1rem] border border-[rgba(185,139,70,0.26)] bg-white p-4 shadow-[0_10px_26px_rgba(5,5,5,0.05)]">
+              <p className="text-[0.64rem] font-semibold uppercase tracking-[0.14em] text-[color:var(--color-antique-gold-dark)]">
                 NAVAGRAHA Tools
               </p>
-              <p className="mt-2 text-[0.86rem] leading-5 text-[color:var(--color-ink-body)]">
+              <p className="mt-2 text-[0.86rem] leading-5 text-[color:var(--color-text-secondary)]">
                 Vedic astrology utilities and guidance.
               </p>
               <label className="mt-4 block">
@@ -151,7 +179,7 @@ export function ToolsMegaMenu({ navigation }: Readonly<ToolsMegaMenuProps>) {
 
             <div className="grid gap-4">
               <section className="grid gap-2">
-                <p className="px-1 text-[0.64rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-ink-muted)]">
+                <p className="px-1 text-[0.64rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-antique-gold-dark)]">
                   Popular Tools
                 </p>
                 <div className="grid grid-cols-4 gap-2">
@@ -160,7 +188,10 @@ export function ToolsMegaMenu({ navigation }: Readonly<ToolsMegaMenuProps>) {
                       key={`desktop-popular-${item.key}`}
                       href={item.href}
                       onClick={() => setOpen(false)}
-                      className="min-h-12 rounded-[var(--radius-lg)] border border-black/8 bg-white px-3 py-2 text-[0.74rem] font-semibold text-[color:var(--color-ink-strong)] shadow-[0_8px_20px_rgba(17,24,39,0.04)] transition hover:border-[rgba(185,139,70,0.34)] hover:bg-[rgba(185,139,70,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
+                      className={cn(
+                        "min-h-12 rounded-[var(--radius-lg)] border px-3 py-2 text-[0.74rem] font-semibold shadow-[0_8px_20px_rgba(5,5,5,0.04)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]",
+                        getToolAccentClass(item.key),
+                      )}
                     >
                       {item.label}
                     </Link>
@@ -173,12 +204,12 @@ export function ToolsMegaMenu({ navigation }: Readonly<ToolsMegaMenuProps>) {
                   {filteredNavigation.groups.map((group) => (
                     <section
                       key={`desktop-tools-${group.key}`}
-                      className="rounded-[1.1rem] border border-black/8 bg-white p-3 shadow-[0_8px_22px_rgba(17,24,39,0.04)]"
+                      className="rounded-[1.1rem] border border-[rgba(185,139,70,0.22)] bg-white p-3 shadow-[0_8px_22px_rgba(5,5,5,0.04)]"
                     >
                       <p className="text-[0.72rem] font-semibold text-[color:var(--color-ink-strong)]">
                         {group.title}
                       </p>
-                      <p className="mt-1 text-[0.68rem] leading-4 text-[color:var(--color-ink-muted)]">
+                      <p className="mt-1 text-[0.68rem] leading-4 text-[color:var(--color-text-secondary)]">
                         {group.description}
                       </p>
                       <div className="mt-3 grid gap-1.5">
@@ -187,7 +218,10 @@ export function ToolsMegaMenu({ navigation }: Readonly<ToolsMegaMenuProps>) {
                             key={`desktop-tools-${group.key}-${item.key}`}
                             href={item.href}
                             onClick={() => setOpen(false)}
-                            className="rounded-[0.85rem] px-2.5 py-2 text-[0.74rem] font-semibold text-[color:var(--color-ink-strong)] transition hover:bg-[rgba(185,139,70,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
+                            className={cn(
+                              "rounded-[0.85rem] border px-2.5 py-2 text-[0.74rem] font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]",
+                              getToolAccentClass(item.key),
+                            )}
                           >
                             {item.label}
                           </Link>

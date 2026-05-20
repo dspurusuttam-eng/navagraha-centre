@@ -1,43 +1,70 @@
 :root {
+  /* Launch semantic colour identity */
+  --color-background: #ffffff;
+  --color-text: #050505;
+  --color-text-strong: #0b0b0b;
+  --color-text-muted-launch: #4d463d;
+  --color-border-launch: rgba(5, 5, 5, 0.12);
+  --color-antique-gold: #b98b46;
+  --color-antique-gold-dark: #7a5420;
+  --color-ni-cyan: #00d7ff;
+  --color-ni-blue: #006dff;
+  --color-emerald: #10845f;
+  --color-yellow-sapphire: #e0ad1f;
+  --color-ruby-maroon: #7a1022;
+  --color-pearl: #fffdf7;
+  --color-coral: #d94a3d;
+  --color-onyx: #050505;
+  --color-card-surface: #ffffff;
+
   /* Premium light palette */
-  --color-base-0: #fffefb;
-  --color-base-1: #fbf6ed;
-  --color-base-2: #f6eedf;
-  --color-base-3: #eee3cf;
-  --color-ink-black: #18130f;
-  --color-ink-strong: #2f261e;
-  --color-ink-body: #4c4033;
-  --color-ink-muted: #726252;
+  --color-base-0: var(--color-background);
+  --color-base-1: #fffdf8;
+  --color-base-2: #fbf4e7;
+  --color-base-3: #f2e4ca;
+  --color-ink-black: var(--color-text);
+  --color-ink-strong: var(--color-text-strong);
+  --color-ink-body: #241f19;
+  --color-ink-muted: var(--color-text-muted-launch);
 
   --color-navy-900: #faf3e5;
   --color-navy-850: #f6ecda;
   --color-navy-800: #f0e3ce;
   --color-violet-700: #9d7656;
   --color-violet-600: #bc9068;
-  --color-gold-500: #b98b46;
+  --color-gold-500: var(--color-antique-gold);
   --color-gold-400: #d4ae75;
   --color-gold-300: #ead4a8;
-  --color-gold-600: #8f672f;
+  --color-gold-600: var(--color-antique-gold-dark);
   --color-saffron-500: #c8843e;
   --color-rose-gold-400: #c79679;
   --color-champagne-300: #f1dfbf;
 
   /* Locked visual direction aliases */
-  --color-bg-ivory: #fffefb;
-  --color-bg-white: #ffffff;
-  --color-bg-pearl: #fbf6ed;
-  --color-surface-cream: #f6eedf;
-  --color-surface-white: #fffdfa;
-  --color-text-primary: #231b14;
-  --color-text-secondary: #5e5041;
-  --color-border-soft: rgba(149, 118, 72, 0.22);
-  --color-accent-gold: #b98b46;
-  --color-accent-gold-dark: #8f672f;
+  --color-bg-ivory: var(--color-background);
+  --color-bg-white: var(--color-background);
+  --color-bg-pearl: var(--color-pearl);
+  --color-surface-cream: #fffaf0;
+  --color-surface-white: var(--color-card-surface);
+  --color-text-primary: var(--color-text);
+  --color-text-secondary: #2f2a24;
+  --color-border-soft: rgba(5, 5, 5, 0.1);
+  --color-accent-gold: var(--color-antique-gold);
+  --color-accent-gold-dark: var(--color-antique-gold-dark);
   --color-accent-champagne: #e8d3a7;
+
+  --color-remedy-emerald: var(--color-emerald);
+  --color-muhurat-sapphire: var(--color-yellow-sapphire);
+  --color-consultation-ruby: var(--color-ruby-maroon);
+  --color-report-pearl: var(--color-pearl);
+  --color-dosha-coral: var(--color-coral);
+  --color-authority-onyx: var(--color-onyx);
+  --color-intelligence-cyan: var(--color-ni-cyan);
+  --color-intelligence-blue: var(--color-ni-blue);
 
   --color-trust-bg: rgba(185, 139, 70, 0.12);
   --color-trust-border: rgba(185, 139, 70, 0.36);
-  --color-trust-text: #7e5827;
+  --color-trust-text: var(--color-antique-gold-dark);
   --color-trust-bg-soft: rgba(185, 139, 70, 0.08);
 
   /* Shared semantic aliases used across the existing UI */
@@ -48,15 +75,15 @@
   --color-panel-strong: rgba(255, 254, 249, 0.99);
   --color-field: rgba(255, 253, 248, 0.99);
   --color-border: var(--color-border-soft);
-  --color-border-strong: rgba(185, 139, 70, 0.44);
+  --color-border-strong: rgba(185, 139, 70, 0.5);
   --color-foreground: var(--color-text-primary);
   --color-muted: var(--color-text-secondary);
-  --color-muted-soft: #8b7a67;
+  --color-muted-soft: var(--color-text-muted-launch);
   --color-accent: var(--color-accent-gold);
-  --color-accent-strong: var(--color-gold-300);
+  --color-accent-strong: var(--color-antique-gold-dark);
   --color-accent-soft: rgba(185, 139, 70, 0.14);
   --color-accent-ring: rgba(185, 139, 70, 0.34);
-  --color-accent-contrast: #20170f;
+  --color-accent-contrast: var(--color-onyx);
   --color-overlay: rgba(122, 95, 58, 0.12);
   --color-signature-line: rgba(185, 139, 70, 0.12);
 
@@ -173,6 +200,18 @@
   --button-primary-text: #20160c;
   --button-primary-hover-border: rgba(143, 103, 47, 0.74);
 
+  --button-ni-border: rgba(0, 109, 255, 0.46);
+  --button-ni-bg: linear-gradient(
+    135deg,
+    var(--color-ni-cyan) 0%,
+    var(--color-ni-blue) 100%
+  );
+  --button-ni-text: #00121a;
+
+  --button-premium-border: rgba(5, 5, 5, 0.72);
+  --button-premium-bg: var(--color-onyx);
+  --button-premium-text: #ffffff;
+
   --button-secondary-border: rgba(165, 130, 78, 0.36);
   --button-secondary-bg: linear-gradient(
     180deg,
@@ -180,6 +219,19 @@
     rgba(252, 245, 232, 0.95) 100%
   );
   --button-secondary-text: var(--color-text-secondary);
+
+  --button-cta-primary-border: var(--button-primary-border);
+  --button-cta-primary-bg: var(--button-primary-bg);
+  --button-cta-primary-text: var(--button-primary-text);
+  --button-cta-secondary-border: var(--button-secondary-border);
+  --button-cta-secondary-bg: var(--button-secondary-bg);
+  --button-cta-secondary-text: var(--button-secondary-text);
+  --button-cta-ni-border: var(--button-ni-border);
+  --button-cta-ni-bg: var(--button-ni-bg);
+  --button-cta-ni-text: var(--button-ni-text);
+  --button-cta-premium-border: var(--button-premium-border);
+  --button-cta-premium-bg: var(--button-premium-bg);
+  --button-cta-premium-text: var(--button-premium-text);
 
   --button-tertiary-border: rgba(113, 90, 57, 0.26);
   --button-tertiary-bg: rgba(255, 255, 255, 0.95);
@@ -190,29 +242,17 @@
 
   /* Card system tokens */
   --card-default-border: rgba(155, 122, 74, 0.24);
-  --card-default-bg: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.97) 0%,
-    rgba(251, 244, 232, 0.93) 100%
-  );
+  --card-default-bg: linear-gradient(180deg, #ffffff 0%, #ffffff 100%);
   --card-muted-border: rgba(155, 122, 74, 0.24);
-  --card-muted-bg: linear-gradient(
-    180deg,
-    rgba(252, 246, 236, 0.97) 0%,
-    rgba(245, 236, 223, 0.91) 100%
-  );
+  --card-muted-bg: linear-gradient(180deg, #ffffff 0%, #fffdf7 100%);
   --card-accent-border: rgba(185, 139, 70, 0.4);
   --card-accent-bg: linear-gradient(
     180deg,
-    rgba(255, 250, 241, 0.99) 0%,
-    rgba(243, 229, 201, 0.93) 100%
+    #ffffff 0%,
+    rgba(185, 139, 70, 0.08) 100%
   );
   --card-light-border: rgba(154, 122, 73, 0.24);
-  --card-light-bg: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.96) 0%,
-    rgba(248, 240, 224, 0.92) 100%
-  );
+  --card-light-bg: linear-gradient(180deg, #ffffff 0%, #fffdf7 100%);
   --card-light-text: var(--color-ink-body);
   --card-light-shadow: 0 14px 34px rgba(96, 76, 48, 0.14);
   --card-contrast-border: var(--color-section-contrast-edge);
@@ -222,16 +262,12 @@
     var(--color-section-contrast) 100%
   );
   --card-tool-border: rgba(164, 129, 78, 0.28);
-  --card-tool-bg: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.98) 0%,
-    rgba(248, 241, 228, 0.94) 100%
-  );
+  --card-tool-bg: linear-gradient(180deg, #ffffff 0%, #fffdf7 100%);
   --card-cta-border: rgba(184, 137, 67, 0.24);
   --card-cta-bg: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.98) 0%,
-    rgba(247, 238, 220, 0.95) 100%
+    #ffffff 0%,
+    rgba(185, 139, 70, 0.08) 100%
   );
 
   /* Form field system tokens */

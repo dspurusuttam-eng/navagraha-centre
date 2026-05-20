@@ -167,6 +167,48 @@ function filterToolsNavigation(
   };
 }
 
+function getShellAccentClass({
+  href,
+  key,
+  label,
+}: {
+  href?: string;
+  key?: string;
+  label?: string;
+}) {
+  const value = `${href ?? ""} ${key ?? ""} ${label ?? ""}`.toLowerCase();
+
+  if (value.includes("/ai") || value.includes("ask-ni") || value.includes("ask ni")) {
+    return "border-[rgba(0,109,255,0.42)] bg-[rgba(0,215,255,0.08)] text-[color:var(--color-text-primary)] shadow-[0_8px_22px_rgba(0,109,255,0.1)] hover:border-[rgba(0,109,255,0.58)] hover:bg-[rgba(0,215,255,0.12)]";
+  }
+
+  if (value.includes("remedies")) {
+    return "border-[rgba(16,132,95,0.32)] bg-white text-[color:var(--color-text-primary)] hover:border-[rgba(16,132,95,0.52)] hover:bg-[rgba(16,132,95,0.08)]";
+  }
+
+  if (value.includes("muhurat") || value.includes("articles")) {
+    return "border-[rgba(224,173,31,0.34)] bg-white text-[color:var(--color-text-primary)] hover:border-[rgba(224,173,31,0.56)] hover:bg-[rgba(224,173,31,0.09)]";
+  }
+
+  if (
+    value.includes("consultation") ||
+    value.includes("from-the-desk") ||
+    value.includes("desk")
+  ) {
+    return "border-[rgba(122,16,34,0.28)] bg-white text-[color:var(--color-text-primary)] hover:border-[rgba(122,16,34,0.5)] hover:bg-[rgba(122,16,34,0.07)]";
+  }
+
+  if (value.includes("reports")) {
+    return "border-[rgba(185,139,70,0.3)] bg-[color:var(--color-report-pearl)] text-[color:var(--color-text-primary)] hover:border-[rgba(185,139,70,0.5)] hover:bg-white";
+  }
+
+  if (value.includes("dosha")) {
+    return "border-[rgba(217,74,61,0.3)] bg-white text-[color:var(--color-text-primary)] hover:border-[rgba(217,74,61,0.52)] hover:bg-[rgba(217,74,61,0.07)]";
+  }
+
+  return "border-[rgba(185,139,70,0.22)] bg-white text-[color:var(--color-text-primary)] hover:border-[rgba(185,139,70,0.42)] hover:bg-[rgba(185,139,70,0.08)]";
+}
+
 export function MobileBottomActionBar({
   locale,
   hasExplicitLocalePrefix,
@@ -293,17 +335,17 @@ export function MobileBottomActionBar({
             role="dialog"
             aria-modal="true"
             aria-labelledby={`${moreMenuTitleId}-title`}
-            className="fixed inset-x-3 bottom-[calc(6.15rem+env(safe-area-inset-bottom))] z-[60] max-h-[min(68vh,32rem)] overflow-y-auto rounded-[1.35rem] border border-black/10 bg-[rgba(255,254,250,0.98)] p-4 shadow-[0_22px_60px_rgba(17,24,39,0.22)] backdrop-blur-xl xl:hidden"
+            className="fixed inset-x-3 bottom-[calc(6.15rem+env(safe-area-inset-bottom))] z-[60] max-h-[min(68vh,32rem)] overflow-y-auto rounded-[1.35rem] border border-[rgba(185,139,70,0.32)] bg-white p-4 shadow-[0_22px_60px_rgba(5,5,5,0.18)] backdrop-blur-xl xl:hidden"
           >
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p
                   id={`${moreMenuTitleId}-title`}
-                  className="text-[0.74rem] font-semibold uppercase tracking-[0.14em] text-[color:var(--color-trust-text)]"
+                  className="text-[0.74rem] font-semibold uppercase tracking-[0.14em] text-[color:var(--color-antique-gold-dark)]"
                 >
                   More
                 </p>
-                <p className="mt-1 text-[0.82rem] leading-5 text-[color:var(--color-ink-body)]">
+                <p className="mt-1 text-[0.82rem] leading-5 text-[color:var(--color-text-secondary)]">
                   Daily guidance, services, learning, account and support.
                 </p>
               </div>
@@ -319,7 +361,7 @@ export function MobileBottomActionBar({
             <div className="mt-4 grid gap-4">
               {moreSections.map((section) => (
                 <div key={section.title} className="grid gap-2">
-                  <p className="px-1 text-[0.64rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-ink-muted)]">
+                  <p className="px-1 text-[0.64rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-antique-gold-dark)]">
                     {section.title}
                   </p>
                   <div className="grid grid-cols-2 gap-2">
@@ -328,7 +370,10 @@ export function MobileBottomActionBar({
                         key={`${section.title}-${link.href}`}
                         href={link.href}
                         onClick={() => setMoreOpen(false)}
-                        className="min-h-11 rounded-[var(--radius-lg)] border border-black/8 bg-white px-3 py-2 text-[0.78rem] font-semibold text-[color:var(--color-ink-strong)] shadow-[0_8px_22px_rgba(17,24,39,0.05)] transition hover:border-[rgba(185,139,70,0.34)] hover:bg-[rgba(185,139,70,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
+                        className={cn(
+                          "min-h-11 rounded-[var(--radius-lg)] border px-3 py-2 text-[0.78rem] font-semibold shadow-[0_8px_22px_rgba(5,5,5,0.05)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]",
+                          getShellAccentClass(link),
+                        )}
                       >
                         {link.label}
                       </Link>
@@ -353,17 +398,17 @@ export function MobileBottomActionBar({
             role="dialog"
             aria-modal="true"
             aria-labelledby={`${toolsMenuTitleId}-title`}
-            className="fixed inset-x-3 bottom-[calc(6.15rem+env(safe-area-inset-bottom))] top-[4.75rem] z-[60] overflow-y-auto rounded-[1.35rem] border border-black/10 bg-[rgba(255,254,250,0.98)] p-4 shadow-[0_22px_60px_rgba(17,24,39,0.22)] backdrop-blur-xl xl:hidden"
+            className="fixed inset-x-3 bottom-[calc(6.15rem+env(safe-area-inset-bottom))] top-[4.75rem] z-[60] overflow-y-auto rounded-[1.35rem] border border-[rgba(185,139,70,0.32)] bg-white p-4 shadow-[0_22px_60px_rgba(5,5,5,0.18)] backdrop-blur-xl xl:hidden"
           >
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p
                   id={`${toolsMenuTitleId}-title`}
-                  className="text-[0.74rem] font-semibold uppercase tracking-[0.14em] text-[color:var(--color-trust-text)]"
+                  className="text-[0.74rem] font-semibold uppercase tracking-[0.14em] text-[color:var(--color-antique-gold-dark)]"
                 >
                   NAVAGRAHA Tools
                 </p>
-                <p className="mt-1 text-[0.82rem] leading-5 text-[color:var(--color-ink-body)]">
+                <p className="mt-1 text-[0.82rem] leading-5 text-[color:var(--color-text-secondary)]">
                   Vedic astrology utilities and guidance.
                 </p>
               </div>
@@ -390,7 +435,7 @@ export function MobileBottomActionBar({
 
             <div className="mt-4 grid gap-5">
               <section className="grid gap-2">
-                <p className="px-1 text-[0.64rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-ink-muted)]">
+                  <p className="px-1 text-[0.64rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-antique-gold-dark)]">
                   Quick access
                 </p>
                 <div className="grid grid-cols-2 gap-2">
@@ -399,7 +444,10 @@ export function MobileBottomActionBar({
                       key={`mobile-popular-${item.key}`}
                       href={item.href}
                       onClick={() => setToolsOpen(false)}
-                      className="min-h-11 rounded-[var(--radius-lg)] border border-black/8 bg-white px-3 py-2 text-[0.78rem] font-semibold text-[color:var(--color-ink-strong)] shadow-[0_8px_22px_rgba(17,24,39,0.05)] transition hover:border-[rgba(185,139,70,0.34)] hover:bg-[rgba(185,139,70,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
+                      className={cn(
+                        "min-h-11 rounded-[var(--radius-lg)] border px-3 py-2 text-[0.78rem] font-semibold shadow-[0_8px_22px_rgba(5,5,5,0.05)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]",
+                        getShellAccentClass(item),
+                      )}
                     >
                       {item.label}
                     </Link>
@@ -411,10 +459,10 @@ export function MobileBottomActionBar({
                 filteredToolsNavigation.groups.map((section) => (
                   <section key={`mobile-tools-${section.key}`} className="grid gap-2">
                     <div className="px-1">
-                      <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-ink-muted)]">
+                      <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-antique-gold-dark)]">
                         {section.title}
                       </p>
-                      <p className="mt-1 text-[0.72rem] leading-4 text-[color:var(--color-ink-body)]">
+                      <p className="mt-1 text-[0.72rem] leading-4 text-[color:var(--color-text-secondary)]">
                         {section.description}
                       </p>
                     </div>
@@ -424,7 +472,10 @@ export function MobileBottomActionBar({
                           key={`mobile-tools-${section.key}-${link.key}`}
                           href={link.href}
                           onClick={() => setToolsOpen(false)}
-                          className="min-h-11 rounded-[var(--radius-lg)] border border-black/8 bg-white px-3 py-2 text-[0.78rem] font-semibold text-[color:var(--color-ink-strong)] shadow-[0_8px_22px_rgba(17,24,39,0.05)] transition hover:border-[rgba(185,139,70,0.34)] hover:bg-[rgba(185,139,70,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
+                          className={cn(
+                            "min-h-11 rounded-[var(--radius-lg)] border px-3 py-2 text-[0.78rem] font-semibold shadow-[0_8px_22px_rgba(5,5,5,0.05)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]",
+                            getShellAccentClass(link),
+                          )}
                         >
                           {link.label}
                         </Link>
@@ -451,7 +502,7 @@ export function MobileBottomActionBar({
       ) : null}
       <nav
         aria-label="Mobile quick actions"
-        className="fixed inset-x-0 bottom-0 z-50 border-t border-black/12 bg-white shadow-[0_-14px_34px_rgba(17,24,39,0.12)] backdrop-blur-xl xl:hidden"
+        className="fixed inset-x-0 bottom-0 z-50 border-t border-[rgba(185,139,70,0.34)] bg-white shadow-[0_-14px_34px_rgba(5,5,5,0.1)] backdrop-blur-xl xl:hidden"
       >
         <div className="mx-auto grid max-w-5xl grid-cols-5 px-1.5 pb-[calc(0.45rem+env(safe-area-inset-bottom))] pt-1.5">
           {bottomActions.map((action) => {
@@ -465,7 +516,7 @@ export function MobileBottomActionBar({
               "flex min-w-0 flex-col items-center gap-1.25 rounded-[1.1rem] px-1.5 py-2 text-center transition [transition-duration:var(--motion-duration-base)]",
               active
                 ? "bg-[rgba(184,137,67,0.1)] text-[color:var(--color-accent-strong)]"
-                : "text-[color:var(--color-ink-strong)] hover:bg-black/5"
+                : "text-[color:var(--color-ink-strong)] hover:bg-[rgba(185,139,70,0.08)]"
             );
             const iconClassName = cn(
               "flex h-10 w-10 items-center justify-center rounded-full border bg-white",

@@ -1,7 +1,13 @@
 import type { ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
 
-export type ButtonTone = "accent" | "secondary" | "tertiary" | "ghost";
+export type ButtonTone =
+  | "accent"
+  | "secondary"
+  | "tertiary"
+  | "ghost"
+  | "ni"
+  | "premium";
 export type ButtonSize = "sm" | "md" | "lg";
 
 type ButtonStyleOptions = {
@@ -23,6 +29,10 @@ const toneStyles: Record<ButtonTone, string> = {
     "border-[color:var(--button-tertiary-border)] bg-[color:var(--button-tertiary-bg)] text-[color:var(--button-tertiary-text)] shadow-[var(--button-tertiary-shadow)] hover:-translate-y-0.5 hover:border-[rgba(185,139,70,0.34)] hover:bg-[color:var(--button-tertiary-bg-hover)] hover:text-[color:var(--button-tertiary-text-hover)]",
   ghost:
     "border-transparent bg-transparent text-[color:var(--color-text-secondary)] hover:bg-[color:var(--color-accent-soft)] hover:text-[color:var(--color-text-primary)]",
+  ni:
+    "border-[color:var(--button-cta-ni-border)] bg-[image:var(--button-cta-ni-bg)] text-[color:var(--button-cta-ni-text)] shadow-[0_12px_28px_rgba(0,109,255,0.18)] hover:-translate-y-0.5 hover:brightness-[1.04]",
+  premium:
+    "border-[color:var(--button-cta-premium-border)] bg-[color:var(--button-cta-premium-bg)] text-[color:var(--button-cta-premium-text)] shadow-[0_14px_32px_rgba(5,5,5,0.18)] hover:-translate-y-0.5 hover:brightness-[1.08]",
 };
 
 const sizeStyles: Record<ButtonSize, string> = {

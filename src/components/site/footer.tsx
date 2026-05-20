@@ -73,10 +73,10 @@ export async function Footer() {
   return (
     <footer
       data-nosnippet
-      className="border-t border-[rgba(155,122,74,0.18)] bg-[linear-gradient(180deg,#fffefb_0%,#fbf6ed_100%)] text-[color:var(--color-ink-strong)]"
+      className="border-t border-[rgba(185,139,70,0.34)] bg-white text-[color:var(--color-ink-strong)]"
     >
       <Container className="space-y-7 py-[var(--space-8)] sm:py-[var(--space-10)]">
-        <div className="grid gap-7 rounded-[var(--radius-card)] border border-[rgba(155,122,74,0.2)] bg-white/82 p-5 shadow-[var(--shadow-card-soft)] lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.55fr)] lg:gap-8 sm:p-6">
+        <div className="grid gap-7 rounded-[var(--radius-card)] border border-[rgba(185,139,70,0.28)] bg-white p-5 shadow-[0_14px_34px_rgba(5,5,5,0.06)] lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.55fr)] lg:gap-8 sm:p-6">
           <div className="space-y-4">
             <Link
               href={localizeHref("/")}
@@ -84,12 +84,12 @@ export async function Footer() {
             >
               <NavagrahaLogo variant="footer-light" className="w-[10.5rem] sm:w-[12rem]" />
             </Link>
-            <p className="max-w-sm text-[length:var(--font-size-body-sm)] leading-relaxed text-[color:var(--color-ink-body)]">
+            <p className="max-w-sm text-[length:var(--font-size-body-sm)] leading-relaxed text-[color:var(--color-text-secondary)]">
               Premium Vedic astrology, NAVAGRAHA Intelligence, reports,
               consultation, and verified public guidance routes from NAVAGRAHA
               CENTRE.
             </p>
-            <p className="inline-flex rounded-full border border-[rgba(185,139,70,0.26)] bg-[rgba(255,250,240,0.92)] px-3 py-2 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-trust-text)]">
+            <p className="inline-flex rounded-full border border-[rgba(185,139,70,0.36)] bg-white px-3 py-2 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-antique-gold-dark)] shadow-[0_8px_20px_rgba(185,139,70,0.08)]">
               Guidance-first. No guaranteed outcomes.
             </p>
           </div>
@@ -98,7 +98,7 @@ export async function Footer() {
             {footerColumns.map((column) => (
               <div
                 key={column.title}
-                className="rounded-[var(--radius-lg)] border border-[rgba(155,122,74,0.14)] bg-[rgba(255,255,255,0.7)] p-4"
+                className="rounded-[var(--radius-lg)] border border-[rgba(185,139,70,0.22)] bg-white p-4"
               >
                 <h2 className="text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-accent-gold-dark)]">
                   {column.title}
@@ -108,7 +108,7 @@ export async function Footer() {
                     <li key={`${column.title}-${link.href}-${link.label}`}>
                       <Link
                         href={link.href}
-                        className="mobile-safe-text inline-block max-w-full text-[length:var(--font-size-body-sm)] font-medium text-[color:var(--color-ink-body)] transition [transition-duration:var(--motion-duration-base)] hover:text-[color:var(--color-accent-gold-dark)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
+                        className="mobile-safe-text inline-block max-w-full text-[length:var(--font-size-body-sm)] font-medium text-[color:var(--color-text-primary)] transition [transition-duration:var(--motion-duration-base)] hover:text-[color:var(--color-accent-gold-dark)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
                       >
                         {link.label}
                       </Link>
@@ -120,14 +120,14 @@ export async function Footer() {
           </div>
         </div>
 
-        <div className="rounded-[var(--radius-xl)] border border-[rgba(155,122,74,0.18)] bg-white/78 p-4 shadow-[0_14px_34px_rgba(96,76,48,0.08)]">
-          <div className="mb-3 text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-ink-muted)]">
+        <div className="rounded-[var(--radius-xl)] border border-[rgba(185,139,70,0.24)] bg-white p-4 shadow-[0_14px_34px_rgba(5,5,5,0.05)]">
+          <div className="mb-3 text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-antique-gold-dark)]">
             Language
           </div>
           <LanguageSwitcher variant="compact" />
         </div>
 
-        <div className="flex min-w-0 flex-col gap-3 border-t border-[rgba(155,122,74,0.18)] pt-5 text-[0.72rem] font-semibold uppercase tracking-[0.1em] text-[color:var(--color-ink-muted)] sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex min-w-0 flex-col gap-3 border-t border-[rgba(185,139,70,0.28)] pt-5 text-[0.72rem] font-semibold uppercase tracking-[0.1em] text-[color:var(--color-text-primary)] sm:flex-row sm:items-center sm:justify-between">
           <p>&copy; {new Date().getFullYear()} {siteConfig.name}</p>
           <div className="flex min-w-0 flex-wrap items-center gap-4">
             <Link
