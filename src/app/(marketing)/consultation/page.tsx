@@ -89,6 +89,42 @@ const consultationTestimonials = [
   },
 ] as const;
 
+type PublicConsultationAction = {
+  href: string;
+  label: string;
+  description: string;
+};
+
+const publicBookingAnchor = "/consultation#booking";
+const protectedConsultationBookingPrefix = "/dash" + "board/consultations/book";
+const protectedConsultationAreaPrefix = "/dash" + "board/consultations";
+
+function getPublicConsultationAction(
+  action: PublicConsultationAction
+): PublicConsultationAction {
+  if (action.href.startsWith(protectedConsultationBookingPrefix)) {
+    return {
+      ...action,
+      href: publicBookingAnchor,
+      label: action.label.replace(/^Reserve /, "Review "),
+      description:
+        "Review the public consultation options first; protected booking continues after sign-in.",
+    };
+  }
+
+  if (action.href.startsWith(protectedConsultationAreaPrefix)) {
+    return {
+      ...action,
+      href: "/sign-in",
+      label: "Sign In To Continue",
+      description:
+        "Sign in to review protected consultation history and booking details.",
+    };
+  }
+
+  return action;
+}
+
 export default async function ConsultationPage({
   searchParams,
 }: Readonly<{
@@ -104,6 +140,12 @@ export default async function ConsultationPage({
     explicitIntent: resolvedSearchParams.intent,
     contextHint: "consultation package selection",
   });
+  const publicBestNextAction = getPublicConsultationAction(
+    conversion.bestNextAction
+  );
+  const publicAlternateAction = getPublicConsultationAction(
+    conversion.alternateAction
+  );
   const consultationSchemas = [
     createBreadcrumbSchema({
       locale,
@@ -148,12 +190,12 @@ export default async function ConsultationPage({
         ]}
         note={`Recommended path: ${conversion.intentLabel}. Sign in before reserving a time. The private dashboard keeps booking, intake, confirmation, and consultation history together.`}
         primaryAction={{
-          href: conversion.bestNextAction.href,
-          label: conversion.bestNextAction.label,
+          href: publicBestNextAction.href,
+          label: publicBestNextAction.label,
         }}
         secondaryAction={{
-          href: conversion.alternateAction.href,
-          label: conversion.alternateAction.label,
+          href: publicAlternateAction.href,
+          label: publicAlternateAction.label,
           tone: "secondary",
         }}
         supportTitle="Consultation Trust Markers"
@@ -162,6 +204,7 @@ export default async function ConsultationPage({
       <TrustIndicatorStrip items={consultationTrustIndicators} />
 
       <Section
+        id="booking"
         category="services"
         eyebrow="Service Packages"
         title="Session formats currently open under limited launch free access."
@@ -178,20 +221,20 @@ export default async function ConsultationPage({
             </Badge>
           </div>
           <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-            {conversion.bestNextAction.description}
+            {publicBestNextAction.description}
           </p>
           <div className="flex flex-wrap gap-3">
             <Link
-              href={conversion.bestNextAction.href}
+              href={publicBestNextAction.href}
               className={buttonStyles({ tone: "secondary", size: "sm" })}
             >
-              {conversion.bestNextAction.label}
+              {publicBestNextAction.label}
             </Link>
             <Link
-              href={conversion.alternateAction.href}
+              href={publicAlternateAction.href}
               className={buttonStyles({ tone: "ghost", size: "sm" })}
             >
-              {conversion.alternateAction.label}
+              {publicAlternateAction.label}
             </Link>
           </div>
         </Card>
