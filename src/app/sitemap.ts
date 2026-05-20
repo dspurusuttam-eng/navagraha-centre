@@ -93,7 +93,6 @@ const staticRoutes: readonly StaticRouteDefinition[] = [
   { path: "/dasha", changeFrequency: "weekly", priority: 0.85 },
   { path: "/transit", changeFrequency: "weekly", priority: 0.85 },
   { path: "/numerology", changeFrequency: "weekly", priority: 0.9 },
-  { path: "/navagraha-ai", changeFrequency: "weekly", priority: 0.9 },
   { path: "/reports", changeFrequency: "weekly", priority: 0.9 },
   { path: "/consultation", changeFrequency: "weekly", priority: 0.9 },
   { path: "/dosha-yoga", changeFrequency: "weekly", priority: 0.85 },

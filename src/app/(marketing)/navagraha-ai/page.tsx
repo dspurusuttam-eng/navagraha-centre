@@ -1,37 +1,15 @@
-import { redirect } from "next/navigation";
-import { createToolMetadata } from "@/lib/seo/metadata";
-import { getCoreSeoCopy } from "@/lib/seo/seo-config";
+import { permanentRedirect } from "next/navigation";
 import {
   getRequestLocale,
   hasExplicitLocalePrefixInRequest,
 } from "@/modules/localization/request";
 import { getLocalizedRedirectPath } from "@/modules/localization/routes";
 
-export async function generateMetadata() {
-  const locale = await getRequestLocale();
-  const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
-  const localized = getCoreSeoCopy("navagrahaAi", locale);
-
-  return createToolMetadata({
-    title: localized.title,
-    description: localized.description,
-    path: "/navagraha-ai",
-    locale,
-    explicitLocalePrefix: hasExplicitLocalePrefix,
-    keywords: [
-      "navagraha ai",
-      "ai astrology guidance",
-      "kundli ai",
-      "vedic astrology ai",
-    ],
-  });
-}
-
 export default async function NavagrahaAiAliasPage() {
   const locale = await getRequestLocale();
   const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
 
-  redirect(
+  permanentRedirect(
     getLocalizedRedirectPath(locale, "/ai", {
       explicitLocalePrefix: hasExplicitLocalePrefix,
     })

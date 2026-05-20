@@ -98,8 +98,8 @@ const numerologyCategoryCards: readonly ReadinessItem[] = [
 
 const journeyActions = [
   {
-    href: "/navagraha-ai",
-    label: "Ask NAVAGRAHA AI",
+    href: "/ai",
+    label: "Ask NI",
     tone: "accent" as const,
     feature: "numerology-journey-ai",
   },
@@ -244,8 +244,8 @@ export default function NumerologyPage() {
           },
         }}
         secondaryAction={{
-          href: "/navagraha-ai",
-          label: "Ask NAVAGRAHA AI",
+          href: "/ai",
+          label: "Ask NI",
           eventName: "cta_click",
           eventPayload: {
             page: "/numerology",
@@ -312,8 +312,8 @@ export default function NumerologyPage() {
               Move from numerology into chart-aware guidance.
             </h2>
             <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-              Start with verified number references, then continue into NAVAGRAHA
-              AI, reports, consultation, or Kundli context as needed.
+              Start with verified number references, then continue into Ask NI,
+              reports, consultation, or Kundli context as needed.
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">

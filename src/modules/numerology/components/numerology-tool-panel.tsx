@@ -364,13 +364,13 @@ export function NumerologyToolPanel() {
                 Continue with AI-assisted chart guidance for deeper personalization.
               </p>
               <p className="text-[length:var(--font-size-body-sm)] text-[var(--color-ink-body)]">
-                Numerology offers a structured layer. Kundli + NAVAGRAHA AI gives
-                deeper chart-context interpretation.
+                Numerology offers a structured layer. Kundli + NAVAGRAHA
+                Intelligence gives deeper chart-context interpretation.
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
               <TrackedLink
-                href="/navagraha-ai"
+                href="/ai"
                 eventName="premium_utility_cta_click"
                 eventPayload={{
                   page: "/numerology",
@@ -381,7 +381,7 @@ export function NumerologyToolPanel() {
                   className: "w-full justify-center sm:w-auto",
                 })}
               >
-                Ask NAVAGRAHA AI
+                Ask NI
               </TrackedLink>
               <TrackedLink
                 href="/reports"

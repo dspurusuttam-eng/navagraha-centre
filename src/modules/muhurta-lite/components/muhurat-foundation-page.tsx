@@ -133,8 +133,8 @@ const nextActions = [
     feature: "muhurat-next-panchang",
   },
   {
-    href: "/navagraha-ai",
-    label: "Ask NAVAGRAHA AI",
+    href: "/ai",
+    label: "Ask NI",
     tone: "secondary" as const,
     feature: "muhurat-next-ai",
   },
@@ -405,13 +405,13 @@ export function MuhuratFoundationPage({
                 }}
               >
                 Continue from timing guidance into chart and AI context.
-              </h2>
-              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-                Use Muhurat as an optional planning layer, then continue into
-                Panchang, Kundli, NAVAGRAHA AI, or consultation when a deeper
-                review is needed.
-              </p>
-            </div>
+            </h2>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
+              Use Muhurat as an optional planning layer, then continue into
+                Panchang, Kundli, NAVAGRAHA Intelligence, or consultation when
+                a deeper review is needed.
+            </p>
+          </div>
             <div className="grid gap-3 sm:grid-cols-2">
               {nextActions.map((action) => (
                 <TrackedLink
