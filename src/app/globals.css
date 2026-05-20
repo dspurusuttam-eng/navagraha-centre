@@ -177,6 +177,24 @@ select {
   gap: 0.75rem;
 }
 
+@media (max-width: 420px) {
+  :root {
+    --tracking-label: 0.16em;
+    --space-card-padding: 1rem;
+  }
+
+  main,
+  main :where(section, article, div, ul, ol, li, nav, header, footer, aside) {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  main :where(h1, h2, h3, h4, p, span, a, button) {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+}
+
 .tool-card {
   border-color: var(--card-tool-border);
   background: var(--card-tool-bg);

@@ -136,6 +136,7 @@
   --font-size-display-xl: clamp(3.5rem, 8vw, 6.75rem);
   --font-size-display-lg: clamp(2.85rem, 6vw, 5rem);
   --font-size-display-md: clamp(2.2rem, 4.2vw, 3.6rem);
+  --font-size-display-sm: 2.15rem;
   --font-size-title-lg: clamp(1.8rem, 3vw, 2.7rem);
   --font-size-title-md: clamp(1.4rem, 2.5vw, 1.9rem);
   --font-size-title-sm: clamp(1.16rem, 2vw, 1.4rem);
