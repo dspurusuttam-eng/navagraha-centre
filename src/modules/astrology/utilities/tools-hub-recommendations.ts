@@ -78,7 +78,7 @@ export const toolsHubRecommendationBlocks: readonly ToolsHubRecommendationBlock[
     description:
       "Follow the expanding AI-assisted roadmap for Kundli NI, Dasha NI, Transit NI, Panchang NI, Remedy NI, Numerology NI and more.",
     primaryHref: "/ai",
-    primaryLabel: "Ask NAVAGRAHA AI",
+    primaryLabel: "Ask NI",
     secondaryHref: "/tools",
     secondaryLabel: "Browse Tools",
     feature: "tools-hub-recommendation-future-ni",
