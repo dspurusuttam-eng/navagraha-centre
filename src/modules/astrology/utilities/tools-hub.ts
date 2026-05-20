@@ -72,7 +72,7 @@ export const toolsHubFilterTabs: readonly ToolsHubFilterTab[] = [
   {
     key: "ai-ni",
     label: "NAVAGRAHA Intelligence",
-    description: "NAVAGRAHA AI and future intelligence modules.",
+    description: "NAVAGRAHA Intelligence and future intelligence modules.",
   },
   {
     key: "reports",
@@ -311,13 +311,13 @@ export const toolsHubCollections: readonly ToolsHubCollection[] = [
     cards: [
       {
         key: "navagraha-ai",
-        title: "NAVAGRAHA AI",
-        description: "Ask chart-aware questions and continue into deeper interpretation.",
+        title: "Ask NI",
+        description: "Use NAVAGRAHA Intelligence for chart-aware questions and deeper interpretation.",
         metaLabel: "AI Tool",
         metaTone: "trust",
         href: "/ai",
         fallbackHref: "/ai",
-        ctaLabel: "Ask NAVAGRAHA AI",
+        ctaLabel: "Ask NI",
         status: "available",
         statusLabel: "AI Tool",
         statusTone: "trust",
@@ -753,7 +753,7 @@ export const toolsHubRecommendationBlocks: readonly {
     description:
       "Follow the expanding AI-assisted roadmap for Kundli NI, Dasha NI, Transit NI, Panchang NI, Remedy NI, Numerology NI and more.",
     primaryHref: "/ai",
-    primaryLabel: "Ask NAVAGRAHA AI",
+    primaryLabel: "Ask NI",
     secondaryHref: "/tools",
     secondaryLabel: "Browse Tools",
     feature: "tools-hub-recommendation-future-ni",

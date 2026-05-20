@@ -25,7 +25,7 @@ export async function generateMetadata() {
   return createToolMetadata({
     title: "NAVAGRAHA Astrology Tools | Kundli, Reports & AI",
     description:
-      "Explore Kundli, Panchang, Rashifal, Dasha, Transit, Matchmaking, Dosha + Yoga, Numerology, Muhurat / Calendar, Remedies, Reports, NAVAGRAHA AI, Consultation, and future premium astrology utilities in one place.",
+      "Explore Kundli, Panchang, Rashifal, Dasha, Transit, Matchmaking, Dosha + Yoga, Numerology, Muhurat / Calendar, Remedies, Reports, NAVAGRAHA Intelligence, Consultation, and future premium astrology utilities in one place.",
     path: "/tools",
     locale,
     explicitLocalePrefix: hasExplicitLocalePrefix,
@@ -141,7 +141,7 @@ export default async function ToolsHubPage() {
                   className: "w-full justify-center sm:w-auto",
                 })}
               >
-                Ask NAVAGRAHA AI
+                Ask NI
               </TrackedLink>
             </div>
 
