@@ -206,6 +206,118 @@ select {
   background: var(--color-section-content-bg);
 }
 
+.launch-page {
+  --launch-page-accent: var(--color-antique-gold);
+  --launch-page-accent-strong: var(--color-antique-gold-dark);
+  --launch-page-accent-soft: color-mix(
+    in srgb,
+    var(--launch-page-accent) 9%,
+    #ffffff
+  );
+  --launch-page-accent-border: color-mix(
+    in srgb,
+    var(--launch-page-accent) 34%,
+    transparent
+  );
+  background: #ffffff;
+  color: var(--color-text-primary);
+}
+
+.launch-page-ai,
+.launch-page-intelligence {
+  --launch-page-accent: var(--color-intelligence-cyan);
+  --launch-page-accent-strong: var(--color-intelligence-blue);
+}
+
+.launch-page-remedies {
+  --launch-page-accent: var(--color-remedy-emerald);
+  --launch-page-accent-strong: var(--color-remedy-emerald);
+}
+
+.launch-page-muhurat,
+.launch-page-learning,
+.launch-page-articles,
+.launch-page-from-the-desk {
+  --launch-page-accent: var(--color-muhurat-sapphire);
+  --launch-page-accent-strong: #8a6400;
+}
+
+.launch-page-consultation,
+.launch-page-authority {
+  --launch-page-accent: var(--color-consultation-ruby);
+  --launch-page-accent-strong: var(--color-consultation-ruby);
+}
+
+.launch-page-reports {
+  --launch-page-accent: var(--color-antique-gold);
+  --launch-page-accent-strong: var(--color-antique-gold-dark);
+  --launch-page-accent-soft: var(--color-report-pearl);
+}
+
+.launch-page-dosha-yoga {
+  --launch-page-accent: var(--color-dosha-coral);
+  --launch-page-accent-strong: #9f241f;
+}
+
+.launch-page :where(.section-label) {
+  border-color: var(--launch-page-accent-border);
+  background: var(--launch-page-accent-soft);
+  color: var(--launch-page-accent-strong);
+}
+
+.launch-page
+  :where(
+    .brand-signature-grid,
+    .service-card,
+    .service-offering-card,
+    .content-card,
+    .product-card
+  ) {
+  border-color: var(--launch-page-accent-border);
+}
+
+.launch-page :where(.brand-signature-grid)::before {
+  background:
+    linear-gradient(
+      120deg,
+      color-mix(in srgb, var(--launch-page-accent) 8%, transparent) 0%,
+      color-mix(in srgb, var(--launch-page-accent) 3%, transparent) 34%,
+      transparent 64%
+    ),
+    repeating-linear-gradient(
+      45deg,
+      transparent 0 14px,
+      color-mix(in srgb, var(--launch-page-accent) 4%, transparent) 14px 15px
+    );
+}
+
+.launch-page :where(a[href="/ai"], a[href$="/ai"]) {
+  border-color: rgba(0, 109, 255, 0.42);
+}
+
+.launch-page :where(a[href="/ai"], a[href$="/ai"]):not(:hover) {
+  box-shadow: 0 10px 24px rgba(0, 109, 255, 0.08);
+}
+
+.launch-page-ai > section:first-of-type {
+  border-color: rgba(0, 109, 255, 0.24);
+  background: #ffffff;
+}
+
+.launch-page-ai > section:first-of-type > div:first-child {
+  background:
+    radial-gradient(
+      circle at 12% 12%,
+      rgba(0, 215, 255, 0.16),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 84% 14%,
+      rgba(0, 109, 255, 0.12),
+      transparent 32%
+    );
+}
+
 .brand-signature-grid {
   position: relative;
 }

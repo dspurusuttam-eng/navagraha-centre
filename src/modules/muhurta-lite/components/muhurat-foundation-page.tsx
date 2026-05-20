@@ -210,7 +210,7 @@ export function MuhuratFoundationPage({
         payload={{ page: pagePath, feature: "muhurta-lite-page" }}
       />
 
-      <main className="min-h-screen bg-[#FFFFFF] pb-[calc(7rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] md:pb-0">
+      <main className="launch-page launch-page-muhurat min-h-screen bg-[#FFFFFF] pb-[calc(7rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] md:pb-0">
         <PageHero
           eyebrow="Muhurat Utility"
           title="Muhurat & Hindu Calendar"

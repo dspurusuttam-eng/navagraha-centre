@@ -135,6 +135,7 @@ export default async function FromTheDeskPage({
       <RetentionPreferenceBridge section="from-the-desk" />
       <JsonLd id="from-the-desk-schema" data={deskSchemas} />
 
+      <main className="launch-page launch-page-from-the-desk">
       <PageHero
         eyebrow={copy.eyebrow}
         title={copy.title}
@@ -292,6 +293,7 @@ export default async function FromTheDeskPage({
           </Card>
         </div>
       </Section>
+      </main>
     </>
   );
 }

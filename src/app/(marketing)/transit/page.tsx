@@ -28,7 +28,7 @@ const transitIntroCtas = [
     href: "/ai",
     label: "Ask NI",
     feature: "transit-hero-ask-ni",
-    tone: "secondary" as const,
+    tone: "ni" as const,
   },
   {
     href: "/kundli",
@@ -531,7 +531,7 @@ function TransitShortcutCard({
         <span
           className={buttonStyles({
             size: "sm",
-            tone: title === "Ask NI" ? "tertiary" : "secondary",
+            tone: title === "Ask NI" ? "ni" : "secondary",
             className: "mt-auto w-full justify-center",
           })}
         >
@@ -597,7 +597,7 @@ function TransitPageContent() {
         payload={{ page: "/transit", feature: "transit-page" }}
       />
 
-      <main className="min-h-screen bg-[linear-gradient(180deg,#fffefb_0%,#ffffff_28%,#fbf6ed_100%)] pb-[calc(7.2rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] xl:pb-0">
+      <main className="launch-page launch-page-transit min-h-screen bg-[linear-gradient(180deg,#fffefb_0%,#ffffff_28%,#fbf6ed_100%)] pb-[calc(7.2rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] xl:pb-0">
         <TransitFirstScreen
           transitData={transitData}
           transitDateLabel={transitDateLabel}
@@ -821,7 +821,7 @@ function TransitPageContent() {
                   eventPayload={{ page: "/transit", feature: "transit-ni-panel" }}
                   className={buttonStyles({
                     size: "sm",
-                    tone: "accent",
+                    tone: "ni",
                     className: "w-full justify-center",
                   })}
                 >

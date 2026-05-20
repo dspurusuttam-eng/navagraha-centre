@@ -179,6 +179,7 @@ export default async function ConsultationPage({
       />
       <RetentionPreferenceBridge section="consultation" />
 
+      <main className="launch-page launch-page-consultation">
       <PageHero
         eyebrow="Consultations"
         title="Human-led Vedic astrology consultation with Joy Prakash Sarmah."
@@ -460,6 +461,7 @@ export default async function ConsultationPage({
         updatedOn="April 22, 2026"
         tone="transparent"
       />
+      </main>
     </>
   );
 }

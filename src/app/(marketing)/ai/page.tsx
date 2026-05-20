@@ -279,19 +279,20 @@ export default function AiPage() {
         payload={{ page: "/ai", feature: "ai-page" }}
       />
 
+      <main className="launch-page launch-page-ai">
       <section className="relative overflow-hidden border-b border-[rgba(212,175,55,0.24)] bg-[linear-gradient(180deg,#0c1022_0%,#120f2c_52%,#1f1232_100%)]">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_12%,rgba(138,92,246,0.22),transparent_34%),radial-gradient(circle_at_84%_14%,rgba(212,175,55,0.18),transparent_32%),radial-gradient(circle_at_50%_90%,rgba(212,175,55,0.12),transparent_38%)]" />
         <Container className="relative grid gap-8 py-12 sm:py-14 lg:grid-cols-[minmax(0,1.02fr)_minmax(320px,0.98fr)] lg:items-center">
           <div className="space-y-6">
             <Badge
               tone="neutral"
-              className="border-[rgba(244,213,143,0.34)] bg-[rgba(255,255,255,0.08)] text-[#f8e4a8]"
+              className="border-[rgba(0,109,255,0.34)] bg-[rgba(0,215,255,0.08)] text-[color:var(--color-intelligence-blue)]"
             >
               NAVAGRAHA AI Flagship
             </Badge>
             <div className="space-y-4">
               <h1
-                className="font-[family-name:var(--font-display)] text-[length:var(--font-size-display-md)] text-white sm:text-[length:var(--font-size-display-lg)]"
+                className="font-[family-name:var(--font-display)] text-[length:var(--font-size-display-md)] text-[color:var(--color-ink-strong)] sm:text-[length:var(--font-size-display-lg)]"
                 style={{
                   letterSpacing: "var(--tracking-display)",
                   lineHeight: "var(--line-height-tight)",
@@ -299,10 +300,10 @@ export default function AiPage() {
               >
                 NAVAGRAHA AI - chart-aware Vedic astrology intelligence.
               </h1>
-              <p className="max-w-[44rem] text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[#f9efd3]">
+              <p className="max-w-[44rem] text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
                 NAVAGRAHA AI connects Kundli context, Dasha timing, transit signals, rule-based checks, and safe interpretation into one calm guidance layer.
               </p>
-              <p className="inline-flex rounded-[var(--radius-pill)] border border-[rgba(244,213,143,0.28)] bg-[rgba(255,255,255,0.07)] px-4 py-2 text-[0.68rem] uppercase tracking-[0.14em] text-[#f8e4a8]">
+              <p className="inline-flex rounded-[var(--radius-pill)] border border-[rgba(0,109,255,0.24)] bg-[rgba(0,215,255,0.06)] px-4 py-2 text-[0.68rem] uppercase tracking-[0.14em] text-[color:var(--color-intelligence-blue)]">
                 Powered by your birth chart
               </p>
             </div>
@@ -314,10 +315,11 @@ export default function AiPage() {
                 eventPayload={{ page: "/ai", feature: "ai-hero-ask-my-chart" }}
                 className={buttonStyles({
                   size: "lg",
+                  tone: "ni",
                   className: "w-full justify-center sm:w-auto",
                 })}
               >
-                Chat with NAVAGRAHA AI
+                Ask NI
               </TrackedLink>
               <TrackedLink
                 href="/kundli"
@@ -326,7 +328,7 @@ export default function AiPage() {
                 className={buttonStyles({
                   size: "lg",
                   tone: "secondary",
-                  className: "w-full justify-center border-[rgba(244,213,143,0.44)] bg-[rgba(255,255,255,0.08)] text-[#f9efd3] hover:bg-[rgba(255,255,255,0.14)] sm:w-auto",
+                  className: "w-full justify-center sm:w-auto",
                 })}
               >
                 Generate Kundli First
@@ -338,7 +340,7 @@ export default function AiPage() {
                 className={buttonStyles({
                   size: "lg",
                   tone: "ghost",
-                  className: "w-full justify-center text-[#f9efd3] hover:text-white sm:w-auto",
+                  className: "w-full justify-center sm:w-auto",
                 })}
               >
                 Explore AI Tools
@@ -740,6 +742,7 @@ export default function AiPage() {
               eventPayload={{ page: "/ai", feature: "ai-final-cta-ask-my-chart" }}
               className={buttonStyles({
                 size: "lg",
+                tone: "ni",
                 className: "w-full justify-center sm:w-auto",
               })}
             >
@@ -768,6 +771,7 @@ export default function AiPage() {
           description="Ask your first chart question for free, then move into reports, consultation, or spiritual support based on your current need."
         />
       </Section>
+      </main>
     </>
   );
 }

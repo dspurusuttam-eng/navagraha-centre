@@ -148,6 +148,7 @@ export default async function ArticlesPage({
       <RetentionPreferenceBridge section="articles" />
       <JsonLd id="articles-listing-schema" data={listingStructuredData} />
 
+      <main className="launch-page launch-page-articles">
       <section className="border-b border-[color:var(--color-border)] bg-white">
         <Container className="grid gap-8 py-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)] lg:items-start">
           <div className="space-y-6">
@@ -379,6 +380,7 @@ export default async function ArticlesPage({
           ]}
         />
       </Section>
+      </main>
     </>
   );
 }

@@ -82,6 +82,7 @@ export default async function ShopPage() {
         payload={{ page: "/shop", feature: "shop-page" }}
       />
 
+      <main className="launch-page launch-page-shop">
       <PageHero
         eyebrow="Spiritual Shop"
         title="Optional spiritual products, presented with care and restraint."
@@ -134,9 +135,9 @@ export default async function ShopPage() {
               href="/ai"
               eventName="shop_interaction"
               eventPayload={{ page: "/shop", feature: "shop-to-ai" }}
-              className={buttonStyles({ size: "sm", tone: "ghost" })}
+              className={buttonStyles({ size: "sm", tone: "ni" })}
             >
-              Try NAVAGRAHA AI
+              Ask NI
             </TrackedLink>
           </div>
         </Card>
@@ -299,6 +300,7 @@ export default async function ShopPage() {
           <SponsoredDisclosure />
         </Card>
       </Section>
+      </main>
     </>
   );
 }

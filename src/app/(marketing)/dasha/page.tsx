@@ -19,7 +19,7 @@ const dashaIntroCtas = [
     href: "/ai",
     label: "Ask NI",
     feature: "dasha-hero-ask-ni",
-    tone: "secondary" as const,
+    tone: "ni" as const,
   },
   {
     href: "/kundli",
@@ -378,7 +378,7 @@ function DashaShortcutCard({
         <span
           className={buttonStyles({
             size: "sm",
-            tone: title === "Ask NI" ? "tertiary" : "secondary",
+            tone: title === "Ask NI" ? "ni" : "secondary",
             className: "mt-auto w-full justify-center",
           })}
         >
@@ -398,7 +398,7 @@ export default function DashaPage() {
         payload={{ page: "/dasha", feature: "dasha-page" }}
       />
 
-      <main className="min-h-screen bg-[linear-gradient(180deg,#fffefb_0%,#ffffff_28%,#fbf6ed_100%)] pb-[calc(7.2rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] xl:pb-0">
+      <main className="launch-page launch-page-dasha min-h-screen bg-[linear-gradient(180deg,#fffefb_0%,#ffffff_28%,#fbf6ed_100%)] pb-[calc(7.2rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] xl:pb-0">
         <DashaFirstScreen />
 
         <Section
@@ -485,7 +485,7 @@ export default function DashaPage() {
                   eventPayload={{ page: "/dasha", feature: "dasha-ni-panel" }}
                   className={buttonStyles({
                     size: "sm",
-                    tone: "accent",
+                    tone: "ni",
                     className: "w-full justify-center",
                   })}
                 >

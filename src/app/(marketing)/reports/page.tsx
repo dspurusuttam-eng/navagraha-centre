@@ -84,6 +84,7 @@ export default function ReportsPage() {
         payload={{ page: "/reports", feature: "reports-page" }}
       />
 
+      <main className="launch-page launch-page-reports">
       <PageHero
         eyebrow="Premium Reports"
         title="Structured astrology reports for deeper chart-based guidance."
@@ -279,9 +280,9 @@ export default function ReportsPage() {
               href="/ai"
               eventName="premium_click"
               eventPayload={{ page: "/reports", feature: "reports-cta-ai" }}
-              className={buttonStyles({ size: "sm", tone: "secondary" })}
+              className={buttonStyles({ size: "sm", tone: "ni" })}
             >
-              Try NAVAGRAHA AI
+              Ask NI
             </TrackedLink>
             <TrackedLink
               href="/consultation"
@@ -294,6 +295,7 @@ export default function ReportsPage() {
           </div>
         </Card>
       </Section>
+      </main>
     </>
   );
 }

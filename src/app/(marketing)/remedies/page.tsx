@@ -23,7 +23,7 @@ type RemedyCategoryCard = {
   description: string;
   href: string;
   ctaLabel: string;
-  tone?: "accent" | "secondary" | "ghost";
+  tone?: "accent" | "secondary" | "ghost" | "ni";
 };
 
 const remedyReadinessItems = [
@@ -117,7 +117,7 @@ const remedyCategoryCards: readonly RemedyCategoryCard[] = [
       "Fasting and discipline remain reflective practices only, never mandatory or fear-driven.",
     href: "/ai",
     ctaLabel: "Ask NI",
-    tone: "secondary",
+    tone: "ni",
   },
   {
     title: "Dosha Remedies",
@@ -149,7 +149,7 @@ const heroActions = [
   {
     href: "/ai",
     label: "Ask NI",
-    tone: "secondary" as const,
+    tone: "ni" as const,
     feature: "remedies-hero-ask-ni",
   },
 ] as const;
@@ -158,7 +158,7 @@ const nextActions = [
   {
     href: "/ai",
     label: "Ask NI",
-    tone: "secondary" as const,
+    tone: "ni" as const,
     feature: "remedies-next-ask-ni",
   },
   {
@@ -213,7 +213,7 @@ function RemedyCategoryCard({
         eventPayload={{ page: "/remedies", feature: `remedies-${item.title.toLowerCase().replace(/\s+/g, "-")}` }}
         className={buttonStyles({
           size: "sm",
-          tone: item.tone ?? "accent",
+          tone: item.ctaLabel === "Ask NI" ? "ni" : item.tone ?? "accent",
           className: "w-full justify-center",
         })}
       >
@@ -316,7 +316,7 @@ export default async function RemediesPage() {
         payload={{ page: "/remedies", feature: "remedies-page" }}
       />
 
-      <main className="min-h-screen bg-[#FFFFFF] pb-[calc(7rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] md:pb-0">
+      <main className="launch-page launch-page-remedies min-h-screen bg-[#FFFFFF] pb-[calc(7rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] md:pb-0">
         <PageHero
           eyebrow="Remedies"
           title="Remedies"
@@ -350,7 +350,7 @@ export default async function RemediesPage() {
                   eventPayload={{ page: "/remedies", feature: `${cta.feature}-top` }}
                   className={buttonStyles({
                     size: "lg",
-                    tone: cta.label === "Ask NI" ? "accent" : cta.tone,
+                    tone: cta.label === "Ask NI" ? "ni" : cta.tone,
                     className: "w-full justify-center",
                   })}
                 >

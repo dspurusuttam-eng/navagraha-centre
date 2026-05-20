@@ -20,7 +20,7 @@ const matchmakingIntroCtas = [
     href: "/ai",
     label: "Ask NI",
     feature: "matchmaking-hero-ask-ni",
-    tone: "secondary" as const,
+    tone: "ni" as const,
   },
   {
     href: "/kundli",
@@ -341,7 +341,7 @@ function MatchmakingShortcutCard({
         <span
           className={buttonStyles({
             size: "sm",
-            tone: title === "Ask NI" ? "tertiary" : "secondary",
+            tone: title === "Ask NI" ? "ni" : "secondary",
             className: "mt-auto w-full justify-center",
           })}
         >
@@ -361,7 +361,7 @@ export default function MatchmakingPage() {
         payload={{ page: "/matchmaking", feature: "matchmaking-page" }}
       />
 
-      <main className="min-h-screen bg-[linear-gradient(180deg,#fffefb_0%,#ffffff_28%,#fbf6ed_100%)] pb-[calc(7.2rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] xl:pb-0">
+      <main className="launch-page launch-page-matchmaking min-h-screen bg-[linear-gradient(180deg,#fffefb_0%,#ffffff_28%,#fbf6ed_100%)] pb-[calc(7.2rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] xl:pb-0">
         <section className="border-b border-[rgba(155,122,74,0.16)] bg-[linear-gradient(180deg,#fffefb_0%,#ffffff_100%)]">
           <Container className="grid gap-6 py-8 sm:py-10 lg:grid-cols-[minmax(0,1.04fr)_minmax(300px,0.96fr)] lg:items-center lg:py-12">
             <div className="space-y-4 sm:space-y-5">
@@ -589,7 +589,7 @@ export default function MatchmakingPage() {
                   eventPayload={{ page: "/matchmaking", feature: "matchmaking-ni-panel" }}
                   className={buttonStyles({
                     size: "sm",
-                    tone: "accent",
+                    tone: "ni",
                     className: "w-full justify-center",
                   })}
                 >

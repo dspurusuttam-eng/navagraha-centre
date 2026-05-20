@@ -155,7 +155,7 @@ const actionCtas = [
     href: "/ai",
     label: "Ask NI",
     feature: "dosha-yoga-ask-ni",
-    tone: "secondary" as const,
+    tone: "ni" as const,
   },
   {
     href: "/kundli",
@@ -383,7 +383,7 @@ export default function DoshaYogaPage() {
         payload={{ page: "/dosha-yoga", feature: "dosha-yoga-page" }}
       />
 
-      <main className="min-h-screen bg-[#FFFFFF] pb-[calc(7rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] md:pb-0">
+      <main className="launch-page launch-page-dosha-yoga min-h-screen bg-[#FFFFFF] pb-[calc(7rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] md:pb-0">
         <section className="border-b border-black/8 bg-white">
           <Container className="grid gap-8 py-10 sm:py-12 lg:grid-cols-[minmax(0,1.06fr)_minmax(300px,0.94fr)] lg:items-center lg:py-14">
             <div className="space-y-6">

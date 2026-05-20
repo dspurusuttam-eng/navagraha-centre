@@ -643,6 +643,7 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeStructuredData) }}
       />
 
+      <main className="launch-page launch-page-home">
       <section
         id="top"
         className="relative overflow-hidden border-b border-[rgba(155,122,74,0.18)] bg-[linear-gradient(180deg,#ffffff_0%,#fbf6ed_100%)]"
@@ -1017,6 +1018,7 @@ export default async function HomePage() {
           </div>
         </div>
       </SectionBand>
+      </main>
     </>
   );
 }

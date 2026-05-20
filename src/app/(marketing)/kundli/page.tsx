@@ -73,7 +73,7 @@ export default async function KundliPage() {
     <>
       <PageViewTracker page="/kundli" feature="kundli-page" />
 
-      <main className="min-h-screen bg-[#FFFFFF] pb-[calc(6.5rem+env(safe-area-inset-bottom))] text-[#111111] md:pb-0">
+      <main className="launch-page launch-page-kundli min-h-screen bg-[#FFFFFF] pb-[calc(6.5rem+env(safe-area-inset-bottom))] text-[#111111] md:pb-0">
         <section className="border-b border-black/8 bg-white">
           <Container className="grid gap-8 py-10 sm:py-12 lg:grid-cols-[minmax(0,1.06fr)_minmax(300px,0.94fr)] lg:items-center lg:py-14">
             <div className="space-y-6 sm:space-y-7">

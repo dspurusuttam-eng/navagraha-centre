@@ -95,6 +95,7 @@ export default async function ToolsHubPage() {
         payload={{ page: "/tools", feature: "tools-hub-page" }}
       />
 
+      <main className="launch-page launch-page-tools">
       <section className="border-b border-black/8 bg-white">
         <Container className="grid gap-8 py-12 sm:py-16 lg:grid-cols-[minmax(0,1.02fr)_minmax(320px,0.98fr)] lg:items-center lg:py-20">
           <div className="space-y-7">
@@ -137,7 +138,7 @@ export default async function ToolsHubPage() {
                 eventPayload={{ page: "/tools", feature: "tools-hub-hero-ai" }}
                 className={buttonStyles({
                   size: "lg",
-                  tone: "secondary",
+                  tone: "ni",
                   className: "w-full justify-center sm:w-auto",
                 })}
               >
@@ -303,7 +304,7 @@ export default async function ToolsHubPage() {
                 eventPayload={{ page: "/tools", feature: "tools-hub-future-ai-link" }}
                 className={buttonStyles({
                   size: "sm",
-                  tone: "secondary",
+                  tone: "ni",
                   className: "w-full justify-center lg:w-auto",
                 })}
               >
@@ -313,6 +314,7 @@ export default async function ToolsHubPage() {
           </Card>
         </Container>
       </section>
+      </main>
     </>
   );
 }

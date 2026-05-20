@@ -224,6 +224,7 @@ export default function NumerologyPage() {
     <>
       <PageViewTracker page="/numerology" feature="numerology-page" />
 
+      <main className="launch-page launch-page-numerology">
       <PageHero
         eyebrow="Numerology Utility"
         title="Numerology Calculator"
@@ -338,6 +339,7 @@ export default function NumerologyPage() {
           </div>
         </Card>
       </Section>
+      </main>
     </>
   );
 }

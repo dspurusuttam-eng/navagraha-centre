@@ -300,7 +300,7 @@ function PanchangIntroActions({
               eventPayload={{ page: "/panchang", feature: item.feature }}
               className={buttonStyles({
                 size: "sm",
-                tone: item.label === "Ask NI" ? "tertiary" : "secondary",
+                tone: item.label === "Ask NI" ? "ni" : "secondary",
                 className:
                   "min-h-10 w-full justify-center px-3 text-[0.69rem] uppercase tracking-[0.06em]",
               })}
@@ -375,7 +375,7 @@ function PanchangGuidanceCard({
         <span
           className={buttonStyles({
             size: "sm",
-            tone: isAiCard ? "tertiary" : "secondary",
+            tone: isAiCard ? "ni" : "secondary",
             className: "w-full justify-center min-h-9 px-3 text-[0.67rem] uppercase tracking-[0.06em]",
           })}
         >
@@ -453,7 +453,7 @@ function PanchangUtilityCard({
         <span
           className={buttonStyles({
             size: "sm",
-            tone: isComingSoon ? "secondary" : isAiTool ? "tertiary" : "accent",
+            tone: isComingSoon ? "secondary" : isAiTool ? "ni" : "accent",
             className:
               "w-full justify-center min-h-9 px-3 text-[0.67rem] uppercase tracking-[0.06em]",
           })}
@@ -553,7 +553,7 @@ function PanchangFirstScreen({
               eventName="cta_click"
               eventPayload={{ page: "/panchang", feature: "panchang-hero-ask-ni" }}
               className={buttonStyles({
-                tone: "secondary",
+                tone: "ni",
                 size: "lg",
                 className: "w-full justify-center sm:w-auto",
               })}
@@ -565,7 +565,7 @@ function PanchangFirstScreen({
               eventName="cta_click"
               eventPayload={{ page: "/panchang", feature: "panchang-hero-muhurat" }}
               className={buttonStyles({
-                tone: "secondary",
+                tone: "ni",
                 size: "lg",
                 className: "w-full justify-center sm:w-auto",
               })}
@@ -673,7 +673,7 @@ export default async function PanchangPage() {
         }}
       />
 
-      <main className="min-h-screen bg-[linear-gradient(180deg,#fffefb_0%,#ffffff_28%,#fbf6ed_100%)] pb-[calc(7.2rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] xl:pb-0">
+      <main className="launch-page launch-page-panchang min-h-screen bg-[linear-gradient(180deg,#fffefb_0%,#ffffff_28%,#fbf6ed_100%)] pb-[calc(7.2rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] xl:pb-0">
       <PanchangFirstScreen
         locale={locale}
         hasExplicitLocalePrefix={hasExplicitLocalePrefix}

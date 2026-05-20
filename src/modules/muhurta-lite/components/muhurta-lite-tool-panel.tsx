@@ -411,7 +411,7 @@ export function MuhurtaLiteToolPanel({
                 eventPayload={{ page: pagePath, feature: "muhurta-result-kundli" }}
                 className={buttonStyles({
                   size: "sm",
-                  tone: "secondary",
+                  tone: "ni",
                   className: "w-full justify-center sm:w-auto",
                 })}
               >
@@ -427,7 +427,7 @@ export function MuhurtaLiteToolPanel({
                   className: "w-full justify-center sm:w-auto",
                 })}
               >
-                Try NAVAGRAHA AI
+                Ask NI
               </TrackedLink>
             </div>
           </Card>
