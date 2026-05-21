@@ -47,7 +47,7 @@ export const kundliPreviewItems: readonly KundliPreviewItem[] = [
     description: "Current movement context for practical next steps.",
   },
   {
-    title: "NAVAGRAHA AI Guidance",
+    title: "NAVAGRAHA Intelligence Guidance",
     description: "Chart-aware guidance support layered on top.",
   },
 ] as const;
@@ -84,10 +84,10 @@ export const kundliNextStepCards: readonly KundliNextStepCard[] = [
     feature: "kundli-next-step-reports",
   },
   {
-    title: "Ask NAVAGRAHA AI",
+    title: "Ask NI",
     description: "Use the same saved chart context to ask a chart-aware question.",
-    href: "/tools",
-    ctaLabel: "Ask AI",
+    href: "/ai",
+    ctaLabel: "Ask NI",
     statusLabel: "Available",
     statusTone: "trust",
     eventName: "cta_click",
