@@ -1,10 +1,17 @@
-﻿import { PageViewTracker } from "@/components/analytics/page-view-tracker";
+import type { ReactNode } from "react";
 import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
+import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import { TrackedLink } from "@/components/analytics/tracked-link";
-import { NavagrahaAiIcon } from "@/components/icons/astrology-icons";
-import { Badge } from "@/components/ui/badge";
-import { buttonStyles } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { UtilityIcon } from "@/components/graphics/utility-icons";
+import {
+  CalculatorIcon,
+  ConsultationIcon,
+  KundliIcon,
+  NavagrahaAiIcon,
+  PanchangIcon,
+  RashifalIcon,
+  ReportIcon,
+} from "@/components/icons/astrology-icons";
 import { Container } from "@/components/ui/container";
 import { createToolMetadata } from "@/lib/seo/metadata";
 import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
@@ -12,62 +19,386 @@ import {
   getRequestLocale,
   hasExplicitLocalePrefixInRequest,
 } from "@/modules/localization/request";
-import {
-  getToolsHubCollections,
-  getToolsHubHeroBadges,
-} from "@/modules/astrology/utilities/tools-hub";
-import { ToolsHubCatalog } from "@/components/tools/tools-hub-catalog";
 
 export async function generateMetadata() {
   const locale = await getRequestLocale();
   const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
 
   return createToolMetadata({
-    title: "NAVAGRAHA Astrology Tools | Kundli, Reports & AI",
+    title: "NAVAGRAHA Tools | Vedic Tools Hub",
     description:
-      "Explore Kundli, Panchang, Rashifal, Dasha, Transit, Matchmaking, Dosha + Yoga, Numerology, Muhurat / Calendar, Remedies, Reports, NAVAGRAHA Intelligence, Consultation, and future premium astrology utilities in one place.",
+      "Open Kundli, Panchang, Rashifal, Dasha, Transit, Matchmaking, Muhurat, Remedies, Reports, Consultation, and Ask NI from the NAVAGRAHA Tools Hub.",
     path: "/tools",
     locale,
     explicitLocalePrefix: hasExplicitLocalePrefix,
     keywords: [
       "astrology tools",
-      "vedic astrology utilities",
+      "vedic astrology tools",
       "kundli tools",
+      "panchang tools",
       "dasha tools",
       "transit tools",
       "matchmaking tools",
-      "dosha yoga tools",
-      "panchang tools",
-      "numerology tools",
-      "muhurat calendar tools",
+      "muhurat tools",
       "remedy tools",
-      "navagraha ai",
-      "consultation",
+      "ask ni",
       "navagraha intelligence",
-      "astrology command center",
+      "astrology reports",
     ],
   });
 }
 
 export const revalidate = 3600;
 
-function localizeCollections(
-  locale: string,
-  hasExplicitLocalePrefix: boolean,
-) {
-  const localizeHref = (href: string) =>
-    getLocalizedPath(locale, href, {
-      forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
-    });
+type LocalizeHref = (href: string) => string;
 
-  return getToolsHubCollections().map((collection) => ({
-    ...collection,
-    cards: collection.cards.map((card) => ({
-      ...card,
-      href: card.href ? localizeHref(card.href) : undefined,
-      fallbackHref: card.fallbackHref ? localizeHref(card.fallbackHref) : undefined,
-    })),
-  }));
+type HubIcon =
+  | "ai"
+  | "consultation"
+  | "dasha"
+  | "dosha"
+  | "kundli"
+  | "learning"
+  | "matching"
+  | "muhurat"
+  | "panchang"
+  | "remedies"
+  | "report"
+  | "rashifal"
+  | "transit";
+
+type HubLink = {
+  label: string;
+  href: string;
+  feature: string;
+  icon?: HubIcon;
+  accent?: string;
+};
+
+type HubGroup = {
+  id: string;
+  title: string;
+  items: readonly HubLink[];
+};
+
+const categoryRail: readonly { label: string; href: string }[] = [
+  { label: "All", href: "#all" },
+  { label: "Birth", href: "#birth" },
+  { label: "Daily", href: "#daily" },
+  { label: "Timing", href: "#timing" },
+  { label: "Relationship", href: "#birth" },
+  { label: "Dasha", href: "#dasha-transit" },
+  { label: "Remedies", href: "#dosha-remedies" },
+  { label: "Reports", href: "#reports-consultation" },
+  { label: "Learning", href: "#learning" },
+] as const;
+
+const featuredTools: readonly HubLink[] = [
+  {
+    label: "Kundli",
+    href: "/kundli",
+    feature: "tools-dashboard-featured-kundli",
+    icon: "kundli",
+    accent: "border-[rgba(185,139,70,0.42)]",
+  },
+  {
+    label: "Panchang",
+    href: "/panchang",
+    feature: "tools-dashboard-featured-panchang",
+    icon: "panchang",
+    accent: "border-[rgba(185,139,70,0.42)]",
+  },
+  {
+    label: "Rashifal",
+    href: "/rashifal",
+    feature: "tools-dashboard-featured-rashifal",
+    icon: "rashifal",
+    accent: "border-[rgba(185,139,70,0.42)]",
+  },
+  {
+    label: "Dasha",
+    href: "/dasha",
+    feature: "tools-dashboard-featured-dasha",
+    icon: "dasha",
+    accent: "border-[rgba(5,5,5,0.34)]",
+  },
+  {
+    label: "Transit",
+    href: "/transit",
+    feature: "tools-dashboard-featured-transit",
+    icon: "transit",
+    accent: "border-[rgba(5,5,5,0.34)]",
+  },
+  {
+    label: "Matching",
+    href: "/matchmaking",
+    feature: "tools-dashboard-featured-matching",
+    icon: "matching",
+    accent: "border-[rgba(111,28,42,0.34)]",
+  },
+  {
+    label: "Muhurat",
+    href: "/muhurat",
+    feature: "tools-dashboard-featured-muhurat",
+    icon: "muhurat",
+    accent: "border-[rgba(206,161,57,0.5)]",
+  },
+  {
+    label: "Remedies",
+    href: "/remedies",
+    feature: "tools-dashboard-featured-remedies",
+    icon: "remedies",
+    accent: "border-[rgba(19,122,83,0.42)]",
+  },
+] as const;
+
+const niChips: readonly HubLink[] = [
+  { label: "Kundli", href: "/ai", feature: "tools-dashboard-ni-kundli" },
+  { label: "Career", href: "/ai", feature: "tools-dashboard-ni-career" },
+  { label: "Marriage", href: "/ai", feature: "tools-dashboard-ni-marriage" },
+  { label: "Remedy", href: "/ai", feature: "tools-dashboard-ni-remedy" },
+  { label: "Dasha", href: "/ai", feature: "tools-dashboard-ni-dasha" },
+  { label: "Transit", href: "/ai", feature: "tools-dashboard-ni-transit" },
+] as const;
+
+const toolGroups: readonly HubGroup[] = [
+  {
+    id: "birth",
+    title: "Birth & Kundli",
+    items: [
+      { label: "Kundli", href: "/kundli", feature: "tools-group-kundli", icon: "kundli" },
+      {
+        label: "Matchmaking",
+        href: "/matchmaking",
+        feature: "tools-group-matchmaking",
+        icon: "matching",
+      },
+      { label: "Reports", href: "/reports", feature: "tools-group-birth-reports", icon: "report" },
+    ],
+  },
+  {
+    id: "daily",
+    title: "Daily Guidance",
+    items: [
+      { label: "Rashifal", href: "/rashifal", feature: "tools-group-rashifal", icon: "rashifal" },
+      { label: "Panchang", href: "/panchang", feature: "tools-group-panchang", icon: "panchang" },
+      { label: "Transit", href: "/transit", feature: "tools-group-daily-transit", icon: "transit" },
+    ],
+  },
+  {
+    id: "timing",
+    title: "Timing & Muhurat",
+    items: [
+      { label: "Muhurat", href: "/muhurat", feature: "tools-group-muhurat", icon: "muhurat" },
+      { label: "Panchang", href: "/panchang", feature: "tools-group-timing-panchang", icon: "panchang" },
+    ],
+  },
+  {
+    id: "dasha-transit",
+    title: "Dasha & Transit",
+    items: [
+      { label: "Dasha", href: "/dasha", feature: "tools-group-dasha", icon: "dasha" },
+      { label: "Transit", href: "/transit", feature: "tools-group-transit", icon: "transit" },
+    ],
+  },
+  {
+    id: "dosha-remedies",
+    title: "Dosha & Remedies",
+    items: [
+      { label: "Dosha-Yoga", href: "/dosha-yoga", feature: "tools-group-dosha-yoga", icon: "dosha" },
+      { label: "Remedies", href: "/remedies", feature: "tools-group-remedies", icon: "remedies" },
+    ],
+  },
+  {
+    id: "reports-consultation",
+    title: "Reports & Consultation",
+    items: [
+      { label: "Reports", href: "/reports", feature: "tools-group-reports", icon: "report" },
+      {
+        label: "Consultation",
+        href: "/consultation",
+        feature: "tools-group-consultation",
+        icon: "consultation",
+      },
+      {
+        label: "Handmade Kundli",
+        href: "/consultation",
+        feature: "tools-group-handmade-kundli",
+        icon: "report",
+      },
+    ],
+  },
+  {
+    id: "learning",
+    title: "Learning",
+    items: [
+      { label: "Articles", href: "/articles", feature: "tools-group-articles", icon: "learning" },
+      {
+        label: "From the Desk",
+        href: "/from-the-desk",
+        feature: "tools-group-from-the-desk",
+        icon: "learning",
+      },
+      { label: "Ask NI", href: "/ai", feature: "tools-group-ask-ni", icon: "ai" },
+    ],
+  },
+] as const;
+
+const supportLinks: readonly HubLink[] = [
+  {
+    label: "J P Sarmah Desk",
+    href: "/from-the-desk",
+    feature: "tools-support-desk",
+    icon: "learning",
+  },
+  {
+    label: "Consultation",
+    href: "/consultation",
+    feature: "tools-support-consultation",
+    icon: "consultation",
+  },
+  { label: "Ask NI", href: "/ai", feature: "tools-support-ask-ni", icon: "ai" },
+] as const;
+
+function localize(localizeHref: LocalizeHref, href: string) {
+  return href.startsWith("#") ? href : localizeHref(href);
+}
+
+function HubDashboardIcon({
+  icon,
+  className = "",
+}: Readonly<{ icon: HubIcon; className?: string }>) {
+  switch (icon) {
+    case "ai":
+      return (
+        <NavagrahaAiIcon
+          className={`border-[rgba(0,214,255,0.52)] bg-[rgba(0,214,255,0.1)] text-[color:var(--color-ni-cyan)] ${className}`}
+        />
+      );
+    case "consultation":
+      return (
+        <ConsultationIcon
+          className={`border-[rgba(111,28,42,0.36)] bg-[rgba(111,28,42,0.08)] text-[color:var(--color-ruby-maroon)] ${className}`}
+        />
+      );
+    case "dasha":
+    case "transit":
+      return (
+        <CalculatorIcon
+          className={`border-[rgba(5,5,5,0.22)] bg-white text-[color:var(--color-ink-black)] ${className}`}
+        />
+      );
+    case "dosha":
+      return (
+        <UtilityIcon
+          name="calculators"
+          className={`border-[rgba(196,54,45,0.34)] bg-[rgba(255,241,238,0.78)] text-[color:var(--color-coral)] ${className}`}
+        />
+      );
+    case "kundli":
+      return <KundliIcon className={className} />;
+    case "learning":
+      return (
+        <UtilityIcon
+          name="calculators"
+          className={`border-[rgba(206,161,57,0.42)] bg-[rgba(251,241,203,0.66)] text-[color:var(--color-yellow-sapphire)] ${className}`}
+        />
+      );
+    case "matching":
+      return (
+        <UtilityIcon
+          name="compatibility"
+          className={`border-[rgba(111,28,42,0.28)] bg-white text-[color:var(--color-ruby-maroon)] ${className}`}
+        />
+      );
+    case "muhurat":
+      return (
+        <UtilityIcon
+          name="muhurta"
+          className={`border-[rgba(206,161,57,0.5)] bg-[rgba(251,241,203,0.72)] text-[color:var(--color-yellow-sapphire)] ${className}`}
+        />
+      );
+    case "panchang":
+      return <PanchangIcon className={className} />;
+    case "rashifal":
+      return <RashifalIcon className={className} />;
+    case "remedies":
+      return (
+        <UtilityIcon
+          name="kundli"
+          className={`border-[rgba(19,122,83,0.38)] bg-[rgba(231,246,239,0.78)] text-[color:var(--color-emerald)] ${className}`}
+        />
+      );
+    case "report":
+      return (
+        <ReportIcon
+          className={`border-[rgba(185,139,70,0.36)] bg-[color:var(--color-pearl)] text-[color:var(--color-accent-gold-dark)] ${className}`}
+        />
+      );
+    default:
+      return <KundliIcon className={className} />;
+  }
+}
+
+function RailLink({
+  item,
+  localizeHref,
+  active = false,
+}: Readonly<{ item: { label: string; href: string }; localizeHref: LocalizeHref; active?: boolean }>) {
+  return (
+    <a
+      href={localize(localizeHref, item.href)}
+      className={`inline-flex min-h-10 shrink-0 items-center justify-center whitespace-nowrap rounded-full border px-4 text-sm font-semibold text-[color:var(--color-ink-black)] ${
+        active
+          ? "border-[rgba(185,139,70,0.5)] bg-[rgba(255,248,231,0.72)]"
+          : "border-black/10 bg-white"
+      }`}
+    >
+      {item.label}
+    </a>
+  );
+}
+
+function ScrollHint({ children }: Readonly<{ children: ReactNode }>) {
+  return (
+    <div className="relative">
+      {children}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-white to-transparent"
+      />
+    </div>
+  );
+}
+
+function ToolTile({ item, localizeHref }: Readonly<{ item: HubLink; localizeHref: LocalizeHref }>) {
+  return (
+    <TrackedLink
+      href={localizeHref(item.href)}
+      eventName="utility_card_click"
+      eventPayload={{ page: "/tools", feature: item.feature }}
+      className={`group flex min-h-[7.35rem] min-w-0 flex-col items-center justify-center gap-3 rounded-[var(--radius-lg)] border ${item.accent} bg-white px-2.5 py-4 text-center shadow-[0_10px_24px_rgba(5,5,5,0.05)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(5,5,5,0.08)]`}
+    >
+      <HubDashboardIcon icon={item.icon ?? "kundli"} className="h-12 w-12" />
+      <span className="max-w-full whitespace-nowrap text-[0.78rem] font-semibold leading-tight text-[color:var(--color-ink-black)] sm:text-sm">
+        {item.label}
+      </span>
+    </TrackedLink>
+  );
+}
+
+function GroupItem({ item, localizeHref }: Readonly<{ item: HubLink; localizeHref: LocalizeHref }>) {
+  return (
+    <TrackedLink
+      href={localizeHref(item.href)}
+      eventName="utility_card_click"
+      eventPayload={{ page: "/tools", feature: item.feature }}
+      className="flex min-w-0 items-center gap-3 rounded-[var(--radius-lg)] border border-black/10 bg-white p-3 text-[color:var(--color-ink-black)] shadow-[0_8px_18px_rgba(5,5,5,0.04)] transition hover:border-[rgba(185,139,70,0.42)]"
+    >
+      <HubDashboardIcon icon={item.icon ?? "kundli"} className="h-10 w-10 shrink-0" />
+      <span className="min-w-0 truncate text-sm font-semibold">{item.label}</span>
+    </TrackedLink>
+  );
 }
 
 export default async function ToolsHubPage() {
@@ -77,243 +408,144 @@ export default async function ToolsHubPage() {
     getLocalizedPath(locale, href, {
       forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
     });
-  const collections = localizeCollections(locale, hasExplicitLocalePrefix);
-  const heroBadges = getToolsHubHeroBadges();
-  const allCards = collections.flatMap((collection) => collection.cards);
-  const availableCount = allCards.filter((card) => card.status === "available").length;
-  const requiresKundliCount = allCards.filter(
-    (card) => card.status === "requires Kundli",
-  ).length;
-  const comingSoonCount = allCards.filter((card) => card.status === "coming soon").length;
-  const liveCollectionsCount = collections.length;
 
   return (
     <>
       <PageViewTracker page="/tools" feature="tools-hub-page" />
       <AnalyticsEventTracker
         event="tools_hub_view"
-        payload={{ page: "/tools", feature: "tools-hub-page" }}
+        payload={{ page: "/tools", feature: "tools-hub-dashboard" }}
       />
 
-      <main className="launch-page launch-page-tools">
-      <section className="border-b border-black/8 bg-white">
-        <Container className="grid gap-8 py-12 sm:py-16 lg:grid-cols-[minmax(0,1.02fr)_minmax(320px,0.98fr)] lg:items-center lg:py-20">
-          <div className="space-y-7">
-            <Badge tone="trust" className="w-fit border border-black/8 bg-white">
-              NAVAGRAHA Utility Hub
-            </Badge>
-
-            <div className="space-y-4">
-              <h1
-                className="max-w-4xl font-[family-name:var(--font-display)] text-[length:var(--font-size-display-md)] text-[color:var(--color-ink-strong)] sm:text-[length:var(--font-size-display-lg)]"
-                style={{
-                  letterSpacing: "var(--tracking-display)",
-                  lineHeight: "var(--line-height-tight)",
-                }}
+      <main className="launch-page launch-page-tools bg-white">
+        <section id="all" className="border-b border-black/10 bg-white">
+          <Container className="space-y-7 pb-7 pt-5 sm:pb-9 sm:pt-8 lg:space-y-9 lg:pb-12 lg:pt-10">
+            <ScrollHint>
+              <nav
+                aria-label="Tools categories"
+                className="-mx-4 overflow-x-auto px-4 [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden"
               >
-                NAVAGRAHA Astrology Tools
+                <div className="flex w-max gap-2 pr-10 sm:flex-wrap sm:pr-0">
+                  {categoryRail.map((item, index) => (
+                    <RailLink
+                      key={item.label}
+                      item={item}
+                      localizeHref={localizeHref}
+                      active={index === 0}
+                    />
+                  ))}
+                </div>
+              </nav>
+            </ScrollHint>
+
+            <div className="space-y-2">
+              <p className="text-sm font-semibold text-[color:var(--color-accent-gold-dark)]">
+                NAVAGRAHA Tools
+              </p>
+              <h1 className="font-[family-name:var(--font-display)] text-3xl leading-tight text-[color:var(--color-ink-black)] sm:text-4xl lg:text-5xl">
+                Vedic Tools Hub
               </h1>
-              <p className="max-w-3xl text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                Explore Kundli, Rashifal, Panchang, Dasha, Transit, Matchmaking,
-                Numerology, Remedies, Reports, NAVAGRAHA Intelligence and future
-                premium astrology utilities in one place.
+              <p className="text-base font-medium text-[color:var(--color-ink-body)]">
+                Kundli &bull; Panchang &bull; Dasha &bull; Ask NI
               </p>
             </div>
 
-            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-              <TrackedLink
-                href={localizeHref("/kundli")}
-                eventName="premium_utility_cta_click"
-                eventPayload={{ page: "/tools", feature: "tools-hub-hero-kundli" }}
-                className={buttonStyles({
-                  size: "lg",
-                  className: "w-full justify-center sm:w-auto",
-                })}
-              >
-                Generate Kundli
-              </TrackedLink>
-              <TrackedLink
-                href={localizeHref("/ai")}
-                eventName="premium_ai_cta_click"
-                eventPayload={{ page: "/tools", feature: "tools-hub-hero-ai" }}
-                className={buttonStyles({
-                  size: "lg",
-                  tone: "ni",
-                  className: "w-full justify-center sm:w-auto",
-                })}
-              >
-                Ask NI
-              </TrackedLink>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              {heroBadges.map((badge) => (
-                <Badge
-                  key={badge}
-                  tone="trust"
-                  className="border border-black/8 bg-white px-3 py-2 text-[0.64rem] uppercase tracking-[0.12em] text-[color:var(--color-ink-strong)] shadow-[0_8px_20px_rgba(17,24,39,0.04)]"
-                >
-                  {badge}
-                </Badge>
+            <div className="grid grid-cols-4 gap-2.5 sm:gap-3 lg:grid-cols-8">
+              {featuredTools.map((tool) => (
+                <ToolTile key={tool.label} item={tool} localizeHref={localizeHref} />
               ))}
             </div>
-          </div>
+          </Container>
+        </section>
 
-          <Card className="relative overflow-hidden border-black/8 bg-white shadow-[0_18px_44px_rgba(17,24,39,0.06)] before:opacity-0">
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(184,137,67,0.08),transparent_28%),radial-gradient(circle_at_82%_18%,rgba(17,24,39,0.03),transparent_26%),radial-gradient(circle_at_72%_82%,rgba(184,137,67,0.05),transparent_32%)]" />
-            <div className="relative flex h-full flex-col gap-5 p-5 sm:p-6 lg:p-7">
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <NavagrahaAiIcon className="h-12 w-12" />
-                  <div>
-                    <p className="text-[0.66rem] uppercase tracking-[0.12em] text-[color:var(--color-ink-muted)]">
-                      Command Center Snapshot
+        <section className="border-b border-black/10 bg-white">
+          <Container className="py-7 sm:py-9 lg:py-11">
+            <TrackedLink
+              href={localizeHref("/ai")}
+              eventName="premium_ai_cta_click"
+              eventPayload={{ page: "/tools", feature: "tools-dashboard-ask-ni-strip" }}
+              className="block rounded-[var(--radius-xl)] border border-[rgba(185,139,70,0.46)] bg-[color:var(--color-onyx)] p-4 text-white shadow-[0_18px_34px_rgba(5,5,5,0.16)] sm:p-5"
+            >
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex min-w-0 items-center gap-3">
+                  <NavagrahaAiIcon className="h-12 w-12 shrink-0 border-[rgba(0,214,255,0.62)] bg-[rgba(0,214,255,0.12)] text-[color:var(--color-ni-cyan)]" />
+                  <div className="min-w-0">
+                    <p className="text-lg font-semibold text-[color:var(--color-ni-cyan)]">
+                      Ask NI
                     </p>
-                    <p className="text-[length:var(--font-size-body-sm)] text-[color:var(--color-ink-strong)]">
-                      Bright white, route-safe, and scalable.
-                    </p>
+                    <p className="text-sm font-medium text-white">NAVAGRAHA Intelligence</p>
                   </div>
                 </div>
-                <Badge tone="trust">Premium</Badge>
-              </div>
 
-              <div className="grid gap-3 sm:grid-cols-2">
-                {[
-                  {
-                    label: "Live now",
-                    value: availableCount,
-                    note: "available tools",
-                  },
-                  {
-                    label: "Guided paths",
-                    value: requiresKundliCount,
-                    note: "require Kundli",
-                  },
-                  {
-                    label: "Future intelligence",
-                    value: comingSoonCount,
-                    note: "NI placeholders",
-                  },
-                  {
-                    label: "Collections",
-                    value: liveCollectionsCount,
-                    note: "navigation groups",
-                  },
-                ].map((item) => (
-                  <div
-                    key={item.label}
-                    className="rounded-[var(--radius-xl)] border border-black/8 bg-white p-4 shadow-[0_8px_20px_rgba(17,24,39,0.04)]"
-                  >
-                    <p className="text-[0.66rem] uppercase tracking-[0.12em] text-[color:var(--color-ink-muted)]">
-                      {item.label}
-                    </p>
-                    <p className="mt-2 font-[family-name:var(--font-display)] text-[length:var(--font-size-title-md)] text-[color:var(--color-ink-strong)]">
-                      {item.value}
-                    </p>
-                    <p className="text-[length:var(--font-size-body-xs)] text-[color:var(--color-ink-body)]">
-                      {item.note}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              <div className="rounded-[var(--radius-xl)] border border-[rgba(184,137,67,0.18)] bg-white p-4 shadow-[0_8px_20px_rgba(17,24,39,0.04)]">
-                <p className="text-[0.66rem] uppercase tracking-[0.12em] text-[color:var(--color-ink-muted)]">
-                  Category rails
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {[
-                    "Core Vedic Tools",
-                    "Advanced Astrology Tools",
-                    "NAVAGRAHA Intelligence",
-                    "Learning + Content",
-                    "Services + Commerce",
-                  ].map((rail) => (
+                <div className="flex min-w-0 flex-wrap gap-2 sm:justify-end">
+                  {niChips.map((chip) => (
                     <span
-                      key={rail}
-                      className="rounded-[var(--radius-pill)] border border-[rgba(184,137,67,0.18)] bg-white px-3 py-2 text-[0.68rem] uppercase tracking-[0.08em] text-[color:var(--color-ink-strong)]"
+                      key={chip.label}
+                      className="inline-flex min-h-9 shrink-0 items-center rounded-full border border-[rgba(0,214,255,0.34)] bg-[rgba(0,214,255,0.08)] px-3 text-sm font-semibold text-white"
                     >
-                      {rail}
+                      {chip.label}
                     </span>
                   ))}
                 </div>
               </div>
+            </TrackedLink>
+          </Container>
+        </section>
 
-              <div className="grid gap-3 sm:grid-cols-2">
-                <TrackedLink
-                  href={localizeHref("/reports")}
-                  eventName="report_cta_click"
-                  eventPayload={{ page: "/tools", feature: "tools-hub-hero-reports" }}
-                  className={buttonStyles({
-                    size: "sm",
-                    tone: "secondary",
-                    className: "w-full justify-center",
-                  })}
+        <section className="border-b border-black/10 bg-white">
+          <Container className="space-y-5 py-8 sm:py-10 lg:py-12">
+            <div className="flex items-end justify-between gap-4">
+              <h2 className="font-[family-name:var(--font-display)] text-2xl leading-tight text-[color:var(--color-ink-black)] sm:text-3xl">
+                Tool Groups
+              </h2>
+              <span className="hidden text-sm font-semibold text-[color:var(--color-accent-gold-dark)] sm:inline">
+                Direct access
+              </span>
+            </div>
+
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {toolGroups.map((group) => (
+                <section
+                  id={group.id}
+                  key={group.id}
+                  className="scroll-mt-24 rounded-[var(--radius-xl)] border border-black/10 bg-white p-4 shadow-[0_12px_26px_rgba(5,5,5,0.04)]"
                 >
-                  View Reports
-                </TrackedLink>
-                <TrackedLink
-                  href={localizeHref("/consultation")}
-                  eventName="consultation_cta_click"
-                  eventPayload={{ page: "/tools", feature: "tools-hub-hero-consultation" }}
-                  className={buttonStyles({
-                    size: "sm",
-                    className: "w-full justify-center",
-                  })}
-                >
-                  Book Consultation
-                </TrackedLink>
+                  <h3 className="text-base font-semibold text-[color:var(--color-ink-black)]">
+                    {group.title}
+                  </h3>
+                  <div className="mt-3 grid gap-2">
+                    {group.items.map((item) => (
+                      <GroupItem key={`${group.id}-${item.label}`} item={item} localizeHref={localizeHref} />
+                    ))}
+                  </div>
+                </section>
+              ))}
+            </div>
+          </Container>
+        </section>
+
+        <section className="bg-white">
+          <Container className="pb-16 pt-8 sm:pb-20 sm:pt-10 lg:pb-24">
+            <div className="rounded-[var(--radius-xl)] border border-[rgba(111,28,42,0.22)] bg-white p-4 shadow-[0_14px_30px_rgba(5,5,5,0.05)] sm:p-5">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                <div className="space-y-1">
+                  <h2 className="font-[family-name:var(--font-display)] text-2xl leading-tight text-[color:var(--color-ink-black)]">
+                    J P Sarmah Desk
+                  </h2>
+                  <p className="max-w-2xl text-sm font-medium text-[color:var(--color-ink-body)]">
+                    Human guidance stays separate from NAVAGRAHA Intelligence.
+                  </p>
+                </div>
+
+                <div className="grid gap-2 sm:grid-cols-3 lg:min-w-[28rem]">
+                  {supportLinks.map((item) => (
+                    <GroupItem key={item.label} item={item} localizeHref={localizeHref} />
+                  ))}
+                </div>
               </div>
             </div>
-          </Card>
-        </Container>
-      </section>
-
-      <section className="border-b border-black/8 bg-white">
-        <Container className="py-12 sm:py-14 lg:py-16">
-          <ToolsHubCatalog collections={collections} />
-        </Container>
-      </section>
-
-      <section className="border-b border-black/8 bg-white">
-        <Container className="py-12 sm:py-14">
-          <Card className="border-black/8 bg-white shadow-[0_16px_38px_rgba(17,24,39,0.06)] before:opacity-0">
-            <div className="flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
-              <div className="space-y-3">
-                <Badge tone="trust">NAVAGRAHA Intelligence</Badge>
-                <h2
-                  className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-lg)] text-[color:var(--color-ink-strong)]"
-                  style={{
-                    letterSpacing: "var(--tracking-display)",
-                    lineHeight: "var(--line-height-tight)",
-                  }}
-                >
-                  Future intelligence modules, ready for expansion
-                </h2>
-                <p className="max-w-3xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                  Kundli NI, Dasha NI, Transit NI, Panchang NI, Remedy NI,
-                  Numerology NI, Career NI, Finance NI, Marriage NI, Business
-                  NI, Vastu NI, Palmistry NI, and Face Reading NI are exposed as
-                  future-ready placeholders only.
-                </p>
-              </div>
-
-              <TrackedLink
-                href={localizeHref("/ai")}
-                eventName="premium_ai_cta_click"
-                eventPayload={{ page: "/tools", feature: "tools-hub-future-ai-link" }}
-                className={buttonStyles({
-                  size: "sm",
-                  tone: "ni",
-                  className: "w-full justify-center lg:w-auto",
-                })}
-              >
-                Ask NI
-              </TrackedLink>
-            </div>
-          </Card>
-        </Container>
-      </section>
+          </Container>
+        </section>
       </main>
     </>
   );
