@@ -133,7 +133,7 @@ const toolTiles: readonly ToolTile[] = [
     feature: "home-dashboard-tool-transit",
   },
   {
-    label: "Matchmaking",
+    label: "Matching",
     href: "/matchmaking",
     icon: "matching",
     accent: "border-[rgba(111,28,42,0.34)]",
@@ -311,7 +311,7 @@ function RailLink({
 }>) {
   const href = routeFor(item.href, localizeHref);
   const classes = [
-    "inline-flex min-h-10 shrink-0 items-center justify-center rounded-[var(--radius-pill)] border bg-white px-4 text-center text-[0.72rem] font-semibold uppercase tracking-[0.1em] text-[color:var(--color-ink-black)] transition hover:-translate-y-0.5 hover:border-[rgba(185,139,70,0.58)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]",
+    "inline-flex min-h-10 shrink-0 items-center justify-center rounded-[var(--radius-pill)] border bg-white px-3 text-center text-[0.68rem] font-semibold uppercase tracking-[0.08em] whitespace-nowrap text-[color:var(--color-ink-black)] transition hover:-translate-y-0.5 hover:border-[rgba(185,139,70,0.58)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] sm:px-4 sm:text-[0.72rem] sm:tracking-[0.1em]",
     active
       ? "border-[rgba(185,139,70,0.58)] shadow-[inset_0_-2px_0_var(--color-antique-gold)]"
       : "border-[rgba(185,139,70,0.22)] shadow-[0_8px_18px_rgba(5,5,5,0.04)]",
@@ -344,7 +344,7 @@ function CategoryRail({ localizeHref }: Readonly<{ localizeHref: LocalizeHref }>
       <Container className="py-3">
         <nav
           aria-label="Homepage dashboard rail"
-          className="-mx-3 flex gap-2 overflow-x-auto px-3 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 pr-7 [scrollbar-width:none] [scroll-padding-inline:1rem] sm:mx-0 sm:px-0 sm:pr-0 sm:[scroll-padding-inline:0px] [&::-webkit-scrollbar]:hidden"
         >
           {categoryRail.map((item) => (
             <RailLink
@@ -369,10 +369,10 @@ function ToolTileLink({
       href={localizeHref(tile.href)}
       eventName="cta_click"
       eventPayload={{ page: "/", feature: tile.feature, route: tile.href }}
-      className={`group flex min-h-[6.3rem] min-w-0 flex-col items-center justify-center gap-3 rounded-[1.25rem] border ${tile.accent} bg-white px-2.5 py-4 text-center shadow-[0_12px_28px_rgba(5,5,5,0.05)] transition hover:-translate-y-0.5 hover:shadow-[0_16px_34px_rgba(5,5,5,0.09)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]`}
+      className={`group flex min-h-[6.25rem] min-w-0 flex-col items-center justify-center gap-2.5 rounded-[1.25rem] border ${tile.accent} bg-white px-2 py-4 text-center shadow-[0_12px_28px_rgba(5,5,5,0.05)] transition hover:-translate-y-0.5 hover:shadow-[0_16px_34px_rgba(5,5,5,0.09)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] sm:min-h-[6.3rem] sm:gap-3 sm:px-2.5`}
     >
       <DashboardIcon icon={tile.icon} />
-      <span className="max-w-full break-words text-[0.76rem] font-semibold uppercase leading-tight tracking-[0.08em] text-[color:var(--color-ink-black)]">
+      <span className="max-w-full break-normal text-[0.69rem] font-semibold leading-tight tracking-[0.01em] text-[color:var(--color-ink-black)] [overflow-wrap:normal] sm:text-[0.76rem] sm:tracking-[0.03em]">
         {tile.label}
       </span>
     </TrackedLink>
@@ -424,7 +424,7 @@ function ToolIconGrid({ localizeHref }: Readonly<{ localizeHref: LocalizeHref }>
   return (
     <section className="bg-white">
       <Container className="py-7 sm:py-9">
-        <div className="grid grid-cols-4 gap-2.5 sm:gap-3 lg:grid-cols-8">
+        <div className="grid grid-cols-4 gap-2 sm:gap-3 lg:grid-cols-8">
           {toolTiles.map((tile) => (
             <ToolTileLink
               key={tile.label}
@@ -460,7 +460,7 @@ function AskNiStrip({ localizeHref }: Readonly<{ localizeHref: LocalizeHref }>) 
                 </h2>
               </div>
             </div>
-            <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 pr-5 [scrollbar-width:none] [scroll-padding-inline:0.25rem] sm:mx-0 sm:px-0 sm:pr-1 sm:[scroll-padding-inline:0px] [&::-webkit-scrollbar]:hidden">
               {niChips.map((chip) => (
                 <span
                   key={chip.label}
@@ -469,6 +469,7 @@ function AskNiStrip({ localizeHref }: Readonly<{ localizeHref: LocalizeHref }>) 
                   {chip.label}
                 </span>
               ))}
+              <span aria-hidden="true" className="w-1 shrink-0 sm:hidden" />
             </div>
           </div>
         </TrackedLink>
