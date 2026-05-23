@@ -74,7 +74,7 @@ export function SubscriptionPricingPanel() {
               {row.planType === "PRO"
                 ? "Book Free Consultation"
                 : row.planType === "PREMIUM"
-                  ? "Try NAVAGRAHA AI"
+                  ? "Ask NI"
                   : "Get Free Report"}
             </Link>
           </div>

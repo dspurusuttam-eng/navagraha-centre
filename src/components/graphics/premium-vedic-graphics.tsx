@@ -29,7 +29,7 @@ const intelligenceSteps = [
   "Dasha",
   "Transit",
   "Yoga / Rules",
-  "AI Guidance",
+  "NAVAGRAHA Intelligence Guidance",
 ] as const;
 
 export function SacredGeometryPattern({

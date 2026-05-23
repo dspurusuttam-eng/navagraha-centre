@@ -25,7 +25,7 @@ type AiProductFamilySectionProps = {
 export function AiProductFamilySection({
   surface,
   pagePath,
-  eyebrow = "NAVAGRAHA AI (Free Access)",
+  eyebrow = "Ask NI (Free Access)",
   title = "One chart-aware intelligence ecosystem across Kundli, compatibility, reports, remedies, and assistant guidance.",
   description = "Each tool has a distinct job while sharing the same Vedic chart foundation, safety rules, and calm guidance style.",
   tone = "contrast",
@@ -33,7 +33,7 @@ export function AiProductFamilySection({
   const items = listAiProductFamilyItems();
   const upgradeHref = getAiFamilyUpgradeHref(surface);
   const upgradeLabel =
-    surface === "protected" ? "Try NAVAGRAHA AI" : "Start Free Analysis";
+    surface === "protected" ? "Ask NI" : "Start Free Analysis";
 
   return (
     <Section
@@ -57,9 +57,9 @@ export function AiProductFamilySection({
         className="mb-6 grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
       >
         <div className="space-y-3">
-          <Badge tone="accent">NAVAGRAHA AI (Free Access)</Badge>
+          <Badge tone="accent">Ask NI (Free Access)</Badge>
           <p className="max-w-2xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-            Start with useful AI guidance, then move into reports or consultation when a question needs deeper chart review.
+            Start with useful NAVAGRAHA Intelligence guidance, then move into reports or consultation when a question needs deeper chart review.
           </p>
         </div>
         <TrackedLink
@@ -89,7 +89,7 @@ export function AiProductFamilySection({
             className="flex h-full flex-col gap-4 border-[rgba(184,137,67,0.22)]"
           >
             <div className="flex flex-wrap items-center gap-2">
-              <Badge tone="neutral">AI Tool</Badge>
+              <Badge tone="neutral">Intelligence Tool</Badge>
               <Badge tone="outline">
                 {surface === "protected" ? "Member Surface" : "Public Entry"}
               </Badge>
@@ -160,7 +160,7 @@ export function AiProductFamilySection({
             Methodology
           </p>
           <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-            NAVAGRAHA AI uses chart context built from Vedic sidereal calculations aligned to Lahiri ayanamsha, then adds interpretation layers.
+            NAVAGRAHA Intelligence uses chart context built from Vedic sidereal calculations aligned to Lahiri ayanamsha, then adds interpretation layers.
           </p>
         </div>
         <div className="space-y-2">

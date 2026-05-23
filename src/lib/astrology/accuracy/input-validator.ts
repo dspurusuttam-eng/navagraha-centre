@@ -133,7 +133,7 @@ export function validateAssistantQuestionInput(input: {
       issue(
         "question",
         "MISSING_QUESTION",
-        "Enter a chart question before requesting AI guidance."
+        "Enter a chart question before requesting NAVAGRAHA Intelligence guidance."
       )
     );
   }

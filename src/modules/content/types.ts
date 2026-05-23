@@ -29,7 +29,7 @@ export type ContentCategory =
   | "Gemstones"
   | "Festivals"
   | "Spiritual Guidance"
-  | "NAVAGRAHA AI Updates";
+  | "NAVAGRAHA Intelligence Updates";
 
 export type ContentPerson = {
   name: string;

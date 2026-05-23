@@ -68,9 +68,9 @@ const offeringsNav = [
   { href: "/calculators", label: globalNavigationCopy.calculators },
   { href: "/career-report", label: globalNavigationCopy.reports },
   { href: "/consultation", label: globalNavigationCopy.consultation },
-  { href: "/kundli-ai", label: globalNavigationCopy.ai },
+  { href: "/ai", label: globalNavigationCopy.ai },
   { href: "/sign-in", label: globalNavigationCopy.login },
-  { href: "/dashboard", label: globalNavigationCopy.account },
+  { href: "/sign-in", label: globalNavigationCopy.account },
   { href: "/contact", label: globalFooterCopy.links.contact },
   { href: "/about", label: globalFooterCopy.links.about },
   { href: "/services", label: globalNavigationCopy.services },
@@ -89,7 +89,7 @@ const profileNav = [
 
 const supportNav = [
   { href: "/sign-in", label: globalNavigationCopy.login },
-  { href: "/dashboard", label: globalNavigationCopy.account },
+  { href: "/sign-in", label: globalNavigationCopy.account },
   { href: "/contact", label: globalFooterCopy.links.contact },
   { href: "/privacy", label: globalFooterCopy.links.privacy },
   { href: "/terms", label: globalFooterCopy.links.terms },

@@ -220,9 +220,9 @@ export function AiMonetizationPrepSection({
     <Section
       tone={tone}
       category="ai"
-      eyebrow="AI Monetization Preparation"
-      title="Free and Premium AI layers are prepared without locking access."
-      description="Members can use all core AI flows now, while UX messaging already supports future free-to-premium rollout."
+      eyebrow="NI Monetization Preparation"
+      title="Free and Premium NI layers are prepared without locking access."
+      description="Members can use all core NAVAGRAHA Intelligence flows now, while UX messaging already supports future free-to-premium rollout."
     >
       <div className="grid gap-5 lg:grid-cols-2">
         {layers.map((layer) => (
@@ -261,7 +261,7 @@ export function AiMonetizationPrepSection({
           eventPayload={{ page: pagePath, feature: "ai-monetization-try-ai" }}
           className={buttonStyles({ size: "sm", tone: "secondary" })}
         >
-          Try NAVAGRAHA AI
+          Ask NI
         </TrackedLink>
       </div>
     </Section>

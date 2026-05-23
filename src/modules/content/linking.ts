@@ -20,8 +20,8 @@ function baseToolLinks(): readonly ContentLink[] {
       description: "Move from general reading into your protected birth chart.",
     },
     {
-      href: "/kundli-ai",
-      label: "Ask NAVAGRAHA AI",
+      href: "/ai",
+      label: "Ask NI",
       description: "Ask chart-aware questions after chart creation.",
     },
     {
@@ -110,7 +110,7 @@ export function getEditorialLinkGroups(entry: ContentEntry): ContentLinkGroup[] 
           description: "Read more remedy-oriented editorial guidance.",
         },
         {
-          href: "/kundli-ai",
+          href: "/ai",
           label: "Use Chart Context",
           description: "Ground the remedy discussion in a saved chart first.",
         },
@@ -150,4 +150,3 @@ export function getEditorialLinkGroups(entry: ContentEntry): ContentLinkGroup[] 
 
   return groups;
 }
-

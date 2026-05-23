@@ -624,7 +624,7 @@ export function PanchangToolPanel() {
             <div className="space-y-2">
               <Badge tone="accent">Continue Journey</Badge>
               <p className="text-[length:var(--font-size-body-md)] text-[var(--color-ink-strong)]">
-                Continue from daily Panchang into Kundli, Rashifal, and NAVAGRAHA AI.
+                Continue from daily Panchang into Kundli, Rashifal, and NAVAGRAHA Intelligence.
               </p>
               <p className="text-[length:var(--font-size-body-sm)] text-[var(--color-ink-body)]">
                 Panchang gives day structure. Chart and AI layers add deeper personal context.
@@ -673,7 +673,7 @@ export function PanchangToolPanel() {
                   className: "w-full justify-center sm:w-auto",
                 })}
               >
-                Try NAVAGRAHA AI
+                Ask NI
               </TrackedLink>
             </div>
           </Card>

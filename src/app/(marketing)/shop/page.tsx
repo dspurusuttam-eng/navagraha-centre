@@ -106,7 +106,7 @@ export default async function ShopPage() {
         category="services"
         eyebrow="Service Separation"
         title="Shop products remain separate from astrology service access."
-        description="Reports, consultations, and NAVAGRAHA AI remain currently free under limited launch access. The shop is intentionally positioned as an optional spiritual add-on layer."
+        description="Reports, consultations, and NAVAGRAHA Intelligence remain currently free under limited launch access. The shop is intentionally positioned as an optional spiritual add-on layer."
         tone="light"
       >
         <Card tone="light" className="service-card space-y-4">

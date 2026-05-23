@@ -50,7 +50,7 @@ export default function CalculatorsPage() {
         }}
         secondaryAction={{
           href: "/ai",
-          label: "Try NAVAGRAHA AI",
+          label: "Ask NI",
           eventName: "cta_click",
           eventPayload: {
             page: "/calculators",
@@ -146,7 +146,7 @@ export default function CalculatorsPage() {
             {
               title: "Go deeper if needed",
               description:
-                "Continue into Kundli, NAVAGRAHA AI, reports, or consultation for richer context.",
+                "Continue into Kundli, NAVAGRAHA Intelligence, reports, or consultation for richer context.",
             },
           ].map((item) => (
             <Card key={item.title} tone="light" className="space-y-3">
@@ -179,7 +179,7 @@ export default function CalculatorsPage() {
               Continue from utilities into chart-aware guidance.
             </h2>
             <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-              Calculators are your quick-entry layer. Kundli and NAVAGRAHA AI add deeper personalized interpretation.
+              Calculators are your quick-entry layer. Kundli and NAVAGRAHA Intelligence add deeper personalized interpretation.
             </p>
           </div>
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">

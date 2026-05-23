@@ -98,7 +98,7 @@ export default async function KundliPage() {
                 </h1>
                 <p className="max-w-[46rem] text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)] sm:text-[length:var(--font-size-body-lg)]">
                   Generate your Vedic birth chart with 12-planet positions, Lagna, Nakshatra, Dasha
-                  readiness, Transit context and NAVAGRAHA AI guidance support.
+                  readiness, Transit context and NAVAGRAHA Intelligence guidance support.
                 </p>
               </div>
 

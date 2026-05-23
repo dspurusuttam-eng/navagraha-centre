@@ -387,7 +387,7 @@ export function MuhurtaLiteToolPanel({
             <div className="space-y-2">
               <Badge tone="accent">Continue Journey</Badge>
               <p className="text-[length:var(--font-size-body-md)] text-[var(--color-ink-strong)]">
-                Pair Muhurta-lite with Panchang, Kundli, and NAVAGRAHA AI for deeper context.
+                Pair Muhurta-lite with Panchang, Kundli, and NAVAGRAHA Intelligence for deeper context.
               </p>
               <p className="text-[length:var(--font-size-body-sm)] text-[var(--color-ink-body)]">
                 Time windows support planning, while chart and AI layers improve personalization.

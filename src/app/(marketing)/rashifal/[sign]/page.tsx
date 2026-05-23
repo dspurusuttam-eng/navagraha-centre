@@ -130,7 +130,7 @@ export default async function RashifalSignPage({
                 eventName="cta_click"
                 eventPayload={{
                   page: `/rashifal/${signData.slug}`,
-                  feature: "sign-page-try-ai",
+                  feature: "sign-page-ask-ni",
                 }}
                 className={buttonStyles({
                   tone: "secondary",
@@ -138,7 +138,7 @@ export default async function RashifalSignPage({
                   className: "w-full justify-center sm:w-auto",
                 })}
               >
-                Try AI Free
+                Ask NI
               </TrackedLink>
             </div>
           </div>
@@ -301,7 +301,7 @@ export default async function RashifalSignPage({
               className: "w-full justify-center sm:w-auto",
             })}
           >
-            Ask NAVAGRAHA AI
+            Ask NI
           </TrackedLink>
           <TrackedLink
             href="/kundli"

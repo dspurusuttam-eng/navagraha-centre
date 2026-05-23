@@ -187,7 +187,7 @@ export default async function ConsultationPage({
         highlights={[
           "Session formats shaped around distinct consultation needs",
           "Explicit timezone handling for client and astrologer calendar views",
-          "Human guidance that complements NAVAGRAHA AI instead of replacing it",
+          "Human guidance that complements NAVAGRAHA Intelligence instead of replacing it",
         ]}
         note={`Recommended path: ${conversion.intentLabel}. Sign in before reserving a time. The private dashboard keeps booking, intake, confirmation, and consultation history together.`}
         primaryAction={{

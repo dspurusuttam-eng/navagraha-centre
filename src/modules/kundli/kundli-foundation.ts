@@ -21,7 +21,7 @@ export const kundliHeroBadges = [
   "12-Planet Calculation",
   "Lagna + Nakshatra",
   "Dasha Ready",
-  "AI Guidance Ready",
+  "NI Guidance Ready",
   "Privacy-Safe",
 ] as const;
 

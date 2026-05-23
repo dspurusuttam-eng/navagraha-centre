@@ -149,9 +149,9 @@ const coreSeoCopyByLocale: Record<
         "Explore numerology insights based on your name and date of birth with clear guidance for life, career and relationships.",
     },
     navagrahaAi: {
-      title: "NAVAGRAHA AI | AI Astrology Guidance",
+      title: "NAVAGRAHA Intelligence | AI Astrology Guidance",
       description:
-        "Experience NAVAGRAHA AI for astrology guidance, Kundli interpretation, remedies, Rashifal and spiritual insights.",
+        "Experience NAVAGRAHA Intelligence for astrology guidance, Kundli interpretation, remedies, Rashifal and spiritual insights.",
     },
     reports: {
       title: "Astrology Reports | Kundli, Career, Marriage & Life Guidance",
@@ -208,9 +208,9 @@ const coreSeoCopyByLocale: Record<
         "নাম আৰু জন্মতাৰিখৰ ভিত্তিত সংখ্যাতত্ত্বৰ অন্তৰ্দৃষ্টি লাভ কৰক। জীৱন, কৰ্মজীৱন আৰু সম্পৰ্কৰ বাবে সহজ পথনির্দেশ পাওক।",
     },
     navagrahaAi: {
-      title: "NAVAGRAHA AI | AI জ্যোতিষ পথনির্দেশ",
+      title: "NAVAGRAHA Intelligence | AI জ্যোতিষ পথনির্দেশ",
       description:
-        "NAVAGRAHA AI-ৰ সহায়ত জ্যোতিষ পথনির্দেশ, জন্মকুণ্ডলী ব্যাখ্যা, উপায়, ৰাশিফল আৰু আধ্যাত্মিক অন্তৰ্দৃষ্টি লাভ কৰক।",
+        "NAVAGRAHA Intelligence-ৰ সহায়ত জ্যোতিষ পথনির্দেশ, জন্মকুণ্ডলী ব্যাখ্যা, উপায়, ৰাশিফল আৰু আধ্যাত্মিক অন্তৰ্দৃষ্টি লাভ কৰক।",
     },
     reports: {
       title: "জ্যোতিষ প্ৰতিবেদন | জন্মকুণ্ডলী, কৰ্মজীৱন, বিবাহ আৰু জীৱন দিশ | NAVAGRAHA CENTRE",
@@ -266,9 +266,9 @@ const coreSeoCopyByLocale: Record<
         "नाम और जन्म तिथि आधारित न्यूमरोलॉजी इनसाइट्स प्राप्त करें। जीवन, करियर और संबंधों के लिए स्पष्ट मार्गदर्शन पाएं।",
     },
     navagrahaAi: {
-      title: "NAVAGRAHA AI | AI ज्योतिष मार्गदर्शन",
+      title: "NAVAGRAHA Intelligence | AI ज्योतिष मार्गदर्शन",
       description:
-        "NAVAGRAHA AI के साथ ज्योतिष मार्गदर्शन, कुंडली व्याख्या, उपाय, राशिफल और आध्यात्मिक इनसाइट्स प्राप्त करें।",
+        "NAVAGRAHA Intelligence के साथ ज्योतिष मार्गदर्शन, कुंडली व्याख्या, उपाय, राशिफल और आध्यात्मिक इनसाइट्स प्राप्त करें।",
     },
     reports: {
       title: "ज्योतिष रिपोर्ट्स | कुंडली, करियर, विवाह और जीवन मार्गदर्शन",

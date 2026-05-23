@@ -24,7 +24,7 @@ export const metadata = buildPageMetadata({
   path: "/pricing",
   keywords: [
     "astrology pricing",
-    "kundli ai plans",
+    "ask ni kundli guidance plans",
     "premium astrology membership",
   ],
 });
@@ -59,7 +59,7 @@ export default function PricingPage() {
               Start Free Analysis
             </Link>
             <TrackedLink
-              href="/kundli-ai"
+              href="/ai"
               className={buttonStyles({
                 size: "lg",
                 tone: "secondary",
@@ -73,7 +73,7 @@ export default function PricingPage() {
                 feature: "pricing-free-ai-cta",
               }}
             >
-              Try NAVAGRAHA AI
+              Ask NI
             </TrackedLink>
           </div>
         </Card>
@@ -108,7 +108,7 @@ export default function PricingPage() {
                   row.planType === "PRO"
                     ? "/consultation"
                     : row.planType === "PREMIUM"
-                      ? "/kundli-ai"
+                      ? "/ai"
                       : "/reports"
                 }
                 className={buttonStyles({
@@ -120,7 +120,7 @@ export default function PricingPage() {
                 {row.planType === "PRO"
                   ? "Book Free Consultation"
                   : row.planType === "PREMIUM"
-                    ? "Try NAVAGRAHA AI"
+                    ? "Ask NI"
                     : "Get Free Report"}
               </Link>
             </Card>

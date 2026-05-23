@@ -122,7 +122,7 @@ export default async function JoyPrakashSarmahPage({
           <Card className="space-y-3">
             <Badge tone="outline">Interpretation Model</Badge>
             <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              NAVAGRAHA AI supports structured interpretation, while Joy Prakash Sarmah leads high-context human consultation.
+              NAVAGRAHA Intelligence supports structured interpretation, while Joy Prakash Sarmah leads high-context human consultation.
             </p>
           </Card>
           <Card className="space-y-3">

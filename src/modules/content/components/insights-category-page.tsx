@@ -40,7 +40,7 @@ export function InsightsCategoryPage({
               href="/ai"
               className={buttonStyles({ tone: "secondary", size: "sm" })}
             >
-              Try NAVAGRAHA AI
+              Ask NI
             </Link>
             <Link
               href="/rashifal"

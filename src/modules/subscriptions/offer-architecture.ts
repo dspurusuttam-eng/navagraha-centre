@@ -95,7 +95,7 @@ const reportPackages: readonly ReportPackageDefinition[] = [
     positioning: "Expanded report depth for focused planning and follow-up.",
     includes: [
       "Detailed house-wise analysis",
-      "Advanced AI interpretation layer",
+      "Advanced NAVAGRAHA Intelligence interpretation layer",
       "PDF-ready report output architecture",
     ],
     badge: launchBadge,
@@ -156,19 +156,19 @@ const consultationTiers: readonly ConsultationTierDefinition[] = [
 
 const aiAccessLayers: readonly AiAccessLayer[] = [
   {
-    title: "Free AI Layer",
+    title: "Free NI Layer",
     description: "Practical chart-aware support for day-to-day guidance.",
     includes: [
       "Limited prompts per day",
-      "Selected AI modules",
+      "Selected NI modules",
       "Clear, concise chart-grounded responses",
     ],
     badge: launchBadge,
   },
   {
-    title: "Premium AI Layer",
+    title: "Premium NI Layer",
     description:
-      "Advanced AI continuity for users who need deeper context and volume.",
+      "Advanced NAVAGRAHA Intelligence continuity for users who need deeper context and volume.",
     includes: [
       "Advanced tools and modules",
       "Higher usage continuity",

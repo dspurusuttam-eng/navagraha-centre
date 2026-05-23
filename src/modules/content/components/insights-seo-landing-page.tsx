@@ -48,7 +48,7 @@ export function InsightsSeoLandingPage({
               href="/ai"
               className={buttonStyles({ tone: "tertiary", size: "sm" })}
             >
-              Try NAVAGRAHA AI
+              Ask NI
             </Link>
           </div>
         </Card>

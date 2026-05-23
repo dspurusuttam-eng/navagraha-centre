@@ -14,7 +14,7 @@
   },
   "cta": {
     "generateKundli": "나의 쿤들리 생성",
-    "exploreAi": "NAVAGRAHA AI 사용해보기",
+    "exploreAi": "NAVAGRAHA Intelligence 사용해보기",
     "bookConsultation": "무료 상담 예약",
     "signInAccount": "로그인 / 계정",
     "unlockFullReport": "무료 리포트 받기"
@@ -35,7 +35,7 @@
     "kundli": "쿤들리",
     "compatibility": "궁합",
     "rashifal": "라시팔",
-    "ai": "NAVAGRAHA AI",
+    "ai": "NAVAGRAHA Intelligence",
     "reports": "리포트",
     "tools": "도구",
     "panchang": "판창",
@@ -52,7 +52,7 @@
     "menu": "메뉴",
     "dashboard": "대시보드",
     "onboarding": "온보딩",
-    "askMyChart": "Ask My Chart",
+    "askMyChart": "Ask NI",
     "consultations": "상담",
     "orders": "주문",
     "chart": "차트",

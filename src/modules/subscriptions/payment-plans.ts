@@ -46,7 +46,7 @@ export const monetizationPlanCatalog: Record<
   PRO: {
     key: "PRO",
     title: "Pro",
-    summary: "Full plan access with highest limits and expanded premium AI depth.",
+    summary: "Full plan access with highest limits and expanded premium NAVAGRAHA Intelligence depth.",
     monthlyAmountInMinor: 29900,
     currencyCode: "INR",
     linkedSubscriptionPlanId: "PRO",

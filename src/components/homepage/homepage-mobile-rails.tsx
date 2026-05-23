@@ -346,10 +346,10 @@ const quickAccessItems: readonly QuickAccessItem[] = [
 
 const aiRailCards: readonly RailAction[] = [
   {
-    title: "Ask NAVAGRAHA AI",
+    title: "Ask NI",
     description: "Start from chart-aware intelligence without exposing raw prompts.",
     href: "/ai",
-    ctaLabel: "Start AI Guidance",
+    ctaLabel: "Start NAVAGRAHA Intelligence Guidance",
     icon: "ai",
     status: "Available",
     feature: "home-mobile-ai-ask",
@@ -435,7 +435,7 @@ const niTools: readonly RailAction[] = [
     eventName: "cta_click",
   },
   {
-    title: "Numerology NI",
+    title: "Numerology Intelligence",
     description: "Future intelligence for life path and number-based context.",
     ctaLabel: "Coming Soon",
     icon: "ai",
@@ -593,10 +593,10 @@ const consultationCards: readonly RailAction[] = [
     eventName: "cta_click",
   },
   {
-    title: "Ask NAVAGRAHA AI",
-    description: "Use AI guidance before deciding on human follow-up.",
+    title: "Ask NI",
+    description: "Use NAVAGRAHA Intelligence guidance before deciding on human follow-up.",
     href: "/ai",
-    ctaLabel: "Start AI Guidance",
+    ctaLabel: "Start NAVAGRAHA Intelligence Guidance",
     icon: "ai",
     status: "Available",
     feature: "home-mobile-consultation-ai",
@@ -676,8 +676,8 @@ export function HomepageMobileRails({
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1.04fr)_minmax(20rem,0.96fr)] lg:items-start">
           <div className="space-y-4">
             <RailSectionHeader
-              eyebrow="NAVAGRAHA AI"
-              title="NAVAGRAHA AI"
+              eyebrow="NAVAGRAHA Intelligence"
+              title="NAVAGRAHA Intelligence"
               description="Personalized Vedic astrology intelligence powered by Kundli, Dasha, Transit, Panchang, Reports and Remedies."
             />
             <div className="grid gap-4 sm:grid-cols-2">
@@ -750,7 +750,7 @@ export function HomepageMobileRails({
         <RailSectionHeader
           eyebrow="NAVAGRAHA Intelligence"
           title="NAVAGRAHA Intelligence Tools"
-          description="An expanding intelligent tools ecosystem under NAVAGRAHA AI. Kundli NI is available; the remaining modules are structured as future intelligence only."
+          description="An expanding intelligent tools ecosystem under NAVAGRAHA Intelligence. Kundli NI is available; the remaining modules are structured as future intelligence only."
         />
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {niTools.map((item) =>
@@ -885,10 +885,10 @@ export function HomepageMobileRails({
                 />
                 <RailActionCard
                   item={{
-                    title: "Ask NAVAGRAHA AI",
-                    description: "Use AI guidance before deciding on human follow-up.",
+                    title: "Ask NI",
+                    description: "Use NAVAGRAHA Intelligence guidance before deciding on human follow-up.",
                     href: "/ai",
-                    ctaLabel: "Start AI Guidance",
+                    ctaLabel: "Start NAVAGRAHA Intelligence Guidance",
                     icon: "ai",
                     status: "Available",
                     feature: "home-mobile-consultation-ai",

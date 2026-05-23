@@ -76,7 +76,7 @@ const planRows: readonly PlanComparisonRow[] = [
     advancedInsights: "Report-to-assistant continuity for deeper planning",
     continuity: "Most balanced depth for frequent users",
     bestFor: "Members using reports and AI repeatedly",
-    ctaLabel: "Try NAVAGRAHA AI",
+    ctaLabel: "Ask NI",
     featuredLabel: "MOST_POPULAR",
   },
   {
@@ -115,7 +115,7 @@ function getReportCtaLabel() {
 }
 
 function getAssistantHref(surface: MonetizationSurface) {
-  return surface === "protected" ? "/dashboard/ask-my-chart" : "/kundli-ai";
+  return surface === "protected" ? "/dashboard/ask-my-chart" : "/ai";
 }
 
 function getReportHref(surface: MonetizationSurface) {
@@ -145,10 +145,10 @@ export function getPostUpgradeNextAction(
     return {
       title: "Free launch access is active.",
       message:
-        "Continue directly into free report guidance or Ask My Chart while launch access remains open.",
+        "Continue directly into free report guidance or Ask NI while launch access remains open.",
       ctaLabel: "Get Free Report",
       href: "/dashboard/report",
-      secondaryCtaLabel: "Try NAVAGRAHA AI",
+      secondaryCtaLabel: "Ask NI",
       secondaryHref: "/dashboard/ask-my-chart",
     };
   }
@@ -156,8 +156,8 @@ export function getPostUpgradeNextAction(
   return {
     title: "Free launch access is active.",
     message:
-      "Continue directly into Ask My Chart or report guidance without payment during this launch window.",
-    ctaLabel: "Try NAVAGRAHA AI",
+      "Continue directly into Ask NI or report guidance without payment during this launch window.",
+    ctaLabel: "Ask NI",
     href: "/dashboard/ask-my-chart",
     secondaryCtaLabel: "Get Free Report",
     secondaryHref: "/dashboard/report",
@@ -182,7 +182,7 @@ export function getMonetizationUpgradeCopy(input: {
         title: limitedFreeAccessLabel,
         message:
           "You have reached today's assistant cap. During launch access, continue with chart insights or report guidance and return shortly for more AI responses.",
-        ctaLabel: "Try NAVAGRAHA AI",
+        ctaLabel: "Ask NI",
         upgradeHref: assistantHref,
       };
     case "assistant-near-limit":
@@ -190,7 +190,7 @@ export function getMonetizationUpgradeCopy(input: {
         title: limitedFreeAccessLabel,
         message:
           "You are close to today's assistant cap. Continue with focused questions to get the most from current free access.",
-        ctaLabel: "Try NAVAGRAHA AI",
+        ctaLabel: "Ask NI",
         upgradeHref: assistantHref,
       };
     case "assistant-nudge": {
@@ -202,7 +202,7 @@ export function getMonetizationUpgradeCopy(input: {
       return {
         title: limitedFreeAccessLabel,
         message: `${usageLine ? `${usageLine} ` : ""}Ask more chart-specific questions or move into a free report for deeper context.`,
-        ctaLabel: "Try NAVAGRAHA AI",
+        ctaLabel: "Ask NI",
         upgradeHref: assistantHref,
       };
     }
@@ -234,7 +234,7 @@ export function getMonetizationUpgradeCopy(input: {
       return {
         title: limitedFreeAccessLabel,
         message:
-          "Your chart foundation is ready. Start a deeper free analysis and continue into report or AI guidance.",
+          "Your chart foundation is ready. Start a deeper free analysis and continue into report or NAVAGRAHA Intelligence guidance.",
         ctaLabel: "Start Free Analysis",
         upgradeHref: input.surface === "protected" ? "/dashboard/chart" : "/sign-up",
       };
@@ -242,8 +242,8 @@ export function getMonetizationUpgradeCopy(input: {
       return {
         title: limitedFreeAccessLabel,
         message:
-          "Continue straight into AI guidance or report exploration. All astrology services are currently free for launch access.",
-        ctaLabel: "Try NAVAGRAHA AI",
+          "Continue straight into NAVAGRAHA Intelligence guidance or report exploration. All astrology services are currently free for launch access.",
+        ctaLabel: "Ask NI",
         upgradeHref: assistantHref,
       };
     case "return-usage":

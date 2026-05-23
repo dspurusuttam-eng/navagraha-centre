@@ -17,8 +17,8 @@ type PremiumAICTAProps = {
 export function PremiumAICTA({
   pagePath,
   placement,
-  title = "Premium AI pathways for deeper guidance",
-  description = "Deep Kundli analysis, yearly prediction, and advanced AI guidance can connect free tools with report and consultation pathways when more depth is needed.",
+  title = "Premium NAVAGRAHA Intelligence pathways for deeper guidance",
+  description = "Deep Kundli analysis, yearly prediction, and advanced NAVAGRAHA Intelligence guidance can connect free tools with report and consultation pathways when more depth is needed.",
   className,
 }: Readonly<PremiumAICTAProps>) {
   if (!monetizationConfig.enablePremiumAICTA) {
@@ -44,7 +44,7 @@ export function PremiumAICTA({
           eventPayload={{ page: pagePath, placement, cta: "premium-ai" }}
           className={buttonStyles({ size: "sm", className: "w-full justify-center sm:w-auto" })}
         >
-          NAVAGRAHA AI
+          NAVAGRAHA Intelligence
         </TrackedLink>
         <TrackedLink
           href={monetizationConfig.reportsUrl}

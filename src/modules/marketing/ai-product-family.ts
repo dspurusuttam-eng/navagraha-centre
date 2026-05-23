@@ -29,7 +29,7 @@ export type AiProductFamilyItem = {
 const aiProductFamilyItems: readonly AiProductFamilyItem[] = [
   {
     key: "ai-kundli-reading",
-    title: "AI Kundli Reading",
+    title: "Kundli Intelligence Guidance",
     description:
       "A chart-first AI layer that explains your core placements using verified chart context.",
     helpsWith: [
@@ -40,18 +40,18 @@ const aiProductFamilyItems: readonly AiProductFamilyItem[] = [
       "Currently free under limited launch access with deeper interpretation continuity.",
     trustNote:
       "Interpretation is chart-grounded guidance, not guaranteed life outcomes.",
-    publicHref: "/kundli-ai",
+    publicHref: "/kundli",
     protectedHref: "/dashboard/chart",
-    ctaLabelPublic: "Open AI Kundli Reading",
+    ctaLabelPublic: "Open Kundli Intelligence Guidance",
     ctaLabelProtected: "View Chart Reading",
     relatedTools: [
-      { label: "Ask My Chart", href: "/dashboard/ask-my-chart" },
-      { label: "Premium Reports", href: "/dashboard/report" },
+      { label: "Ask NI", href: "/ai" },
+      { label: "Premium Reports", href: "/reports" },
     ],
   },
   {
     key: "ai-numerology-insights",
-    title: "Numerology AI",
+    title: "Numerology Intelligence",
     description:
       "Discover your core numbers, personality patterns, strengths, growth and life direction through premium numerology insights.",
     helpsWith: [
@@ -67,13 +67,13 @@ const aiProductFamilyItems: readonly AiProductFamilyItem[] = [
     ctaLabelPublic: "Explore Numerology",
     ctaLabelProtected: "Explore Numerology",
     relatedTools: [
-      { label: "NAVAGRAHA AI", href: "/ai" },
-      { label: "Ask My Chart", href: "/dashboard/ask-my-chart" },
+      { label: "NAVAGRAHA Intelligence", href: "/ai" },
+      { label: "Ask NI", href: "/ai" },
     ],
   },
   {
     key: "ai-compatibility",
-    title: "Marriage Compatibility AI",
+    title: "Marriage Compatibility Guidance",
     description:
       "Compatibility guidance with a calm structure for relationship questions and practical next steps.",
     helpsWith: [
@@ -84,20 +84,20 @@ const aiProductFamilyItems: readonly AiProductFamilyItem[] = [
       "Currently free under limited launch access with richer compatibility continuity.",
     trustNote:
       "Compatibility guidance supports reflection and communication, not certainty claims.",
-    publicHref: "/marriage-compatibility",
+    publicHref: "/matchmaking",
     protectedHref: "/dashboard/consultations",
     ctaLabelPublic: "Explore Compatibility",
     ctaLabelProtected: "Open Compatibility Flow",
     relatedTools: [
-      { label: "Book Free Consultation", href: "/consultation" },
-      { label: "Ask My Chart", href: "/dashboard/ask-my-chart" },
+      { label: "Consultation", href: "/consultation" },
+      { label: "Ask NI", href: "/ai" },
     ],
   },
   {
     key: "ai-career-insights",
-    title: "AI Career Insights",
+    title: "Career Intelligence Insights",
     description:
-      "Career-focused AI guidance tied to your chart context and report progression.",
+      "Career-focused NAVAGRAHA Intelligence guidance tied to your chart context and report progression.",
     helpsWith: [
       "Priority and timing themes for career decisions",
       "Clear handoff into premium report depth",
@@ -106,18 +106,18 @@ const aiProductFamilyItems: readonly AiProductFamilyItem[] = [
       "Currently free under limited launch access with deeper report context and reasoning.",
     trustNote:
       "Career guidance is reflective support and should be paired with practical planning.",
-    publicHref: "/career-prediction",
+    publicHref: "/reports",
     protectedHref: "/dashboard/report",
     ctaLabelPublic: "Open Career Insights",
     ctaLabelProtected: "Open Career Report Layer",
     relatedTools: [
-      { label: "Career Report", href: "/career-report" },
-      { label: "Ask My Chart", href: "/dashboard/ask-my-chart" },
+      { label: "Reports", href: "/reports" },
+      { label: "Ask NI", href: "/ai" },
     ],
   },
   {
     key: "ai-finance-guidance",
-    title: "Finance AI",
+    title: "Finance Guidance",
     description:
       "Financial planning themes explained through chart context with no guarantee-based language.",
     helpsWith: [
@@ -128,18 +128,18 @@ const aiProductFamilyItems: readonly AiProductFamilyItem[] = [
       "Currently free under limited launch access with deeper report continuity when needed.",
     trustNote:
       "Finance guidance is reflective support and is not professional financial advice.",
-    publicHref: "/kundli-ai?tool=finance-ai",
+    publicHref: "/reports",
     protectedHref: "/dashboard/report",
-    ctaLabelPublic: "Open Finance AI",
+    ctaLabelPublic: "Open Finance Guidance",
     ctaLabelProtected: "Open Finance Report Layer",
     relatedTools: [
-      { label: "Finance Report", href: "/finance-report" },
-      { label: "Ask My Chart", href: "/dashboard/ask-my-chart" },
+      { label: "Reports", href: "/reports" },
+      { label: "Ask NI", href: "/ai" },
     ],
   },
   {
     key: "ai-health-guidance",
-    title: "Health AI",
+    title: "Health Guidance",
     description:
       "Wellness-oriented astrology themes presented responsibly with explicit safety boundaries.",
     helpsWith: [
@@ -150,18 +150,18 @@ const aiProductFamilyItems: readonly AiProductFamilyItem[] = [
       "Currently free under limited launch access with consultation handoff for sensitive concerns.",
     trustNote:
       "Health guidance is not medical advice and should never replace professional care.",
-    publicHref: "/kundli-ai?tool=health-ai",
+    publicHref: "/consultation",
     protectedHref: "/dashboard/report",
-    ctaLabelPublic: "Open Health AI",
+    ctaLabelPublic: "Open Health Guidance",
     ctaLabelProtected: "Open Health Report Layer",
     relatedTools: [
-      { label: "Health Report", href: "/health-report" },
-      { label: "Book Consultation", href: "/consultation" },
+      { label: "Reports", href: "/reports" },
+      { label: "Consultation", href: "/consultation" },
     ],
   },
   {
     key: "ai-daily-prediction",
-    title: "Daily Prediction AI",
+    title: "Daily Guidance",
     description:
       "Daily chart-aware guidance for practical focus, supportive factors, and caution areas.",
     helpsWith: [
@@ -169,10 +169,10 @@ const aiProductFamilyItems: readonly AiProductFamilyItem[] = [
       "Calm next-step orientation without fear-based predictions",
     ],
     premiumDepth:
-      "Currently free under limited launch access with Ask My Chart follow-up when a day needs more context.",
+      "Currently free under limited launch access with Ask NI follow-up when a day needs more context.",
     trustNote:
       "Daily guidance is for reflection and should be used with practical judgment.",
-    publicHref: "/daily-rashifal",
+    publicHref: "/rashifal",
     protectedHref: "/dashboard/ask-my-chart",
     ctaLabelPublic: "Open Daily Guidance",
     ctaLabelProtected: "Ask About Today",
@@ -183,7 +183,7 @@ const aiProductFamilyItems: readonly AiProductFamilyItem[] = [
   },
   {
     key: "ai-remedy-guidance",
-    title: "AI Remedies Guidance",
+    title: "Remedies Intelligence Guidance",
     description:
       "Remedy suggestions are presented with safety boundaries and optional purchase framing.",
     helpsWith: [
@@ -194,18 +194,18 @@ const aiProductFamilyItems: readonly AiProductFamilyItem[] = [
       "Currently free under limited launch access with deeper rationale and continuity.",
     trustNote:
       "Remedies are optional supports and do not guarantee specific outcomes.",
-    publicHref: "/health-report",
+    publicHref: "/remedies",
     protectedHref: "/dashboard/report",
     ctaLabelPublic: "View Remedies Guidance",
     ctaLabelProtected: "Open Remedy Layer",
     relatedTools: [
-      { label: "Book Free Consultation", href: "/consultation" },
+      { label: "Consultation", href: "/consultation" },
       { label: "Shop Records", href: "/shop" },
     ],
   },
   {
     key: "ask-my-chart",
-    title: "Ask My Chart",
+    title: "Ask NI",
     description:
       "A protected assistant surface for direct chart-aware questions and ongoing interpretation follow-up.",
     helpsWith: [
@@ -216,13 +216,13 @@ const aiProductFamilyItems: readonly AiProductFamilyItem[] = [
       "Assistant depth is currently open under limited launch free access.",
     trustNote:
       "Assistant responses remain chart-grounded and do not invent unsupported calculations.",
-    publicHref: "/sign-up",
+    publicHref: "/ai",
     protectedHref: "/dashboard/ask-my-chart",
-    ctaLabelPublic: "Try NAVAGRAHA AI",
-    ctaLabelProtected: "Open Ask My Chart",
+    ctaLabelPublic: "Ask NI",
+    ctaLabelProtected: "Open Ask NI",
     relatedTools: [
-      { label: "Kundli Reading", href: "/kundli-ai" },
-      { label: "Premium Reports", href: "/dashboard/report" },
+      { label: "Kundli Reading", href: "/kundli" },
+      { label: "Premium Reports", href: "/reports" },
     ],
   },
 ] as const;
@@ -246,5 +246,5 @@ export function resolveAiProductCtaLabel(
 }
 
 export function getAiFamilyUpgradeHref(surface: AiProductFamilySurface) {
-  return surface === "protected" ? "/dashboard/ask-my-chart" : "/kundli-ai";
+  return surface === "protected" ? "/dashboard/ask-my-chart" : "/ai";
 }

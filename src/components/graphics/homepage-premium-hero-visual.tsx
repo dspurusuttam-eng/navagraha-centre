@@ -26,8 +26,8 @@ const floatingCards = [
     position: "lg:right-8 lg:bottom-32",
   },
   {
-    label: "AI Guidance",
-    title: "Ask NAVAGRAHA AI",
+    label: "NAVAGRAHA Intelligence Guidance",
+    title: "Ask NI",
     description: "Bridge chart data into a guided answer flow.",
     position: "lg:left-1/2 lg:bottom-6 lg:-translate-x-1/2",
   },

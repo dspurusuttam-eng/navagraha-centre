@@ -41,10 +41,10 @@ export async function generateMetadata() {
     locale,
     explicitLocalePrefix: hasExplicitLocalePrefix,
     keywords: [
-      "navagraha ai",
-      "ai astrology guidance",
+      "navagraha intelligence",
+      "ask ni vedic guidance",
       "kundli interpretation",
-      "vedic astrology ai",
+      "vedic astrology intelligence",
       "chart assistant",
     ],
   });
@@ -54,16 +54,16 @@ export const revalidate = 3600;
 const aiTools = [
   {
     icon: "kundli",
-    title: "Kundli AI",
+    title: "Kundli NI",
     description:
       "Chart-first interpretation that explains placements, houses, and life themes from verified birth data.",
     bestFor: "Birth chart clarity",
-    href: "/kundli-ai?tool=kundli-ai",
-    ctaLabel: "Open Kundli AI",
+    href: "/kundli",
+    ctaLabel: "Open Kundli Guidance",
   },
   {
     icon: "numerology",
-    title: "Numerology AI",
+    title: "Numerology Intelligence",
     description:
       "Core number interpretation connected to personality patterns, strengths, and practical timing themes.",
     bestFor: "Name and date insight",
@@ -72,57 +72,57 @@ const aiTools = [
   },
   {
     icon: "compatibility",
-    title: "Marriage Compatibility AI",
+    title: "Marriage Compatibility Guidance",
     description:
       "Relationship guidance framed through compatibility signals, communication themes, and next-step clarity.",
     bestFor: "Relationship questions",
-    href: "/kundli-ai?tool=marriage-compatibility-ai",
+    href: "/matchmaking",
     ctaLabel: "Explore Compatibility",
   },
   {
     icon: "reports",
-    title: "Career Guidance AI",
+    title: "Career Guidance",
     description:
       "Career direction and timing themes explained from chart context, not generic motivation text.",
     bestFor: "Career decisions",
-    href: "/kundli-ai?tool=career-guidance-ai",
-    ctaLabel: "Open Career AI",
+    href: "/reports",
+    ctaLabel: "Open Career Guidance",
   },
   {
     icon: "reports",
-    title: "Finance AI",
+    title: "Finance Guidance",
     description:
       "Financial caution, planning, and stability themes presented as reflective guidance, not guarantees.",
     bestFor: "Money planning",
-    href: "/kundli-ai?tool=finance-ai",
-    ctaLabel: "Open Finance AI",
+    href: "/reports",
+    ctaLabel: "Open Finance Guidance",
   },
   {
     icon: "consultation",
-    title: "Health AI",
+    title: "Health Guidance",
     description:
       "Wellness-oriented astrology signals with clear safety boundaries and no medical certainty claims.",
     bestFor: "Wellbeing reflection",
-    href: "/kundli-ai?tool=health-ai",
-    ctaLabel: "Open Health AI",
+    href: "/consultation",
+    ctaLabel: "Open Health Guidance",
   },
   {
     icon: "rashifal",
-    title: "Daily Prediction AI",
+    title: "Daily Guidance",
     description:
       "Daily guidance that connects current themes with practical action and calm caution areas.",
     bestFor: "Daily decisions",
-    href: "/kundli-ai?tool=daily-prediction-ai",
-    ctaLabel: "Open Daily AI",
+    href: "/rashifal",
+    ctaLabel: "Open Daily Guidance",
   },
   {
     icon: "ai",
-    title: "Ask My Chart",
+    title: "Ask NI",
     description:
       "Protected assistant surface for direct chart-aware questions after your chart foundation is ready.",
     bestFor: "Follow-up questions",
     href: "/ai",
-    ctaLabel: "Ask My Chart",
+    ctaLabel: "Ask NI",
   },
 ] as const;
 
@@ -184,10 +184,10 @@ const predictiveStack = [
   },
   {
     label: "Predictive Synthesis",
-    description: "Signals are combined before AI wording is shown.",
+    description: "Signals are combined before guidance wording is shown.",
   },
   {
-    label: "AI Guidance",
+    label: "NAVAGRAHA Intelligence Guidance",
     description: "The final response stays practical, safe, and structured.",
   },
 ] as const;
@@ -220,19 +220,19 @@ const sampleResponseSections = [
 
 const aiFaqs = [
   {
-    question: "Is NAVAGRAHA AI a generic chatbot?",
+    question: "Is NAVAGRAHA Intelligence a generic chatbot?",
     answer:
       "No. The flagship flow is designed around chart context, calculation outputs, and safety rules before guidance is shown.",
   },
   {
-    question: "Can AI replace consultation?",
+    question: "Can Ask NI replace consultation?",
     answer:
-      "No. AI is useful for structured self-guidance, while important personal decisions should be reviewed through human consultation.",
+      "No. Ask NI is useful for structured self-guidance, while important personal decisions should be reviewed through human consultation.",
   },
   {
     question: "Is my birth data private?",
     answer:
-      "Protected Ask My Chart flows use saved account context. Public discovery pages do not expose private birth details.",
+      "Protected Ask NI flows use saved account context. Public discovery pages do not expose private birth details.",
   },
   {
     question: "What is free vs premium?",
@@ -254,7 +254,7 @@ const aiTestimonials = [
     name: "N. Mehta",
     quote:
       "The AI answers felt specific to my chart and not like generic astrology text.",
-    tag: "Ask My Chart",
+    tag: "Ask NI",
   },
   {
     name: "P. Bora",
@@ -288,7 +288,7 @@ export default function AiPage() {
               tone="neutral"
               className="border-[rgba(0,109,255,0.34)] bg-[rgba(0,215,255,0.08)] text-[color:var(--color-intelligence-blue)]"
             >
-              NAVAGRAHA AI Flagship
+              Ask NI Flagship
             </Badge>
             <div className="space-y-4">
               <h1
@@ -298,10 +298,10 @@ export default function AiPage() {
                   lineHeight: "var(--line-height-tight)",
                 }}
               >
-                NAVAGRAHA AI - chart-aware Vedic astrology intelligence.
+                NAVAGRAHA Intelligence - chart-aware Vedic astrology intelligence.
               </h1>
               <p className="max-w-[44rem] text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                NAVAGRAHA AI connects Kundli context, Dasha timing, transit signals, rule-based checks, and safe interpretation into one calm guidance layer.
+                NAVAGRAHA Intelligence connects Kundli context, Dasha timing, transit signals, rule-based checks, and safe interpretation into one calm guidance layer.
               </p>
               <p className="inline-flex rounded-[var(--radius-pill)] border border-[rgba(0,109,255,0.24)] bg-[rgba(0,215,255,0.06)] px-4 py-2 text-[0.68rem] uppercase tracking-[0.14em] text-[color:var(--color-intelligence-blue)]">
                 Powered by your birth chart
@@ -343,7 +343,7 @@ export default function AiPage() {
                   className: "w-full justify-center sm:w-auto",
                 })}
               >
-                Explore AI Tools
+                Explore Intelligence Tools
               </TrackedLink>
             </div>
           </div>
@@ -358,7 +358,7 @@ export default function AiPage() {
         tone="light"
         category="ai"
         eyebrow="How It Works"
-        title="From chart setup to structured AI guidance."
+        title="From chart setup to structured NAVAGRAHA Intelligence guidance."
         description="The flow is deterministic at the calculation layer and careful at the interpretation layer."
       >
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -373,7 +373,7 @@ export default function AiPage() {
               step: "Step 2",
               title: "Understand chart context",
               description:
-                "NAVAGRAHA AI reads only the available chart, Dasha, transit, and rule context.",
+                "NAVAGRAHA Intelligence reads only the available chart, Dasha, transit, and rule context.",
             },
             {
               step: "Step 3",
@@ -409,8 +409,8 @@ export default function AiPage() {
         id="ai-tool-family"
         tone="light"
         category="ai"
-        eyebrow="AI Tools"
-        title="Choose the AI tool that matches your current question."
+        eyebrow="Intelligence Tools"
+        title="Choose the NAVAGRAHA Intelligence tool that matches your current question."
         description="Each card has a clear job and routes to an existing public or protected NAVAGRAHA path."
       >
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -423,7 +423,7 @@ export default function AiPage() {
             >
               <div className="flex items-center justify-between">
                 {getAiToolIcon(tool.icon)}
-                <Badge tone="neutral">AI Tool</Badge>
+                <Badge tone="neutral">Intelligence Tool</Badge>
               </div>
               <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
                 {tool.title}
@@ -478,7 +478,7 @@ export default function AiPage() {
         tone="light"
         category="ai"
         eyebrow="Predictive Intelligence"
-        title="The intelligence stack behind NAVAGRAHA AI."
+        title="The intelligence stack behind NAVAGRAHA Intelligence."
         description="This visual layer explains why the experience is different from a generic chatbot without exposing technical clutter."
       >
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-6">
@@ -533,7 +533,7 @@ export default function AiPage() {
 
             <div className="space-y-3">
               <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
-                Structured AI Response
+                Structured Ask NI Response
               </p>
               <div className="grid gap-3">
                 {sampleResponseSections.map((item) => (
@@ -559,7 +559,7 @@ export default function AiPage() {
         tone="light"
         category="ai"
         eyebrow="Differentiation"
-        title="Why NAVAGRAHA AI is different"
+        title="Why NAVAGRAHA Intelligence is different"
         description="The intelligence layer is built on chart context, Vedic structure, and human-guided continuity."
       >
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -576,9 +576,9 @@ export default function AiPage() {
       <Section
         tone="light"
         category="ai"
-        eyebrow="Free vs Premium AI"
+        eyebrow="Free vs Premium Guidance"
         title="Clear depth levels without aggressive paywalls."
-        description="The AI experience stays useful at entry level and gives users honest next steps when they need deeper structure."
+        description="The Ask NI experience stays useful at entry level and gives users honest next steps when they need deeper structure."
       >
         <div className="grid gap-4 md:grid-cols-3">
           {[
@@ -590,10 +590,10 @@ export default function AiPage() {
               href: "/kundli",
             },
             {
-              title: "Premium-Ready AI",
+              title: "Premium-Ready Guidance",
               description:
                 "Deeper follow-up questions, saved chart continuity, and report-oriented interpretation paths.",
-              cta: "Ask My Chart",
+              cta: "Ask NI",
               href: "/ai",
             },
             {
@@ -634,8 +634,8 @@ export default function AiPage() {
         tone="muted"
         category="ai"
         eyebrow="Human Consultation Bridge"
-        title="Use AI for clarity. Use consultation for high-context decisions."
-        description="NAVAGRAHA AI can prepare better questions, but sensitive decisions deserve careful human interpretation."
+        title="Use Ask NI for clarity. Use consultation for high-context decisions."
+        description="NAVAGRAHA Intelligence can prepare better questions, but sensitive decisions deserve careful human interpretation."
       >
         <Card
           tone="light"
@@ -644,7 +644,7 @@ export default function AiPage() {
           <div className="space-y-3">
             <Badge tone="trust">Joy Prakash Sarmah</Badge>
             <p className="max-w-3xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-              For marriage, career, finance, health-sensitive concerns, or major life timing, continue from AI guidance into a calm human review with chart context.
+              For marriage, career, finance, health-sensitive concerns, or major life timing, continue from NAVAGRAHA Intelligence guidance into a calm human review with chart context.
             </p>
           </div>
           <TrackedLink
@@ -666,8 +666,8 @@ export default function AiPage() {
         tone="light"
         category="ai"
         eyebrow="FAQ + Safety"
-        title="Clear expectations before using AI guidance."
-        description="The flagship AI experience is designed to be helpful, non-fear-based, and honest about its limits."
+        title="Clear expectations before using NAVAGRAHA Intelligence guidance."
+        description="The Ask NI experience is designed to be helpful, non-fear-based, and honest about its limits."
       >
         <div className="grid gap-4 md:grid-cols-2">
           {aiFaqs.map((item) => (
@@ -687,7 +687,7 @@ export default function AiPage() {
         pagePath="/ai"
         testimonials={aiTestimonials}
         tone="light"
-        title="Members trust NAVAGRAHA AI for chart-grounded interpretation."
+        title="Members trust NAVAGRAHA Intelligence for chart-grounded interpretation."
         description="User feedback highlights clarity, context depth, and smooth handoff into consultation when needed."
       />
 
@@ -728,10 +728,10 @@ export default function AiPage() {
                 lineHeight: "var(--line-height-tight)",
               }}
             >
-              Continue with NAVAGRAHA AI Intelligence
+              Continue with NAVAGRAHA Intelligence
             </h2>
             <p className="max-w-2xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-              Start with your Kundli foundation, then continue into Ask My Chart for structured, chart-aware guidance.
+              Start with your Kundli foundation, then continue into Ask NI for structured, chart-aware guidance.
             </p>
           </div>
 
@@ -746,7 +746,7 @@ export default function AiPage() {
                 className: "w-full justify-center sm:w-auto",
               })}
             >
-              Ask My Chart
+              Ask NI
             </TrackedLink>
             <TrackedLink
               href="/kundli"
@@ -767,7 +767,7 @@ export default function AiPage() {
       <Section className="pt-0" tone="transparent">
         <RevenuePathwaysCard
           pagePath="/ai"
-          title="Continue from AI insight into full guidance pathways"
+          title="Continue from NAVAGRAHA Intelligence insight into full guidance pathways"
           description="Ask your first chart question for free, then move into reports, consultation, or spiritual support based on your current need."
         />
       </Section>

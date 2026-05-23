@@ -36,7 +36,7 @@ function getMemberFlowLinks(entry: SeoEntryPage) {
       },
       {
         href: "/dashboard/ask-my-chart",
-        label: "Use Ask My Chart",
+        label: "Use Ask NI",
         description:
           "Ask chart-aware questions in the protected assistant workflow.",
       },
@@ -90,9 +90,9 @@ export function SeoEntryPageView({ entry }: Readonly<{ entry: SeoEntryPage }>) {
           surface="public"
           pagePath={entry.path}
           tone="light"
-          eyebrow="NAVAGRAHA AI Hub"
-          title="Explore the NAVAGRAHA AI product family from one flagship surface."
-          description="Use this hub to move between AI Kundli Reading, Compatibility, Career Insights, Remedies Guidance, and Ask My Chart with one coherent path."
+          eyebrow="NAVAGRAHA Intelligence Hub"
+          title="Explore the NAVAGRAHA Intelligence product family from one flagship surface."
+          description="Use this hub to move between Kundli Intelligence Guidance, Compatibility, Career Insights, Remedies Guidance, and Ask NI with one coherent path."
         />
       ) : null}
       {entry.key === "career-report" ||

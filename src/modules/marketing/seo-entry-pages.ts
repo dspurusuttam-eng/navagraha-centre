@@ -74,25 +74,25 @@ const seoEntryPages: Record<SeoEntryPageKey, SeoEntryPage> = {
     key: "kundli-ai",
     path: "/kundli-ai",
     metadata: {
-      title: "Kundli AI Chart Reading",
+      title: "Ask NI Kundli Guidance",
       description:
-        "Generate your chart foundation with NAVAGRAHA AI and move into chart-aware guidance, Ask My Chart, and premium reports.",
+        "Generate your chart foundation with NAVAGRAHA Intelligence and move into chart-aware guidance, Ask NI, and premium reports.",
       keywords: [
-        "kundli ai",
+        "ask ni kundli guidance",
         "vedic birth chart",
         "online kundli reading",
         "chart-aware assistant",
       ],
     },
     hero: {
-      eyebrow: "Kundli AI",
+      eyebrow: "Kundli NI",
       title: "Build your chart foundation before any interpretation.",
       description:
         "Start with your birth details, generate a deterministic sidereal chart, and continue with chart-aware guidance in a protected member flow.",
       highlights: [
         "Birth context validation with place, timezone, and UTC conversion",
         "Saved chart reuse so your chart remains stable across app surfaces",
-        "Ask My Chart responses grounded in your stored chart context",
+        "Ask NI responses grounded in your stored chart context",
       ],
       note: "Chart guidance is interpretive and reflective. It is not a promise of guaranteed life outcomes.",
       primaryAction: {
@@ -133,7 +133,7 @@ const seoEntryPages: Record<SeoEntryPageKey, SeoEntryPage> = {
           "Open your protected chart surface to inspect Lagna, houses, and graha placements.",
       },
       {
-        title: "Step 3: Continue in Ask My Chart",
+        title: "Step 3: Continue in Ask NI",
         description:
           "Ask chart-grounded questions and receive structured responses aligned to your saved chart context.",
       },
@@ -152,7 +152,7 @@ const seoEntryPages: Record<SeoEntryPageKey, SeoEntryPage> = {
       {
         question: "Where do I ask chart questions after signup?",
         answer:
-          "Use the protected Ask My Chart surface after onboarding and chart creation.",
+          "Use the protected Ask NI surface after onboarding and chart creation.",
       },
     ],
     relatedPages: ["daily-horoscope", "career-report", "marriage-compatibility"],
@@ -246,7 +246,7 @@ const seoEntryPages: Record<SeoEntryPageKey, SeoEntryPage> = {
       {
         question: "What happens after onboarding?",
         answer:
-          "You are taken into the protected chart surface, where the same saved chart can power reports and Ask My Chart.",
+          "You are taken into the protected chart surface, where the same saved chart can power reports and Ask NI.",
       },
     ],
     relatedPages: [
@@ -342,7 +342,7 @@ const seoEntryPages: Record<SeoEntryPageKey, SeoEntryPage> = {
           "Yes. Once saved, the chart becomes the default source for chart-aware app flows until birth data changes.",
       },
       {
-        question: "Will this also help with reports and Ask My Chart?",
+        question: "Will this also help with reports and Ask NI?",
         answer:
           "Yes. The same saved chart context powers the protected report and assistant experiences after onboarding.",
       },
@@ -460,7 +460,7 @@ const seoEntryPages: Record<SeoEntryPageKey, SeoEntryPage> = {
     metadata: {
       title: "Daily Horoscope With Chart Context",
       description:
-        "Move from generic daily horoscope browsing to chart-aware daily guidance inside NAVAGRAHA AI.",
+        "Move from generic daily horoscope browsing to chart-aware daily guidance inside NAVAGRAHA Intelligence.",
       keywords: [
         "daily horoscope",
         "personalized horoscope",
@@ -502,7 +502,7 @@ const seoEntryPages: Record<SeoEntryPageKey, SeoEntryPage> = {
       {
         title: "Assistant continuity",
         description:
-          "Ask follow-up questions in Ask My Chart so daily insights stay connected to your actual chart.",
+          "Ask follow-up questions in Ask NI so daily insights stay connected to your actual chart.",
       },
     ],
     flowCards: [
@@ -519,7 +519,7 @@ const seoEntryPages: Record<SeoEntryPageKey, SeoEntryPage> = {
       {
         title: "Step 3: Ask specific questions",
         description:
-          "Use Ask My Chart to clarify what is active now and how to interpret the period.",
+          "Use Ask NI to clarify what is active now and how to interpret the period.",
       },
     ],
     faqItems: [
@@ -591,7 +591,7 @@ const seoEntryPages: Record<SeoEntryPageKey, SeoEntryPage> = {
       {
         title: "Faster path to assistant use",
         description:
-          "Once chart setup is complete, Ask My Chart and report surfaces can answer timing questions with better context.",
+          "Once chart setup is complete, Ask NI and report surfaces can answer timing questions with better context.",
       },
       {
         title: "Internal linking that stays relevant",
@@ -630,7 +630,7 @@ const seoEntryPages: Record<SeoEntryPageKey, SeoEntryPage> = {
       {
         question: "Where do I ask follow-up questions after chart creation?",
         answer:
-          "Use the protected Ask My Chart and report surfaces once your saved chart is ready.",
+          "Use the protected Ask NI and report surfaces once your saved chart is ready.",
       },
     ],
     relatedPages: [
@@ -650,7 +650,7 @@ const seoEntryPages: Record<SeoEntryPageKey, SeoEntryPage> = {
     key: "rashifal",
     path: "/rashifal",
     metadata: {
-      title: "Rashifal Guidance With NAVAGRAHA AI",
+      title: "Rashifal Guidance With NAVAGRAHA Intelligence",
       description:
         "Explore rashifal entry guidance and move into personalized chart, assistant, and report surfaces within NAVAGRAHA CENTRE.",
       keywords: [
@@ -677,7 +677,7 @@ const seoEntryPages: Record<SeoEntryPageKey, SeoEntryPage> = {
       },
       secondaryAction: {
         href: "/dashboard/ask-my-chart",
-        label: "Ask My Chart",
+        label: "Ask NI",
       },
     },
     valueCards: [
@@ -711,7 +711,7 @@ const seoEntryPages: Record<SeoEntryPageKey, SeoEntryPage> = {
       {
         title: "Step 3: Continue with assistant or consultation",
         description:
-          "Choose Ask My Chart for self-serve clarity or consultation for deeper human review.",
+          "Choose Ask NI for self-serve clarity or consultation for deeper human review.",
       },
     ],
     faqItems: [
@@ -805,7 +805,7 @@ const seoEntryPages: Record<SeoEntryPageKey, SeoEntryPage> = {
       {
         title: "How it works",
         description:
-          "Start onboarding, create your chart, then continue into compatibility and Ask My Chart surfaces for deeper follow-up.",
+          "Start onboarding, create your chart, then continue into compatibility and Ask NI surfaces for deeper follow-up.",
       },
     ],
     faqItems: [
@@ -881,7 +881,7 @@ const seoEntryPages: Record<SeoEntryPageKey, SeoEntryPage> = {
       {
         title: "Assistant + report continuity",
         description:
-          "Continue from report context into Ask My Chart for targeted follow-up questions.",
+          "Continue from report context into Ask NI for targeted follow-up questions.",
       },
       {
         title: "Consultation when needed",
@@ -1095,7 +1095,7 @@ const seoEntryPages: Record<SeoEntryPageKey, SeoEntryPage> = {
       {
         title: "Step 3: Ask or consult",
         description:
-          "Continue with Ask My Chart or consultation for deeper interpretation support.",
+          "Continue with Ask NI or consultation for deeper interpretation support.",
       },
     ],
     faqItems: [

@@ -75,7 +75,7 @@ export const contentHubs: readonly ContentHub[] = [
     ],
     conversionCtas: [
       { label: "Generate Your Kundli", href: "/sign-up" },
-      { label: "Ask My Chart", href: "/kundli-ai" },
+      { label: "Ask NI", href: "/ai" },
     ],
     relatedHubSlugs: ["nakshatra", "graha", "compatibility"],
     metadata: {
@@ -99,20 +99,20 @@ export const contentHubs: readonly ContentHub[] = [
     heroEyebrow: "Nakshatra Hub",
     heroTitle: "Understand nakshatra context through chart-backed astrology flows.",
     heroDescription:
-      "Nakshatra and pada insights are used as structured interpretation layers inside NAVAGRAHA CENTRE chart outputs and AI guidance.",
+      "Nakshatra and pada insights are used as structured interpretation layers inside NAVAGRAHA CENTRE chart outputs and NAVAGRAHA Intelligence guidance.",
     heroHighlights: [
       "Nakshatra appears as a structured field inside planetary chart output",
       "Interpretation remains chart-grounded rather than generic content",
-      "Clear bridges to reports, Ask My Chart, and consultation",
+      "Clear bridges to reports, Ask NI, and consultation",
     ],
     heroNote:
       "The nakshatra hub is designed as a quality knowledge layer that supports user trust before deeper paid journeys.",
     subtopics: [
       {
-        title: "Ask My Chart (Nakshatra Questions)",
+        title: "Ask NI (Nakshatra Questions)",
         description:
-          "Use chart-aware assistant flows to ask nakshatra-specific questions with profile context.",
-        href: "/kundli-ai",
+          "Use Ask NI to ask nakshatra-specific questions with profile context.",
+        href: "/ai",
       },
       {
         title: "Career Report Layer",
@@ -134,14 +134,14 @@ export const contentHubs: readonly ContentHub[] = [
       },
     ],
     conversionCtas: [
-      { label: "Explore NAVAGRAHA AI", href: "/kundli-ai" },
+      { label: "Ask NI", href: "/ai" },
       { label: "Book Free Consultation", href: "/consultation" },
     ],
     relatedHubSlugs: ["graha", "navagraha-ai", "consultation"],
     metadata: {
       title: "Nakshatra Hub",
       description:
-        "Learn how NAVAGRAHA CENTRE uses nakshatra context in chart-aware AI guidance, reports, and consultation journeys.",
+        "Learn how NAVAGRAHA CENTRE uses nakshatra context in chart-aware NAVAGRAHA Intelligence guidance, reports, and consultation journeys.",
       keywords: [
         "nakshatra hub",
         "vedic nakshatra guidance",
@@ -163,22 +163,22 @@ export const contentHubs: readonly ContentHub[] = [
     heroHighlights: [
       "Planetary interpretation tied to verified sidereal chart context",
       "Clean progression from free chart value to deeper premium layers",
-      "Structured links to AI tools, reports, and consultation",
+      "Structured links to NAVAGRAHA Intelligence tools, reports, and consultation",
     ],
     heroNote:
       "The goal is discoverability and trust: useful graha context with clear pathways into real product flows.",
     subtopics: [
       {
-        title: "AI Kundli Reading",
+        title: "Kundli Intelligence Guidance",
         description:
-          "Use AI chart reading to understand graha placements through a structured summary layer.",
-        href: "/kundli-ai",
+          "Use chart-aware guidance to understand graha placements through a structured summary layer.",
+        href: "/kundli",
       },
       {
-        title: "Ask My Chart",
+        title: "Ask NI",
         description:
-          "Ask focused graha questions inside your protected chart-aware assistant flow.",
-        href: "/kundli-ai",
+          "Ask focused graha questions through the Ask NI guidance surface.",
+        href: "/ai",
       },
       {
         title: "Health / Wellbeing Report",
@@ -219,7 +219,7 @@ export const contentHubs: readonly ContentHub[] = [
     heroEyebrow: "Compatibility / Marriage Hub",
     heroTitle: "Compatibility guidance from first check to deeper relationship clarity.",
     heroDescription:
-      "Use this hub to move from initial compatibility exploration into chart-aware AI guidance, premium analysis, and private consultation where needed.",
+      "Use this hub to move from initial compatibility exploration into chart-aware NAVAGRAHA Intelligence guidance, premium analysis, and private consultation where needed.",
     heroHighlights: [
       "Structured compatibility entry points with clean conversion paths",
       "Balanced framing that avoids exaggerated certainty",
@@ -282,7 +282,7 @@ export const contentHubs: readonly ContentHub[] = [
       "This hub explains how consultation journeys are structured and when users should move from self-service chart tools into astrologer-led interpretation.",
     heroHighlights: [
       "Service clarity designed for decision confidence before booking",
-      "Links between chart output, AI guidance, and consultation depth",
+      "Links between chart output, NAVAGRAHA Intelligence guidance, and consultation depth",
       "Authority framing centered on Joy Prakash Sarmah",
     ],
     heroNote:
@@ -332,44 +332,44 @@ export const contentHubs: readonly ContentHub[] = [
   },
   {
     slug: "navagraha-ai",
-    path: "/navagraha-ai-explainer",
-    title: "NAVAGRAHA AI Explainer Hub",
+    path: "/ai",
+    title: "NAVAGRAHA Intelligence Explainer Hub",
     description:
       "A flagship AI authority page that connects chart-aware tools, premium layers, and practical user journeys.",
-    heroEyebrow: "NAVAGRAHA AI Explainer Hub",
-    heroTitle: "Chart-aware AI guidance, presented as a coherent premium product family.",
+    heroEyebrow: "NAVAGRAHA Intelligence Explainer Hub",
+    heroTitle: "Chart-aware NAVAGRAHA Intelligence guidance, presented as a coherent premium product family.",
     heroDescription:
-      "This hub explains how NAVAGRAHA AI tools relate to Kundli, compatibility, reports, and consultation so users can navigate the ecosystem with clarity.",
+      "This hub explains how NAVAGRAHA Intelligence tools relate to Kundli, compatibility, reports, and consultation so users can navigate the ecosystem with clarity.",
     heroHighlights: [
       "AI responses grounded in saved chart context, not generic chatbot output",
       "Clear free-to-premium progression with contextual upgrade pathways",
-      "Cross-linked AI tools that support retention and deeper guidance",
+      "Cross-linked NAVAGRAHA Intelligence tools that support retention and deeper guidance",
     ],
     heroNote:
       "The AI explainer is a trust and conversion layer: transparent about what AI does, and how to use it productively.",
     subtopics: [
       {
-        title: "NAVAGRAHA AI Product Family",
+        title: "NAVAGRAHA Intelligence Product Family",
         description:
-          "Explore the flagship AI surface and linked tools for Kundli, compatibility, and insight depth.",
-        href: "/kundli-ai",
+          "Explore the flagship Ask NI surface and linked tools for Kundli, compatibility, and insight depth.",
+        href: "/ai",
       },
       {
-        title: "Numerology AI",
+        title: "Numerology Intelligence",
         description:
           "Open the premium numerology tool to review core numbers, growth notes, and practical guidance patterns.",
         href: "/numerology",
       },
       {
-        title: "Ask My Chart",
+        title: "Ask NI",
         description:
-          "Use the protected assistant for chart-grounded follow-up questions and premium depth prompts.",
-        href: "/kundli-ai",
+          "Use Ask NI for chart-grounded follow-up questions and premium depth prompts.",
+        href: "/ai",
       },
       {
         title: "Career Prediction Entry",
         description:
-          "Bridge AI guidance with report-oriented pathways for career and planning decisions.",
+          "Bridge NAVAGRAHA Intelligence guidance with report-oriented pathways for career and planning decisions.",
         href: "/career-prediction",
       },
       {
@@ -380,19 +380,19 @@ export const contentHubs: readonly ContentHub[] = [
       },
     ],
     conversionCtas: [
-      { label: "Explore NAVAGRAHA AI", href: "/kundli-ai" },
+      { label: "Ask NI", href: "/ai" },
       { label: "Generate Your Kundli", href: "/sign-up" },
     ],
     relatedHubSlugs: ["graha", "consultation", "compatibility"],
     metadata: {
-      title: "NAVAGRAHA AI Explainer Hub",
+      title: "NAVAGRAHA Intelligence Explainer Hub",
       description:
-        "Understand NAVAGRAHA AI as a chart-aware product family linking Kundli, assistant guidance, premium reports, and consultation.",
+        "Understand NAVAGRAHA Intelligence as a chart-aware product family linking Kundli, assistant guidance, premium reports, and consultation.",
       keywords: [
-        "navagraha ai explainer",
-        "ai astrology platform",
-        "chart-aware ai guidance",
-        "premium astrology ai tools",
+        "navagraha intelligence explainer",
+        "vedic intelligence platform",
+        "chart-aware NAVAGRAHA Intelligence guidance",
+        "premium astrology intelligence tools",
       ],
     },
   },

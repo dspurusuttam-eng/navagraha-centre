@@ -308,7 +308,7 @@ export function PremiumReportGenerator() {
                       });
                     }}
                   >
-                    Ask My Chart About This Report
+                    Ask NI About This Report
                   </Link>
                   <Link
                     href="/dashboard/consultations"

@@ -27,7 +27,7 @@ export function SubscriptionUpgradePanel() {
           href="/dashboard/ask-my-chart"
           className={buttonStyles({ size: "sm", tone: "secondary" })}
         >
-          Try NAVAGRAHA AI
+          Ask NI
         </Link>
         <Link
           href="/dashboard/consultations"

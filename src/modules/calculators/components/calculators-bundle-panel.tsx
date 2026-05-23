@@ -583,7 +583,7 @@ export function CalculatorsBundlePanel() {
               className: "w-full justify-center sm:w-auto",
             })}
           >
-            Try NAVAGRAHA AI
+            Ask NI
           </TrackedLink>
         </div>
       </Card>

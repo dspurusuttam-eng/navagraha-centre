@@ -11,7 +11,7 @@ const predictiveFlow = [
   "Dasha",
   "Transit",
   "Yoga Rules",
-  "AI Guidance",
+  "NAVAGRAHA Intelligence Guidance",
 ] as const;
 
 const networkNodes = [

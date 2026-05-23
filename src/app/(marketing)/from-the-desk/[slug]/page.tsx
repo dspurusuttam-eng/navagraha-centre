@@ -74,9 +74,9 @@ function getContextualCtas(entry: ContentEntry) {
     ] as const;
   }
 
-  if (entry.category === "NAVAGRAHA AI Updates") {
+  if (entry.category === "NAVAGRAHA Intelligence Updates") {
     return [
-      { href: "/ai", label: "Try NAVAGRAHA AI" },
+      { href: "/ai", label: "Ask NI" },
       { href: "/reports", label: "Generate Chart Report" },
     ] as const;
   }

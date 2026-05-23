@@ -7,7 +7,7 @@ type SafeLocalizedMessage = {
 };
 
 const aiUnavailableMessage: SafeLocalizedMessage = {
-  en: "AI guidance is temporarily unavailable. Please try again later.",
+  en: "NAVAGRAHA Intelligence guidance is temporarily unavailable. Please try again later.",
   as: "AI জ্যোতিষীয় পথনির্দেশ এই মুহূৰ্তত উপলব্ধ নহয়। অনুগ্ৰহ কৰি পিছত আকৌ চেষ্টা কৰক।",
   hi: "AI ज्योतिषीय मार्गदर्शन अभी उपलब्ध नहीं है। कृपया बाद में पुनः प्रयास करें।",
 };

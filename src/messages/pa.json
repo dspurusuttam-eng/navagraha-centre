@@ -14,7 +14,7 @@
   },
   "cta": {
     "generateKundli": "ਆਪਣੀ ਕੁੰਡਲੀ ਬਣਾਓ",
-    "exploreAi": "NAVAGRAHA AI ਅਜ਼ਮਾਓ",
+    "exploreAi": "NAVAGRAHA Intelligence ਅਜ਼ਮਾਓ",
     "bookConsultation": "ਮੁਫ਼ਤ ਸਲਾਹ ਬੁੱਕ ਕਰੋ",
     "signInAccount": "ਸਾਈਨ ਇਨ / ਖਾਤਾ",
     "unlockFullReport": "ਮੁਫ਼ਤ ਰਿਪੋਰਟ ਲਵੋ"
@@ -35,7 +35,7 @@
     "kundli": "ਕੁੰਡਲੀ",
     "compatibility": "ਅਨੁਕੂਲਤਾ",
     "rashifal": "ਰਾਸ਼ੀਫਲ",
-    "ai": "NAVAGRAHA AI",
+    "ai": "NAVAGRAHA Intelligence",
     "reports": "ਰਿਪੋਰਟਾਂ",
     "tools": "ਟੂਲਸ",
     "panchang": "ਪੰਚਾਂਗ",
@@ -52,7 +52,7 @@
     "menu": "ਮੇਨੂ",
     "dashboard": "ਡੈਸ਼ਬੋਰਡ",
     "onboarding": "ਆਨਬੋਰਡਿੰਗ",
-    "askMyChart": "Ask My Chart",
+    "askMyChart": "Ask NI",
     "consultations": "ਸਲਾਹਕਾਰ ਸੈਸ਼ਨ",
     "orders": "ਆਰਡਰ",
     "chart": "ਚਾਰਟ",

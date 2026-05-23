@@ -26,7 +26,7 @@ const disclaimerBlocks = [
   {
     title: "AI Interpretation Boundary",
     description:
-      "NAVAGRAHA AI follows chart context and structured logic. It does not replace professional legal, medical, or financial advice.",
+      "NAVAGRAHA Intelligence follows chart context and structured logic. It does not replace professional legal, medical, or financial advice.",
   },
   {
     title: "Remedy Framing",

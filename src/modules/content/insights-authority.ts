@@ -30,7 +30,7 @@ export const insightsCategories: readonly InsightsCategoryConfig[] = [
       "Daily and practical sign-level guidance with clear links into personalized chart and AI follow-up.",
     metadataTitle: "Rashifal Insights",
     metadataDescription:
-      "Explore Rashifal-focused insights, daily guidance context, and links to personalized Kundli and NAVAGRAHA AI paths.",
+      "Explore Rashifal-focused insights, daily guidance context, and links to personalized Kundli and NAVAGRAHA Intelligence paths.",
     keywords: [
       "rashifal insights",
       "daily horoscope guidance",
@@ -111,7 +111,7 @@ export const insightsCategories: readonly InsightsCategoryConfig[] = [
       "Career and professional-growth guidance connected to chart context and report follow-up flows.",
     metadataTitle: "Career Astrology Insights",
     metadataDescription:
-      "Read career-focused astrology insights and continue into chart-aware reports and AI guidance.",
+      "Read career-focused astrology insights and continue into chart-aware reports and NAVAGRAHA Intelligence guidance.",
     keywords: [
       "career astrology insights",
       "professional astrology guidance",
@@ -210,7 +210,7 @@ export const insightsSeoLandings: readonly InsightsSeoLandingConfig[] = [
     ],
     highlightPoints: [
       "All 12 sign links connected to the Rashifal system.",
-      "Internal links into NAVAGRAHA AI and Kundli.",
+      "Internal links into NAVAGRAHA Intelligence and Kundli.",
       "Designed for daily discovery and repeat engagement.",
     ],
   },
@@ -245,7 +245,7 @@ export const insightsSeoLandings: readonly InsightsSeoLandingConfig[] = [
       "Structured astrology guides for foundational understanding, practical application, and conversion continuity.",
     metadataTitle: "Astrology Guides and Explainers",
     metadataDescription:
-      "Read astrology guides and explainers connected to NAVAGRAHA AI, Kundli generation, Rashifal, and consultation pathways.",
+      "Read astrology guides and explainers connected to NAVAGRAHA Intelligence, Kundli generation, Rashifal, and consultation pathways.",
     keywords: [
       "astrology guides",
       "vedic astrology explainer",

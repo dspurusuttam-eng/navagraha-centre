@@ -121,7 +121,7 @@ export default function ReportsPage() {
           {
             title: "Escalate only when needed",
             description:
-              "Continue into NAVAGRAHA AI or consultation when you need nuanced, human-guided follow-up.",
+              "Continue into NAVAGRAHA Intelligence or consultation when you need nuanced, human-guided follow-up.",
           },
         ]}
       />
@@ -272,7 +272,7 @@ export default function ReportsPage() {
               Continue from report insight to guided interpretation.
             </h2>
             <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-              Start with reports, ask deeper follow-up in NAVAGRAHA AI, then move into consultation when high-context decisions need human guidance.
+              Start with reports, ask deeper follow-up in NAVAGRAHA Intelligence, then move into consultation when high-context decisions need human guidance.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">

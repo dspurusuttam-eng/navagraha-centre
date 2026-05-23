@@ -392,7 +392,7 @@ export function TrustFaqSection({
         "The calculation layer uses validated birth context, Swiss Ephemeris integration, and Lahiri sidereal settings before interpretation begins.",
     },
     {
-      question: "Is NAVAGRAHA AI generic chatbot output?",
+      question: "Is NAVAGRAHA Intelligence generic chatbot output?",
       answer:
         "No. The AI response layer is chart-aware and follows structured chart context rather than free-form generic replies.",
     },

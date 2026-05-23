@@ -252,9 +252,9 @@ const utilityHubSections: readonly UtilityHubSection[] = [
   },
   {
     eyebrow: "Premium + Human Guidance",
-    title: "Continue into AI or consultation when needed",
+    title: "Continue into Ask NI or consultation when needed",
     description:
-      "Move from self-serve utility work into chart-aware AI or a human-led session.",
+      "Move from self-serve utility work into NAVAGRAHA Intelligence guidance or a human-led session.",
     cards: [
       {
         key: "ask-ai",
@@ -458,11 +458,11 @@ const relatedUtilityBlocks: readonly UtilityHubPathway[] = [
   },
   {
     title: "Numerology to complementary review",
-    description: "Move from number-based guidance into reports, AI, or consultation.",
+    description: "Move from number-based guidance into reports, NAVAGRAHA Intelligence, or consultation.",
     primaryHref: "/numerology",
     primaryLabel: "Open Numerology",
     secondaryHref: "/ai",
-    secondaryLabel: "Try AI",
+    secondaryLabel: "Ask NI",
     feature: "utility-related-numerology",
   },
 ] as const;

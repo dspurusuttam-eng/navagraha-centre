@@ -21,7 +21,7 @@ function createGlobalCopyBundle(dictionary: LocaleDictionary) {
       "cta.generateKundli",
       "Generate Your Kundli"
     ),
-    exploreAi: getDictionaryValue(dictionary, "cta.exploreAi", "Try NAVAGRAHA AI"),
+    exploreAi: getDictionaryValue(dictionary, "cta.exploreAi", "Ask NI"),
     bookConsultation: getDictionaryValue(
       dictionary,
       "cta.bookConsultation",
@@ -92,7 +92,7 @@ function createGlobalCopyBundle(dictionary: LocaleDictionary) {
       "Compatibility"
     ),
     rashifal: getDictionaryValue(dictionary, "navigation.rashifal", "Rashifal"),
-    ai: getDictionaryValue(dictionary, "navigation.ai", "NAVAGRAHA AI"),
+    ai: getDictionaryValue(dictionary, "navigation.ai", "NAVAGRAHA Intelligence"),
     reports: getDictionaryValue(dictionary, "navigation.reports", "Reports"),
     tools: getDictionaryValue(dictionary, "navigation.tools", "Tools"),
     panchang: getDictionaryValue(dictionary, "navigation.panchang", "Panchang"),
@@ -128,7 +128,7 @@ function createGlobalCopyBundle(dictionary: LocaleDictionary) {
     askMyChart: getDictionaryValue(
       dictionary,
       "navigation.askMyChart",
-      "Ask My Chart"
+      "Ask NI"
     ),
     consultations: getDictionaryValue(
       dictionary,
@@ -227,7 +227,7 @@ function createGlobalCopyBundle(dictionary: LocaleDictionary) {
       "monetization.comingSoon",
       "Coming Soon"
     ),
-    premiumAi: getDictionaryValue(dictionary, "monetization.premiumAi", "Premium AI"),
+    premiumAi: getDictionaryValue(dictionary, "monetization.premiumAi", "Premium NI"),
     sponsored: getDictionaryValue(dictionary, "monetization.sponsored", "Sponsored"),
     advertisement: getDictionaryValue(
       dictionary,

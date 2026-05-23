@@ -432,7 +432,7 @@ export function ChartContractPanel({
                   });
                 }}
               >
-                {hasPremiumAccess ? "Ask My Chart" : chartDepthUpgrade.ctaLabel}
+                {hasPremiumAccess ? "Ask NI" : chartDepthUpgrade.ctaLabel}
               </Link>
             </div>
           </Card>
