@@ -365,7 +365,7 @@ function ScrollHint({ children }: Readonly<{ children: ReactNode }>) {
       {children}
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-white to-transparent"
+        className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-white via-white/90 to-transparent"
       />
     </div>
   );
@@ -377,9 +377,9 @@ function ToolTile({ item, localizeHref }: Readonly<{ item: HubLink; localizeHref
       href={localizeHref(item.href)}
       eventName="utility_card_click"
       eventPayload={{ page: "/tools", feature: item.feature }}
-      className={`group flex min-h-[7.35rem] min-w-0 flex-col items-center justify-center gap-3 rounded-[var(--radius-lg)] border ${item.accent} bg-white px-2.5 py-4 text-center shadow-[0_10px_24px_rgba(5,5,5,0.05)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(5,5,5,0.08)]`}
+      className={`group flex min-h-[6.7rem] min-w-0 max-w-full flex-col items-center justify-center gap-2.5 rounded-[var(--radius-lg)] border ${item.accent} bg-white px-2.5 py-3.5 text-center shadow-[0_10px_24px_rgba(5,5,5,0.05)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(5,5,5,0.08)] sm:min-h-[7.35rem] sm:gap-3 sm:py-4`}
     >
-      <HubDashboardIcon icon={item.icon ?? "kundli"} className="h-12 w-12" />
+      <HubDashboardIcon icon={item.icon ?? "kundli"} className="h-11 w-11 sm:h-12 sm:w-12" />
       <span className="max-w-full whitespace-nowrap text-[0.78rem] font-semibold leading-tight text-[color:var(--color-ink-black)] sm:text-sm">
         {item.label}
       </span>
@@ -423,9 +423,9 @@ export default async function ToolsHubPage() {
             <ScrollHint>
               <nav
                 aria-label="Tools categories"
-                className="-mx-4 overflow-x-auto px-4 [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden"
+                className="-mx-4 max-w-[calc(100%+2rem)] overflow-x-auto scroll-px-4 px-4 [scrollbar-width:none] sm:mx-0 sm:max-w-full sm:px-0 [&::-webkit-scrollbar]:hidden"
               >
-                <div className="flex w-max gap-2 pr-10 sm:flex-wrap sm:pr-0">
+                <div className="flex w-max max-w-none gap-2 pr-16 sm:flex-wrap sm:pr-0">
                   {categoryRail.map((item, index) => (
                     <RailLink
                       key={item.label}
@@ -450,7 +450,7 @@ export default async function ToolsHubPage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-4 gap-2.5 sm:gap-3 lg:grid-cols-8">
+            <div className="grid min-w-0 max-w-full grid-cols-3 gap-2.5 min-[390px]:grid-cols-4 sm:gap-3 lg:grid-cols-8">
               {featuredTools.map((tool) => (
                 <ToolTile key={tool.label} item={tool} localizeHref={localizeHref} />
               ))}
@@ -459,16 +459,16 @@ export default async function ToolsHubPage() {
         </section>
 
         <section className="border-b border-black/10 bg-white">
-          <Container className="py-7 sm:py-9 lg:py-11">
+          <Container className="py-7 max-[389px]:pt-20 sm:py-9 lg:py-11">
             <TrackedLink
               href={localizeHref("/ai")}
               eventName="premium_ai_cta_click"
               eventPayload={{ page: "/tools", feature: "tools-dashboard-ask-ni-strip" }}
-              className="block rounded-[var(--radius-xl)] border border-[rgba(185,139,70,0.46)] bg-[color:var(--color-onyx)] p-4 text-white shadow-[0_18px_34px_rgba(5,5,5,0.16)] sm:p-5"
+              className="block max-w-full rounded-[var(--radius-xl)] border border-[rgba(185,139,70,0.46)] bg-[color:var(--color-onyx)] p-3.5 text-white shadow-[0_18px_34px_rgba(5,5,5,0.16)] sm:p-5"
             >
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
                 <div className="flex min-w-0 items-center gap-3">
-                  <NavagrahaAiIcon className="h-12 w-12 shrink-0 border-[rgba(0,214,255,0.62)] bg-[rgba(0,214,255,0.12)] text-[color:var(--color-ni-cyan)]" />
+                  <NavagrahaAiIcon className="h-11 w-11 shrink-0 border-[rgba(0,214,255,0.62)] bg-[rgba(0,214,255,0.12)] text-[color:var(--color-ni-cyan)] sm:h-12 sm:w-12" />
                   <div className="min-w-0">
                     <p className="text-lg font-semibold text-[color:var(--color-ni-cyan)]">
                       Ask NI
@@ -477,11 +477,11 @@ export default async function ToolsHubPage() {
                   </div>
                 </div>
 
-                <div className="flex min-w-0 flex-wrap gap-2 sm:justify-end">
+                <div className="flex min-w-0 max-w-full flex-wrap gap-1.5 sm:gap-2 sm:justify-end">
                   {niChips.map((chip) => (
                     <span
                       key={chip.label}
-                      className="inline-flex min-h-9 shrink-0 items-center rounded-full border border-[rgba(0,214,255,0.34)] bg-[rgba(0,214,255,0.08)] px-3 text-sm font-semibold text-white"
+                      className="inline-flex min-h-8 shrink-0 items-center rounded-full border border-[rgba(0,214,255,0.34)] bg-[rgba(0,214,255,0.08)] px-3 text-sm font-semibold text-white sm:min-h-9"
                     >
                       {chip.label}
                     </span>
