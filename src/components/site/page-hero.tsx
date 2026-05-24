@@ -145,7 +145,7 @@ export function PageHero({
                 Astrology Wheel
               </div>
               <div className="rounded-[var(--radius-lg)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.82)] px-3 py-2 text-[0.64rem] uppercase tracking-[0.14em] text-[var(--color-trust-text)]">
-                AI Context Layer
+                NAVAGRAHA Intelligence Support
               </div>
             </div>
           </div>

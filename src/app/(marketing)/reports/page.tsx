@@ -16,7 +16,7 @@ import {
   CredibilityMarkersSection,
   ExpectationSettingSection,
   SampleProofPreviewSection,
-  TestimonialsSection,
+  GuidanceNotesSection,
   ThreeStepProcessSection,
   TrustIndicatorStrip,
 } from "@/modules/marketing/components/trust-conversion-sections";
@@ -50,27 +50,27 @@ const reportTrustIndicators = [
   "Vedic chart-based system",
   "Lahiri sidereal foundation",
   "Human-guided interpretation",
-  "Limited-time free access",
+  "Launch preview access",
   "Structured astrology workflow",
 ] as const;
 
-const reportTestimonials = [
+const reportGuidanceNotes = [
   {
-    name: "K. Banerjee",
+    name: "Report Structure",
     quote:
-      "The report layers made it easy to move from quick insight to deeper guidance without confusion.",
+      "Report layers should move from chart context to deeper guidance without implying generated samples or guaranteed results.",
     tag: "Report Depth",
   },
   {
-    name: "D. Saikia",
+    name: "Consultation Bridge",
     quote:
-      "I got practical direction first and then used consultation only where the decisions were sensitive.",
+      "Users should understand when a report is enough and when human consultation is more appropriate.",
     tag: "Career + Consultation",
   },
   {
-    name: "V. Nair",
+    name: "Offer Clarity",
     quote:
-      "The free preview had real value, and the premium structure felt clear rather than aggressive.",
+      "Report options should be framed clearly without free-generation or pressure.",
     tag: "Premium Clarity",
   },
 ] as const;
@@ -88,14 +88,14 @@ export default function ReportsPage() {
       <PageHero
         eyebrow="Premium Reports"
         title="Structured astrology reports for deeper chart-based guidance."
-        description="Choose report depth by decision context: focused preview, expanded analysis, or premium synthesis that can continue into AI follow-up or consultation."
+        description="Choose report depth by decision context: focused structure, expanded analysis, or premium synthesis that can continue into Ask NI follow-up or consultation."
         highlights={[
           "Chart-based analysis grounded in deterministic astrology outputs.",
           "Predictive intelligence context for timing, themes, and next steps.",
           "Private report paths with consultation follow-up when nuance is needed.",
         ]}
-        note="Start with a useful preview first. Deeper report and consultation pathways are positioned as optional next steps, not pressure."
-        primaryAction={{ href: "/career-report", label: "Get Free Preview" }}
+        note="Start with report options first. Deeper report and consultation pathways are positioned as optional next steps, not pressure."
+        primaryAction={{ href: "/career-report", label: "View Report Options" }}
         secondaryAction={{ href: "/kundli", label: "Generate Kundli", tone: "secondary" }}
         supportTitle="Report Trust Markers"
       />
@@ -164,7 +164,7 @@ export default function ReportsPage() {
               interactive
               className="service-offering-card flex h-full flex-col space-y-3"
             >
-              <Badge tone="trust">Currently Free</Badge>
+              <Badge tone="trust">Report Option</Badge>
               <PremiumReportsGraphic className="h-24" />
               <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
                 {item.title}
@@ -193,12 +193,13 @@ export default function ReportsPage() {
 
       <SampleProofPreviewSection tone="light" />
 
-      <TestimonialsSection
+      <GuidanceNotesSection
         pagePath="/reports"
-        testimonials={reportTestimonials}
+        notes={reportGuidanceNotes}
         tone="muted"
-        title="Users trust reports when value hierarchy is clear."
-        description="Feedback shows that users convert better when reports are structured, calm, and chart-grounded."
+        eyebrow="Guidance Notes"
+        title="Reports stay trustworthy when value hierarchy is clear."
+        description="These notes explain report structure without presenting unverifiable user claims."
       />
 
       <ExpectationSettingSection tone="transparent" />
@@ -217,8 +218,8 @@ export default function ReportsPage() {
             placement="reports_mid"
             title="Need a focused report package?"
             description="Compare report categories, then start with the package that matches your current life decision."
-            ctaLabel="Get Detailed Report"
-            startingPrice="Free launch access active"
+            ctaLabel="View Report Options"
+            startingPrice="Launch preview guidance"
           />
           <ConsultationCTA
             pagePath="/reports"
@@ -290,7 +291,7 @@ export default function ReportsPage() {
               eventPayload={{ page: "/reports", feature: "reports-cta-consultation" }}
               className={buttonStyles({ size: "sm" })}
             >
-              Book Free Consultation
+              Consultation Support
             </TrackedLink>
           </div>
         </Card>

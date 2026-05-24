@@ -9,7 +9,7 @@ import { Section } from "@/components/ui/section";
 
 type TrustTone = "default" | "muted" | "transparent" | "light" | "contrast";
 
-export type TestimonialItem = {
+export type GuidanceNoteItem = {
   name: string;
   quote: string;
   tag?: string;
@@ -36,7 +36,7 @@ const astrologerProfileAsset: {
   monogram: string;
 } = {
   imageSrc: null,
-  alt: "Astrologer profile portrait placeholder",
+  alt: "J P Sarmah authority mark",
   monogram: "JPS",
 };
 
@@ -77,16 +77,16 @@ export function TrustIndicatorStrip({
   );
 }
 
-export function TestimonialsSection({
+export function GuidanceNotesSection({
   pagePath,
-  testimonials,
-  eyebrow = "Testimonials",
-  title = "User reflections from chart-first guidance journeys.",
-  description = "Short, believable user feedback helps new visitors understand the quality and tone of the experience.",
+  notes,
+  eyebrow = "Guidance Notes",
+  title = "Guidance notes from chart-first journeys.",
+  description = "Short guidance notes explain the tone, boundaries, and next-step paths without presenting unverifiable claims.",
   tone = "light",
 }: Readonly<{
   pagePath: string;
-  testimonials: readonly TestimonialItem[];
+  notes: readonly GuidanceNoteItem[];
   eyebrow?: string;
   title?: string;
   description?: string;
@@ -95,7 +95,7 @@ export function TestimonialsSection({
   return (
     <Section tone={tone} eyebrow={eyebrow} title={title} description={description}>
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {testimonials.map((item) => (
+        {notes.map((item) => (
           <Card key={`${item.name}-${item.quote.slice(0, 28)}`} tone="light" className="space-y-4">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
@@ -109,7 +109,7 @@ export function TestimonialsSection({
               {item.tag ? <Badge tone="trust">{item.tag}</Badge> : null}
             </div>
             <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-              &quot;{item.quote}&quot;
+              {item.quote}
             </p>
           </Card>
         ))}
@@ -118,10 +118,10 @@ export function TestimonialsSection({
         <TrackedLink
           href="/consultation"
           eventName="cta_click"
-          eventPayload={{ page: pagePath, feature: "testimonials-book-consultation" }}
+          eventPayload={{ page: pagePath, feature: "guidance-notes-consultation" }}
           className={buttonStyles({ size: "sm", tone: "secondary" })}
         >
-          Book Free Consultation
+          Consultation Support
         </TrackedLink>
       </div>
     </Section>
@@ -132,7 +132,7 @@ export function AstrologerAuthoritySection({
   pagePath,
   tone = "light",
   ctaHref = "/consultation",
-  ctaLabel = "Book Free Consultation",
+  ctaLabel = "Consultation Support",
 }: Readonly<{
   pagePath: string;
   tone?: TrustTone;
@@ -168,10 +168,10 @@ export function AstrologerAuthoritySection({
                 </div>
                 <div className="space-y-2">
                   <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
-                    Portrait Placeholder
+                    J P Sarmah
                   </p>
                   <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-                    Replaceable profile area for an approved future astrologer portrait.
+                    Human authority remains separate from Ask NI and NAVAGRAHA Intelligence.
                   </p>
                 </div>
               </div>
@@ -265,33 +265,33 @@ export function SampleProofPreviewSection({
 }>) {
   const previews = [
     {
-      label: "Report Output",
-      content: "Career depth panel with priorities, timing windows, and caution notes.",
+      label: "Report Structure",
+      content: "A report can organize priorities, timing themes, and caution notes after verified chart context.",
     },
     {
-      label: "AI Response",
-      content: "Structured answer + reasoning + confidence from your chart context.",
+      label: "Ask NI Guidance",
+      content: "Ask NI can explain chart context and reasoning boundaries without inventing personal results.",
     },
     {
-      label: "Compatibility Preview",
-      content: "Relationship strengths, friction themes, and communication guidance.",
+      label: "Compatibility Structure",
+      content: "Relationship sections can group strengths, friction themes, and communication guidance.",
     },
     {
-      label: "Remedy Suggestion",
-      content: "Optional supportive remedy pathway with calm boundaries and no guarantees.",
+      label: "Remedy Boundary",
+      content: "Remedy sections stay optional, supportive, and non-guaranteed.",
     },
     {
-      label: "Kundli Insight",
-      content: "Lagna, house emphasis, and planetary focus in one clear summary.",
+      label: "Kundli Concepts",
+      content: "Kundli sections can explain Lagna, houses, and planetary focus without showing fake values.",
     },
   ] as const;
 
   return (
     <Section
       tone={tone}
-      eyebrow="Sample Proof Preview"
-      title="Preview the structured outputs before deeper personalization."
-      description="These preview cards represent how report, AI, compatibility, and remedy outputs are presented."
+      eyebrow="Report Structure Preview"
+      title="Preview the report structure before deeper personalization."
+      description="These concept cards show section types only. They are not generated user outputs."
     >
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
         {previews.map((item) => (
@@ -323,7 +323,7 @@ export function ExpectationSettingSection({
         {[
           "Astrology provides guidance and context, not guaranteed outcomes.",
           "Remedies are supportive practices, not absolute promises.",
-          "AI interpretations follow chart context and structured workflow boundaries.",
+          "NAVAGRAHA Intelligence guidance follows chart context and structured workflow boundaries.",
           "Personalization depth improves after Kundli generation and saved-chart continuity.",
         ].map((line) => (
           <p
@@ -347,7 +347,7 @@ export function ConsultationReassuranceSection({
     <Section
       tone={tone}
       eyebrow="Consultation Reassurance"
-      title="What happens in a session, and how it differs from AI."
+      title="What happens in a session, and how it differs from Ask NI."
       description="Consultation is designed for nuance, follow-up, and context you cannot compress into short prompts."
     >
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -370,9 +370,9 @@ export function ConsultationReassuranceSection({
           </p>
         </Card>
         <Card className="space-y-3">
-          <Badge tone="trust">AI vs Consultation</Badge>
+          <Badge tone="trust">Ask NI vs Consultation</Badge>
           <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-            AI is fast for structured queries. Consultation is better for layered, sensitive, or high-stakes interpretation.
+            Ask NI is useful for structured queries. Consultation is better for layered, sensitive, or high-context interpretation.
           </p>
         </Card>
       </div>
@@ -394,7 +394,7 @@ export function TrustFaqSection({
     {
       question: "Is NAVAGRAHA Intelligence generic chatbot output?",
       answer:
-        "No. The AI response layer is chart-aware and follows structured chart context rather than free-form generic replies.",
+        "No. The NAVAGRAHA Intelligence guidance layer is chart-aware and follows structured chart context rather than free-form generic replies.",
     },
     {
       question: "Are remedies guaranteed to solve outcomes?",
@@ -402,9 +402,9 @@ export function TrustFaqSection({
         "No. Remedies are presented as supportive practices and optional guidance with clear non-guarantee boundaries.",
     },
     {
-      question: "How long does limited-time free access remain?",
+      question: "How are service options presented?",
       answer:
-        "Core services are currently free under limited launch access. Future pricing will be clearly communicated in plan surfaces.",
+        "Report and consultation options are presented as guidance paths first. Any future paid activation should be communicated clearly before use.",
     },
     {
       question: "When does personalization become deeper?",

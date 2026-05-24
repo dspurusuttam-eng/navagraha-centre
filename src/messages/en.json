@@ -15,15 +15,15 @@
   "cta": {
     "generateKundli": "Generate Your Kundli",
     "exploreAi": "Ask NI",
-    "bookConsultation": "Book Free Consultation",
+    "bookConsultation": "Request Consultation",
     "signInAccount": "Sign In / Account",
-    "unlockFullReport": "Get Free Report"
+    "unlockFullReport": "View Report Options"
   },
   "labels": {
     "currencyCode": "INR",
-    "currencyNote": "All astrology services are currently free for limited launch access.",
-    "limitedFreeAccessLabel": "Currently Free (Limited Launch Access)",
-    "limitedFreeBanner": "Limited Launch Access: All Astrology Services Are Free",
+    "currencyNote": "Report, consultation, and shop options are presented with clear launch-preview boundaries.",
+    "limitedFreeAccessLabel": "Launch Preview",
+    "limitedFreeBanner": "Launch Preview: Guidance Options Are Being Prepared",
     "earlyAccessLabel": "Early Access Premium Experience",
     "premiumExperienceLabel": "Premium Experience",
     "timezoneHint": "Use an IANA timezone, for example: Asia/Kolkata, Europe/London, or America/New_York.",

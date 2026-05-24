@@ -36,12 +36,12 @@ export type AiAccessLayer = {
   badge: string;
 };
 
-const launchBadge = "Currently Free (Limited Launch Access)";
+const launchBadge = "Launch Preview";
 
 const revenueValueLevels: readonly RevenueValueLevelDefinition[] = [
   {
     level: "FREE",
-    title: "Free",
+    title: "Entry",
     positioning: "Foundational astrology entry for first-time and returning members.",
     includes: [
       "Basic Kundli foundation",
@@ -124,7 +124,7 @@ const consultationTiers: readonly ConsultationTierDefinition[] = [
       "Concise interpretation",
       "Clear follow-up direction",
     ],
-    badge: "Currently Free",
+    badge: "Launch Preview",
   },
   {
     tier: "DETAILED",
@@ -137,7 +137,7 @@ const consultationTiers: readonly ConsultationTierDefinition[] = [
       "Context-rich interpretation",
       "Report and assistant continuation notes",
     ],
-    badge: "Currently Free",
+    badge: "Launch Preview",
   },
   {
     tier: "PREMIUM_GUIDANCE",
@@ -150,13 +150,13 @@ const consultationTiers: readonly ConsultationTierDefinition[] = [
       "Premium guided service continuity",
       "Priority follow-up direction",
     ],
-    badge: "Currently Free",
+    badge: "Launch Preview",
   },
 ] as const;
 
 const aiAccessLayers: readonly AiAccessLayer[] = [
   {
-    title: "Free NI Layer",
+    title: "Entry NI Layer",
     description: "Practical chart-aware support for day-to-day guidance.",
     includes: [
       "Limited prompts per day",

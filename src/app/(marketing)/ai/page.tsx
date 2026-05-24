@@ -21,7 +21,7 @@ import { getRequestLocale, hasExplicitLocalePrefixInRequest } from "@/modules/lo
 import {
   CredibilityMarkersSection,
   ExpectationSettingSection,
-  TestimonialsSection,
+  GuidanceNotesSection,
   TrustIndicatorStrip,
 } from "@/modules/marketing/components/trust-conversion-sections";
 import {
@@ -245,27 +245,27 @@ const aiTrustIndicators = [
   "Vedic chart-based system",
   "Lahiri sidereal foundation",
   "Human-guided interpretation",
-  "Limited-time free access",
+  "Launch preview access",
   "Structured astrology workflow",
 ] as const;
 
-const aiTestimonials = [
+const aiGuidanceNotes = [
   {
-    name: "N. Mehta",
+    name: "Chart Context",
     quote:
-      "The AI answers felt specific to my chart and not like generic astrology text.",
+      "Ask NI should stay grounded in available chart context rather than generic astrology wording.",
     tag: "Ask NI",
   },
   {
-    name: "P. Bora",
+    name: "Human Bridge",
     quote:
-      "I used AI first, then moved to consultation with clearer questions and better outcomes.",
-    tag: "AI + Consultation",
+      "Ask NI can help prepare questions, while high-context decisions should continue into human review.",
+    tag: "Consultation Support",
   },
   {
-    name: "S. Iyer",
+    name: "Safety Boundary",
     quote:
-      "The reasoning and confidence structure made the guidance easier to trust and apply.",
+      "Guidance should explain reasoning and limits without promising fixed outcomes.",
     tag: "Structured Response",
   },
 ] as const;
@@ -576,14 +576,14 @@ export default function AiPage() {
       <Section
         tone="light"
         category="ai"
-        eyebrow="Free vs Premium Guidance"
+        eyebrow="Guidance Depth"
         title="Clear depth levels without aggressive paywalls."
         description="The Ask NI experience stays useful at entry level and gives users honest next steps when they need deeper structure."
       >
         <div className="grid gap-4 md:grid-cols-3">
           {[
             {
-              title: "Free Guidance",
+              title: "Entry Guidance",
               description:
                 "Basic chart-aware orientation, utility pathways, and safe first-pass interpretation.",
               cta: "Generate Kundli",
@@ -683,12 +683,13 @@ export default function AiPage() {
         </div>
       </Section>
 
-      <TestimonialsSection
+      <GuidanceNotesSection
         pagePath="/ai"
-        testimonials={aiTestimonials}
+        notes={aiGuidanceNotes}
         tone="light"
-        title="Members trust NAVAGRAHA Intelligence for chart-grounded interpretation."
-        description="User feedback highlights clarity, context depth, and smooth handoff into consultation when needed."
+        eyebrow="Guidance Notes"
+        title="How Ask NI guidance should be framed."
+        description="These notes set clear public expectations without presenting unverifiable user claims."
       />
 
       <ExpectationSettingSection tone="transparent" />
@@ -709,7 +710,7 @@ export default function AiPage() {
       <section className="border-y border-[color:var(--color-border)] bg-[linear-gradient(180deg,rgba(255,249,239,0.94)_0%,rgba(245,231,204,0.9)_100%)]">
         <Container className="py-5 text-center">
           <p className="text-[0.72rem] uppercase tracking-[0.16em] text-[var(--color-trust-text)] sm:text-[0.75rem]">
-            Currently free for limited time
+            Launch preview access
           </p>
         </Container>
       </section>
@@ -768,7 +769,7 @@ export default function AiPage() {
         <RevenuePathwaysCard
           pagePath="/ai"
           title="Continue from NAVAGRAHA Intelligence insight into full guidance pathways"
-          description="Ask your first chart question for free, then move into reports, consultation, or spiritual support based on your current need."
+          description="Ask your first chart question, then move into reports, consultation, or spiritual support based on your current need."
         />
       </Section>
       </main>

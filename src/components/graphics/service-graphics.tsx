@@ -58,8 +58,8 @@ export function PremiumReportsGraphic({
 export function ConsultationGraphic({
   className,
   monogram = "JPS",
-  label = "Astrologer profile portrait placeholder",
-  ariaLabel = "Astrologer profile portrait placeholder",
+  label = "J P Sarmah",
+  ariaLabel = "J P Sarmah authority mark",
 }: Readonly<ConsultationGraphicProps>) {
   return (
     <GraphicFrame className={cn("h-32", className)}>

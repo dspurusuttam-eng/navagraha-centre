@@ -25,7 +25,7 @@ export function RevenueValueLevelsSection({
     <Section
       tone={tone}
       category="services"
-      eyebrow="Free To Premium Architecture"
+      eyebrow="Guidance Architecture"
       title="Three value levels are already structured for future monetization."
       description="Payments remain inactive now, while the offer hierarchy and user journey are prepared for a clean free-to-paid transition."
     >
@@ -96,7 +96,7 @@ export function ReportPackagesSection({
       category="services"
       eyebrow="Report Packaging"
       title="Future-ready report packages with clear value hierarchy."
-      description="Essential, Advanced, and Premium packaging is prepared now and remains open under limited launch access."
+      description="Essential, Advanced, and Premium packaging is prepared now as report option architecture."
     >
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         {packages.map((pkg) => (
@@ -133,7 +133,7 @@ export function ReportPackagesSection({
           eventPayload={{ page: pagePath, feature: "report-packages-career" }}
           className={buttonStyles({ size: "sm" })}
         >
-          Get Free Report
+          View Report Options
         </TrackedLink>
         <TrackedLink
           href="/ai"
@@ -141,7 +141,7 @@ export function ReportPackagesSection({
           eventPayload={{ page: pagePath, feature: "report-packages-ai" }}
           className={buttonStyles({ size: "sm", tone: "secondary" })}
         >
-          Start Free Analysis
+          Ask NI
         </TrackedLink>
       </div>
     </Section>
@@ -163,7 +163,7 @@ export function ConsultationTiersSection({
       category="services"
       eyebrow="Consultation Packaging"
       title="Future consultation tiers are now structured."
-      description="Session hierarchy is clear for launch and future pricing activation, while consultations remain free right now."
+      description="Session hierarchy is clear for launch and future pricing activation without implying instant availability."
     >
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         {tiers.map((tier) => (
@@ -200,7 +200,7 @@ export function ConsultationTiersSection({
           eventPayload={{ page: pagePath, feature: "consultation-tiers-book" }}
           className={buttonStyles({ size: "sm" })}
         >
-          Book Free Consultation
+          Request Consultation
         </TrackedLink>
       </div>
     </Section>
@@ -221,8 +221,8 @@ export function AiMonetizationPrepSection({
       tone={tone}
       category="ai"
       eyebrow="NI Monetization Preparation"
-      title="Free and Premium NI layers are prepared without locking access."
-      description="Members can use all core NAVAGRAHA Intelligence flows now, while UX messaging already supports future free-to-premium rollout."
+      title="Entry and premium NI layers are prepared without locking access."
+      description="Members can use core NAVAGRAHA Intelligence flows now, while UX messaging already supports future depth-level rollout."
     >
       <div className="grid gap-5 lg:grid-cols-2">
         {layers.map((layer) => (
@@ -271,7 +271,7 @@ export function AiMonetizationPrepSection({
 export function RevenuePathwaysCard({
   pagePath,
   title = "Continue with premium-ready pathways",
-  description = "Move from free value into deeper report, consultation, or spiritual support flows without friction.",
+  description = "Move from entry guidance into deeper report, consultation, or spiritual support flows without pressure.",
 }: Readonly<{
   pagePath: string;
   title?: string;
@@ -298,7 +298,7 @@ export function RevenuePathwaysCard({
             className: "w-full justify-center",
           })}
         >
-          Get Free Report
+          View Report Options
         </TrackedLink>
         <TrackedLink
           href="/consultation"
@@ -310,7 +310,7 @@ export function RevenuePathwaysCard({
             className: "w-full justify-center",
           })}
         >
-          Book Free Consultation
+          Consultation Support
         </TrackedLink>
         <TrackedLink
           href="/shop"
@@ -326,7 +326,7 @@ export function RevenuePathwaysCard({
         </TrackedLink>
       </div>
       <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-        Shop pricing remains separate from service monetization.
+        Shop availability and guidance remain separate from service monetization.
       </p>
       <div className="flex gap-3">
         <Link href="/pricing" className={buttonStyles({ size: "sm", tone: "ghost" })}>

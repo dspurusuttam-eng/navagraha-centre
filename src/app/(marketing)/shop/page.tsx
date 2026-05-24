@@ -88,15 +88,15 @@ export default async function ShopPage() {
         title="Optional spiritual products, presented with care and restraint."
         description="Explore Rudraksha, gemstones, yantras, malas, idols, and practice companions as supportive spiritual products, never as fear-based remedies or guaranteed outcomes."
         highlights={[
-          "Curated categories with calm product education and clear pricing",
-          "Secure order-request path without rushed or noisy checkout language",
+          "Curated categories with calm product education and availability review",
+          "Inquiry-first product path without rushed conversion language",
           "Gemstone and remedy products positioned as consultation-led support",
         ]}
         note="The catalog language stays transparent on purpose: spiritual products can support a practice, but they do not replace discernment, consultation, or practical judgment."
-        primaryAction={{ href: "#featured-edit", label: "Explore Spiritual Shop" }}
+        primaryAction={{ href: "#featured-edit", label: "Browse Vedic Categories" }}
         secondaryAction={{
           href: "/consultation",
-          label: "Book Consultation for Guidance",
+          label: "Consultation Support",
           tone: "secondary",
         }}
         supportTitle="Shop Trust Markers"
@@ -106,7 +106,7 @@ export default async function ShopPage() {
         category="services"
         eyebrow="Service Separation"
         title="Shop products remain separate from astrology service access."
-        description="Reports, consultations, and NAVAGRAHA Intelligence remain currently free under limited launch access. The shop is intentionally positioned as an optional spiritual add-on layer."
+        description="Reports, consultations, and NAVAGRAHA Intelligence remain separate from product inquiries. The shop is intentionally positioned as an optional spiritual add-on layer."
         tone="light"
       >
         <Card tone="light" className="service-card space-y-4">
@@ -121,7 +121,7 @@ export default async function ShopPage() {
               eventPayload={{ page: "/shop", feature: "shop-to-reports" }}
               className={buttonStyles({ size: "sm", tone: "secondary" })}
             >
-              Get Free Report
+              View Report Options
             </TrackedLink>
             <TrackedLink
               href="/consultation"
@@ -129,7 +129,7 @@ export default async function ShopPage() {
               eventPayload={{ page: "/shop", feature: "shop-to-consultation" }}
               className={buttonStyles({ size: "sm", tone: "tertiary" })}
             >
-              Book Free Consultation
+              Consultation Support
             </TrackedLink>
             <TrackedLink
               href="/ai"
@@ -183,7 +183,7 @@ export default async function ShopPage() {
             annotations={[
               "Clear category structure",
               "Elegant merchandising art with restrained warmth",
-              "Order requests handled without pressure",
+              "Product inquiries handled without pressure",
               "Remedy links kept optional and transparent",
             ]}
             tone="gold"
@@ -233,17 +233,17 @@ export default async function ShopPage() {
               title: "Gemstone Safety",
               text: "Gemstones should be selected only after proper chart analysis and budget consideration.",
               href: "/consultation",
-              label: "Book Guidance",
+              label: "Request Guidance",
             },
             {
-              title: "Checkout Clarity",
-              text: "Order requests stay separate from astrology service access and do not create fake urgency.",
+              title: "Inquiry Clarity",
+              text: "Product inquiries stay separate from astrology service access and do not create urgency.",
               href: "/terms",
               label: "Read Terms",
             },
             {
               title: "Support",
-              text: "Use Contact for order questions, availability, and future shipping or fulfillment details.",
+              text: "Use Contact for product questions, availability, and future fulfillment details.",
               href: "/contact",
               label: "Contact",
             },
@@ -268,25 +268,25 @@ export default async function ShopPage() {
 
       <Section
         category="services"
-        eyebrow="Order Requests"
-        title="The cart lets visitors review selections and request a follow-up."
-        description="Browsing, product detail, saved cart state, and order preparation are all kept explicit so the public commerce surface stays calm and honest."
+        eyebrow="Product Requests"
+        title="Product interest stays inquiry-first."
+        description="Browsing and category review stay explicit so the public commerce surface remains calm and honest before any confirmed fulfillment flow."
         tone="muted"
       >
         <Card tone="accent" className="service-card space-y-5">
           <p className="text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-            Orders are captured as structured requests so availability,
-            confirmation, and payment can be handled with care through a
-            deliberate order-confirmation process.
+            Product interest is handled as a follow-up request so availability
+            and suitability can be reviewed with care before any future
+            fulfillment process.
           </p>
           <div className="flex flex-wrap gap-3">
             <TrackedLink
-              href="/shop/cart"
+              href="/contact"
               eventName="shop_interaction"
-              eventPayload={{ page: "/shop", feature: "shop-open-cart" }}
+              eventPayload={{ page: "/shop", feature: "shop-contact-availability" }}
               className={buttonStyles({ size: "lg" })}
             >
-              Open Cart
+              Contact For Availability
             </TrackedLink>
             <TrackedLink
               href="/consultation"
@@ -294,7 +294,7 @@ export default async function ShopPage() {
               eventPayload={{ page: "/shop", feature: "shop-ask-guidance" }}
               className={buttonStyles({ tone: "secondary", size: "lg" })}
             >
-              Book Consultation For Guidance
+              Consultation Support
             </TrackedLink>
           </div>
           <SponsoredDisclosure />

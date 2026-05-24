@@ -32,7 +32,7 @@ import {
   ConsultationReassuranceSection,
   CredibilityMarkersSection,
   ExpectationSettingSection,
-  TestimonialsSection,
+  GuidanceNotesSection,
   ThreeStepProcessSection,
   TrustIndicatorStrip,
 } from "@/modules/marketing/components/trust-conversion-sections";
@@ -64,27 +64,27 @@ const consultationTrustIndicators = [
   "Vedic chart-based system",
   "Lahiri sidereal foundation",
   "Human-guided interpretation",
-  "Limited-time free access",
+  "Launch preview access",
   "Structured astrology workflow",
 ] as const;
 
-const consultationTestimonials = [
+const consultationGuidanceNotes = [
   {
-    name: "T. Gupta",
+    name: "Session Clarity",
     quote:
-      "The session gave clarity on what to focus on next. It felt calm and practical, not dramatic.",
-    tag: "Session Clarity",
+      "Consultation copy should stay calm and practical, with clear scope before any user requests guidance.",
+    tag: "Expectation",
   },
   {
-    name: "L. Deka",
+    name: "Ask NI Preparation",
     quote:
-      "AI helped me prepare questions, but consultation gave the nuance I needed for a major decision.",
-    tag: "AI + Human Guidance",
+      "Ask NI can prepare context, but J P Sarmah remains the human authority for deeper interpretation.",
+    tag: "Human Guidance",
   },
   {
-    name: "J. Singh",
+    name: "Trust Boundary",
     quote:
-      "I appreciated the clear boundaries and the way remedies were explained as supportive, not guaranteed.",
+      "Remedies and timing guidance should remain supportive and non-guaranteed.",
     tag: "Trust-Safe Guidance",
   },
 ] as const;
@@ -95,7 +95,7 @@ type PublicConsultationAction = {
   description: string;
 };
 
-const publicBookingAnchor = "/consultation#booking";
+const publicConsultationSupportAnchor = "/consultation#support";
 const protectedConsultationBookingPrefix = "/dash" + "board/consultations/book";
 const protectedConsultationAreaPrefix = "/dash" + "board/consultations";
 
@@ -105,10 +105,10 @@ function getPublicConsultationAction(
   if (action.href.startsWith(protectedConsultationBookingPrefix)) {
     return {
       ...action,
-      href: publicBookingAnchor,
+      href: publicConsultationSupportAnchor,
       label: action.label.replace(/^Reserve /, "Review "),
       description:
-        "Review the public consultation options first; protected booking continues after sign-in.",
+        "Review the public consultation options first; protected request details continue after sign-in.",
     };
   }
 
@@ -118,7 +118,7 @@ function getPublicConsultationAction(
       href: "/sign-in",
       label: "Sign In To Continue",
       description:
-        "Sign in to review protected consultation history and booking details.",
+        "Sign in to review protected consultation history and request details.",
     };
   }
 
@@ -189,7 +189,7 @@ export default async function ConsultationPage({
           "Explicit timezone handling for client and astrologer calendar views",
           "Human guidance that complements NAVAGRAHA Intelligence instead of replacing it",
         ]}
-        note={`Recommended path: ${conversion.intentLabel}. Sign in before reserving a time. The private dashboard keeps booking, intake, confirmation, and consultation history together.`}
+        note={`Recommended path: ${conversion.intentLabel}. Sign in before reserving a time. Protected account flow keeps intake, confirmation, and consultation history organized.`}
         primaryAction={{
           href: publicBestNextAction.href,
           label: publicBestNextAction.label,
@@ -205,14 +205,14 @@ export default async function ConsultationPage({
       <TrustIndicatorStrip items={consultationTrustIndicators} />
 
       <Section
-        id="booking"
+        id="support"
         category="services"
         eyebrow="Service Packages"
-        title="Session formats currently open under limited launch free access."
+        title="Session formats prepared for careful consultation support."
         description={conversion.guidanceLine}
       >
         <p className="mb-4 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-          This consultation is currently free under limited launch access.
+          Review the guidance format first. Consultation requests should stay clear, private, and expectation-led.
         </p>
         <Card className="service-card mb-5 flex flex-col gap-3" tone="accent">
           <div className="flex flex-wrap gap-2">
@@ -282,7 +282,7 @@ export default async function ConsultationPage({
                   }}
                   className={buttonStyles({ tone: "secondary", size: "sm" })}
                 >
-                  Book Free Consultation
+                  Request Consultation
                 </TrackedLink>
               </div>
             </Card>
@@ -295,7 +295,7 @@ export default async function ConsultationPage({
       <ThreeStepProcessSection
         tone="muted"
         title="Consultation works in three calm steps."
-        description="The flow is intentionally simple so users know exactly what happens before booking."
+        description="The flow is intentionally simple so users know exactly what happens before requesting consultation support."
         steps={[
           {
             title: "Choose your session type",
@@ -334,7 +334,7 @@ export default async function ConsultationPage({
               <span className="text-[var(--color-ink-strong)]">
                 {consultationHost.timezone}
               </span>
-              . Clients confirm their own timezone during booking so both views
+              . Clients confirm their own timezone during consultation intake so both views
               remain visible in the confirmation experience.
             </p>
             <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
@@ -347,11 +347,11 @@ export default async function ConsultationPage({
               eventName="consultation_started"
               eventPayload={{
                 page: "/consultation",
-                feature: "consultation-timezone-continue-booking",
+                feature: "consultation-timezone-request-support",
               }}
               className={buttonStyles({ size: "lg" })}
             >
-              Continue To Booking
+              Request Consultation
             </TrackedLink>
           </div>
         </Card>
@@ -360,13 +360,13 @@ export default async function ConsultationPage({
       <Section
         category="services"
         eyebrow="Methodology + Trust"
-        title="A clear approach before booking improves confidence."
-        description="Consultation guidance is framed through Vedic sidereal chart context, then interpreted with AI support and human review where needed."
+        title="A clear approach before consultation improves confidence."
+        description="Consultation guidance is framed through Vedic sidereal chart context, then interpreted with Ask NI preparation and human review where needed."
         tone="muted"
       >
         <TrustNote
           title="Guidance-first monetization policy"
-          description="Consultation booking is optional and trust-based. No fear-led urgency, no guaranteed outcomes, and no pressure to purchase add-ons."
+          description="Consultation requests are optional and trust-based. No fear-led urgency, no guaranteed outcomes, and no pressure for add-ons."
           className="mb-4"
         />
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -377,9 +377,9 @@ export default async function ConsultationPage({
             </p>
           </Card>
           <Card tone="light" className="service-offering-card space-y-3">
-            <Badge tone="neutral">AI + Jyotish</Badge>
+            <Badge tone="neutral">Ask NI Preparation</Badge>
             <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-              AI helps organize and explain chart context, while consultation preserves nuanced human interpretation.
+              Ask NI helps organize and explain chart context, while consultation preserves nuanced human interpretation.
             </p>
           </Card>
           <Card tone="light" className="service-offering-card space-y-3">
@@ -391,7 +391,7 @@ export default async function ConsultationPage({
           <Card tone="light" className="service-offering-card space-y-3">
             <Badge tone="neutral">Data Safety</Badge>
             <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-              Birth details, booking intake, and consultation records remain in protected account surfaces with explicit user flow.
+              Birth details, consultation intake, and consultation records remain in protected account surfaces with explicit user flow.
             </p>
           </Card>
         </div>
@@ -401,7 +401,7 @@ export default async function ConsultationPage({
         pagePath="/consultation"
         tone="light"
         ctaHref="/consultation"
-        ctaLabel="Continue To Booking"
+        ctaLabel="Request Consultation"
       />
 
       <Section
@@ -409,13 +409,13 @@ export default async function ConsultationPage({
         category="services"
         eyebrow="Trust + Confidentiality"
         title="Consultation is guidance-first, private, and non-fear-based."
-        description="Booking is optional. Sessions support reflection and practical planning without guaranteed claims or pressure to buy products."
+        description="Consultation support is optional. Sessions support reflection and practical planning without guaranteed claims or pressure to buy products."
       >
         <Card tone="light" className="service-offering-card grid gap-4 md:grid-cols-3">
           {[
             {
               title: "Private Intake",
-              text: "Birth details, intent, and booking context stay inside protected account surfaces.",
+              text: "Birth details, intent, and consultation context stay inside protected account surfaces.",
               href: "/privacy",
               label: "Privacy Policy",
             },
@@ -445,12 +445,13 @@ export default async function ConsultationPage({
         </Card>
       </Section>
 
-      <TestimonialsSection
+      <GuidanceNotesSection
         pagePath="/consultation"
-        testimonials={consultationTestimonials}
+        notes={consultationGuidanceNotes}
         tone="light"
+        eyebrow="Guidance Notes"
         title="Consultation trust is built through clarity, not pressure."
-        description="These experiences highlight the difference between quick AI help and deeper human interpretation."
+        description="These notes explain the difference between quick Ask NI preparation and deeper human interpretation without unverifiable user claims."
       />
 
       <ExpectationSettingSection tone="transparent" />

@@ -2,7 +2,6 @@ import { TrackedLink } from "@/components/analytics/tracked-link";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { AddToCartButton } from "@/modules/shop/components/add-to-cart-button";
 import { ProductMerchArt } from "@/modules/shop/components/product-merch-art";
 import type { ShopProductPreview } from "@/modules/shop/types";
 
@@ -20,7 +19,7 @@ export function ProductCard({
       <ProductMerchArt
         eyebrow={product.categoryLabel}
         title={product.name}
-        annotations={[product.badge, product.priceLabel, product.materialLabel]}
+        annotations={[product.badge, "Availability by inquiry", product.materialLabel]}
         tone={product.imageTone}
         compact
       />
@@ -45,11 +44,11 @@ export function ProductCard({
 
         <div className="mt-auto grid gap-3 sm:grid-cols-2">
           <TrackedLink
-            href={product.href}
+            href={`/shop#shop-${product.category.toLowerCase()}`}
             eventName="shop_interaction"
             eventPayload={{
               page: "/shop",
-              feature: `shop-product-view-${product.slug}`,
+              feature: `shop-product-category-${product.slug}`,
             }}
             className={buttonStyles({
               tone: "secondary",
@@ -57,9 +56,23 @@ export function ProductCard({
               className: "w-full justify-center",
             })}
           >
-            View Product
+            View Category
           </TrackedLink>
-          <AddToCartButton productSlug={product.slug} size="sm" fullWidth />
+          <TrackedLink
+            href="/consultation"
+            eventName="shop_interaction"
+            eventPayload={{
+              page: "/shop",
+              feature: `shop-product-guidance-${product.slug}`,
+            }}
+            className={buttonStyles({
+              tone: "tertiary",
+              size: "sm",
+              className: "w-full justify-center",
+            })}
+          >
+            Request Guidance
+          </TrackedLink>
         </div>
       </div>
     </Card>

@@ -61,7 +61,7 @@ export const seoConfig = {
   supportedLocales: getEnabledLocales().map((locale) => locale.code),
   primaryLocales: ["as", "hi", "en"] as const,
   defaultTitle:
-    "NAVAGRAHA CENTRE | AI Vedic Astrology, Kundli, Rashifal & Panchang",
+    "NAVAGRAHA CENTRE | Vedic Astrology, Kundli, Rashifal & Panchang",
   titleTemplate: "%s | NAVAGRAHA CENTRE",
   defaultDescription:
     "Discover AI-powered Vedic astrology with Kundli, Rashifal, Panchang, Numerology, Compatibility, Reports and expert guidance from NAVAGRAHA CENTRE.",
@@ -119,14 +119,14 @@ const coreSeoCopyByLocale: Record<
   en: {
     home: {
       title:
-        "NAVAGRAHA CENTRE | AI Vedic Astrology, Kundli, Rashifal & Panchang",
+        "NAVAGRAHA CENTRE | Vedic Astrology, Kundli, Rashifal & Panchang",
       description:
         "Discover AI-powered Vedic astrology with Kundli, Rashifal, Panchang, Numerology, Compatibility, Reports and expert guidance from NAVAGRAHA CENTRE.",
     },
     kundli: {
-      title: "Free Kundli & AI Birth Chart Analysis | NAVAGRAHA CENTRE",
+      title: "Kundli Birth Chart Guidance | NAVAGRAHA CENTRE",
       description:
-        "Generate your Kundli with Vedic astrology insights, planetary positions, Lagna, Rashi, Navamsa guidance and AI-powered interpretation.",
+        "Create your Kundli with Vedic astrology insights, planetary positions, Lagna, Rashi, Navamsa context and Ask NI guidance.",
     },
     compatibility: {
       title: "Marriage Compatibility & Guna Milan | NAVAGRAHA CENTRE",
@@ -149,9 +149,9 @@ const coreSeoCopyByLocale: Record<
         "Explore numerology insights based on your name and date of birth with clear guidance for life, career and relationships.",
     },
     navagrahaAi: {
-      title: "NAVAGRAHA Intelligence | AI Astrology Guidance",
+      title: "NAVAGRAHA Intelligence | Ask NI Vedic Guidance",
       description:
-        "Experience NAVAGRAHA Intelligence for astrology guidance, Kundli interpretation, remedies, Rashifal and spiritual insights.",
+        "Experience NAVAGRAHA Intelligence through Ask NI for astrology guidance, Kundli interpretation, remedies, Rashifal and spiritual insights.",
     },
     reports: {
       title: "Astrology Reports | Kundli, Career, Marriage & Life Guidance",
