@@ -20,7 +20,7 @@ import {
 const transitIntroCtas = [
   {
     href: "#transit-system",
-    label: "Explore Transit System",
+    label: "Explore Transit",
     feature: "transit-hero-explore-system",
     tone: "accent" as const,
   },
@@ -32,7 +32,7 @@ const transitIntroCtas = [
   },
   {
     href: "/kundli",
-    label: "Open Kundli",
+    label: "Start with Kundli",
     feature: "transit-hero-open-kundli",
     tone: "secondary" as const,
   },
@@ -52,14 +52,14 @@ const transitIntroCtas = [
 
 const transitStructureCards = [
   {
-    title: "Current Planetary Transit",
-    label: "Verified snapshot",
+    title: "Current Transit",
+    label: "Live movement",
     description:
       "Current planet movement is shown only from the existing safe transit snapshot.",
   },
   {
     title: "Major Gochar",
-    label: "Longer movement",
+    label: "Movement layer",
     description:
       "A structure layer for major planetary movement without invented results.",
   },
@@ -88,28 +88,22 @@ const transitStructureCards = [
       "Keeps nodal transit guidance separate from fake sign-wise claims.",
   },
   {
-    title: "Sign-wise Impact",
-    label: "Chart context",
+    title: "Transit Timing",
+    label: "Current context",
+    description:
+      "Pairs current movement with Dasha, Panchang, and chart context.",
+  },
+  {
+    title: "Personal Impact",
+    label: "Chart-gated",
     description:
       "Personal impact should come from chart context, not public placeholder text.",
   },
   {
-    title: "Transit Interpretation",
+    title: "Transit Guidance",
     label: "Guidance layer",
     description:
       "Connects movement, natal context, and practical review when data is ready.",
-  },
-  {
-    title: "Timing Guidance",
-    label: "Planning context",
-    description:
-      "Pairs Transit with Dasha, Panchang, and Rashifal for timing awareness.",
-  },
-  {
-    title: "Report / Consultation Support",
-    label: "Deeper review",
-    description:
-      "Use reports or consultation for decisions that need personal context.",
   },
 ] as const;
 
@@ -166,10 +160,11 @@ const transitShortcuts = [
   {
     title: "Consultation",
     href: "/consultation",
-    icon: "CS",
-    ctaLabel: "Consult",
+    icon: "JP",
+    ctaLabel: "Request Guidance",
     feature: "transit-shortcut-consultation",
-    description: "Use human-led guidance for sensitive timing questions.",
+    description:
+      "Use human-led guidance with J P Sarmah for sensitive timing questions.",
   },
   {
     title: "Tools",
@@ -275,7 +270,19 @@ function TransitFirstScreen({
   transitDateLabel: string | null;
 }>) {
   return (
-    <section className="border-b border-[rgba(155,122,74,0.16)] bg-[linear-gradient(180deg,#fffefb_0%,#ffffff_100%)]">
+    <section className="relative overflow-hidden border-b border-[rgba(155,122,74,0.16)] bg-white">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute right-[-5.5rem] top-8 hidden h-72 w-72 rounded-full border border-[rgba(184,137,67,0.16)] md:block"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute right-10 top-20 hidden h-40 w-40 rounded-full border border-dashed border-[rgba(184,137,67,0.24)] md:block"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute right-28 top-36 hidden h-2 w-2 rounded-full bg-[color:var(--color-accent-strong)] opacity-70 md:block"
+      />
       <Container className="grid gap-6 py-8 sm:py-10 lg:grid-cols-[minmax(0,1.04fr)_minmax(300px,0.96fr)] lg:items-center lg:py-12">
         <div className="space-y-4 sm:space-y-5">
           <div className="flex flex-wrap gap-2">
@@ -298,10 +305,10 @@ function TransitFirstScreen({
                 lineHeight: "var(--line-height-tight)",
               }}
             >
-              Transit
+              Transit - Gochar Movement Dashboard
             </h1>
             <p className="max-w-[48rem] text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)] sm:text-[length:var(--font-size-body-lg)]">
-              Planetary movement, current gochar, sign impact, timing influence, and Vedic guidance for understanding how the sky is moving now.
+              Review current planetary movement, Gochar timing, Moon/Saturn/Jupiter/Rahu-Ketu transit context, Kundli links, Dasha, Panchang, Reports, Consultation, and Ask NI support.
             </p>
           </div>
 
@@ -329,7 +336,7 @@ function TransitFirstScreen({
               "Moon Transit",
               "Saturn / Jupiter",
               "Rahu / Ketu",
-              "Ask NI follow-up",
+              "Timing Guidance",
             ].map((label) => (
               <Badge
                 key={label}
@@ -360,10 +367,10 @@ function TransitFirstScreen({
 
           <div className="space-y-2">
             <h2 className="text-[length:var(--font-size-title-sm)] font-semibold text-[color:var(--color-ink-strong)]">
-              Read current movement before personal impact.
+              Primary Transit action starts with verified movement.
             </h2>
             <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-              Transit impact becomes personal only after current movement is paired with verified Kundli context. This page does not invent positions, dates, or sign-wise predictions.
+              Transit impact becomes personal only after current movement is paired with verified Kundli context. This page preserves calculation-backed output and does not invent positions, dates, or sign-wise predictions.
             </p>
           </div>
 
@@ -388,6 +395,26 @@ function TransitFirstScreen({
                   : "No fallback output is fabricated."}
               </p>
             </div>
+          </div>
+          <div className="grid gap-2 sm:grid-cols-3">
+            {["Current Transit", "Gochar", "Moon Transit"].map((item, index) => (
+              <div
+                key={item}
+                className="relative rounded-[1.1rem] border border-black/8 bg-white px-3 py-2.5 shadow-[0_10px_24px_rgba(17,24,39,0.04)]"
+              >
+                <span
+                  aria-hidden="true"
+                  className="absolute right-3 top-3 h-1.5 w-1.5 rounded-full bg-[color:var(--color-accent-strong)] opacity-60"
+                  style={{ transform: `scale(${index === 1 ? 0.72 : 1})` }}
+                />
+                <p className="text-[0.72rem] font-semibold text-[color:var(--color-ink-strong)]">
+                  {item}
+                </p>
+                <p className="mt-1 text-[0.66rem] uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)]">
+                  Informational
+                </p>
+              </div>
+            ))}
           </div>
         </Card>
       </Container>
@@ -597,7 +624,7 @@ function TransitPageContent() {
         payload={{ page: "/transit", feature: "transit-page" }}
       />
 
-      <main className="launch-page launch-page-transit min-h-screen bg-[linear-gradient(180deg,#fffefb_0%,#ffffff_28%,#fbf6ed_100%)] pb-[calc(7.2rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] xl:pb-0">
+      <main className="launch-page launch-page-transit min-h-screen bg-white pb-[calc(7.2rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] xl:pb-0">
         <TransitFirstScreen
           transitData={transitData}
           transitDateLabel={transitDateLabel}
@@ -605,11 +632,11 @@ function TransitPageContent() {
 
         <Section
           id="transit-system"
-          tone="light"
+          tone="transparent"
           category="utilities"
           eyebrow="Transit System"
-          title="Read the transit layers without invented positions or sign-wise results."
-          description="These cards explain the Transit / Gochar structure and stay value-safe unless verified calculation context is available."
+          title="Transit quick access without invented positions."
+          description="These cards explain the Transit / Gochar structure and stay informational unless verified calculation context is available."
         >
           <div className="grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-5">
             {transitStructureCards.map((item) => (
@@ -627,7 +654,7 @@ function TransitPageContent() {
           tone="transparent"
           category="utilities"
           eyebrow="Current Transit"
-          title="Current planetary positions are shown only when verified transit data is ready."
+          title="Current movement stays calculation-backed."
           description="The public page stays honest: if the transit engine is unavailable, it shows a safe empty state instead of a fabricated forecast."
         >
           <div className="grid gap-4 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
@@ -716,10 +743,10 @@ function TransitPageContent() {
         </Section>
 
         <Section
-          tone="light"
+          tone="transparent"
           category="utilities"
           eyebrow="Natal Overlay Readiness"
-          title="Transit interpretation stays gated to verified Kundli context."
+          title="Transit interpretation stays tied to verified Kundli context."
           description="The comparison layer remains calm and safe until protected natal chart context is available."
         >
           <div className="grid gap-4 md:grid-cols-3">
@@ -811,7 +838,7 @@ function TransitPageContent() {
                   Use NAVAGRAHA Intelligence for transit context.
                 </h2>
                 <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                  Ask NI can help frame transit questions after you understand the movement. It is AI-guided assistance, not a replacement for human review.
+                  Ask NI can help frame current Gochar, Moon transit, Saturn/Jupiter transit, Rahu/Ketu transit, Dasha, and Panchang questions. It is AI-guided assistance, not a replacement for J P Sarmah.
                 </p>
               </div>
               <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
@@ -851,8 +878,8 @@ function TransitPageContent() {
           tone="transparent"
           category="utilities"
           eyebrow="Transit Shortcuts"
-          title="Continue into the right route-safe surface."
-          description="Use existing public tools and service pages without creating unverified transit results."
+          title="Continue into route-safe Transit support."
+          description="Use existing public tools and support pages without creating unverified transit results."
         >
           <div className="grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-4">
             {transitShortcuts.map((shortcut) => (
@@ -862,7 +889,7 @@ function TransitPageContent() {
         </Section>
 
         <Section
-          tone="light"
+          tone="transparent"
           category="content"
           eyebrow="Guidance Safety"
           title="Transit is movement context, not a public prediction dump."
@@ -877,10 +904,10 @@ function TransitPageContent() {
                 Human review when needed
               </Badge>
               <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-ink-strong)]">
-                Keep major transit decisions grounded.
+                J P Sarmah remains the human authority.
               </h2>
               <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                For sensitive decisions, combine calculated chart context with reports or consultation instead of relying on public structure cards alone.
+                For sensitive decisions, combine calculated chart context with reports or consultation. Ask NI can support preparation and context, but it does not replace human-reviewed guidance.
               </p>
             </div>
             <div className="flex w-full flex-col gap-2 sm:w-auto sm:min-w-[13rem]">
