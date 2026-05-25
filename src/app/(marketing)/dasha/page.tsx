@@ -11,7 +11,7 @@ import { createToolMetadata } from "@/lib/seo/metadata";
 const dashaIntroCtas = [
   {
     href: "#dasha-system",
-    label: "Explore Dasha System",
+    label: "Explore Dasha",
     feature: "dasha-hero-explore-system",
     tone: "accent" as const,
   },
@@ -23,7 +23,7 @@ const dashaIntroCtas = [
   },
   {
     href: "/kundli",
-    label: "Open Kundli",
+    label: "Start with Kundli",
     feature: "dasha-hero-open-kundli",
     tone: "secondary" as const,
   },
@@ -37,6 +37,12 @@ const dashaIntroCtas = [
 
 const dashaStructureCards = [
   {
+    title: "Vimshottari Dasha",
+    label: "Timing system",
+    description:
+      "The classical period framework used to understand how chart themes unfold over time.",
+  },
+  {
     title: "Mahadasha",
     label: "Major cycle",
     description:
@@ -49,20 +55,26 @@ const dashaStructureCards = [
       "The inner period that becomes meaningful after the Mahadasha foundation exists.",
   },
   {
-    title: "Pratyantar Dasha",
+    title: "Dasha Timing",
     label: "Fine timing",
     description:
-      "The nested timing layer used only after the broader Dasha chain is available.",
+      "Nested timing should stay connected to calculated chart context, not manual dates.",
+  },
+  {
+    title: "Life Phase Guidance",
+    label: "Context layer",
+    description:
+      "A practical framing layer for understanding themes without promising outcomes.",
   },
   {
     title: "Current Period",
-    label: "Calculated state",
+    label: "Calculation-backed",
     description:
-      "Shown by the calculation flow when verified birth details and timing context are present.",
+      "Only shown by real calculation flow when verified birth details and timing context exist.",
   },
   {
     title: "Upcoming Period",
-    label: "Next transition",
+    label: "Future transition",
     description:
       "Reserved for calculated future timing transitions, not manually written dates.",
   },
@@ -77,12 +89,6 @@ const dashaStructureCards = [
     label: "Planning context",
     description:
       "Pairs Dasha timing with Transit, Panchang, and human review when needed.",
-  },
-  {
-    title: "Report / Consultation Support",
-    label: "Deeper review",
-    description:
-      "Use reports or consultation for decisions that need careful personal context.",
   },
 ] as const;
 
@@ -128,20 +134,20 @@ const dashaShortcuts = [
     description: "Use NAVAGRAHA Intelligence for AI-guided Dasha context.",
   },
   {
+    title: "Consultation",
+    href: "/consultation",
+    icon: "JP",
+    ctaLabel: "Request Guidance",
+    feature: "dasha-shortcut-consultation",
+    description: "Use human-led guidance with J P Sarmah when timing decisions need context.",
+  },
+  {
     title: "Reports",
     href: "/reports",
     icon: "RP",
     ctaLabel: "View Reports",
     feature: "dasha-shortcut-reports",
     description: "Move into structured reports when deeper review is needed.",
-  },
-  {
-    title: "Consultation",
-    href: "/consultation",
-    icon: "CS",
-    ctaLabel: "Consult",
-    feature: "dasha-shortcut-consultation",
-    description: "Use human-led guidance for decisions that need context.",
   },
   {
     title: "Tools",
@@ -189,7 +195,15 @@ export const revalidate = 3600;
 
 function DashaFirstScreen() {
   return (
-    <section className="border-b border-[rgba(155,122,74,0.16)] bg-[linear-gradient(180deg,#fffefb_0%,#ffffff_100%)]">
+    <section className="relative overflow-hidden border-b border-[rgba(155,122,74,0.16)] bg-white">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute right-[-6rem] top-6 hidden h-72 w-72 rounded-full border border-[rgba(184,137,67,0.16)] md:block"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute right-8 top-16 hidden h-40 w-40 rounded-full border border-dashed border-[rgba(184,137,67,0.22)] md:block"
+      />
       <Container className="grid gap-6 py-8 sm:py-10 lg:grid-cols-[minmax(0,1.04fr)_minmax(300px,0.96fr)] lg:items-center lg:py-12">
         <div className="space-y-4 sm:space-y-5">
           <div className="flex flex-wrap gap-2">
@@ -212,10 +226,10 @@ function DashaFirstScreen() {
                 lineHeight: "var(--line-height-tight)",
               }}
             >
-              Dasha
+              Dasha - Vedic Timing Dashboard
             </h1>
             <p className="max-w-[48rem] text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)] sm:text-[length:var(--font-size-body-lg)]">
-              Vimshottari Dasha, Mahadasha, Antardasha, timing cycles, and life-period guidance for understanding when chart themes unfold.
+              Explore Mahadasha, Antardasha, life-phase timing, Kundli context, Transit, Panchang, Reports, Consultation, and Ask NI support.
             </p>
           </div>
 
@@ -241,9 +255,9 @@ function DashaFirstScreen() {
             {[
               "Mahadasha",
               "Antardasha",
-              "Pratyantar",
+              "Dasha Timing",
+              "Life Phase Guidance",
               "Timing Guidance",
-              "Ask NI follow-up",
             ].map((label) => (
               <Badge
                 key={label}
@@ -274,19 +288,24 @@ function DashaFirstScreen() {
 
           <div className="space-y-2">
             <h2 className="text-[length:var(--font-size-title-sm)] font-semibold text-[color:var(--color-ink-strong)]">
-              Build chart context before reading timing cycles.
+              Primary Dasha action starts with verified chart context.
             </h2>
             <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-              Dasha periods are calculated from birth-chart context. This page keeps the public layer structure-only until verified chart details are available.
+              Dasha periods depend on birth details, Moon nakshatra context, and calculated chart timing. Use this page to choose the right next step without inventing results.
             </p>
           </div>
 
           <div className="grid gap-2 sm:grid-cols-2">
-            {dashaStructureCards.slice(0, 6).map((item) => (
+            {dashaStructureCards.slice(0, 6).map((item, index) => (
               <div
                 key={item.title}
-                className="rounded-[1.1rem] border border-black/8 bg-white px-3 py-2.5 shadow-[0_10px_24px_rgba(17,24,39,0.04)]"
+                className="relative rounded-[1.1rem] border border-black/8 bg-white px-3 py-2.5 shadow-[0_10px_24px_rgba(17,24,39,0.04)]"
               >
+                <span
+                  aria-hidden="true"
+                  className="absolute right-3 top-3 h-1.5 w-1.5 rounded-full bg-[color:var(--color-accent-strong)] opacity-60"
+                  style={{ transform: `scale(${index % 2 === 0 ? 1 : 0.72})` }}
+                />
                 <p className="text-[0.74rem] font-semibold text-[color:var(--color-ink-strong)]">
                   {item.title}
                 </p>
@@ -398,16 +417,16 @@ export default function DashaPage() {
         payload={{ page: "/dasha", feature: "dasha-page" }}
       />
 
-      <main className="launch-page launch-page-dasha min-h-screen bg-[linear-gradient(180deg,#fffefb_0%,#ffffff_28%,#fbf6ed_100%)] pb-[calc(7.2rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] xl:pb-0">
+      <main className="launch-page launch-page-dasha min-h-screen bg-white pb-[calc(7.2rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] xl:pb-0">
         <DashaFirstScreen />
 
         <Section
           id="dasha-system"
-          tone="light"
+          tone="transparent"
           category="utilities"
           eyebrow="Dasha System"
-          title="Read the timing layers without invented periods."
-          description="These cards explain the Dasha structure and stay value-free until verified chart context is available."
+          title="Dasha quick access without invented periods."
+          description="These cards explain the timing system and stay informational until verified chart context is available."
         >
           <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
             {dashaStructureCards.map((item) => (
@@ -425,8 +444,8 @@ export default function DashaPage() {
           tone="transparent"
           category="utilities"
           eyebrow="Timing Flow"
-          title="Move from birth details into timing interpretation."
-          description="Dasha works best when chart context, current movement, and practical guidance are reviewed together."
+          title="Move from Kundli into timing interpretation."
+          description="Dasha works best when birth context, current movement, daily timing, and practical guidance are reviewed together."
         >
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1.02fr)_minmax(280px,0.98fr)]">
             <Card
@@ -435,13 +454,13 @@ export default function DashaPage() {
             >
               <div className="space-y-2">
                 <Badge tone="trust" className="border border-black/8 bg-white">
-                  Readiness
+                  Safe sequence
                 </Badge>
                 <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-ink-strong)]">
                   Keep Dasha timing tied to verified chart context.
                 </h2>
                 <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                  The public page explains the flow and routes users toward verified chart, transit, report, and consultation surfaces.
+                  The public page explains the flow and routes users toward verified chart, transit, Panchang, report, and consultation surfaces.
                 </p>
               </div>
 
@@ -475,7 +494,7 @@ export default function DashaPage() {
                   Use NAVAGRAHA Intelligence for Dasha context.
                 </h2>
                 <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                  Ask NI can help frame timing questions after you understand the structure. It is AI-guided assistance, not a replacement for human review.
+                  Ask NI can help frame Mahadasha, Antardasha, Transit, and Panchang questions after you understand the structure. It is AI-guided assistance, not a replacement for J P Sarmah.
                 </p>
               </div>
               <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
@@ -512,11 +531,11 @@ export default function DashaPage() {
         </Section>
 
         <Section
-          tone="light"
+          tone="transparent"
           category="utilities"
           eyebrow="Dasha Shortcuts"
-          title="Continue into the right route-safe surface."
-          description="Use existing public tools and service pages without creating unverified Dasha results."
+          title="Continue into route-safe Dasha support."
+          description="Use existing public tools and support pages without creating unverified Dasha results."
         >
           <div className="grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-4">
             {dashaShortcuts.map((shortcut) => (
@@ -541,10 +560,10 @@ export default function DashaPage() {
                 Human review when needed
               </Badge>
               <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-ink-strong)]">
-                Keep major timing decisions grounded.
+                J P Sarmah remains the human authority.
               </h2>
               <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                For sensitive decisions, combine calculated chart context with reports or consultation instead of relying on public structure cards alone.
+                For sensitive decisions, combine calculated chart context with reports or consultation. Ask NI can support preparation and context, but it does not replace human-reviewed guidance.
               </p>
             </div>
             <div className="flex w-full flex-col gap-2 sm:w-auto sm:min-w-[13rem]">
