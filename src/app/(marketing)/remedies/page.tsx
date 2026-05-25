@@ -5,309 +5,348 @@ import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
-import { PageHero } from "@/components/site/page-hero";
 import { createToolMetadata } from "@/lib/seo/metadata";
 import {
   getRequestLocale,
   hasExplicitLocalePrefixInRequest,
 } from "@/modules/localization/request";
-import {
-  getRelatedProductsForRemedySlugs,
-  getShopProductsByCategory,
-  getShopCategorySummaries,
-} from "@/modules/shop";
-
-type RemedyCategoryCard = {
-  title: string;
-  status: string;
-  description: string;
-  href: string;
-  ctaLabel: string;
-  tone?: "accent" | "secondary" | "ghost" | "ni";
-};
-
-const remedyReadinessItems = [
-  {
-    title: "Birth date",
-    status: "Required",
-    description:
-      "Anchors any later remedy review to verified birth context instead of guesswork.",
-  },
-  {
-    title: "Birth time",
-    status: "Required",
-    description:
-      "Helps keep house, Lagna, and timing-aware support grounded in a real chart foundation.",
-  },
-  {
-    title: "Birth place",
-    status: "Required",
-    description:
-      "Used only for protected chart calculations and never exposed in the public page output.",
-  },
-  {
-    title: "Active Kundli",
-    status: "Protected",
-    description:
-      "The safe public page only continues into deeper remedial review when chart context is available.",
-  },
-  {
-    title: "Latitude / longitude",
-    status: "Optional",
-    description:
-      "Useful when a protected chart source needs a tighter location reference.",
-  },
-  {
-    title: "Timezone",
-    status: "Optional",
-    description:
-      "Keeps local civil time consistent if a verified chart path is connected later.",
-  },
-] as const;
-
-const remedyCategoryCards: readonly RemedyCategoryCard[] = [
-  {
-    title: "Mantra Guidance",
-    status: "Structure only",
-    description:
-      "Mantra support stays advisory and chart-dependent, without promising a fixed outcome.",
-    href: "/ai",
-    ctaLabel: "Ask NI",
-  },
-  {
-    title: "Puja / Hawan / Yagya",
-    status: "Structure only",
-    description:
-      "Ritual guidance remains optional and consultation-led, not a guaranteed cure or package claim.",
-    href: "/consultation",
-    ctaLabel: "Book Consultation",
-    tone: "secondary",
-  },
-  {
-    title: "Daan / Charity",
-    status: "Structure only",
-    description:
-      "Charity guidance is framed as voluntary spiritual discipline, not fear-based pressure.",
-    href: "/consultation",
-    ctaLabel: "Book Consultation",
-    tone: "secondary",
-  },
-  {
-    title: "Gemstone Guidance",
-    status: "Structure only",
-    description:
-      "Gemstone discussion stays review-based and does not invent a recommendation, price, or prescription.",
-    href: "/reports",
-    ctaLabel: "View Reports",
-    tone: "secondary",
-  },
-  {
-    title: "Rudraksha / Mala",
-    status: "Structure only",
-    description:
-      "Spiritual support objects remain optional and should be reviewed with verified chart context.",
-    href: "/consultation",
-    ctaLabel: "Book Consultation",
-    tone: "secondary",
-  },
-  {
-    title: "Fasting / Vrat",
-    status: "Structure only",
-    description:
-      "Fasting and discipline remain reflective practices only, never mandatory or fear-driven.",
-    href: "/ai",
-    ctaLabel: "Ask NI",
-    tone: "ni",
-  },
-  {
-    title: "Dosha Remedies",
-    status: "Structure only",
-    description:
-      "Dosha-related remedy discussion must stay linked to verified dosha context and avoid fake cures.",
-    href: "/dosha-yoga",
-    ctaLabel: "Review Dosha & Yoga",
-    tone: "secondary",
-  },
-  {
-    title: "Consultation Support",
-    status: "Structure only",
-    description:
-      "Sensitive remedy decisions can move into human-led review without public private-data exposure.",
-    href: "/consultation",
-    ctaLabel: "Book Consultation",
-    tone: "secondary",
-  },
-] as const;
 
 const heroActions = [
   {
-    href: "#remedies-structure",
+    href: "#remedy-category-guide",
     label: "Explore Remedies",
     tone: "accent" as const,
-    feature: "remedies-hero-explore",
-  },
-  {
-    href: "/ai",
-    label: "Ask NI",
-    tone: "ni" as const,
-    feature: "remedies-hero-ask-ni",
-  },
-] as const;
-
-const nextActions = [
-  {
-    href: "/ai",
-    label: "Ask NI",
-    tone: "ni" as const,
-    feature: "remedies-next-ask-ni",
+    feature: "remedies-explore",
   },
   {
     href: "/kundli",
     label: "Open Kundli",
     tone: "secondary" as const,
-    feature: "remedies-next-kundli",
+    feature: "remedies-open-kundli",
   },
   {
-    href: "/reports",
-    label: "View Reports",
+    href: "/ai",
+    label: "Ask NI",
+    tone: "ni" as const,
+    feature: "remedies-ask-ni",
+  },
+  {
+    href: "/dosha-yoga",
+    label: "View Dosha-Yoga",
     tone: "secondary" as const,
-    feature: "remedies-next-reports",
+    feature: "remedies-dosha-yoga",
   },
   {
     href: "/consultation",
-    label: "Book Consultation",
+    label: "Consult Expert",
     tone: "secondary" as const,
-    feature: "remedies-next-consultation",
+    feature: "remedies-consult-expert",
   },
 ] as const;
 
-function RemedyCategoryCard({
-  item,
-}: Readonly<{
-  item: RemedyCategoryCard;
-}>) {
-  return (
-    <Card
-      tone="default"
-      className="flex h-full flex-col gap-3 border-black/8 bg-white p-4 shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0"
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div className="space-y-1">
-          <p className="text-[0.68rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
-            Remedy Category
-          </p>
-          <h3 className="text-[length:var(--font-size-body-lg)] font-semibold text-[color:var(--color-ink-strong)]">
-            {item.title}
-          </h3>
-        </div>
-        <Badge tone={item.status === "Shop-ready" ? "trust" : "neutral"}>
-          {item.status}
-        </Badge>
-      </div>
-      <p className="text-[0.88rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-        {item.description}
-      </p>
-      <TrackedLink
-        href={item.href}
-        eventName="cta_click"
-        eventPayload={{ page: "/remedies", feature: `remedies-${item.title.toLowerCase().replace(/\s+/g, "-")}` }}
-        className={buttonStyles({
-          size: "sm",
-          tone: item.ctaLabel === "Ask NI" ? "ni" : item.tone ?? "accent",
-          className: "w-full justify-center",
-        })}
-      >
-        {item.ctaLabel}
-      </TrackedLink>
-    </Card>
-  );
-}
+const remedyRail = [
+  "Category Guide",
+  "Planet Rail",
+  "Dosha Path",
+  "Timing Support",
+  "Ask NI",
+] as const;
 
-function ShopConnectionCard({
-  title,
-  description,
-  href,
-  count,
-}: Readonly<{
-  title: string;
-  description: string;
-  href: string;
-  count: number;
-}>) {
-  return (
-    <Card
-      tone="light"
-      className="flex h-full flex-col gap-3 border-black/8 bg-white p-4 shadow-[0_12px_28px_rgba(17,24,39,0.04)] before:opacity-0"
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div className="space-y-1">
-          <p className="text-[0.68rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
-            Shop Connection
-          </p>
-          <h3 className="text-[length:var(--font-size-body-lg)] font-semibold text-[color:var(--color-ink-strong)]">
-            {title}
-          </h3>
-        </div>
-        <Badge tone="trust">{count} items</Badge>
-      </div>
-      <p className="text-[0.88rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-        {description}
-      </p>
-      <TrackedLink
-        href={href}
-        eventName="shop_interaction"
-        eventPayload={{ page: "/remedies", feature: `remedies-shop-${title.toLowerCase().replace(/\s+/g, "-")}` }}
-        className={buttonStyles({
-          size: "sm",
-          tone: "secondary",
-          className: "w-full justify-center",
-        })}
-      >
-        Browse Category
-      </TrackedLink>
-    </Card>
-  );
-}
+const remedyGroups = [
+  {
+    title: "Spiritual Remedies",
+    accent: "saffron" as const,
+    items: ["Mantra", "Japa", "Stotra", "Puja", "Vrat"],
+    description:
+      "Sacred practices are best understood as disciplined spiritual support, not instant outcome promises.",
+  },
+  {
+    title: "Karma / Daan Remedies",
+    accent: "marigold" as const,
+    items: ["Daan", "Seva", "feeding animals", "respecting elders", "discipline-based direction"],
+    description:
+      "Service, charity, and conduct-based actions are framed as voluntary spiritual discipline.",
+  },
+  {
+    title: "Sacred Objects",
+    accent: "brown" as const,
+    items: ["Gemstone", "Rudraksha", "Yantra", "Mala", "Kavach"],
+    description:
+      "Sacred items should be considered only with suitable Kundli context and responsible guidance.",
+  },
+  {
+    title: "Timing-Based Remedies",
+    accent: "gold" as const,
+    items: ["Panchang timing", "Muhurat support", "Dasha timing", "Transit timing"],
+    description:
+      "Timing can support practice selection, but it should be reviewed carefully and without certainty claims.",
+  },
+  {
+    title: "Lifestyle / Conduct Remedies",
+    accent: "tulsi" as const,
+    items: ["daily discipline", "satvik habits", "gratitude", "respect-based actions", "spiritual routine"],
+    description:
+      "Simple daily conduct keeps remedies grounded, repeatable, and practical for returning viewers.",
+  },
+] as const;
+
+const planets = [
+  "Sun",
+  "Moon",
+  "Mars",
+  "Mercury",
+  "Jupiter",
+  "Venus",
+  "Saturn",
+  "Rahu",
+  "Ketu",
+] as const;
+
+const doshaPaths = [
+  "Mangal Dosha",
+  "Kaal Sarp Yoga",
+  "Pitra Dosha",
+  "Shani / Sade Sati",
+  "Rahu-Ketu influence",
+  "Kundli imbalance review",
+] as const;
+
+const timingCards = [
+  {
+    title: "Dasha",
+    href: "/dasha",
+    label: "Life-phase context",
+    description:
+      "Review the active planetary period before choosing a remedy category.",
+  },
+  {
+    title: "Transit",
+    href: "/transit",
+    label: "Current movement",
+    description:
+      "Use present graha movement as timing context, not as a stand-alone instruction.",
+  },
+  {
+    title: "Panchang",
+    href: "/panchang",
+    label: "Daily calendar",
+    description:
+      "Check Tithi, Nakshatra, and daily timing when planning disciplined practice.",
+  },
+  {
+    title: "Muhurat support",
+    href: "/panchang",
+    label: "Suitable window",
+    description:
+      "Use auspicious timing as a support layer after responsible review.",
+  },
+] as const;
+
+const journeySteps = [
+  "Understand the concern",
+  "Open Kundli context",
+  "Review Dosha / Yoga factors",
+  "Check Dasha and Transit timing",
+  "Choose remedy category",
+  "Confirm with expert guidance",
+  "Follow remedy responsibly",
+] as const;
+
+const supportCards = [
+  {
+    title: "Reports",
+    href: "/reports",
+    icon: "RP",
+    ctaLabel: "View Reports",
+    description:
+      "Use structured report options when remedy context needs a deeper written review.",
+  },
+  {
+    title: "Consultation",
+    href: "/consultation",
+    icon: "JP",
+    ctaLabel: "Consult Expert",
+    description:
+      "Use human-reviewed guidance with J P Sarmah for sensitive remedy decisions.",
+  },
+  {
+    title: "Shop",
+    href: "/shop",
+    icon: "SH",
+    ctaLabel: "Explore Shop",
+    description:
+      "Gemstones, Rudraksha, yantra, mala, and sacred items may be explored when suitable guidance is available.",
+  },
+  {
+    title: "Kundli",
+    href: "/kundli",
+    icon: "KU",
+    ctaLabel: "Open Kundli",
+    description:
+      "Start with verified chart context before moving into remedy direction.",
+  },
+  {
+    title: "Tools",
+    href: "/tools",
+    icon: "TH",
+    ctaLabel: "Open Tools",
+    description:
+      "Return to the public tools hub for related Vedic timing and chart utilities.",
+  },
+] as const;
+
+const navLinks = [
+  { label: "Kundli", href: "/kundli" },
+  { label: "Dosha-Yoga", href: "/dosha-yoga" },
+  { label: "Dasha", href: "/dasha" },
+  { label: "Transit", href: "/transit" },
+  { label: "Panchang", href: "/panchang" },
+  { label: "Matchmaking", href: "/matchmaking" },
+  { label: "Ask NI", href: "/ai" },
+  { label: "Tools", href: "/tools" },
+] as const;
 
 export async function generateMetadata() {
   const locale = await getRequestLocale();
   const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
 
   return createToolMetadata({
-    title: "Astrology Remedies",
+    title: "Remedies Guidance",
     description:
-      "Explore optional spiritual remedies with calm, consultation-led guidance. Shop connections stay safe, transparent, and free of guaranteed outcome claims.",
+      "A calm Vedic pathway for understanding mantra, daan, vrat, puja, gemstone, Rudraksha, yantra, and lifestyle-based remedy guidance responsibly.",
     path: "/remedies",
     locale,
     explicitLocalePrefix: hasExplicitLocalePrefix,
     keywords: [
-      "astrology remedies",
-      "gemstone guidance",
+      "vedic remedies",
+      "upaya guidance",
+      "mantra guidance",
+      "daan remedies",
       "rudraksha guidance",
-      "mantra remedies",
-      "optional spiritual support",
+      "yantra guidance",
+      "remedy timing",
     ],
   });
 }
 
 export const revalidate = 3600;
 
-export default async function RemediesPage() {
-  const shopCategorySummaries = getShopCategorySummaries();
-  const shopCategorySections = getShopProductsByCategory();
-  const shopCategoryCountByKey = new Map(
-    shopCategorySections.map((section) => [section.category, section.products.length] as const)
-  );
-  const relatedShopByRemedy = getRelatedProductsForRemedySlugs([
-    "five-mukhi-rudraksha",
-    "sandalwood-japa-mala",
-    "yellow-sapphire-review",
-    "surya-yantra-contemplation",
-    "navagraha-puja-observance",
-    "adi-gayatri-mantra",
-    "sunrise-discipline-window",
-  ]);
+function RemedyGroupCard({
+  group,
+}: Readonly<{
+  group: (typeof remedyGroups)[number];
+}>) {
+  const accentClass = {
+    saffron: "border-[rgba(211,137,36,0.22)] shadow-[0_14px_34px_rgba(211,137,36,0.06)]",
+    marigold: "border-[rgba(184,137,67,0.24)] shadow-[0_14px_34px_rgba(184,137,67,0.06)]",
+    brown: "border-[rgba(111,78,48,0.22)] shadow-[0_14px_34px_rgba(111,78,48,0.06)]",
+    gold: "border-[rgba(184,137,67,0.22)] shadow-[0_14px_34px_rgba(184,137,67,0.06)]",
+    tulsi: "border-[rgba(88,132,94,0.22)] shadow-[0_14px_34px_rgba(88,132,94,0.06)]",
+  }[group.accent];
 
+  const labelClass = {
+    saffron: "text-[#9b5b18]",
+    marigold: "text-[color:var(--color-accent-strong)]",
+    brown: "text-[#6f4e30]",
+    gold: "text-[color:var(--color-accent-strong)]",
+    tulsi: "text-[#3f6f47]",
+  }[group.accent];
+
+  return (
+    <Card
+      tone="default"
+      className={`flex h-full min-h-[14rem] flex-col justify-between gap-4 bg-white p-4 before:opacity-0 ${accentClass}`}
+    >
+      <div className="space-y-3">
+        <p className={`text-[0.68rem] uppercase tracking-[0.12em] ${labelClass}`}>
+          Remedy Category
+        </p>
+        <h3 className="text-[length:var(--font-size-body-lg)] font-semibold leading-tight text-[color:var(--color-ink-strong)]">
+          {group.title}
+        </h3>
+        <p className="text-[0.82rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+          {group.description}
+        </p>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {group.items.map((item) => (
+          <span
+            key={item}
+            className="rounded-full border border-[rgba(184,137,67,0.18)] bg-[rgba(255,250,240,0.72)] px-3 py-1 text-[0.7rem] font-medium text-[color:var(--color-ink-body)]"
+          >
+            {item}
+          </span>
+        ))}
+      </div>
+    </Card>
+  );
+}
+
+function TimingCard({ card }: Readonly<{ card: (typeof timingCards)[number] }>) {
+  return (
+    <TrackedLink
+      href={card.href}
+      eventName="cta_click"
+      eventPayload={{ page: "/remedies", feature: `remedies-timing-${card.title}` }}
+      className="group block h-full"
+    >
+      <Card
+        tone="default"
+        interactive
+        className="flex h-full min-h-[10rem] flex-col gap-3 border-[rgba(184,137,67,0.2)] bg-white p-4 shadow-[0_12px_28px_rgba(17,24,39,0.05)] before:opacity-0"
+      >
+        <p className="text-[0.68rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
+          {card.label}
+        </p>
+        <h3 className="text-[length:var(--font-size-body-lg)] font-semibold text-[color:var(--color-ink-strong)]">
+          {card.title}
+        </h3>
+        <p className="text-[0.82rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+          {card.description}
+        </p>
+      </Card>
+    </TrackedLink>
+  );
+}
+
+function SupportCard({ card }: Readonly<{ card: (typeof supportCards)[number] }>) {
+  return (
+    <TrackedLink
+      href={card.href}
+      eventName="cta_click"
+      eventPayload={{ page: "/remedies", feature: `remedies-support-${card.title}` }}
+      className="group block h-full"
+    >
+      <Card
+        tone="default"
+        interactive
+        className="flex h-full min-h-[11rem] flex-col gap-3 border-black/8 bg-white p-4 shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0 hover:border-[rgba(184,137,67,0.28)]"
+      >
+        <div className="flex items-start gap-3">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[rgba(184,137,67,0.28)] bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.98)_0%,rgba(249,236,201,0.94)_72%,rgba(239,206,137,0.86)_100%)] text-[0.68rem] font-semibold uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)] shadow-[0_10px_22px_rgba(121,85,33,0.12)]">
+            {card.icon}
+          </span>
+          <div className="min-w-0 flex-1 space-y-1">
+            <h3 className="text-[0.98rem] font-semibold leading-tight text-[color:var(--color-ink-strong)]">
+              {card.title}
+            </h3>
+            <p className="text-[0.68rem] uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)]">
+              Safe path
+            </p>
+          </div>
+        </div>
+        <p className="text-[0.8rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+          {card.description}
+        </p>
+        <span className="mt-auto text-[0.74rem] font-semibold text-[color:var(--color-accent-strong)]">
+          {card.ctaLabel}
+        </span>
+      </Card>
+    </TrackedLink>
+  );
+}
+
+export default function RemediesPage() {
   return (
     <>
       <PageViewTracker page="/remedies" feature="remedies-page" />
@@ -316,135 +355,281 @@ export default async function RemediesPage() {
         payload={{ page: "/remedies", feature: "remedies-page" }}
       />
 
-      <main className="launch-page launch-page-remedies min-h-screen bg-[#FFFFFF] pb-[calc(7rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] md:pb-0">
-        <PageHero
-          eyebrow="Remedies"
-          title="Remedies"
-          description="Vedic remedy guidance for mantra, puja, daan, discipline, gemstones, and spiritual correction, presented as advisory support only."
-          highlights={[
-            "Ask NI provides AI-guided context through NAVAGRAHA Intelligence.",
-            "Kundli, reports, and consultation remain the safe paths for personal review.",
-            "No remedy is framed as a cure, guarantee, or urgent purchase.",
-          ]}
-          note="Use remedies as a reflective support layer, not as a medical, legal, financial, or life-outcome guarantee."
-          primaryAction={heroActions[0]}
-          secondaryAction={heroActions[1]}
-          supportTitle="Remedy Safety Markers"
-        />
-
-        <Section
-          id="remedies-structure"
-          tone="light"
-          category="utilities"
-          eyebrow="Remedy Structure"
-          title="Choose the support style first, then continue through a safe route."
-          description="These remedy cards are structure-only. They do not create personalized remedies, gemstone prescriptions, puja packages, prices, testimonials, or guaranteed outcomes."
-        >
-          <div className="space-y-5">
-            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-              {nextActions.map((cta) => (
-                <TrackedLink
-                  key={cta.label}
-                  href={cta.href}
-                  eventName="cta_click"
-                  eventPayload={{ page: "/remedies", feature: `${cta.feature}-top` }}
-                  className={buttonStyles({
-                    size: "lg",
-                    tone: cta.label === "Ask NI" ? "ni" : cta.tone,
-                    className: "w-full justify-center",
-                  })}
-                >
-                  {cta.label}
-                </TrackedLink>
-              ))}
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-              {remedyCategoryCards.map((item) => (
-                <RemedyCategoryCard key={item.title} item={item} />
-              ))}
-            </div>
+      <main className="launch-page launch-page-remedies min-h-screen overflow-hidden bg-[#FFFFFF] pb-[calc(7rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] md:pb-0">
+        <section className="relative isolate overflow-hidden border-b border-[rgba(184,137,67,0.12)] bg-[#FFFFFF]">
+          <div className="pointer-events-none absolute inset-0 -z-10">
+            <div className="absolute right-[-5rem] top-[-4rem] h-64 w-64 rounded-full border border-[rgba(184,137,67,0.16)]" />
+            <div className="absolute right-8 top-24 h-36 w-36 rounded-full border border-[rgba(211,137,36,0.16)]" />
+            <div className="absolute left-[-5rem] bottom-[-5rem] h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(248,218,146,0.26)_0%,rgba(255,255,255,0)_70%)]" />
           </div>
-        </Section>
 
-        <Section
-          tone="transparent"
-          category="utilities"
-          eyebrow="Birth Readiness"
-          title="Verified chart context should be present before any personalized remedy path."
-          description="The public page keeps the birth flow protected and only moves forward when the chart foundation is available."
-        >
-          <div className="grid gap-4 lg:grid-cols-[minmax(0,1.02fr)_minmax(300px,0.98fr)]">
-            <Card
-              tone="default"
-              className="space-y-4 border-black/8 bg-white shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0"
-            >
-              <div className="space-y-2">
-                <Badge tone="trust" className="border border-black/8 bg-white">
-                  Readiness Checklist
-                </Badge>
-                <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-ink-strong)]">
-                  Remedy analysis depends on verified birth context
-                </h2>
-                <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                  Use this checklist as a safe reminder of what the protected chart path needs before remedy detail is shown.
+          <div className="mx-auto grid w-full max-w-7xl gap-7 px-4 py-8 sm:px-6 md:py-11 lg:grid-cols-[minmax(0,1.02fr)_minmax(320px,0.78fr)] lg:px-8">
+            <div className="space-y-5">
+              <Badge
+                tone="accent"
+                className="border border-[rgba(184,137,67,0.22)] bg-[rgba(255,250,240,0.82)] text-[color:var(--color-accent-strong)]"
+              >
+                Vedic Remedies · Upaya Guidance
+              </Badge>
+              <div className="space-y-3">
+                <h1 className="max-w-3xl font-[family-name:var(--font-display)] text-[clamp(2.15rem,10vw,4.7rem)] leading-[0.92] tracking-[-0.06em] text-[color:var(--color-ink-strong)]">
+                  Remedies Guidance
+                </h1>
+                <p className="max-w-2xl text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                  A calm Vedic pathway to understand mantra, daan, vrat, puja, gemstone, rudraksha, yantra, and lifestyle-based remedies with responsible guidance.
                 </p>
               </div>
 
-              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                {remedyReadinessItems.map((item) => (
-                  <Card
-                    key={item.title}
-                    tone="default"
-                    className="flex h-full flex-col gap-3 border-black/8 bg-white p-4 shadow-[0_10px_24px_rgba(17,24,39,0.04)] before:opacity-0"
+              <div className="flex flex-wrap gap-2">
+                {heroActions.map((action) => (
+                  <TrackedLink
+                    key={action.label}
+                    href={action.href}
+                    eventName="cta_click"
+                    eventPayload={{ page: "/remedies", feature: action.feature }}
+                    className={buttonStyles({
+                      size: "lg",
+                      tone: action.tone,
+                      className: "min-w-[9.5rem] justify-center",
+                    })}
                   >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="space-y-1">
-                        <p className="text-[0.68rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
-                          Birth Input
-                        </p>
-                        <h3 className="text-[length:var(--font-size-body-lg)] font-semibold text-[color:var(--color-ink-strong)]">
-                          {item.title}
-                        </h3>
-                      </div>
-                      <Badge tone={item.status === "Protected" ? "accent" : "neutral"}>
-                        {item.status}
-                      </Badge>
-                    </div>
-                    <p className="text-[0.88rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                      {item.description}
-                    </p>
-                  </Card>
+                    {action.label}
+                  </TrackedLink>
                 ))}
               </div>
+
+              <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                {remedyRail.map((item) => (
+                  <span
+                    key={item}
+                    className="shrink-0 rounded-full border border-[rgba(184,137,67,0.18)] bg-white px-3 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-[color:var(--color-ink-body)] shadow-[0_8px_22px_rgba(17,24,39,0.04)]"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <Card
+              tone="default"
+              className="relative min-h-[22rem] overflow-hidden border-[rgba(184,137,67,0.18)] bg-white p-5 shadow-[0_22px_60px_rgba(111,78,48,0.1)] before:opacity-0"
+            >
+              <div className="absolute inset-6 rounded-full border border-[rgba(184,137,67,0.22)]" />
+              <div className="absolute left-1/2 top-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-[rgba(211,137,36,0.3)]" />
+              <div className="absolute left-1/2 top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[rgba(88,132,94,0.22)] bg-[rgba(243,250,239,0.74)]" />
+              <div className="absolute left-1/2 top-[35%] h-14 w-[2px] -translate-x-1/2 rounded-full bg-[linear-gradient(180deg,rgba(184,137,67,0),rgba(184,137,67,0.8),rgba(184,137,67,0))]" />
+              <div className="absolute left-1/2 top-[45%] h-9 w-9 -translate-x-1/2 rounded-full border border-[rgba(184,137,67,0.38)] bg-[radial-gradient(circle_at_50%_42%,#f8d98a_0%,#b88943_42%,rgba(255,255,255,0)_72%)] shadow-[0_0_34px_rgba(184,137,67,0.26)]" />
+              <div className="absolute bottom-9 left-1/2 h-20 w-44 -translate-x-1/2 rounded-[50%] border border-[rgba(184,137,67,0.22)]" />
+              <div className="absolute bottom-[4.8rem] left-1/2 h-[1px] w-52 -translate-x-1/2 bg-[linear-gradient(90deg,rgba(184,137,67,0),rgba(184,137,67,0.5),rgba(184,137,67,0))]" />
+
+              <div className="relative z-10 flex h-full flex-col justify-between">
+                <Badge tone="trust" className="w-fit border border-[rgba(111,78,48,0.18)] bg-[rgba(111,78,48,0.06)] text-[#6f4e30]">
+                  Sacred guidance, not pressure
+                </Badge>
+                <div className="space-y-3 pt-20 text-center">
+                  <p className="text-[0.68rem] uppercase tracking-[0.18em] text-[color:var(--color-accent-strong)]">
+                    mantra · daan · timing · conduct
+                  </p>
+                  <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] leading-tight text-[color:var(--color-ink-strong)]">
+                    Choose the path with context first.
+                  </h2>
+                </div>
+                <p className="mx-auto max-w-[20rem] text-center text-[0.78rem] leading-[1.55] text-[color:var(--color-ink-body)]">
+                  Remedies are presented as educational support connected to Kundli, timing, and expert judgement.
+                </p>
+              </div>
+            </Card>
+          </div>
+        </section>
+
+        <Section
+          id="remedy-category-guide"
+          tone="transparent"
+          category="utilities"
+          eyebrow="Remedy Category Guide"
+          title="Start with the remedy type, not a rushed conclusion."
+          description="These cards explain traditional remedy directions only. They do not prescribe a personal remedy or promise a fixed outcome."
+        >
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+            {remedyGroups.map((group) => (
+              <RemedyGroupCard key={group.title} group={group} />
+            ))}
+          </div>
+        </Section>
+
+        <Section
+          tone="light"
+          category="utilities"
+          eyebrow="Planet Remedy Rail"
+          title="Review graha-linked remedy themes safely."
+          description="Traditionally associated remedy directions may be reviewed depending on Kundli context."
+        >
+          <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {planets.map((planet) => (
+              <Card
+                key={planet}
+                tone="default"
+                className="min-w-[9.5rem] border-[rgba(184,137,67,0.16)] bg-white p-4 shadow-[0_12px_28px_rgba(17,24,39,0.04)] before:opacity-0"
+              >
+                <p className="text-[0.68rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
+                  Graha
+                </p>
+                <h3 className="mt-2 text-[1rem] font-semibold text-[color:var(--color-ink-strong)]">
+                  {planet}
+                </h3>
+                <p className="mt-2 text-[0.76rem] leading-[1.45] text-[color:var(--color-ink-body)]">
+                  Review with Kundli context.
+                </p>
+              </Card>
+            ))}
+          </div>
+        </Section>
+
+        <Section
+          tone="transparent"
+          category="utilities"
+          eyebrow="Dosha Remedy Path"
+          title="Connect remedy direction with careful Dosha-Yoga review."
+          description="Dosha-related remedy decisions need calm diagnosis, timing support, and human judgement. This section does not provide a personal prescription."
+        >
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,0.82fr)_minmax(300px,1.18fr)]">
+            <Card
+              tone="default"
+              className="space-y-4 border-[rgba(111,78,48,0.18)] bg-white p-5 shadow-[0_14px_34px_rgba(111,78,48,0.06)] before:opacity-0"
+            >
+              <Badge tone="trust" className="border border-[rgba(111,78,48,0.18)] bg-[rgba(111,78,48,0.06)] text-[#6f4e30]">
+                Review before action
+              </Badge>
+              <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-ink-strong)]">
+                Dosha context should guide remedy direction.
+              </h2>
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                Mangal, Kaal Sarp, Pitra, Shani, and Rahu-Ketu themes are handled as diagnostic context. No public verdict or remedy instruction is invented here.
+              </p>
+              <TrackedLink
+                href="/dosha-yoga"
+                eventName="cta_click"
+                eventPayload={{ page: "/remedies", feature: "remedies-dosha-yoga-panel" }}
+                className={buttonStyles({
+                  size: "lg",
+                  tone: "secondary",
+                  className: "w-full justify-center sm:w-auto",
+                })}
+              >
+                View Dosha-Yoga
+              </TrackedLink>
+            </Card>
+
+            <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
+              {doshaPaths.map((item) => (
+                <div
+                  key={item}
+                  className="rounded-[1.15rem] border border-[rgba(111,78,48,0.16)] bg-white px-3 py-3 shadow-[0_10px_24px_rgba(17,24,39,0.04)]"
+                >
+                  <p className="text-[0.72rem] font-semibold leading-tight text-[color:var(--color-ink-strong)]">
+                    {item}
+                  </p>
+                  <p className="mt-2 text-[0.68rem] leading-[1.4] text-[color:var(--color-ink-body)]">
+                    Review calmly.
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Section>
+
+        <Section
+          tone="light"
+          category="utilities"
+          eyebrow="Timing Support"
+          title="Time remedy practice with chart and calendar context."
+          description="Dasha, Transit, Panchang, and Muhurat support should be reviewed carefully and responsibly."
+        >
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            {timingCards.map((card) => (
+              <TimingCard key={card.title} card={card} />
+            ))}
+          </div>
+        </Section>
+
+        <Section
+          tone="transparent"
+          category="utilities"
+          eyebrow="Remedy Journey Timeline"
+          title="A responsible remedy path moves step by step."
+          description="This journey keeps the page useful for repeat visits without turning remedies into pressure or sales."
+        >
+          <Card
+            tone="default"
+            className="border-[rgba(184,137,67,0.18)] bg-white p-4 shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0"
+          >
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-7">
+              {journeySteps.map((step, index) => (
+                <div
+                  key={step}
+                  className="rounded-[1rem] border border-[rgba(184,137,67,0.16)] bg-[rgba(255,250,240,0.52)] px-3 py-3"
+                >
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[rgba(184,137,67,0.3)] bg-white text-[0.72rem] font-semibold text-[color:var(--color-accent-strong)]">
+                    {index + 1}
+                  </span>
+                  <p className="mt-3 text-[0.78rem] font-medium leading-[1.45] text-[color:var(--color-ink-strong)]">
+                    {step}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </Section>
+
+        <Section
+          tone="transparent"
+          category="ai"
+          eyebrow="Ask NI Support"
+          title="Use Ask NI to understand remedy categories before expert review."
+          description="Ask NI can explain remedy categories, mantra meanings, daan concepts, timing context, and what to discuss before expert guidance."
+        >
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(280px,1.1fr)]">
+            <Card
+              tone="accent"
+              className="space-y-4 border-[rgba(19,211,224,0.22)] bg-white shadow-[0_14px_34px_rgba(19,211,224,0.08)] before:opacity-0"
+            >
+              <Badge tone="accent">Ask NI</Badge>
+              <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-ink-strong)]">
+                NAVAGRAHA Intelligence can help prepare better questions.
+              </h2>
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                Ask NI helps users understand remedy categories, timing layers, and preparation points. Final personalized direction should remain human-reviewed.
+              </p>
+              <TrackedLink
+                href="/ai"
+                eventName="cta_click"
+                eventPayload={{ page: "/remedies", feature: "remedies-ask-ni-panel" }}
+                className={buttonStyles({
+                  size: "lg",
+                  tone: "ni",
+                  className: "w-full justify-center sm:w-auto",
+                })}
+              >
+                Ask NI
+              </TrackedLink>
             </Card>
 
             <Card
-              tone="accent"
-              className="space-y-4 border-[rgba(184,137,67,0.2)] bg-white shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0"
+              tone="default"
+              className="space-y-4 border-[rgba(111,78,48,0.2)] bg-white shadow-[0_14px_34px_rgba(111,78,48,0.06)] before:opacity-0"
             >
-              <Badge tone="accent">Safe Empty State</Badge>
+              <Badge
+                tone="trust"
+                className="border border-[rgba(111,78,48,0.22)] bg-[rgba(111,78,48,0.06)] text-[#6f4e30]"
+              >
+                J P Sarmah Authority
+              </Badge>
+              <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-ink-strong)]">
+                Remedies should not be selected from one factor alone.
+              </h2>
               <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                Personalized remedy analysis preparing. The page stays calm and transparent until a protected chart context is connected.
+                A responsible Vedic remedy path should consider Kundli, Dosha, Dasha, Transit, practical life context, and expert judgement under the guidance of J P Sarmah.
               </p>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="rounded-[var(--radius-xl)] border border-[rgba(184,137,67,0.18)] bg-white p-4">
-                  <p className="text-[0.68rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
-                    Remedy engine
-                  </p>
-                  <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                    Existing remedy logic remains deeper in the platform, but this public page only shows safe preparation states.
-                  </p>
-                </div>
-                <div className="rounded-[var(--radius-xl)] border border-[rgba(184,137,67,0.18)] bg-white p-4">
-                  <p className="text-[0.68rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
-                    Safety
-                  </p>
-                  <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                    No raw chart JSON, private data, or fear-based remedy claims are shown on this public route.
-                  </p>
-                </div>
-              </div>
             </Card>
           </div>
         </Section>
@@ -452,98 +637,77 @@ export default async function RemediesPage() {
         <Section
           tone="transparent"
           category="utilities"
-          eyebrow="Shop CTA Readiness"
-          title="Live shop categories are linked only where real products already exist."
-          description="No product names, prices, or availability are invented here. The page only points into the current catalog structure."
+          eyebrow="Reports / Consultation / Shop Bridge"
+          title="Move into deeper support without sales pressure."
+          description="Reports, consultation, sacred item guidance, Kundli, and tools remain soft public paths. This page does not create item instructions or transaction flows."
         >
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {shopCategorySummaries.map((summary) => (
-              <ShopConnectionCard
-                key={summary.key}
-                title={summary.label}
-                description={summary.description}
-                href={`/shop#${summary.anchorId}`}
-                count={shopCategoryCountByKey.get(summary.key) ?? 0}
-              />
+          <div className="grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-5">
+            {supportCards.map((card) => (
+              <SupportCard key={card.title} card={card} />
             ))}
-          </div>
-        </Section>
-
-        <Section
-          tone="muted"
-          category="utilities"
-          eyebrow="Linked Remedies"
-          title="Existing remedy-linked products stay connected to the live catalog."
-          description="These are actual catalog links only, not fabricated remedy products or prices."
-        >
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {Array.from(relatedShopByRemedy.values())
-              .flat()
-              .slice(0, 6)
-              .map((product) => (
-                <Card
-                  key={product.slug}
-                  tone="default"
-                  className="flex h-full flex-col gap-3 border-black/8 bg-white p-4 shadow-[0_12px_28px_rgba(17,24,39,0.04)] before:opacity-0"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="space-y-1">
-                      <p className="text-[0.68rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
-                        Related Product
-                      </p>
-                      <h3 className="text-[length:var(--font-size-body-lg)] font-semibold text-[color:var(--color-ink-strong)]">
-                        {product.name}
-                      </h3>
-                    </div>
-                    <Badge tone="trust">{product.categoryLabel}</Badge>
-                  </div>
-                  <p className="text-[0.88rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                    {product.summary}
-                  </p>
-                  <p className="text-[0.72rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
-                    {product.priceLabel}
-                  </p>
-                  <TrackedLink
-                    href={product.href}
-                    eventName="shop_interaction"
-                    eventPayload={{ page: "/remedies", feature: `remedies-linked-${product.slug}` }}
-                    className={buttonStyles({
-                      size: "sm",
-                      tone: "secondary",
-                      className: "w-full justify-center",
-                    })}
-                  >
-                    View Product
-                  </TrackedLink>
-                </Card>
-              ))}
           </div>
         </Section>
 
         <Section
           tone="light"
-          category="utilities"
-          eyebrow="Next Actions"
-          title="Continue into the right layer when you want more context."
-          description="Use the public remedy page as an optional support layer, then move into chart, report, or human-guided review as needed."
+          category="content"
+          eyebrow="Navigation / Path Safety"
+          title="Continue through safe public guidance paths."
+          description="Use these public routes for related context without exposing protected dashboards or transaction-style flows."
         >
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            {nextActions.map((cta) => (
+          <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {navLinks.map((link) => (
               <TrackedLink
-                key={cta.label}
-                href={cta.href}
+                key={link.label}
+                href={link.href}
                 eventName="cta_click"
-                eventPayload={{ page: "/remedies", feature: cta.feature }}
-                className={buttonStyles({
-                  size: "lg",
-                  tone: cta.tone,
-                  className: "w-full justify-center",
-                })}
+                eventPayload={{ page: "/remedies", feature: `remedies-path-${link.label}` }}
+                className="shrink-0 rounded-full border border-[rgba(184,137,67,0.18)] bg-white px-4 py-2 text-[0.78rem] font-semibold text-[color:var(--color-ink-strong)] shadow-[0_8px_22px_rgba(17,24,39,0.04)] transition hover:border-[rgba(184,137,67,0.34)] hover:text-[color:var(--color-accent-strong)]"
               >
-                {cta.label}
+                {link.label}
               </TrackedLink>
             ))}
           </div>
+        </Section>
+
+        <Section
+          tone="transparent"
+          category="content"
+          eyebrow="Trust / Safety Note"
+          title="Remedy guidance stays responsible and non-pressured."
+          description="No personal chart output, saved birth context, or transaction-style flow is exposed here. Use verified Kundli context and human-reviewed guidance for sensitive decisions."
+        >
+          <Card
+            tone="default"
+            className="border-[rgba(184,137,67,0.18)] bg-white p-5 shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0"
+          >
+            <div className="grid gap-4 md:grid-cols-3">
+              <div className="space-y-2">
+                <Badge tone="outline" className="border border-black/8 bg-white">
+                  Guidance-first
+                </Badge>
+                <p className="text-[0.88rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                  The page explains remedy categories and does not declare a personal remedy.
+                </p>
+              </div>
+              <div className="space-y-2">
+                <Badge tone="outline" className="border border-black/8 bg-white">
+                  Context-aware
+                </Badge>
+                <p className="text-[0.88rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                  Kundli, Dosha, Dasha, Transit, and Panchang context should be reviewed together.
+                </p>
+              </div>
+              <div className="space-y-2">
+                <Badge tone="outline" className="border border-black/8 bg-white">
+                  Calm support
+                </Badge>
+                <p className="text-[0.88rem] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                  Remedies are presented as spiritual support, not as instant solution promises.
+                </p>
+              </div>
+            </div>
+          </Card>
         </Section>
       </main>
     </>
