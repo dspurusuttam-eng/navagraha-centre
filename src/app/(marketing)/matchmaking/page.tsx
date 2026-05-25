@@ -12,7 +12,7 @@ import { createToolMetadata } from "@/lib/seo/metadata";
 const matchmakingIntroCtas = [
   {
     href: "#matchmaking-structure",
-    label: "Start Matchmaking",
+    label: "Match Two Kundlis",
     feature: "matchmaking-hero-start",
     tone: "accent" as const,
   },
@@ -24,7 +24,7 @@ const matchmakingIntroCtas = [
   },
   {
     href: "/kundli",
-    label: "Open Kundli",
+    label: "Start with Kundli",
     feature: "matchmaking-hero-open-kundli",
     tone: "secondary" as const,
   },
@@ -36,7 +36,7 @@ const matchmakingIntroCtas = [
   },
   {
     href: "/consultation",
-    label: "Book Consultation",
+    label: "Consultation Support",
     feature: "matchmaking-hero-book-consultation",
     tone: "secondary" as const,
   },
@@ -44,7 +44,7 @@ const matchmakingIntroCtas = [
 
 const matchmakingStructureCards = [
   {
-    title: "Kundli Matching",
+    title: "Kundli Milan",
     label: "Chart pairing",
     description:
       "Matchmaking begins with two verified birth-chart foundations, not public placeholder verdicts.",
@@ -56,40 +56,34 @@ const matchmakingStructureCards = [
       "The public page stays structure-only until protected chart pairing can produce real Guna output.",
   },
   {
-    title: "Manglik / Dosha Check",
+    title: "Manglik Check",
     label: "Compatibility caution",
     description:
       "Dosha-sensitive comparison must come from verified chart context, not from manually written labels.",
   },
   {
-    title: "Emotional Compatibility",
+    title: "Compatibility Factors",
     label: "Relationship context",
     description:
-      "Emotional harmony belongs in chart-aware interpretation, not a fabricated percentage score.",
+      "Emotional, family, and practical harmony belong in chart-aware interpretation, not a public percentage score.",
   },
   {
-    title: "Family & Marriage Harmony",
+    title: "Family Guidance",
     label: "Practical guidance",
     description:
-      "The page frames relationship readiness calmly without promising an outcome or guarantee.",
+      "The page frames relationship readiness calmly without promising an outcome.",
+  },
+  {
+    title: "Consultation Support",
+    label: "Human review",
+    description:
+      "Sensitive relationship questions can move into human review without exposing private chart data publicly.",
   },
   {
     title: "Timing Guidance",
     label: "Marriage timing",
     description:
       "Timing context should connect with Kundli, Dasha, and Muhurat when protected data is ready.",
-  },
-  {
-    title: "Report Support",
-    label: "Deeper review",
-    description:
-      "Structured reports remain the route-safe path for deeper compatibility review.",
-  },
-  {
-    title: "Consultation Support",
-    label: "Human review",
-    description:
-      "Sensitive relationship questions can move into consultation without exposing private chart data publicly.",
   },
 ] as const;
 
@@ -110,7 +104,7 @@ const matchmakingReadinessCards = [
     title: "Guna score output",
     status: "Hidden safely",
     description:
-      "No fake Guna Milan score, partial points, or public numeric verdict appears here.",
+      "No invented Guna Milan score, partial points, or public numeric verdict appears here.",
   },
   {
     title: "Manglik comparison",
@@ -122,7 +116,7 @@ const matchmakingReadinessCards = [
     title: "Compatibility summary",
     status: "Safe mode",
     description:
-      "The page avoids fake harmony percentages, certainty claims, or marriage guarantees.",
+      "The page avoids invented harmony percentages, certainty claims, or marriage-outcome promises.",
   },
   {
     title: "Private chart continuity",
@@ -137,7 +131,7 @@ const matchmakingShortcutCards = [
     title: "Kundli",
     href: "/kundli",
     icon: "KU",
-    ctaLabel: "Open Kundli",
+    ctaLabel: "Start with Kundli",
     feature: "matchmaking-shortcut-kundli",
     description: "Start from the natal chart before reading compatibility.",
   },
@@ -152,10 +146,10 @@ const matchmakingShortcutCards = [
   {
     title: "Consultation",
     href: "/consultation",
-    icon: "CS",
-    ctaLabel: "Book Consultation",
+    icon: "JP",
+    ctaLabel: "Consultation Support",
     feature: "matchmaking-shortcut-consultation",
-    description: "Move into human-led review for sensitive marriage questions.",
+    description: "Move into human-led review with J P Sarmah for sensitive marriage questions.",
   },
   {
     title: "Ask NI",
@@ -179,7 +173,7 @@ const matchmakingShortcutCards = [
     icon: "RE",
     ctaLabel: "Open Remedies",
     feature: "matchmaking-shortcut-remedies",
-    description: "Keep remedies practical and route-safe without fear-based claims.",
+    description: "Keep remedies practical and route-safe without pressure-based claims.",
   },
   {
     title: "Muhurat",
@@ -218,9 +212,9 @@ const guidanceCards = [
 ] as const;
 
 export const metadata = createToolMetadata({
-  title: "Matchmaking / Guna Milan",
+  title: "Matchmaking / Kundli Milan",
   description:
-    "Explore a safe Matchmaking foundation for Kundli matching, Guna Milan, relationship compatibility, and Vedic marriage guidance without fake public scores.",
+    "Explore a safe Matchmaking foundation for Kundli Milan, Guna Milan, relationship compatibility, and Vedic marriage guidance without invented public scores.",
   path: "/matchmaking",
   keywords: [
     "matchmaking",
@@ -318,7 +312,7 @@ function MatchmakingShortcutCard({
       <Card
         tone="default"
         interactive
-        className="flex h-full min-h-[12rem] flex-col gap-3 border-black/8 bg-white p-4 shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0 hover:border-[rgba(184,137,67,0.28)]"
+        className="flex h-full min-h-[12rem] flex-col gap-3 border-black/8 bg-white p-4 shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0 hover:border-[rgba(190,104,118,0.32)]"
       >
         <div className="flex items-start gap-3">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[rgba(184,137,67,0.28)] bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.98)_0%,rgba(247,234,204,0.92)_72%,rgba(238,214,166,0.88)_100%)] text-[0.68rem] font-semibold uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)] shadow-[0_10px_22px_rgba(121,85,33,0.12)]">
@@ -361,19 +355,35 @@ export default function MatchmakingPage() {
         payload={{ page: "/matchmaking", feature: "matchmaking-page" }}
       />
 
-      <main className="launch-page launch-page-matchmaking min-h-screen bg-[linear-gradient(180deg,#fffefb_0%,#ffffff_28%,#fbf6ed_100%)] pb-[calc(7.2rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] xl:pb-0">
-        <section className="border-b border-[rgba(155,122,74,0.16)] bg-[linear-gradient(180deg,#fffefb_0%,#ffffff_100%)]">
+      <main className="launch-page launch-page-matchmaking min-h-screen bg-white pb-[calc(7.2rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] xl:pb-0">
+        <section className="relative overflow-hidden border-b border-[rgba(155,122,74,0.16)] bg-white">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute right-[-4.5rem] top-8 hidden h-64 w-64 rounded-full border border-[rgba(184,137,67,0.18)] md:block"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute right-24 top-20 hidden h-52 w-52 rounded-full border border-dashed border-[rgba(190,104,118,0.28)] md:block"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute right-36 top-36 hidden h-20 w-20 rounded-full border border-[rgba(19,211,224,0.16)] md:block"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute right-24 top-36 hidden h-2.5 w-2.5 rounded-full bg-[rgba(184,137,67,0.72)] shadow-[0_0_22px_rgba(184,137,67,0.22)] md:block"
+          />
           <Container className="grid gap-6 py-8 sm:py-10 lg:grid-cols-[minmax(0,1.04fr)_minmax(300px,0.96fr)] lg:items-center lg:py-12">
             <div className="space-y-4 sm:space-y-5">
               <div className="flex flex-wrap gap-2">
-                <Badge tone="trust" className="border border-black/8 bg-white">
-                  Matchmaking
+                <Badge tone="trust" className="border border-[rgba(190,104,118,0.26)] bg-[rgba(190,104,118,0.08)] text-[#5b2624]">
+                  Vedic Matchmaking · Vedic Shaadi
                 </Badge>
                 <Badge
                   tone="outline"
                   className="border border-black/8 bg-white text-[color:var(--color-ink-strong)]"
                 >
-                  Kundli Matching
+                  Kundli Milan
                 </Badge>
                 <Badge
                   tone="outline"
@@ -391,10 +401,10 @@ export default function MatchmakingPage() {
                     lineHeight: "var(--line-height-tight)",
                   }}
                 >
-                  Matchmaking
+                  Matchmaking - Kundli Milan Dashboard
                 </h1>
                 <p className="max-w-[48rem] text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)] sm:text-[length:var(--font-size-body-lg)]">
-                  Kundli matching, Guna Milan, relationship compatibility, and Vedic marriage guidance presented through a calm, privacy-safe public foundation.
+                  Compare Kundli Milan structure, Guna Milan readiness, Manglik context, reports, consultation support, and Ask NI guidance without public partner data exposure.
                 </p>
               </div>
 
@@ -418,11 +428,11 @@ export default function MatchmakingPage() {
 
               <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 {[
-                  "Chart pairing",
+                  "Match Two Kundlis",
                   "Guna Milan",
                   "Dosha check",
-                  "Timing guidance",
-                  "Ask NI follow-up",
+                  "Family guidance",
+                  "Ask NI context",
                 ].map((label) => (
                   <Badge
                     key={label}
@@ -437,7 +447,7 @@ export default function MatchmakingPage() {
 
             <Card
               tone="default"
-              className="space-y-4 border-[rgba(155,122,74,0.18)] bg-white shadow-[0_18px_46px_rgba(17,24,39,0.06)] before:opacity-0"
+              className="space-y-4 border-[rgba(190,104,118,0.2)] bg-white shadow-[0_18px_46px_rgba(91,38,36,0.08)] before:opacity-0"
             >
               <div className="flex items-center justify-between gap-3">
                 <Badge tone="trust" className="border border-black/8 bg-white">
@@ -455,10 +465,10 @@ export default function MatchmakingPage() {
                 <UtilityIcon name="compatibility" className="h-16 w-16 shrink-0" />
                 <div className="space-y-2">
                   <h2 className="text-[length:var(--font-size-title-sm)] font-semibold text-[color:var(--color-ink-strong)]">
-                    Begin with two verified birth foundations, not a public score.
+                    Match Two Kundlis starts with verified chart context.
                   </h2>
                   <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                    This page does not invent compatibility percentages, Guna Milan points, dosha verdicts, or marriage outcomes. It prepares the route-safe structure before deeper protected comparison.
+                    This page does not invent compatibility percentages, Guna Milan points, dosha verdicts, or marriage outcomes. It keeps the route-safe structure visible before deeper protected comparison.
                   </p>
                 </div>
               </div>
@@ -495,11 +505,11 @@ export default function MatchmakingPage() {
 
         <Section
           id="matchmaking-structure"
-          tone="light"
+          tone="transparent"
           category="utilities"
-          eyebrow="Matchmaking Structure"
-          title="Read the compatibility layers without fabricated scores or partner verdicts."
-          description="These cards show the structure of the Matchmaking flow while keeping all scoring, partner data, and prediction layers frozen."
+          eyebrow="Navigation Rail"
+          title="Matchmaking quick access without invented scores."
+          description="These cards show the Kundli Milan flow while keeping scores, partner data, and prediction layers frozen until verified context exists."
         >
           <div className="grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-4">
             {matchmakingStructureCards.map((item) => (
@@ -516,8 +526,8 @@ export default function MatchmakingPage() {
         <Section
           tone="transparent"
           category="utilities"
-          eyebrow="Readiness"
-          title="The public flow stays honest about what must exist before compatibility appears."
+          eyebrow="Vedic Matchmaking Journey"
+          title="Compatibility output remains private until both chart foundations are ready."
           description="Birth context, protected chart pairing, and private comparison remain separate from the public shell."
         >
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1.02fr)_minmax(280px,0.98fr)]">
@@ -533,7 +543,7 @@ export default function MatchmakingPage() {
                   Matchmaking output stays hidden until both chart foundations are ready.
                 </h2>
                 <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                  The page keeps structure visible while withholding fake Guna scores, dosha verdicts, and partner-level conclusions.
+                  The page keeps structure visible while withholding invented Guna scores, dosha verdicts, and partner-level conclusions.
                 </p>
               </div>
 
@@ -551,7 +561,7 @@ export default function MatchmakingPage() {
 
             <Card
               tone="accent"
-              className="space-y-4 border-[rgba(184,137,67,0.2)] bg-white shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0"
+              className="space-y-4 border-[rgba(19,211,224,0.22)] bg-white shadow-[0_14px_34px_rgba(19,211,224,0.08)] before:opacity-0"
             >
               <Badge tone="accent">Safe Public Guidance</Badge>
               <div className="space-y-2">
@@ -559,7 +569,7 @@ export default function MatchmakingPage() {
                   Ask NI for context, then move into reports or consultation when the question becomes personal.
                 </h2>
                 <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                  NAVAGRAHA Intelligence is AI-guided assistance for understanding compatibility themes. Joy Prakash Sarmah remains the human authority for careful interpretation.
+                  Ask NI is powered by NAVAGRAHA Intelligence and helps users understand compatibility themes, Guna Milan context, Manglik questions, and next-step preparation. It is assistance, not a replacement for J P Sarmah.
                 </p>
               </div>
 
@@ -608,7 +618,7 @@ export default function MatchmakingPage() {
                     className: "w-full justify-center",
                   })}
                 >
-                  Book Consultation
+                  Consultation Support
                 </TrackedLink>
               </div>
             </Card>
@@ -616,11 +626,11 @@ export default function MatchmakingPage() {
         </Section>
 
         <Section
-          tone="light"
+          tone="transparent"
           category="utilities"
-          eyebrow="Route-safe Shortcuts"
+          eyebrow="Reports / Consultation Support"
           title="Continue into the right compatibility support surface."
-          description="These shortcuts stay on existing public routes and avoid fake compatibility outputs."
+          description="These shortcuts stay on existing public routes and avoid invented compatibility outputs."
         >
           <div className="grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-4">
             {matchmakingShortcutCards.map((shortcut) => (
@@ -632,23 +642,23 @@ export default function MatchmakingPage() {
         <Section
           tone="transparent"
           category="content"
-          eyebrow="Trust & Conversion"
-          title="Use structured support when the relationship question needs a deeper reading."
-          description="Reports and consultation are the route-safe next steps when compatibility needs chart-aware interpretation."
+          eyebrow="Trust & Support"
+          title="Use structured support when the relationship question needs deeper review."
+          description="Reports and consultation support are the route-safe next steps when compatibility needs chart-aware interpretation."
         >
           <Card
             tone="default"
             className="flex flex-col gap-4 border-[rgba(184,137,67,0.2)] bg-white p-5 shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0 sm:flex-row sm:items-center sm:justify-between"
           >
             <div className="max-w-2xl space-y-2">
-              <Badge tone="trust" className="border border-black/8 bg-white">
+              <Badge tone="trust" className="border border-[rgba(91,38,36,0.22)] bg-[rgba(91,38,36,0.06)] text-[#5b2624]">
                 J P Sarmah Desk
               </Badge>
               <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-ink-strong)]">
-                Keep compatibility decisions grounded in verified chart context.
+                J P Sarmah remains the human authority.
               </h2>
               <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                This page does not promise marriage success, urgent certainty, or a public compatibility guarantee. Use reports or consultation when the question needs careful human review.
+                This page does not promise marriage success, urgent certainty, or public compatibility verdicts. Use reports or consultation support when the question needs careful human review.
               </p>
             </div>
             <div className="flex w-full flex-col gap-2 sm:w-auto sm:min-w-[13rem]">
@@ -677,7 +687,7 @@ export default function MatchmakingPage() {
                   className: "w-full justify-center",
                 })}
               >
-                Book Consultation
+                Consultation Support
               </TrackedLink>
             </div>
           </Card>
