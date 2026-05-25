@@ -212,7 +212,7 @@ const guidanceCards = [
 ] as const;
 
 export const metadata = createToolMetadata({
-  title: "Matchmaking / Kundli Milan",
+  title: "Kundli Matchmaking",
   description:
     "Explore a safe Matchmaking foundation for Kundli Milan, Guna Milan, relationship compatibility, and Vedic marriage guidance without invented public scores.",
   path: "/matchmaking",
@@ -401,7 +401,7 @@ export default function MatchmakingPage() {
                     lineHeight: "var(--line-height-tight)",
                   }}
                 >
-                  Matchmaking - Kundli Milan Dashboard
+                  Kundli Matchmaking
                 </h1>
                 <p className="max-w-[48rem] text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)] sm:text-[length:var(--font-size-body-lg)]">
                   Compare Kundli Milan structure, Guna Milan readiness, Manglik context, reports, consultation support, and Ask NI guidance without public partner data exposure.
