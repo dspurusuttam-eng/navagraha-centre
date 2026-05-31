@@ -5,7 +5,6 @@ import { LanguageSwitcher } from "@/components/site/language-switcher";
 import { NavigationLink } from "@/components/site/navigation-link";
 import { ToolsMegaMenu } from "@/components/site/tools-mega-menu";
 import { buildLocalizedToolsNavigation } from "@/components/site/tools-navigation-data";
-import { buttonStyles } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { defaultLocale } from "@/modules/localization/config";
 import { getGlobalCopyBundleForLocale } from "@/modules/localization/copy";
@@ -86,7 +85,7 @@ export async function Header() {
         </Container>
       </div>
 
-      <Container className="py-3">
+      <Container className="!px-1 py-3 sm:!px-8 lg:!px-10">
         <div className="hidden items-center gap-4 xl:flex">
           <Link
             href={localizeHref("/")}
@@ -116,42 +115,17 @@ export async function Header() {
           </nav>
         </div>
 
-        <div className="grid grid-cols-[minmax(0,1fr)_auto_auto_auto] items-center gap-1.5 xl:hidden">
-          <Link
-            href={localizeHref("/")}
-            className="min-w-0 shrink-0 transition [transition-duration:var(--motion-duration-base)] hover:opacity-90"
-          >
-            <NavagrahaLogo variant="mobile" priority />
-          </Link>
-
-          <TrackedLink
-            href={localizeHref("/ai")}
-            eventName="premium_ai_cta_click"
-            eventPayload={{ page: "global-header-mobile", feature: "header-ask-ni" }}
-            className={buttonStyles({
-              tone: "ni",
-              size: "sm",
-              className: "shrink-0 px-2.5 text-[0.64rem] sm:px-3",
-            })}
-          >
-            <span>Ask NI</span>
-          </TrackedLink>
-
-          <LanguageSwitcher variant="compact" />
-
-          <details className="group relative justify-self-end">
+        <div className="flex w-full items-center gap-1 overflow-hidden xl:hidden sm:gap-1.5">
+          <details className="group relative shrink-0">
             <summary
               aria-label={copy.navigation.menu}
-              className={buttonStyles({
-                tone: "ghost",
-                size: "sm",
-                className:
-                  "shrink-0 cursor-pointer list-none whitespace-nowrap border border-black/10 bg-white px-3 text-[color:var(--color-ink-strong)] marker:content-none sm:px-4 [&::-webkit-details-marker]:hidden",
-              })}
+              className="flex h-8 w-[1.65rem] cursor-pointer list-none items-center justify-center rounded-full border border-black/10 bg-white text-[#050505] shadow-[0_6px_16px_rgba(5,5,5,0.06)] marker:content-none [&::-webkit-details-marker]:hidden"
             >
-              {copy.navigation.menu}
+              <span aria-hidden="true" className="text-[0.85rem] leading-none text-[#050505]">
+                {"\u2630"}
+              </span>
             </summary>
-            <div className="absolute top-[calc(100%+0.6rem)] max-h-[calc(100vh-5.5rem)] w-[min(calc(100vw-2rem),23rem)] overflow-y-auto rounded-[var(--radius-xl)] border border-[rgba(185,139,70,0.3)] bg-white p-3 shadow-[var(--shadow-md)] [inset-inline-end:0]">
+            <div className="absolute top-[calc(100%+0.6rem)] z-30 max-h-[calc(100vh-5.5rem)] w-[min(calc(100vw-2rem),23rem)] overflow-y-auto rounded-[var(--radius-xl)] border border-[rgba(185,139,70,0.3)] bg-white p-3 shadow-[var(--shadow-md)] [inset-inline-start:0]">
               <nav aria-label="Mobile navigation" className="grid gap-4">
                 <div className="grid gap-2">
                   <p className="px-3 text-[0.64rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-antique-gold-dark)]">
@@ -179,6 +153,35 @@ export async function Header() {
               </nav>
             </div>
           </details>
+
+          <Link
+            href={localizeHref("/")}
+            className="block min-w-0 overflow-hidden transition [transition-duration:var(--motion-duration-base)] hover:opacity-90"
+          >
+            <span className="block overflow-hidden whitespace-nowrap text-[0.32rem] font-semibold uppercase leading-none tracking-[0.01em] text-[#050505] min-[390px]:text-[0.37rem] sm:text-[0.64rem] sm:tracking-[0.12em]">
+              NAVAGRAHA CENTRE
+            </span>
+          </Link>
+
+          <div className="flex shrink-0 items-center gap-[0.35rem]">
+            <TrackedLink
+              href={localizeHref("/ai")}
+              eventName="premium_ai_cta_click"
+              eventPayload={{ page: "global-header-mobile", feature: "header-ask-ni" }}
+              className="inline-flex h-7 w-10 shrink-0 items-center justify-center whitespace-nowrap rounded-full border border-[color:var(--button-cta-ni-border)] bg-[image:var(--button-cta-ni-bg)] px-1 text-[0.42rem] font-medium tracking-[0] text-[color:var(--button-cta-ni-text)] shadow-none sm:h-8 sm:w-auto sm:px-2 sm:text-[0.56rem] sm:shadow-[0_10px_24px_rgba(0,109,255,0.18)]"
+            >
+              <span>Ask NI</span>
+            </TrackedLink>
+
+            <div className="relative z-10 flex h-7 w-8 shrink-0 items-center justify-center rounded-full border border-black/15 bg-white shadow-[0_6px_16px_rgba(5,5,5,0.06)] sm:h-8 sm:w-[2rem]">
+              <div className="absolute inset-0 [&_summary]:flex [&_summary]:h-7 [&_summary]:w-8 [&_summary]:items-center [&_summary]:justify-center [&_summary]:rounded-full [&_summary]:px-0 [&_summary]:text-transparent [&_summary]:marker:content-none [&_summary]:[-webkit-tap-highlight-color:transparent] [&_summary::-webkit-details-marker]:hidden sm:[&_summary]:h-8 sm:[&_summary]:w-[2rem]">
+                <span className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center whitespace-nowrap text-[0.5rem] font-semibold uppercase tracking-[0] text-[#050505] sm:text-[0.5rem]">
+                  {requestLocale.toUpperCase()}
+                </span>
+                <LanguageSwitcher variant="compact" />
+              </div>
+            </div>
+          </div>
         </div>
       </Container>
     </header>

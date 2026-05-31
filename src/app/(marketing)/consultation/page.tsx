@@ -308,7 +308,7 @@ export default async function ConsultationPage() {
                   </div>
                 </div>
 
-                <div className="grid gap-3 min-[390px]:grid-cols-2 sm:flex sm:flex-wrap">
+                <div className="flex flex-col gap-3 min-[430px]:grid min-[430px]:grid-cols-2 sm:flex sm:flex-wrap">
                   {heroActions.map((action) => (
                     <TrackedLink
                       key={action.label}
