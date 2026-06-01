@@ -1,30 +1,55 @@
 import Link from "next/link";
 import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
-import { GemstoneGuidanceCTA } from "@/components/monetization/GemstoneGuidanceCTA";
-import { SponsoredDisclosure } from "@/components/monetization/SponsoredDisclosure";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
-import { TrackedLink } from "@/components/analytics/tracked-link";
 import { JsonLd } from "@/components/seo/json-ld";
 import { createToolMetadata } from "@/lib/seo/metadata";
 import { getCoreSeoCopy } from "@/lib/seo/seo-config";
 import { createBreadcrumbSchema, createServiceSchema } from "@/lib/seo/schema";
-import { Badge } from "@/components/ui/badge";
-import { buttonStyles } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Section } from "@/components/ui/section";
-import { SpiritualShopGraphic } from "@/components/graphics/service-graphics";
-import { EditorialPlaceholder } from "@/components/site/editorial-placeholder";
-import { PageHero } from "@/components/site/page-hero";
 import {
   getRequestLocale,
   hasExplicitLocalePrefixInRequest,
 } from "@/modules/localization/request";
-import { ProductCard } from "@/modules/shop/components/product-card";
-import {
-  getShopCategorySummaries,
-  getShopProductsByCategory,
-  listFeaturedShopProducts,
-} from "@/modules/shop";
+
+const filterTabs = ["All", "Items", "Services", "Reports", "Janam Patrika"];
+
+const trustPoints = [
+  "Vedic Guidance First",
+  "Consult Before Choosing",
+  "Safe Remedy Awareness",
+  "Ethical Support",
+];
+
+const categories = [
+  "Gemstone",
+  "Rudraksha",
+  "Mala",
+  "Kavacham",
+  "Yantra",
+  "Bracelet",
+  "Puja and Yagya",
+  "Reports",
+  "Janam Patrika",
+];
+
+const safetyPoints = [
+  "No Guaranteed Outcome Claims",
+  "Consultation Recommended",
+  "Use with Faith & Discipline",
+  "Secure & Ethical Practices",
+];
+
+const supportRoutes = [
+  { label: "Consultation", href: "/consultation" },
+  { label: "Reports", href: "/reports" },
+  { label: "Learn", href: "/articles" },
+  { label: "Tools", href: "/tools" },
+];
+
+const baseButtonClass =
+  "inline-flex min-h-11 items-center justify-center rounded-full border border-[#111111] bg-white px-5 py-2 text-center text-sm font-semibold text-[#111111] transition hover:bg-[#111111] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c7a95d]";
+
+const quietButtonClass =
+  "inline-flex min-h-11 items-center justify-center rounded-full border border-[#d8c47a] bg-white px-5 py-2 text-center text-sm font-semibold text-[#111111] transition hover:border-[#111111] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c7a95d]";
 
 export async function generateMetadata() {
   const locale = await getRequestLocale();
@@ -38,18 +63,14 @@ export async function generateMetadata() {
     locale,
     explicitLocalePrefix: hasExplicitLocalePrefix,
     keywords: [
-      "astrology shop",
+      "vedic shop",
       "gemstones",
       "rudraksha",
-      "spiritual products",
-      "gemstone guidance",
+      "puja guidance",
+      "janam patrika",
     ],
   });
 }
-
-const featuredProducts = listFeaturedShopProducts();
-const categorySummaries = getShopCategorySummaries();
-const productsByCategory = getShopProductsByCategory();
 
 export default async function ShopPage() {
   const locale = await getRequestLocale();
@@ -64,12 +85,12 @@ export default async function ShopPage() {
       ],
     }),
     createServiceSchema({
-      name: "Gemstone and Spiritual Product Guidance",
+      name: "Vedic Shop Guidance",
       description:
-        "Explore gemstones, rudraksha, and spiritual products with calm, chart-aware guidance from NAVAGRAHA CENTRE.",
+        "Sacred Vedic item, report, Janam Patrika, Puja, and consultation-linked guidance from NAVAGRAHA CENTRE.",
       path: "/shop",
       locale,
-      serviceType: "Spiritual Product Guidance",
+      serviceType: "Vedic Commerce Guidance",
     }),
   ];
 
@@ -82,224 +103,236 @@ export default async function ShopPage() {
         payload={{ page: "/shop", feature: "shop-page" }}
       />
 
-      <main className="launch-page launch-page-shop">
-      <PageHero
-        eyebrow="Spiritual Shop"
-        title="Optional spiritual products, presented with care and restraint."
-        description="Explore Rudraksha, gemstones, yantras, malas, idols, and practice companions as supportive spiritual products, never as fear-based remedies or guaranteed outcomes."
-        highlights={[
-          "Curated categories with calm product education and availability review",
-          "Inquiry-first product path without rushed conversion language",
-          "Gemstone and remedy products positioned as consultation-led support",
-        ]}
-        note="The catalog language stays transparent on purpose: spiritual products can support a practice, but they do not replace discernment, consultation, or practical judgment."
-        primaryAction={{ href: "#featured-edit", label: "Browse Vedic Categories" }}
-        secondaryAction={{
-          href: "/consultation",
-          label: "Consultation Support",
-          tone: "secondary",
-        }}
-        supportTitle="Shop Trust Markers"
-      />
-
-      <Section
-        category="services"
-        eyebrow="Service Separation"
-        title="Shop products remain separate from astrology service access."
-        description="Reports, consultations, and NAVAGRAHA Intelligence remain separate from product inquiries. The shop is intentionally positioned as an optional spiritual add-on layer."
-        tone="light"
-      >
-        <Card tone="light" className="service-card space-y-4">
-          <SpiritualShopGraphic className="h-24" />
-          <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-            Start with your chart and guidance journey first. Add spiritual products only when they align with your practice and personal intent.
-          </p>
-          <div className="flex flex-wrap gap-3">
-            <TrackedLink
-              href="/reports"
-              eventName="shop_interaction"
-              eventPayload={{ page: "/shop", feature: "shop-to-reports" }}
-              className={buttonStyles({ size: "sm", tone: "secondary" })}
-            >
-              View Report Options
-            </TrackedLink>
-            <TrackedLink
-              href="/consultation"
-              eventName="shop_interaction"
-              eventPayload={{ page: "/shop", feature: "shop-to-consultation" }}
-              className={buttonStyles({ size: "sm", tone: "tertiary" })}
-            >
-              Consultation Support
-            </TrackedLink>
-            <TrackedLink
-              href="/ai"
-              eventName="shop_interaction"
-              eventPayload={{ page: "/shop", feature: "shop-to-ai" }}
-              className={buttonStyles({ size: "sm", tone: "ni" })}
-            >
-              Ask NI
-            </TrackedLink>
-          </div>
-        </Card>
-      </Section>
-
-      <Section
-        category="services"
-        eyebrow="Categories"
-        title="Browse by spiritual format, not by urgency."
-        description="Each category has its own tone, material logic, and role within a disciplined practice. The merchandising stays calm so clients can move with clarity."
-      >
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {categorySummaries.map((category) => (
-            <Link
-              key={category.key}
-              href={`#${category.anchorId}`}
-              className="service-offering-card rounded-[var(--radius-2xl)] border px-5 py-5 transition [transition-duration:var(--motion-duration-base)] hover:border-[color:var(--color-border-strong)] hover:bg-[rgba(255,255,255,0.96)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--color-bg-ivory)]"
-            >
-              <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-                {category.label}
+      <main className="bg-white text-[#111111]">
+        <section className="mx-auto flex w-full max-w-7xl flex-col gap-7 px-4 pb-8 pt-5 sm:px-6 lg:px-8">
+          <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.48fr)] lg:items-end">
+            <div className="min-w-0 space-y-5">
+              <p className="w-fit rounded-full border border-[#d8c47a] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.08em] text-[#111111]">
+                Vedic Commerce Guidance
               </p>
-              <p className="mt-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-                {category.description}
-              </p>
-            </Link>
-          ))}
-        </div>
-      </Section>
-
-      <Section
-        category="services"
-        eyebrow="Featured Edit"
-        title="A first premium edit for careful spiritual commerce."
-        description="The featured selection keeps the catalog focused, polished, and easy to understand."
-        id="featured-edit"
-        tone="muted"
-      >
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-          <EditorialPlaceholder
-            eyebrow="Merchandising View"
-            title="Thoughtful product framing matters as much as the catalog itself."
-            description="The visual system keeps the shop premium and grounded: light editorial surfaces, refined material language, and a visible refusal to turn spiritual products into fear-based conversion devices."
-            annotations={[
-              "Clear category structure",
-              "Elegant merchandising art with restrained warmth",
-              "Product inquiries handled without pressure",
-              "Remedy links kept optional and transparent",
-            ]}
-            tone="gold"
-            className="h-full"
-          />
-
-          <div className="grid gap-6 md:grid-cols-2">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product.slug} product={product} />
-            ))}
-          </div>
-        </div>
-      </Section>
-
-      {productsByCategory.map((section) => (
-        <Section
-          key={section.category}
-          category="services"
-          eyebrow={section.summary.label}
-          title={`${section.summary.label} presented with calm, premium detail.`}
-          description={section.summary.description}
-          id={section.summary.anchorId}
-        >
-          <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
-            {section.products.map((product) => (
-              <ProductCard key={product.slug} product={product} />
-            ))}
-          </div>
-        </Section>
-      ))}
-
-      <Section className="pt-0" tone="transparent">
-        <GemstoneGuidanceCTA pagePath="/shop" placement="shop_pre_checkout" />
-      </Section>
-
-      <Section
-        className="pt-0"
-        tone="transparent"
-        category="services"
-        eyebrow="Ethical Product Guidance"
-        title="Products are optional supports, not mandatory remedies."
-        description="Gemstones, Rudraksha, yantras, and devotional items should be selected with discernment and proper chart review where needed."
-      >
-        <Card tone="light" className="service-offering-card grid gap-4 md:grid-cols-3">
-          {[
-            {
-              title: "Gemstone Safety",
-              text: "Gemstones should be selected only after proper chart analysis and budget consideration.",
-              href: "/consultation",
-              label: "Request Guidance",
-            },
-            {
-              title: "Inquiry Clarity",
-              text: "Product inquiries stay separate from astrology service access and do not create urgency.",
-              href: "/terms",
-              label: "Read Terms",
-            },
-            {
-              title: "Support",
-              text: "Use Contact for product questions, availability, and future fulfillment details.",
-              href: "/contact",
-              label: "Contact",
-            },
-          ].map((item) => (
-            <div key={item.title} className="space-y-3">
-              <Badge tone="trust">{item.title}</Badge>
-              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-                {item.text}
-              </p>
-              <TrackedLink
-                href={item.href}
-                eventName="shop_interaction"
-                eventPayload={{ page: "/shop", feature: `shop-guidance-${item.title}` }}
-                className={buttonStyles({ size: "sm", tone: "ghost" })}
-              >
-                {item.label}
-              </TrackedLink>
+              <div className="space-y-3">
+                <h1 className="max-w-full break-words text-4xl font-semibold leading-tight text-[#050505] sm:text-5xl lg:text-6xl">
+                  Vedic Shop
+                </h1>
+                <p className="max-w-2xl text-base leading-7 text-[#111111] sm:text-lg">
+                  Sacred Vedic items, Janam Patrika, reports, Puja guidance,
+                  and consultation-linked support.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                <a href="#shop-categories" className={baseButtonClass}>
+                  Explore Categories
+                </a>
+                <Link href="/consultation" className={quietButtonClass}>
+                  Consult J P Sarmah
+                </Link>
+                <Link href="/ai" className={quietButtonClass}>
+                  Ask NI
+                </Link>
+              </div>
             </div>
-          ))}
-        </Card>
-      </Section>
 
-      <Section
-        category="services"
-        eyebrow="Product Requests"
-        title="Product interest stays inquiry-first."
-        description="Browsing and category review stay explicit so the public commerce surface remains calm and honest before any confirmed fulfillment flow."
-        tone="muted"
-      >
-        <Card tone="accent" className="service-card space-y-5">
-          <p className="text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-            Product interest is handled as a follow-up request so availability
-            and suitability can be reviewed with care before any future
-            fulfillment process.
-          </p>
-          <div className="flex flex-wrap gap-3">
-            <TrackedLink
-              href="/contact"
-              eventName="shop_interaction"
-              eventPayload={{ page: "/shop", feature: "shop-contact-availability" }}
-              className={buttonStyles({ size: "lg" })}
-            >
-              Contact For Availability
-            </TrackedLink>
-            <TrackedLink
-              href="/consultation"
-              eventName="shop_interaction"
-              eventPayload={{ page: "/shop", feature: "shop-ask-guidance" }}
-              className={buttonStyles({ tone: "secondary", size: "lg" })}
-            >
-              Consultation Support
-            </TrackedLink>
+            <div className="min-w-0 rounded-[1.25rem] border border-[#111111] bg-white p-4 shadow-[0_18px_44px_rgba(5,5,5,0.08)]">
+              <div className="grid min-w-0 gap-3 rounded-[1rem] border border-[#d8c47a] bg-white p-3 sm:grid-cols-[1fr_auto]">
+                <label className="sr-only" htmlFor="shop-search">
+                  Search Vedic items, remedies, reports...
+                </label>
+                <input
+                  id="shop-search"
+                  readOnly
+                  value=""
+                  placeholder="Search Vedic items, remedies, reports..."
+                  className="min-h-11 w-full min-w-0 bg-white text-sm text-[#111111] outline-none placeholder:text-[#111111]"
+                />
+                <span className="flex min-h-11 w-fit items-center rounded-full border border-[#111111] bg-white px-4 text-xs font-semibold uppercase tracking-[0.08em] text-[#111111]">
+                  Guide
+                </span>
+              </div>
+              <div className="mt-4 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none]">
+                {filterTabs.map((tab) => (
+                  <button
+                    key={tab}
+                    type="button"
+                    className="shrink-0 rounded-full border border-[#d8c47a] bg-white px-4 py-2 text-sm font-semibold text-[#111111]"
+                  >
+                    {tab}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
-          <SponsoredDisclosure />
-        </Card>
-      </Section>
+
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {trustPoints.map((point) => (
+              <div
+                key={point}
+                className="rounded-[1rem] border border-[#111111] bg-white px-4 py-3 text-sm font-semibold text-[#111111]"
+              >
+                {point}
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mx-auto grid w-full max-w-7xl gap-5 px-4 py-8 sm:px-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:px-8">
+          <div className="rounded-[1.5rem] border border-[#111111] bg-white p-5 shadow-[0_16px_42px_rgba(5,5,5,0.07)] sm:p-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#5f8f4d]">
+              Guidance First
+            </p>
+            <h2 className="mt-3 text-2xl font-semibold leading-tight text-[#050505] sm:text-3xl">
+              Not Every Remedy Is for Everyone
+            </h2>
+            <p className="mt-3 text-base leading-7 text-[#111111]">
+              Choose the right remedy based on your Kundli, Dasha, Dosha, and
+              planetary condition.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link href="/consultation" className={baseButtonClass}>
+                Consult J P Sarmah
+              </Link>
+              <Link href="/ai" className={quietButtonClass}>
+                Ask NI
+              </Link>
+            </div>
+          </div>
+
+          <div
+            id="shop-categories"
+            className="rounded-[1.5rem] border border-[#111111] bg-white p-4 sm:p-5"
+          >
+            <div className="mb-4 flex items-end justify-between gap-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#111111]">
+                  Category Grid
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold text-[#050505]">
+                  Choose by purpose, then confirm with guidance.
+                </h2>
+              </div>
+              <span className="hidden rounded-full border border-[#d8c47a] px-3 py-1 text-xs font-semibold text-[#111111] sm:inline-flex">
+                3x3
+              </span>
+            </div>
+            <div className="grid grid-cols-3 gap-2 sm:gap-3">
+              {categories.map((category) => (
+                <div
+                  key={category}
+                  className="flex min-h-24 items-center justify-center rounded-[1rem] border border-[#111111] bg-white px-2 py-3 text-center text-[0.72rem] font-semibold leading-snug text-[#111111] shadow-[0_10px_24px_rgba(5,5,5,0.04)] sm:text-sm"
+                >
+                  {category}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+          <div className="grid gap-5 rounded-[1.5rem] border border-[#111111] bg-white p-5 shadow-[0_18px_48px_rgba(5,5,5,0.07)] sm:p-6 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)]">
+            <div className="rounded-[1.25rem] border border-[#d8c47a] bg-white p-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#111111]">
+                Featured Guidance
+              </p>
+              <h2 className="mt-3 text-3xl font-semibold leading-tight text-[#050505]">
+                Puja and Yagya
+              </h2>
+              <p className="mt-3 text-base leading-7 text-[#111111]">
+                Kundli-based Vedic rituals and Yagya guidance.
+              </p>
+            </div>
+            <div className="space-y-4">
+              <h3 className="text-2xl font-semibold leading-tight text-[#050505]">
+                Puja and Yagya Services
+              </h3>
+              <p className="text-base leading-7 text-[#111111]">
+                Book Vedic Puja and Yagya practices recommended according to
+                Kundli, planetary condition, Dasha, Dosha, and spiritual
+                requirement.
+              </p>
+              <p className="text-base leading-7 text-[#111111]">
+                Puja and Yagya are sacred Vedic practices performed for
+                spiritual discipline, planetary peace, inner strength, and
+                devotional support. At NAVAGRAHA CENTRE, ritual recommendations
+                should be made after understanding the person&apos;s Kundli, current
+                planetary condition, and purpose of guidance.
+              </p>
+              <Link href="/consultation" className={baseButtonClass}>
+                Request Booking Guidance
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <section className="mx-auto grid w-full max-w-7xl gap-5 px-4 py-8 sm:px-6 lg:grid-cols-2 lg:px-8">
+          <div className="rounded-[1.5rem] border border-[#111111] bg-white p-5 sm:p-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#19a9c8]">
+              Ask NI
+            </p>
+            <h2 className="mt-3 text-2xl font-semibold leading-tight text-[#050505]">
+              Ask NI Before Choosing
+            </h2>
+            <p className="mt-3 text-base leading-7 text-[#111111]">
+              Get clarity about gemstones, Rudraksha, Puja, reports, and more.
+            </p>
+            <Link href="/ai" className={`${baseButtonClass} mt-5`}>
+              Ask NI
+            </Link>
+          </div>
+
+          <div className="rounded-[1.5rem] border border-[#111111] bg-white p-5 sm:p-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#5f8f4d]">
+              Authority
+            </p>
+            <h2 className="mt-3 text-2xl font-semibold leading-tight text-[#050505]">
+              Guided by J P Sarmah
+            </h2>
+            <p className="mt-3 text-base leading-7 text-[#111111]">
+              Decades of experience in Vedic Astrology, remedies, and spiritual
+              guidance.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-2">
+              {supportRoutes.map((route) => (
+                <Link
+                  key={route.href}
+                  href={route.href}
+                  className="rounded-full border border-[#d8c47a] bg-white px-4 py-2 text-sm font-semibold text-[#111111]"
+                >
+                  {route.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="mx-auto w-full max-w-7xl px-4 pb-12 pt-8 sm:px-6 lg:px-8">
+          <div className="rounded-[1.5rem] border border-[#111111] bg-white p-5 sm:p-6">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {safetyPoints.map((point) => (
+                <div
+                  key={point}
+                  className="rounded-[1rem] border border-[#d8c47a] bg-white px-4 py-3 text-sm font-semibold text-[#111111]"
+                >
+                  {point}
+                </div>
+              ))}
+            </div>
+            <div className="mt-6 grid gap-4 lg:grid-cols-2">
+              <p className="text-sm leading-7 text-[#111111]">
+                Puja and Yagya recommendations should be selected according to
+                Kundli, purpose, tradition, availability, and proper guidance.
+                No ritual should be presented as a guaranteed cure or instant
+                solution.
+              </p>
+              <p className="text-sm leading-7 text-[#111111]">
+                Puja and Yagya services are spiritual and devotional practices.
+                They are not a substitute for medical, legal, financial, or
+                emergency advice. NAVAGRAHA CENTRE does not promise guaranteed
+                outcomes, instant results, or fear-based remedies. Personal
+                recommendations should be confirmed through proper Kundli-based
+                consultation.
+              </p>
+            </div>
+          </div>
+        </section>
       </main>
     </>
   );
