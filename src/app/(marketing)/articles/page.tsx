@@ -34,9 +34,98 @@ type ArticlesPageProps = {
   }>;
 };
 
-const pageTitle = "Blog & Articles | NAVAGRAHA CENTRE";
+const pageTitle = "Learn Vedic Astrology | NAVAGRAHA CENTRE";
 const pageDescription =
-  "Browse NAVAGRAHA CENTRE's editorial articles, public astrology guidance, and authority-led reading paths with clean internal links.";
+  "Explore NAVAGRAHA CENTRE's public learning hub for Vedic astrology basics, Kundli understanding, Panchang, Dasha, Transit, remedies, and guided articles.";
+
+const learningCategories = [
+  {
+    title: "Basics of Vedic Astrology",
+    description: "Start with signs, houses, planets, timing, and the language used across Jyotish study.",
+    href: "/articles",
+  },
+  {
+    title: "Kundli & Houses",
+    description: "Understand chart foundations before moving into deeper timing or life-area questions.",
+    href: "/kundli",
+  },
+  {
+    title: "Graha / Planets",
+    description: "Review planetary roles through calm educational notes and chart context.",
+    href: "/articles",
+  },
+  {
+    title: "Rashifal & Panchang",
+    description: "Connect daily guidance with tithi, nakshatra, and practical timing awareness.",
+    href: "/rashifal",
+  },
+  {
+    title: "Dasha & Transit",
+    description: "Learn how life-phase timing and current planetary movement are studied together.",
+    href: "/dasha",
+  },
+  {
+    title: "Matchmaking",
+    description: "Read about compatibility review as a careful Kundli-based process, not a quick score.",
+    href: "/matchmaking",
+  },
+  {
+    title: "Dosha-Yoga",
+    description: "Study diagnostic terms with context, balance, and non-fear-based interpretation.",
+    href: "/dosha-yoga",
+  },
+  {
+    title: "Remedies",
+    description: "Explore responsible remedy categories, timing, and guidance boundaries.",
+    href: "/remedies",
+  },
+  {
+    title: "Muhurat",
+    description: "Learn why timing selection is reviewed with Panchang, context, and purpose.",
+    href: "/muhurat",
+  },
+  {
+    title: "Spiritual Practice",
+    description: "Connect astrology learning with discipline, reflection, mantra, and daily conduct.",
+    href: "/articles",
+  },
+] as const;
+
+const learningPaths = [
+  {
+    title: "Beginner Guide",
+    description: "A safe starting path for astrology terms, chart basics, and how to ask better questions.",
+    href: "/articles",
+  },
+  {
+    title: "Daily Astrology Understanding",
+    description: "Use Rashifal and Panchang together to build practical daily awareness.",
+    href: "/rashifal",
+  },
+  {
+    title: "Kundli Reading Foundation",
+    description: "Generate a Kundli first, then study houses, graha influence, Dasha, and Transit layers.",
+    href: "/kundli",
+  },
+  {
+    title: "Remedy Awareness",
+    description: "Understand remedy categories and boundaries before seeking personalized guidance.",
+    href: "/remedies",
+  },
+] as const;
+
+const safeRouteBridges = [
+  { label: "Kundli", href: "/kundli" },
+  { label: "Panchang", href: "/panchang" },
+  { label: "Rashifal", href: "/rashifal" },
+  { label: "Dasha", href: "/dasha" },
+  { label: "Transit", href: "/transit" },
+  { label: "Matchmaking", href: "/matchmaking" },
+  { label: "Dosha-Yoga", href: "/dosha-yoga" },
+  { label: "Remedies", href: "/remedies" },
+  { label: "Reports", href: "/reports" },
+  { label: "Consultation", href: "/consultation" },
+] as const;
 
 function normalizeSearch(value: string | undefined) {
   return value?.trim().toLowerCase() ?? "";
@@ -86,7 +175,8 @@ export async function generateMetadata() {
     locale,
     explicitLocalePrefix: hasExplicitLocalePrefix,
     keywords: [
-      "blog articles",
+      "learn vedic astrology",
+      "jyotish learning hub",
       "from the desk of J P Sarmah",
       "daily horoscope editorial",
       "vedic astrology articles",
@@ -148,238 +238,337 @@ export default async function ArticlesPage({
       <RetentionPreferenceBridge section="articles" />
       <JsonLd id="articles-listing-schema" data={listingStructuredData} />
 
-      <main className="launch-page launch-page-articles">
-      <section className="border-b border-[color:var(--color-border)] bg-white">
-        <Container className="grid gap-8 py-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)] lg:items-start">
-          <div className="space-y-6">
-            <Badge tone="accent">Blog / Articles</Badge>
-            <div className="space-y-4">
-              <h1
-                className="max-w-4xl font-[family-name:var(--font-display)] text-[length:var(--font-size-display-md)] text-[var(--color-ink-strong)] sm:text-[length:var(--font-size-display-lg)]"
-                style={{
-                  letterSpacing: "var(--tracking-display)",
-                  lineHeight: "var(--line-height-tight)",
-                }}
-              >
-                Editorial reading for astrology, remedies, and practical guidance.
-              </h1>
-              <p className="max-w-[44rem] text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-                Find public articles, authority notes, and topic guides that stay connected to
-                From the Desk, Daily Rashifal, Panchang, and consultation pathways.
+      <main className="launch-page launch-page-articles bg-white text-[#111111]">
+        <section className="border-b border-[#111111]/15 bg-white">
+          <Container className="grid gap-8 py-10 sm:py-12 lg:grid-cols-[minmax(0,1.08fr)_minmax(300px,0.92fr)] lg:items-stretch">
+            <div className="flex min-w-0 flex-col justify-between gap-7">
+              <div className="space-y-5">
+                <Badge tone="accent">Learning Hub</Badge>
+                <div className="space-y-4">
+                  <h1
+                    className="max-w-4xl font-[family-name:var(--font-display)] text-[clamp(2.2rem,13vw,4.9rem)] text-[#111111] sm:text-[clamp(3.4rem,8vw,6.4rem)]"
+                    style={{
+                      letterSpacing: "var(--tracking-display)",
+                      lineHeight: "0.88",
+                    }}
+                  >
+                    Learn Vedic Astrology
+                  </h1>
+                  <p className="max-w-[46rem] text-[1.02rem] leading-[1.75] text-[#111111] sm:text-[1.14rem]">
+                    A guided Jyotish learning hub for articles, spiritual understanding,
+                    chart language, timing awareness, and practical astrology knowledge.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <a
+                  href="#learning-library"
+                  className={buttonStyles({
+                    size: "lg",
+                    className: "w-full justify-center sm:w-auto",
+                  })}
+                >
+                  Start Learning
+                </a>
+                <a
+                  href="#published-articles"
+                  className={buttonStyles({
+                    tone: "secondary",
+                    size: "lg",
+                    className: "w-full justify-center sm:w-auto",
+                  })}
+                >
+                  Explore Articles
+                </a>
+                <Link
+                  href={localizeHref("/ai")}
+                  className={buttonStyles({
+                    tone: "tertiary",
+                    size: "lg",
+                    className: "w-full justify-center border-[#5eead4] sm:w-auto",
+                  })}
+                >
+                  Ask NI
+                </Link>
+              </div>
+            </div>
+
+            <Card className="relative overflow-hidden border-[#111111]/15 bg-white p-0">
+              <div className="absolute right-5 top-5 h-24 w-24 rounded-full border border-[#facc15]/70" />
+              <div className="absolute right-12 top-12 h-10 w-10 rounded-full border border-[#86efac]/80" />
+              <div className="relative grid h-full gap-5 p-5 sm:p-6">
+                <div className="rounded-[var(--radius-xl)] border border-[#111111]/15 bg-white p-4">
+                  <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[#111111]">
+                    Knowledge Foundation
+                  </p>
+                  <p className="mt-3 text-[0.96rem] leading-[1.7] text-[#111111]">
+                    Read first, generate chart context second, then use Ask NI or expert
+                    guidance when the question needs interpretation.
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  {["Articles", "Kundli", "Timing", "Remedies"].map((label) => (
+                    <div
+                      key={label}
+                      className="rounded-[var(--radius-lg)] border border-[#111111]/15 bg-white p-3 text-sm font-semibold text-[#111111]"
+                    >
+                      {label}
+                    </div>
+                  ))}
+                </div>
+                <div className="rounded-[var(--radius-xl)] border border-[#facc15]/70 bg-white p-4">
+                  <p className="text-sm font-semibold text-[#111111]">Authority-led learning</p>
+                  <p className="mt-2 text-sm leading-6 text-[#111111]">
+                    J P Sarmah remains the human authority reference for deeper chart
+                    judgment, while Ask NI supports explanation and preparation.
+                  </p>
+                </div>
+              </div>
+            </Card>
+          </Container>
+        </section>
+
+        <Section tone="transparent" category="content">
+          <div id="learning-library" className="space-y-8">
+            <div className="max-w-3xl space-y-3">
+              <Badge tone="accent">Learning Categories</Badge>
+              <h2 className="text-[clamp(1.7rem,7vw,3.4rem)] font-semibold leading-none text-[#111111]">
+                Choose a clear learning direction.
+              </h2>
+              <p className="text-[1rem] leading-7 text-[#111111]">
+                These categories help returning readers find the right public knowledge
+                area without implying account status, gated records, or inactive commerce.
               </p>
             </div>
-
-            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <Link
-                href={localizeHref("/from-the-desk")}
-                className={buttonStyles({
-                  size: "lg",
-                  className: "w-full justify-center sm:w-auto",
-                })}
-              >
-                Open From the Desk
-              </Link>
-              <Link
-                href={localizeHref("/daily-rashifal")}
-                className={buttonStyles({
-                  tone: "secondary",
-                  size: "lg",
-                  className: "w-full justify-center sm:w-auto",
-                })}
-              >
-                Daily Rashifal
-              </Link>
-              <Link
-                href={localizeHref("/consultation")}
-                className={buttonStyles({
-                  tone: "tertiary",
-                  size: "lg",
-                  className: "w-full justify-center sm:w-auto",
-                })}
-              >
-                Book Consultation
-              </Link>
+            <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-5">
+              {learningCategories.map((item) => (
+                <Link
+                  key={item.title}
+                  href={localizeHref(item.href)}
+                  className="min-w-[240px] rounded-[var(--radius-xl)] border border-[#111111]/15 bg-white p-4 text-[#111111] transition hover:border-[#facc15] sm:min-w-0"
+                >
+                  <span className="text-sm font-semibold">{item.title}</span>
+                  <span className="mt-3 block text-sm leading-6">{item.description}</span>
+                </Link>
+              ))}
             </div>
           </div>
+        </Section>
 
-          <Card className="space-y-4">
-            <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-              Publishing Safety
-            </p>
-            <div className="space-y-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-              <p>Only published public content is shown here.</p>
-              <p>Draft, private, dashboard, and admin routes remain excluded.</p>
-              <p>Assamese, English, and future multilingual publishing stay aligned to the same editorial pipeline.</p>
+        <Section tone="transparent" category="content">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,0.98fr)_minmax(280px,0.62fr)]">
+            <div className="space-y-5">
+              <Badge tone="accent">Featured Learning Paths</Badge>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {learningPaths.map((path) => (
+                  <Link
+                    key={path.title}
+                    href={localizeHref(path.href)}
+                    className="rounded-[var(--radius-xl)] border border-[#111111]/15 bg-white p-5 text-[#111111] transition hover:border-[#86efac]"
+                  >
+                    <h3 className="text-lg font-semibold">{path.title}</h3>
+                    <p className="mt-3 text-sm leading-6">{path.description}</p>
+                  </Link>
+                ))}
+              </div>
             </div>
-          </Card>
-        </Container>
-      </section>
 
-      <Section
-        tone="light"
-        category="content"
-        eyebrow="Search And Filter"
-        title="Refine by category and topic."
-        description="Use a clean filter layer to move between article themes without exposing drafts or placeholders."
-      >
-        <form method="get" className="grid gap-3 rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-white p-4 sm:grid-cols-[minmax(0,1fr)_220px_220px_auto]">
-          <input
-            type="search"
-            name="q"
-            defaultValue={params.q ?? ""}
-            placeholder="Search articles"
-            className="min-h-11 rounded-[var(--radius-lg)] border border-[color:var(--color-border)] bg-white px-3 text-[length:var(--font-size-body-sm)] text-[var(--color-ink-strong)]"
-          />
-          <select
-            name="category"
-            defaultValue={activeCategory}
-            className="min-h-11 rounded-[var(--radius-lg)] border border-[color:var(--color-border)] bg-white px-3 text-[length:var(--font-size-body-sm)] text-[var(--color-ink-strong)]"
-          >
-            <option value="">All Categories</option>
-            {categories.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
-          <select
-            name="tag"
-            defaultValue={activeTag}
-            className="min-h-11 rounded-[var(--radius-lg)] border border-[color:var(--color-border)] bg-white px-3 text-[length:var(--font-size-body-sm)] text-[var(--color-ink-strong)]"
-          >
-            <option value="">All Tags</option>
-            {tags.map((tag) => (
-              <option key={tag} value={tag}>
-                {tag}
-              </option>
-            ))}
-          </select>
-          <button type="submit" className={buttonStyles({ size: "sm" })}>
-            Apply
-          </button>
-        </form>
+            <Card className="border-[#111111]/15 bg-white">
+              <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[#111111]">
+                Safe Learning Boundary
+              </p>
+              <div className="mt-4 space-y-3 text-sm leading-6 text-[#111111]">
+                <p>Only published public learning content and route-safe guide cards are shown here.</p>
+                <p>Learning notes do not replace personalized chart review or human judgment.</p>
+                <p>Account-only areas, internal operations, and protected data surfaces remain excluded.</p>
+              </div>
+            </Card>
+          </div>
+        </Section>
 
-        <div className="mt-4 flex flex-wrap gap-2">
-          <Link
-            href={localizeHref("/articles")}
-            className={buttonStyles({
-              tone: activeCategory || activeTag ? "tertiary" : "secondary",
-              size: "sm",
-            })}
-          >
-            Reset
-          </Link>
-          {categories.map((category) => (
+        <Section
+          tone="transparent"
+          category="content"
+          eyebrow="Search And Filter"
+          title="Find the published article you need."
+          description="Use filters for real published content. If no article exists for a topic yet, the hub still keeps the route structure safe and educational."
+        >
+          <form method="get" className="grid gap-3 rounded-[var(--radius-xl)] border border-[#111111]/15 bg-white p-4 sm:grid-cols-[minmax(0,1fr)_220px_220px_auto]">
+            <input
+              type="search"
+              name="q"
+              defaultValue={params.q ?? ""}
+              placeholder="Search articles"
+              className="min-h-11 rounded-[var(--radius-lg)] border border-[#111111]/20 bg-white px-3 text-[length:var(--font-size-body-sm)] text-[#111111]"
+            />
+            <select
+              name="category"
+              defaultValue={activeCategory}
+              className="min-h-11 rounded-[var(--radius-lg)] border border-[#111111]/20 bg-white px-3 text-[length:var(--font-size-body-sm)] text-[#111111]"
+            >
+              <option value="">All Categories</option>
+              {categories.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+            <select
+              name="tag"
+              defaultValue={activeTag}
+              className="min-h-11 rounded-[var(--radius-lg)] border border-[#111111]/20 bg-white px-3 text-[length:var(--font-size-body-sm)] text-[#111111]"
+            >
+              <option value="">All Tags</option>
+              {tags.map((tag) => (
+                <option key={tag} value={tag}>
+                  {tag}
+                </option>
+              ))}
+            </select>
+            <button type="submit" className={buttonStyles({ size: "sm" })}>
+              Apply
+            </button>
+          </form>
+
+          <div className="mt-4 flex flex-wrap gap-2">
             <Link
-              key={category}
-              href={`${localizeHref("/articles")}?category=${encodeURIComponent(category)}`}
+              href={localizeHref("/articles")}
               className={buttonStyles({
-                tone:
-                  activeCategory.toLowerCase() === category.toLowerCase()
-                    ? "secondary"
-                    : "tertiary",
+                tone: activeCategory || activeTag ? "tertiary" : "secondary",
                 size: "sm",
               })}
             >
-              {category}
+              Reset
             </Link>
-          ))}
-        </div>
-      </Section>
-
-      <Section
-        tone="muted"
-        category="content"
-        eyebrow="Published Articles"
-        title="A public article index with authority and internal links."
-        description="Each card stays summary-safe, shows the author/source block when available, and links into the canonical public reading surfaces."
-      >
-        {filteredEntries.length ? (
-          <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
-            {filteredEntries.map((entry) => (
-              <ArticlePreviewCard key={entry.id} entry={entry} locale={locale} />
+            {categories.map((category) => (
+              <Link
+                key={category}
+                href={`${localizeHref("/articles")}?category=${encodeURIComponent(category)}`}
+                className={buttonStyles({
+                  tone:
+                    activeCategory.toLowerCase() === category.toLowerCase()
+                      ? "secondary"
+                      : "tertiary",
+                  size: "sm",
+                })}
+              >
+                {category}
+              </Link>
             ))}
           </div>
-        ) : (
-          <Card className="space-y-4">
-            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[var(--color-ink-body)]">
-              No published articles match your current filters yet.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <Link href={localizeHref("/from-the-desk")} className={buttonStyles({ size: "sm" })}>
-                Browse From the Desk
-              </Link>
-              <Link
-                href={localizeHref("/daily-rashifal")}
-                className={buttonStyles({ tone: "secondary", size: "sm" })}
-              >
-                Open Daily Rashifal
-              </Link>
-            </div>
-          </Card>
-        )}
-      </Section>
+        </Section>
 
-      <Section tone="transparent" category="content">
-        <ContentLinkBlock
-          groups={[
-            {
-              title: "Related Astrology Tools",
-              description:
-                "Move from article reading into chart creation, daily guidance, and human support.",
-              links: [
-                {
-                  href: localizeHref("/kundli"),
-                  label: "Generate Kundli",
-                  description: "Create your chart foundation before asking deeper questions.",
-                },
-                {
-                  href: localizeHref("/panchang"),
-                  label: "View Panchang",
-                  description: "Check timing and daily context before important action.",
-                },
-                {
-                  href: localizeHref("/reports"),
-                  label: "Read Reports",
-                  description: "Continue into premium report depth when you need more structure.",
-                },
-                {
-                  href: localizeHref("/consultation"),
-                  label: "Book Consultation",
-                  description: "Escalate into human interpretation for nuanced situations.",
-                },
-              ],
-            },
-            {
-              title: "Explore Editorial Paths",
-              description:
-                "These public routes keep the reading journey connected without exposing drafts or private content.",
-              links: [
-                {
-                  href: localizeHref("/from-the-desk"),
-                  label: "From the Desk",
-                  description: "Open the authority desk and featured editorial notes.",
-                },
-                {
-                  href: localizeHref("/rashifal"),
-                  label: "Rashifal Hub",
-                  description: "Browse the 12-sign horoscope entry hub.",
-                },
-                {
-                  href: localizeHref("/horoscope-hub"),
-                  label: "Horoscope Hub",
-                  description: "Move through a broader horoscope content surface.",
-                },
-                {
-                  href: localizeHref("/insights/remedies"),
-                  label: "Remedies Articles",
-                  description: "Read calm remedy guidance and support-focused content.",
-                },
-              ],
-            },
-          ]}
-        />
-      </Section>
+        <Section
+          tone="transparent"
+          category="content"
+          eyebrow="Learning Library"
+          title="Published public articles."
+          description="Cards come from the real publishing adapter and stay summary-safe, author-aware, and connected to public reading paths."
+        >
+          <div id="published-articles">
+            {filteredEntries.length ? (
+              <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
+                {filteredEntries.map((entry) => (
+                  <ArticlePreviewCard key={entry.id} entry={entry} locale={locale} />
+                ))}
+              </div>
+            ) : (
+              <Card className="space-y-4 border-[#111111]/15 bg-white">
+                <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[#111111]">
+                  No published learning articles match your current filters yet.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <Link href={localizeHref("/articles")} className={buttonStyles({ size: "sm" })}>
+                    Reset Learning Library
+                  </Link>
+                  <Link
+                    href={localizeHref("/rashifal")}
+                    className={buttonStyles({ tone: "secondary", size: "sm" })}
+                  >
+                    Open Rashifal
+                  </Link>
+                </div>
+              </Card>
+            )}
+          </div>
+        </Section>
+
+        <Section tone="transparent" category="content">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,0.78fr)_minmax(280px,0.62fr)]">
+            <Card className="border-[#5eead4]/80 bg-white">
+              <Badge tone="accent">Ask NI</Badge>
+              <h2 className="mt-4 text-2xl font-semibold leading-tight text-[#111111]">
+                Ask NI for guided explanation.
+              </h2>
+              <p className="mt-3 text-sm leading-6 text-[#111111]">
+                Ask NI can help explain chart terms, article concepts, Panchang timing,
+                Dasha and Transit language, and what to study next. It supports learning
+                preparation and does not replace J P Sarmah.
+              </p>
+              <Link
+                href={localizeHref("/ai")}
+                className={buttonStyles({
+                  tone: "secondary",
+                  size: "sm",
+                  className: "mt-5 w-full justify-center sm:w-auto",
+                })}
+              >
+                Ask NI
+              </Link>
+            </Card>
+
+            <Card className="border-[#111111]/15 bg-white">
+              <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[#111111]">
+                J P Sarmah Authority
+              </p>
+              <p className="mt-4 text-sm leading-6 text-[#111111]">
+                Learning astrology is strongest when terminology, Kundli structure,
+                Dasha, Transit, Panchang, remedies, and practical context are studied
+                carefully under trusted human guidance.
+              </p>
+            </Card>
+          </div>
+        </Section>
+
+        <Section tone="transparent" category="content">
+          <ContentLinkBlock
+            groups={[
+              {
+                title: "Continue Through Safe Public Paths",
+                description:
+                  "Move from learning into real public tools and guidance surfaces without gated or inactive flows.",
+                links: safeRouteBridges.map((route) => ({
+                  href: localizeHref(route.href),
+                  label: route.label,
+                  description: `Open the ${route.label} public pathway for related context.`,
+                })),
+              },
+              {
+                title: "Learning Trust Boundary",
+                description:
+                  "The learning hub remains educational, public, and preparation-focused.",
+                links: [
+                  {
+                    href: localizeHref("/articles"),
+                    label: "Learning Library",
+                    description: "Return to published articles and topic filters.",
+                  },
+                  {
+                    href: localizeHref("/ai"),
+                    label: "Ask NI",
+                    description: "Ask for concept explanations and study direction.",
+                  },
+                  {
+                    href: localizeHref("/consultation"),
+                    label: "Consultation",
+                    description: "Use human guidance when personal interpretation is needed.",
+                  },
+                ],
+              },
+            ]}
+          />
+        </Section>
       </main>
     </>
   );
