@@ -282,7 +282,7 @@ export default async function ArticlesPage({
                   Explore Articles
                 </a>
                 <Link
-                  href={localizeHref("/ai")}
+                  href="/ai"
                   className={buttonStyles({
                     tone: "tertiary",
                     size: "lg",
@@ -507,7 +507,7 @@ export default async function ArticlesPage({
                 preparation and does not replace J P Sarmah.
               </p>
               <Link
-                href={localizeHref("/ai")}
+                href="/ai"
                 className={buttonStyles({
                   tone: "secondary",
                   size: "sm",
@@ -555,7 +555,7 @@ export default async function ArticlesPage({
                     description: "Return to published articles and topic filters.",
                   },
                   {
-                    href: localizeHref("/ai"),
+                    href: "/ai",
                     label: "Ask NI",
                     description: "Ask for concept explanations and study direction.",
                   },
