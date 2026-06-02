@@ -74,7 +74,7 @@ function LanguageSwitcherCompact({
 
   return (
     <details
-      className="relative"
+      className="relative inline-flex h-[36px] w-[36px] shrink-0 sm:h-10 sm:w-10"
       open={open}
       onToggle={(event) => setOpen((event.target as HTMLDetailsElement).open)}
     >
@@ -84,15 +84,15 @@ function LanguageSwitcherCompact({
           tone: "tertiary",
           size: "sm",
           className:
-            "max-w-[8.75rem] cursor-pointer list-none overflow-hidden text-ellipsis pr-3 marker:content-none sm:max-w-[11rem] [&::-webkit-details-marker]:hidden",
+            "h-[36px] min-h-[36px] w-[36px] min-w-[36px] max-w-[7.5rem] cursor-pointer list-none overflow-hidden text-ellipsis px-2 pr-2 marker:content-none sm:h-10 sm:min-h-10 sm:w-10 sm:min-w-10 sm:max-w-[10.5rem] sm:pr-3 [&::-webkit-details-marker]:hidden",
         })}
         dir={activeDefinition.dir}
         lang={activeDefinition.code}
       >
         {activeDefinition.nativeLabel}
       </summary>
-      <div className="absolute top-[calc(100%+0.5rem)] z-30 max-h-[min(72vh,28rem)] w-[min(calc(100vw-2rem),20rem)] overflow-y-auto rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,254,250,0.98)] p-3 shadow-[var(--shadow-md)] [inset-inline-end:0]">
-        <div className="grid gap-2">
+      <div className="absolute top-[calc(100%+0.5rem)] z-30 max-h-[min(72vh,26rem)] w-[min(calc(100vw-1rem),18rem)] overflow-y-auto rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,254,250,0.98)] p-2.5 shadow-[var(--shadow-md)] [inset-inline-end:0] sm:max-h-[min(72vh,28rem)] sm:w-[min(calc(100vw-2rem),20rem)] sm:p-3">
+        <div className="grid gap-1.5 sm:gap-2">
           {allLocales.map((locale) => {
             const selectable = isLocaleSelectable(locale.code);
             const availabilityLabel = getLocaleAvailabilityLabel(

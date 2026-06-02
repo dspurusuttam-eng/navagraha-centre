@@ -3,11 +3,15 @@ import { AuthFormShell } from "@/modules/auth/components/auth-form-shell";
 import { SignInForm } from "@/modules/auth/components/sign-in-form";
 
 export const metadata = buildPageMetadata({
-  title: "Sign In",
+  title: "Account Access",
   description:
-    "Access the NAVAGRAHA CENTRE private dashboard and account settings foundation.",
+    "Sign in to access your NAVAGRAHA CENTRE account, saved guidance, reports, and consultation support.",
   path: "/sign-in",
-  keywords: ["NAVAGRAHA CENTRE sign in", "astrology member login"],
+  keywords: [
+    "NAVAGRAHA CENTRE account access",
+    "astrology member login",
+    "protected sign in",
+  ],
 });
 
 type SearchParams = Promise<{
@@ -43,18 +47,32 @@ export default async function SignInPage({
 
   return (
     <AuthFormShell
-      eyebrow="Private Access"
-      title="A refined member workspace begins here."
-      description="Sign in to the protected NAVAGRAHA CENTRE dashboard foundation, where profile settings, future charts, consultations, and orders will stay organized."
+      eyebrow="Protected Access"
+      title="Account Access"
+      description="Sign in to access your NAVAGRAHA CENTRE account, saved guidance, reports, and consultation support."
       highlights={[
-        "Protected access to the private dashboard shell.",
-        "A dedicated account profile prepared for later astrology and chart records.",
-        "A clean foundation for consultation and commerce history.",
+        "Saved Reports",
+        "Consultation Support",
+        "Learning Access",
+        "Secure Account Entry",
       ]}
       alternateHref={signUpHref}
       alternateLabel="Create an account"
     >
-      <SignInForm callbackUrl={callbackUrl} signUpHref={signUpHref} />
+      <SignInForm
+        callbackUrl={callbackUrl}
+        signUpHref={signUpHref}
+        title="Secure Account Entry"
+        description="Use your email and password to continue to the protected account area. Your account area is protected, and personal details, saved reports, and dashboard features should only be accessed after secure sign-in."
+        safetyNote="Your account area is protected. Personal details, saved reports, and dashboard features should only be accessed after secure sign-in."
+        supportLinks={[
+          { label: "Ask NI", href: "/ai" },
+          { label: "Home", href: "/" },
+          { label: "Consultation", href: "/consultation" },
+          { label: "Reports", href: "/reports" },
+          { label: "Learn", href: "/articles" },
+        ]}
+      />
     </AuthFormShell>
   );
 }
