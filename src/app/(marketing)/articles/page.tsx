@@ -34,60 +34,65 @@ type ArticlesPageProps = {
   }>;
 };
 
-const pageTitle = "Learn Vedic Astrology | NAVAGRAHA CENTRE";
+const pageTitle = "Learn / Articles | NAVAGRAHA CENTRE";
 const pageDescription =
-  "Explore NAVAGRAHA CENTRE's public learning hub for Vedic astrology basics, Kundli understanding, Panchang, Dasha, Transit, remedies, and guided articles.";
+  "Explore NAVAGRAHA CENTRE's public learning hub for Vedic astrology basics, editorial guidance, Kundli understanding, Panchang, Dasha, Transit, remedies, Assamese learning, and Ask NI support.";
 
-const learningCategories = [
+const contentPillars = [
   {
-    title: "Basics of Vedic Astrology",
-    description: "Start with signs, houses, planets, timing, and the language used across Jyotish study.",
-    href: "/articles",
+    title: "Daily Rashifal Learning",
+    description: "Start with safe daily guidance, sign-by-sign awareness, and practical astrology reading habits.",
+    href: "/rashifal",
   },
   {
-    title: "Kundli & Houses",
+    title: "Assamese Astrology",
+    description: "Read regional guidance notes and Assamese explanations for public learning and trust.",
+    href: "/from-the-desk",
+  },
+  {
+    title: "Kundli Learning",
     description: "Understand chart foundations before moving into deeper timing or life-area questions.",
     href: "/kundli",
   },
   {
-    title: "Graha / Planets",
-    description: "Review planetary roles through calm educational notes and chart context.",
-    href: "/articles",
+    title: "Panchang Guidance",
+    description: "Connect tithi, nakshatra, and daily timing awareness with safe educational context.",
+    href: "/panchang",
   },
   {
-    title: "Rashifal & Panchang",
-    description: "Connect daily guidance with tithi, nakshatra, and practical timing awareness.",
-    href: "/rashifal",
-  },
-  {
-    title: "Dasha & Transit",
-    description: "Learn how life-phase timing and current planetary movement are studied together.",
+    title: "Dasha Education",
+    description: "Learn how life-phase timing is studied safely and without certainty claims.",
     href: "/dasha",
   },
   {
-    title: "Matchmaking",
-    description: "Read about compatibility review as a careful Kundli-based process, not a quick score.",
-    href: "/matchmaking",
+    title: "Transit / Gochar Education",
+    description: "Review planetary movement as timing context, not as a guaranteed outcome system.",
+    href: "/transit",
   },
   {
-    title: "Dosha-Yoga",
-    description: "Study diagnostic terms with context, balance, and non-fear-based interpretation.",
-    href: "/dosha-yoga",
-  },
-  {
-    title: "Remedies",
-    description: "Explore responsible remedy categories, timing, and guidance boundaries.",
+    title: "Remedies Safety",
+    description: "Read careful remedy guidance that avoids fear, pressure, or cure claims.",
     href: "/remedies",
   },
   {
-    title: "Muhurat",
-    description: "Learn why timing selection is reviewed with Panchang, context, and purpose.",
-    href: "/muhurat",
+    title: "Gemstone Caution",
+    description: "Study gemstone topics with caution, review, and no instant-result framing.",
+    href: "/shop",
   },
   {
-    title: "Spiritual Practice",
-    description: "Connect astrology learning with discipline, reflection, mantra, and daily conduct.",
-    href: "/articles",
+    title: "Puja and Yagya Education",
+    description: "Learn about ritual guidance as educational context, not a guaranteed booking outcome.",
+    href: "/consultation",
+  },
+  {
+    title: "J P Sarmah Desk",
+    description: "Follow authority notes, explanation bridges, and careful editorial context.",
+    href: "/from-the-desk",
+  },
+  {
+    title: "Ask NI Support",
+    description: "Use Ask NI for explanation and preparation support before consulting a human reviewer.",
+    href: "/ai",
   },
 ] as const;
 
@@ -95,7 +100,7 @@ const learningPaths = [
   {
     title: "Beginner Guide",
     description: "A safe starting path for astrology terms, chart basics, and how to ask better questions.",
-    href: "/articles",
+    href: "/consultation",
   },
   {
     title: "Daily Astrology Understanding",
@@ -115,16 +120,19 @@ const learningPaths = [
 ] as const;
 
 const safeRouteBridges = [
-  { label: "Kundli", href: "/kundli" },
-  { label: "Panchang", href: "/panchang" },
+  { label: "Learning Library", href: "#published-articles" },
+  { label: "Tools", href: "/tools" },
   { label: "Rashifal", href: "/rashifal" },
+  { label: "Panchang", href: "/panchang" },
+  { label: "Kundli", href: "/kundli" },
   { label: "Dasha", href: "/dasha" },
   { label: "Transit", href: "/transit" },
-  { label: "Matchmaking", href: "/matchmaking" },
-  { label: "Dosha-Yoga", href: "/dosha-yoga" },
   { label: "Remedies", href: "/remedies" },
   { label: "Reports", href: "/reports" },
   { label: "Consultation", href: "/consultation" },
+  { label: "Shop", href: "/shop" },
+  { label: "From the Desk", href: "/from-the-desk" },
+  { label: "Ask NI", href: "/ai" },
 ] as const;
 
 function normalizeSearch(value: string | undefined) {
@@ -225,7 +233,7 @@ export default async function ArticlesPage({
   });
 
   const listingStructuredData = getContentListingStructuredData({
-    title: "Blog & Articles",
+    title: "Learn / Articles",
     description: pageDescription,
     path: "/articles",
     locale,
@@ -252,11 +260,12 @@ export default async function ArticlesPage({
                       lineHeight: "0.88",
                     }}
                   >
-                    Learn Vedic Astrology
+                    Learn / Articles
                   </h1>
                   <p className="max-w-[46rem] text-[1.02rem] leading-[1.75] text-[#111111] sm:text-[1.14rem]">
-                    A guided Jyotish learning hub for articles, spiritual understanding,
-                    chart language, timing awareness, and practical astrology knowledge.
+                    A premium public learning hub for astrology education, editorial
+                    guidance, chart language, timing awareness, Assamese notes, and safe
+                    pathways into deeper study.
                   </p>
                 </div>
               </div>
@@ -300,15 +309,15 @@ export default async function ArticlesPage({
               <div className="relative grid h-full gap-5 p-5 sm:p-6">
                 <div className="rounded-[var(--radius-xl)] border border-[#111111]/15 bg-white p-4">
                   <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[#111111]">
-                    Knowledge Foundation
+                    SEO Authority Introduction
                   </p>
                   <p className="mt-3 text-[0.96rem] leading-[1.7] text-[#111111]">
-                    Read first, generate chart context second, then use Ask NI or expert
-                    guidance when the question needs interpretation.
+                    Read first, build chart context second, then use Ask NI or human
+                    guidance when a question needs careful interpretation.
                   </p>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
-                  {["Articles", "Kundli", "Timing", "Remedies"].map((label) => (
+                  {["Daily Rashifal", "Assamese", "Kundli", "Ask NI"].map((label) => (
                     <div
                       key={label}
                       className="rounded-[var(--radius-lg)] border border-[#111111]/15 bg-white p-3 text-sm font-semibold text-[#111111]"
@@ -321,7 +330,8 @@ export default async function ArticlesPage({
                   <p className="text-sm font-semibold text-[#111111]">Authority-led learning</p>
                   <p className="mt-2 text-sm leading-6 text-[#111111]">
                     J P Sarmah remains the human authority reference for deeper chart
-                    judgment, while Ask NI supports explanation and preparation.
+                    judgment, while Ask NI supports explanation and preparation through
+                    /ai.
                   </p>
                 </div>
               </div>
@@ -342,7 +352,7 @@ export default async function ArticlesPage({
               </p>
             </div>
             <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-5">
-              {learningCategories.map((item) => (
+              {contentPillars.map((item) => (
                 <Link
                   key={item.title}
                   href={localizeHref(item.href)}
@@ -433,7 +443,7 @@ export default async function ArticlesPage({
 
           <div className="mt-4 flex flex-wrap gap-2">
             <Link
-              href={localizeHref("/articles")}
+              href={localizeHref("/articles#learning-library")}
               className={buttonStyles({
                 tone: activeCategory || activeTag ? "tertiary" : "secondary",
                 size: "sm",
@@ -479,7 +489,10 @@ export default async function ArticlesPage({
                   No published learning articles match your current filters yet.
                 </p>
                 <div className="flex flex-wrap gap-3">
-                  <Link href={localizeHref("/articles")} className={buttonStyles({ size: "sm" })}>
+                  <Link
+                    href={localizeHref("/articles#learning-library")}
+                    className={buttonStyles({ size: "sm" })}
+                  >
                     Reset Learning Library
                   </Link>
                   <Link
@@ -550,7 +563,7 @@ export default async function ArticlesPage({
                   "The learning hub remains educational, public, and preparation-focused.",
                 links: [
                   {
-                    href: localizeHref("/articles"),
+                    href: localizeHref("/articles#published-articles"),
                     label: "Learning Library",
                     description: "Return to published articles and topic filters.",
                   },

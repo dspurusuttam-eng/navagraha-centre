@@ -14,13 +14,52 @@ import {
 } from "@/modules/localization/request";
 
 const guidancePillars = [
-  "Kundli Guidance",
-  "Panchang & Muhurat",
-  "Remedies with Caution",
-  "Reports & Janam Patrika",
-  "Learning & Ethics",
-  "Consultation Support",
-];
+  {
+    title: "Daily Rashifal Authority",
+    description: "Safe daily guidance with no guarantee language.",
+    href: "/rashifal",
+  },
+  {
+    title: "Panchang & Vedic Timing",
+    description: "Tithi, nakshatra, and timing context for public learning.",
+    href: "/panchang",
+  },
+  {
+    title: "Kundli Learning",
+    description: "Chart basics, houses, and interpretation discipline.",
+    href: "/kundli",
+  },
+  {
+    title: "Dasha & Transit",
+    description: "Life-phase timing and gochar context without certainty claims.",
+    href: "/dasha",
+  },
+  {
+    title: "Remedies Safety",
+    description: "Careful remedy guidance that avoids fear and cure language.",
+    href: "/remedies",
+  },
+  {
+    title: "Gemstone Caution",
+    description: "Gemstone topics handled with review, context, and caution.",
+    href: "/shop",
+  },
+  {
+    title: "Puja and Yagya Education",
+    description: "Educational ritual guidance, not instant booking or guarantee language.",
+    href: "/consultation",
+  },
+  {
+    title: "Assamese Astrology Notes",
+    description: "Regional notes and Assamese context for public learning.",
+    href: "/articles",
+  },
+  {
+    title: "Ask NI Support",
+    description: "Support-first explanation and prep through /ai.",
+    href: "/ai",
+  },
+] as const;
 
 const guidanceFlow = [
   "Understand the chart",
@@ -36,6 +75,21 @@ const safetyPoints = [
   "Spiritual and astrological guidance should not replace medical, legal, financial, or emergency advice.",
 ];
 
+const learningBridgeLinks = [
+  { label: "Articles", href: "/articles" },
+  { label: "Rashifal", href: "/rashifal" },
+  { label: "Panchang", href: "/panchang" },
+  { label: "Kundli", href: "/kundli" },
+  { label: "Dasha", href: "/dasha" },
+  { label: "Transit", href: "/transit" },
+  { label: "Remedies", href: "/remedies" },
+  { label: "Reports", href: "/reports" },
+  { label: "Shop", href: "/shop" },
+  { label: "Tools", href: "/tools" },
+  { label: "Consultation", href: "/consultation" },
+  { label: "Ask NI", href: "/ai" },
+] as const;
+
 export async function generateMetadata() {
   const locale = await getRequestLocale();
   const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
@@ -48,11 +102,13 @@ export async function generateMetadata() {
     locale,
     explicitLocalePrefix: hasExplicitLocalePrefix,
     keywords: [
+      "Learn Articles",
       "J P Sarmah Desk",
       "Joy Prakash Sarmah",
       "Vedic astrology authority",
       "consultation guidance",
       "astrology learning",
+      "Assamese astrology notes",
     ],
   });
 }
@@ -84,10 +140,10 @@ export default async function FromTheDeskPage() {
 
   return (
     <>
-      <PageViewTracker page="/from-the-desk" feature="from-the-desk-desk" />
+      <PageViewTracker page="/from-the-desk" feature="from-the-desk-page" />
       <AnalyticsEventTracker
         event="from_the_desk_read"
-        payload={{ page: "/from-the-desk", feature: "from-the-desk-desk" }}
+        payload={{ page: "/from-the-desk", feature: "from-the-desk-page" }}
       />
       <JsonLd id="from-the-desk-schema" data={deskSchemas} />
 
@@ -143,12 +199,16 @@ export default async function FromTheDeskPage() {
         <section className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {guidancePillars.map((pillar) => (
-              <div
-                key={pillar}
-                className="rounded-[1.1rem] border border-[#111111] bg-white px-4 py-4 text-sm font-semibold text-[#111111] shadow-[0_10px_24px_rgba(5,5,5,0.04)]"
+              <Link
+                key={pillar.title}
+                href={localizeHref(pillar.href)}
+                className="rounded-[1.1rem] border border-[#111111] bg-white px-4 py-4 text-left text-sm font-semibold text-[#111111] shadow-[0_10px_24px_rgba(5,5,5,0.04)] transition hover:border-[#d8c47a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c7a95d]"
               >
-                {pillar}
-              </div>
+                <span className="block text-[0.9rem]">{pillar.title}</span>
+                <span className="mt-2 block text-xs font-normal leading-6 text-[#111111]">
+                  {pillar.description}
+                </span>
+              </Link>
             ))}
           </div>
         </section>
@@ -209,9 +269,9 @@ export default async function FromTheDeskPage() {
                 are no booking slots, availability, pricing, or instant
                 consultation claims here.
               </p>
-              <div className="mt-5 flex flex-wrap gap-3">
-                <Link
-                  href={localizeHref("/consultation")}
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link
+                href={localizeHref("/consultation")}
                   className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#111111] bg-white px-5 py-2 text-sm font-semibold text-[#111111] transition hover:bg-[#111111] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c7a95d]"
                 >
                   Consult J P Sarmah
@@ -223,6 +283,25 @@ export default async function FromTheDeskPage() {
                   Learn Articles
                 </Link>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="mx-auto w-full max-w-6xl px-4 py-4 sm:px-6 lg:px-8">
+          <div className="rounded-[1.4rem] border border-[#111111] bg-white p-5 sm:p-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#111111]">
+              Content Bridge
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {learningBridgeLinks.map((link) => (
+                <Link
+                  key={link.label}
+                  href={localizeHref(link.href)}
+                  className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#d8c47a] bg-white px-4 py-2 text-sm font-semibold text-[#111111] transition hover:border-[#111111] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c7a95d]"
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
           </div>
         </section>
