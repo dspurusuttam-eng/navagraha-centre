@@ -63,7 +63,7 @@ export async function Header() {
   return (
     <header
       data-nosnippet
-      className="sticky top-0 z-50 border-b border-[rgba(185,139,70,0.32)] bg-white"
+      className="sticky top-0 z-50 border-b-0 bg-white xl:border-b xl:border-[rgba(185,139,70,0.32)]"
     >
       <div className="hidden border-b border-[rgba(185,139,70,0.28)] bg-white xl:block">
         <Container className="flex flex-wrap items-center justify-between gap-2 py-1.5">
@@ -93,6 +93,107 @@ export async function Header() {
         </Container>
       </div>
 
+      <div className="fixed inset-x-0 top-0 z-50 border-b border-[rgba(185,139,70,0.32)] bg-white xl:hidden">
+        <Container className="!px-3 py-2 sm:!px-8">
+          <div className="flex min-h-14 w-full items-center justify-between gap-2">
+            <div className="flex min-w-0 flex-1 items-center gap-2">
+              <details className="group relative shrink-0">
+                <summary
+                  aria-label={copy.navigation.menu}
+                  className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full border border-[rgba(5,5,5,0.16)] bg-white text-[#050505] marker:content-none [-webkit-tap-highlight-color:transparent] [&::-webkit-details-marker]:hidden"
+                >
+                  <span aria-hidden="true" className="text-[0.95rem] leading-none text-[#050505]">
+                    {"\u2630"}
+                  </span>
+                </summary>
+                <div className="absolute top-[calc(100%+0.55rem)] z-30 max-h-[calc(100vh-5.5rem)] w-[min(calc(100vw-1.5rem),23rem)] overflow-y-auto rounded-[var(--radius-xl)] border border-[rgba(185,139,70,0.24)] bg-white p-3 [inset-inline-start:0]">
+                  <nav aria-label="Mobile navigation" className="grid gap-4">
+                    <div className="grid gap-2">
+                      <p className="px-3 text-[0.64rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-antique-gold-dark)]">
+                        Menu
+                      </p>
+                      <div className="grid gap-1">
+                        {mobileMenuItems.map((item) => (
+                          <NavigationLink
+                            key={`mobile-nav-${item.href}`}
+                            href={item.href}
+                            tone="ghost"
+                            className="w-full justify-start border border-[rgba(185,139,70,0.2)] bg-white !text-[color:var(--color-ink-strong)] hover:border-[rgba(185,139,70,0.38)]"
+                          >
+                            {item.label}
+                          </NavigationLink>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="mt-1 border-t border-[rgba(185,139,70,0.24)] pt-3">
+                      <p className="px-3 pb-2 text-[0.64rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-antique-gold-dark)]">
+                        Language
+                      </p>
+                      <LanguageSwitcher variant="compact" />
+                    </div>
+                  </nav>
+                </div>
+              </details>
+
+              <Link
+                href={localizeHref("/")}
+                className="block min-w-0 flex-1 transition [transition-duration:var(--motion-duration-base)] hover:opacity-90"
+              >
+                <span className="block truncate whitespace-nowrap text-[0.7rem] font-semibold uppercase leading-none tracking-[0.08em] text-[#050505] min-[390px]:text-[0.76rem] min-[430px]:text-[0.82rem] sm:text-[0.9rem] sm:tracking-[0.1em]">
+                  NAVAGRAHA
+                </span>
+              </Link>
+            </div>
+
+            <div className="flex shrink-0 items-center gap-1">
+              <TrackedLink
+                href="/ai"
+                eventName="premium_ai_cta_click"
+                eventPayload={{ page: "global-header-mobile", feature: "header-ask-ni" }}
+                className="inline-flex h-9 shrink-0 items-center justify-center whitespace-nowrap rounded-full border border-[rgba(185,139,70,0.46)] bg-white px-2.5 text-[0.56rem] font-semibold tracking-[0.02em] text-[#050505] ring-1 ring-inset ring-[rgba(5,5,5,0.04)] transition hover:border-[rgba(185,139,70,0.62)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] min-[390px]:px-3 sm:text-[0.66rem]"
+              >
+                <span>Ask NI</span>
+              </TrackedLink>
+
+              <TrackedLink
+                href={localizeHref("/reports")}
+                eventName="cta_click"
+                eventPayload={{ page: "global-header-mobile", feature: "header-bell", route: "/reports" }}
+                aria-label="Bell"
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[rgba(5,5,5,0.18)] bg-white text-[#050505] transition hover:border-[rgba(185,139,70,0.52)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
+              >
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="1.7"
+                  className="h-[1.05rem] w-[1.05rem]"
+                >
+                  <path d="M15 17H9" />
+                  <path d="M18 16H6a1 1 0 0 1-.8-1.6l1.3-1.7A3 3 0 0 0 7 11V9a5 5 0 1 1 10 0v2a3 3 0 0 0 .5 1.6l1.3 1.8A1 1 0 0 1 18 16Z" />
+                  <path d="M10.5 19a1.5 1.5 0 0 0 3 0" />
+                </svg>
+              </TrackedLink>
+
+              <div className="relative z-10 h-9 w-9 shrink-0 [&_details]:h-9 [&_details]:w-9 [&_summary]:flex [&_summary]:h-9 [&_summary]:w-9 [&_summary]:max-w-none [&_summary]:cursor-pointer [&_summary]:items-center [&_summary]:justify-center [&_summary]:overflow-hidden [&_summary]:rounded-full [&_summary]:border [&_summary]:border-[rgba(5,5,5,0.18)] [&_summary]:bg-white [&_summary]:p-0 [&_summary]:text-[0px] [&_summary]:text-transparent [&_summary]:marker:content-none [&_summary]:[-webkit-tap-highlight-color:transparent] [&_summary::-webkit-details-marker]:hidden">
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center whitespace-nowrap text-[0.56rem] font-semibold uppercase tracking-[0.06em] text-[#050505]"
+                >
+                  {requestLocale.toUpperCase()}
+                </span>
+                <LanguageSwitcher variant="compact" />
+              </div>
+            </div>
+          </div>
+        </Container>
+      </div>
+
+      <div className="h-14 xl:hidden" aria-hidden="true" />
+
       <Container className="!px-3 py-2 sm:!px-8 lg:!px-10 xl:py-3">
         <div className="hidden items-center gap-4 xl:flex">
           <Link
@@ -114,7 +215,7 @@ export async function Header() {
               item.label === "Tools" ? (
                 <ToolsMegaMenu key={item.href} navigation={toolsNavigation} />
               ) : (
-                <NavigationLink
+            <NavigationLink
                   key={item.href}
                   href={item.href}
                   className="min-h-10 rounded-none border-x-transparent border-t-transparent border-b-[2px] border-b-transparent bg-transparent px-1.5 text-[0.64rem] font-medium tracking-[0.1em] !text-[color:var(--color-ink-strong)] shadow-none hover:bg-transparent hover:!text-black 2xl:px-2.5"
@@ -125,101 +226,6 @@ export async function Header() {
               )
             )}
           </nav>
-        </div>
-
-        <div className="flex min-h-14 w-full items-center justify-between gap-2 xl:hidden">
-          <div className="flex min-w-0 flex-1 items-center gap-2">
-            <details className="group relative shrink-0">
-              <summary
-                aria-label={copy.navigation.menu}
-                className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full border border-[rgba(5,5,5,0.16)] bg-white text-[#050505] marker:content-none [-webkit-tap-highlight-color:transparent] [&::-webkit-details-marker]:hidden"
-              >
-                <span aria-hidden="true" className="text-[0.95rem] leading-none text-[#050505]">
-                  {"\u2630"}
-                </span>
-              </summary>
-              <div className="absolute top-[calc(100%+0.55rem)] z-30 max-h-[calc(100vh-5.5rem)] w-[min(calc(100vw-1.5rem),23rem)] overflow-y-auto rounded-[var(--radius-xl)] border border-[rgba(185,139,70,0.24)] bg-white p-3 [inset-inline-start:0]">
-                <nav aria-label="Mobile navigation" className="grid gap-4">
-                  <div className="grid gap-2">
-                    <p className="px-3 text-[0.64rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-antique-gold-dark)]">
-                      Menu
-                    </p>
-                    <div className="grid gap-1">
-                      {mobileMenuItems.map((item) => (
-                        <NavigationLink
-                          key={`mobile-nav-${item.href}`}
-                          href={item.href}
-                          tone="ghost"
-                          className="w-full justify-start border border-[rgba(185,139,70,0.2)] bg-white !text-[color:var(--color-ink-strong)] hover:border-[rgba(185,139,70,0.38)]"
-                        >
-                          {item.label}
-                        </NavigationLink>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="mt-1 border-t border-[rgba(185,139,70,0.24)] pt-3">
-                    <p className="px-3 pb-2 text-[0.64rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-antique-gold-dark)]">
-                      Language
-                    </p>
-                    <LanguageSwitcher variant="compact" />
-                  </div>
-                </nav>
-              </div>
-            </details>
-
-            <Link
-              href={localizeHref("/")}
-              className="block min-w-0 flex-1 transition [transition-duration:var(--motion-duration-base)] hover:opacity-90"
-            >
-              <span className="block truncate whitespace-nowrap text-[0.7rem] font-semibold uppercase leading-none tracking-[0.08em] text-[#050505] min-[390px]:text-[0.76rem] min-[430px]:text-[0.82rem] sm:text-[0.9rem] sm:tracking-[0.1em]">
-                NAVAGRAHA
-              </span>
-            </Link>
-          </div>
-
-          <div className="flex shrink-0 items-center gap-1">
-            <TrackedLink
-              href="/ai"
-              eventName="premium_ai_cta_click"
-              eventPayload={{ page: "global-header-mobile", feature: "header-ask-ni" }}
-              className="inline-flex h-9 shrink-0 items-center justify-center whitespace-nowrap rounded-full border border-[rgba(185,139,70,0.46)] bg-white px-2.5 text-[0.56rem] font-semibold tracking-[0.02em] text-[#050505] ring-1 ring-inset ring-[rgba(5,5,5,0.04)] transition hover:border-[rgba(185,139,70,0.62)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] min-[390px]:px-3 sm:text-[0.66rem]"
-            >
-              <span>Ask NI</span>
-            </TrackedLink>
-
-            <TrackedLink
-              href={localizeHref("/reports")}
-              eventName="cta_click"
-              eventPayload={{ page: "global-header-mobile", feature: "header-bell", route: "/reports" }}
-              aria-label="Bell"
-              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[rgba(5,5,5,0.18)] bg-white text-[#050505] transition hover:border-[rgba(185,139,70,0.52)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
-            >
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.7"
-                className="h-[1.05rem] w-[1.05rem]"
-              >
-                <path d="M15 17H9" />
-                <path d="M18 16H6a1 1 0 0 1-.8-1.6l1.3-1.7A3 3 0 0 0 7 11V9a5 5 0 1 1 10 0v2a3 3 0 0 0 .5 1.6l1.3 1.8A1 1 0 0 1 18 16Z" />
-                <path d="M10.5 19a1.5 1.5 0 0 0 3 0" />
-              </svg>
-            </TrackedLink>
-
-            <div className="relative z-10 h-9 w-9 shrink-0 [&_details]:h-9 [&_details]:w-9 [&_summary]:flex [&_summary]:h-9 [&_summary]:w-9 [&_summary]:max-w-none [&_summary]:cursor-pointer [&_summary]:items-center [&_summary]:justify-center [&_summary]:overflow-hidden [&_summary]:rounded-full [&_summary]:border [&_summary]:border-[rgba(5,5,5,0.18)] [&_summary]:bg-white [&_summary]:p-0 [&_summary]:text-[0px] [&_summary]:text-transparent [&_summary]:marker:content-none [&_summary]:[-webkit-tap-highlight-color:transparent] [&_summary::-webkit-details-marker]:hidden">
-              <span
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center whitespace-nowrap text-[0.56rem] font-semibold uppercase tracking-[0.06em] text-[#050505]"
-              >
-                {requestLocale.toUpperCase()}
-              </span>
-              <LanguageSwitcher variant="compact" />
-            </div>
-          </div>
         </div>
       </Container>
     </header>
