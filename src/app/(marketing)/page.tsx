@@ -1,6 +1,3 @@
-import { existsSync } from "node:fs";
-import { join } from "node:path";
-import Image from "next/image";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import { TrackedLink } from "@/components/analytics/tracked-link";
 import {
@@ -47,10 +44,6 @@ export async function generateMetadata() {
 
 export const revalidate = 3600;
 
-const hasBrandLogo = existsSync(
-  join(process.cwd(), "public", "brand", "navagraha-om-logo.png"),
-);
-
 const youtubeChannelUrl =
   "https://youtube.com/@navagrahaastrologicalcentre?si=UlIJg9BmEClecPqL";
 
@@ -96,7 +89,7 @@ const categoryRail: readonly RailItem[] = [
   { label: "Learn", href: "/articles", feature: "home-rail-learn" },
 ] as const;
 
-const toolTiles: readonly ToolTile[] = [
+const symbolTiles: readonly ToolTile[] = [
   {
     label: "Kundli",
     href: "/kundli",
@@ -119,18 +112,11 @@ const toolTiles: readonly ToolTile[] = [
     feature: "home-dashboard-tool-rashifal",
   },
   {
-    label: "Dasha",
-    href: "/dasha",
-    icon: "dasha",
-    accent: "border-[rgba(5,5,5,0.34)]",
-    feature: "home-dashboard-tool-dasha",
-  },
-  {
-    label: "Transit",
-    href: "/transit",
-    icon: "transit",
-    accent: "border-[rgba(5,5,5,0.34)]",
-    feature: "home-dashboard-tool-transit",
+    label: "Ask NI",
+    href: "/ai",
+    icon: "ai",
+    accent: "border-[rgba(0,214,255,0.38)]",
+    feature: "home-dashboard-tool-ai",
   },
   {
     label: "Matching",
@@ -147,11 +133,46 @@ const toolTiles: readonly ToolTile[] = [
     feature: "home-dashboard-tool-muhurat",
   },
   {
+    label: "Dasha",
+    href: "/dasha",
+    icon: "dasha",
+    accent: "border-[rgba(5,5,5,0.34)]",
+    feature: "home-dashboard-tool-dasha",
+  },
+  {
+    label: "Transit",
+    href: "/transit",
+    icon: "transit",
+    accent: "border-[rgba(5,5,5,0.34)]",
+    feature: "home-dashboard-tool-transit",
+  },
+  {
     label: "Remedies",
     href: "/remedies",
     icon: "remedies",
     accent: "border-[rgba(19,122,83,0.42)]",
     feature: "home-dashboard-tool-remedies",
+  },
+  {
+    label: "Reports",
+    href: "/reports",
+    icon: "report",
+    accent: "border-[rgba(185,139,70,0.3)]",
+    feature: "home-dashboard-tool-reports",
+  },
+  {
+    label: "Shop",
+    href: "/shop",
+    icon: "shop",
+    accent: "border-[rgba(185,139,70,0.3)]",
+    feature: "home-dashboard-tool-shop",
+  },
+  {
+    label: "Consult",
+    href: "/consultation",
+    icon: "consultation",
+    accent: "border-[rgba(111,28,42,0.28)]",
+    feature: "home-dashboard-tool-consult",
   },
 ] as const;
 
@@ -159,8 +180,6 @@ const niChips: readonly RailItem[] = [
   { label: "Career", href: "/ai", feature: "home-ni-chip-career" },
   { label: "Marriage", href: "/ai", feature: "home-ni-chip-marriage" },
   { label: "Remedy", href: "/ai", feature: "home-ni-chip-remedy" },
-  { label: "Dasha", href: "/ai", feature: "home-ni-chip-dasha" },
-  { label: "Transit", href: "/ai", feature: "home-ni-chip-transit" },
 ] as const;
 
 const reportItems: readonly RailItem[] = [
@@ -187,18 +206,24 @@ const authorityItems: readonly RailItem[] = [
 ] as const;
 
 const learningItems: readonly RailItem[] = [
-  { label: "Latest Articles", href: "/articles", feature: "home-learn-articles" },
+  { label: "Articles", href: "/articles", feature: "home-learn-articles" },
   { label: "Videos", href: youtubeChannelUrl, feature: "home-learn-videos" },
-  { label: "Learning", href: "/articles", feature: "home-learn-learning" },
+  { label: "Acharya", href: "/from-the-desk", feature: "home-learn-acharya" },
+  { label: "NI Module", href: "/ai", feature: "home-learn-ni-module" },
 ] as const;
 
-const shopItems: readonly RailItem[] = [
-  { label: "Gemstone", href: "/shop", feature: "home-shop-gemstone" },
-  { label: "Rudraksha", href: "/shop", feature: "home-shop-rudraksha" },
-  { label: "Mala", href: "/shop", feature: "home-shop-mala" },
-  { label: "Bracelet", href: "/shop", feature: "home-shop-bracelet" },
-  { label: "Kavacham", href: "/shop", feature: "home-shop-kavacham" },
-  { label: "Puja Items", href: "/shop", feature: "home-shop-puja-items" },
+const shopItems: ReadonlyArray<
+  RailItem & { initials: string }
+> = [
+  { label: "Gemstone", href: "/shop", feature: "home-shop-gemstone", initials: "GM" },
+  { label: "Rudraksha", href: "/shop", feature: "home-shop-rudraksha", initials: "RD" },
+  { label: "Mala", href: "/shop", feature: "home-shop-mala", initials: "ML" },
+  { label: "Kavacham", href: "/shop", feature: "home-shop-kavacham", initials: "KV" },
+  { label: "Yantra", href: "/shop", feature: "home-shop-yantra", initials: "YN" },
+  { label: "Bracelet", href: "/shop", feature: "home-shop-bracelet", initials: "BR" },
+  { label: "Puja/Yagya", href: "/shop", feature: "home-shop-puja-items", initials: "PY" },
+  { label: "Reports", href: "/reports", feature: "home-shop-reports", initials: "RP" },
+  { label: "Patrika", href: "/consultation", feature: "home-shop-patrika", initials: "PT" },
 ] as const;
 
 function isExternalHref(href: string) {
@@ -340,7 +365,7 @@ function RailLink({
 
 function CategoryRail({ localizeHref }: Readonly<{ localizeHref: LocalizeHref }>) {
   return (
-    <section className="border-b border-[rgba(185,139,70,0.18)] bg-white">
+    <section className="hidden border-b border-[rgba(185,139,70,0.18)] bg-white md:block">
       <Container className="py-3">
         <nav
           aria-label="Homepage dashboard rail"
@@ -369,50 +394,75 @@ function ToolTileLink({
       href={localizeHref(tile.href)}
       eventName="cta_click"
       eventPayload={{ page: "/", feature: tile.feature, route: tile.href }}
-      className={`group flex min-h-[6.25rem] min-w-0 flex-col items-center justify-center gap-2.5 rounded-[1.25rem] border ${tile.accent} bg-white px-2 py-4 text-center shadow-[0_12px_28px_rgba(5,5,5,0.05)] transition hover:-translate-y-0.5 hover:shadow-[0_16px_34px_rgba(5,5,5,0.09)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] sm:min-h-[6.3rem] sm:gap-3 sm:px-2.5`}
+      className="group flex min-h-[5.35rem] min-w-0 flex-col items-center justify-center gap-1.5 rounded-[0.95rem] border border-[rgba(185,139,70,0.16)] bg-white px-1 py-2.5 text-center shadow-[0_8px_18px_rgba(5,5,5,0.04)] transition hover:-translate-y-0.5 hover:border-[rgba(185,139,70,0.34)] hover:shadow-[0_12px_24px_rgba(5,5,5,0.07)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] sm:min-h-[6rem] sm:gap-2.5 sm:px-2.5"
     >
       <DashboardIcon icon={tile.icon} />
-      <span className="max-w-full break-normal text-[0.69rem] font-semibold leading-tight tracking-[0.01em] text-[color:var(--color-ink-black)] [overflow-wrap:normal] sm:text-[0.76rem] sm:tracking-[0.03em]">
+      <span className="max-w-full break-normal text-[0.61rem] font-semibold leading-tight tracking-[0.01em] text-[color:var(--color-ink-black)] [overflow-wrap:normal] sm:text-[0.74rem] sm:tracking-[0.03em]">
         {tile.label}
       </span>
     </TrackedLink>
   );
 }
 
-function DashboardTitleBlock() {
+function DashboardTitleBlock({ localizeHref }: Readonly<{ localizeHref: LocalizeHref }>) {
   return (
     <section
       id="top"
       className="border-b border-[rgba(185,139,70,0.18)] bg-white"
     >
-      <Container className="py-7 sm:py-9">
-        <div className="flex min-w-0 items-center gap-4">
-          {hasBrandLogo ? (
-            <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border border-[rgba(185,139,70,0.42)] bg-black shadow-[0_14px_30px_rgba(5,5,5,0.14)]">
-              <Image
-                src="/brand/navagraha-om-logo.png"
-                alt="NAVAGRAHA CENTRE golden Om mandala logo"
-                fill
-                priority
-                sizes="64px"
-                className="object-cover"
+      <Container className="py-4 sm:py-5 lg:py-6">
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(220px,0.85fr)] lg:items-center">
+          <div className="min-w-0 rounded-[1.55rem] border border-[rgba(185,139,70,0.18)] bg-[linear-gradient(135deg,#ffffff,rgba(251,241,203,0.24))] p-4 shadow-[0_12px_28px_rgba(5,5,5,0.05)] sm:p-5">
+            <p className="text-[0.66rem] font-semibold uppercase tracking-[0.24em] text-[color:var(--color-antique-gold-dark)]">
+              Today
+            </p>
+            <h1 className="mt-1 font-[family-name:var(--font-display)] text-[clamp(1.7rem,7vw,3.1rem)] leading-[0.96] text-[color:var(--color-ink-black)]">
+              Vedic Guidance
+            </h1>
+            <p className="mt-2 max-w-2xl text-[0.9rem] leading-6 text-[color:var(--color-ink-black)] sm:text-[0.98rem]">
+              Panchang • Rashifal • Muhurat • Ask NI
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <TrackedLink
+                href={localizeHref("/panchang")}
+                eventName="cta_click"
+                eventPayload={{ page: "/", feature: "home-top-panchang", route: "/panchang" }}
+                className="inline-flex h-10 items-center justify-center rounded-full border border-[rgba(185,139,70,0.34)] bg-white px-3 text-[0.58rem] font-semibold uppercase tracking-[0.08em] text-[color:var(--color-ink-black)] shadow-[0_6px_16px_rgba(5,5,5,0.04)] transition hover:border-[rgba(185,139,70,0.5)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] sm:px-4 sm:text-[0.66rem]"
+              >
+                Panchang
+              </TrackedLink>
+              <TrackedLink
+                href={localizeHref("/ai")}
+                eventName="premium_ai_cta_click"
+                eventPayload={{ page: "/", feature: "home-top-ai", route: "/ai" }}
+                className="inline-flex h-10 items-center justify-center rounded-full border border-[rgba(185,139,70,0.34)] bg-[color:var(--color-onyx)] px-3 text-[0.58rem] font-semibold uppercase tracking-[0.08em] text-white shadow-[0_6px_16px_rgba(5,5,5,0.08)] transition hover:border-[rgba(185,139,70,0.5)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] sm:px-4 sm:text-[0.66rem]"
+              >
+                Ask NI
+              </TrackedLink>
+            </div>
+          </div>
+
+          <div className="hidden min-w-0 rounded-[1.55rem] border border-[rgba(185,139,70,0.18)] bg-white p-4 shadow-[0_12px_28px_rgba(5,5,5,0.04)] lg:block">
+            <p className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-antique-gold-dark)]">
+              Quick start
+            </p>
+            <div className="mt-3 grid gap-2">
+              <RailLink
+                item={{ label: "Reports", href: "/reports", feature: "home-top-reports" }}
+                localizeHref={localizeHref}
+                className="w-full justify-start"
+              />
+              <RailLink
+                item={{ label: "From the Desk", href: "/from-the-desk", feature: "home-top-desk" }}
+                localizeHref={localizeHref}
+                className="w-full justify-start"
+              />
+              <RailLink
+                item={{ label: "Learn / Articles", href: "/articles", feature: "home-top-articles" }}
+                localizeHref={localizeHref}
+                className="w-full justify-start"
               />
             </div>
-          ) : (
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border border-[rgba(185,139,70,0.42)] bg-white text-sm font-semibold text-[color:var(--color-ink-black)]">
-              NC
-            </div>
-          )}
-          <div className="min-w-0">
-            <p className="text-[0.76rem] font-semibold uppercase tracking-[0.16em] text-[color:var(--color-antique-gold)]">
-              NAVAGRAHA CENTRE
-            </p>
-            <h1 className="mt-1 font-[family-name:var(--font-display)] text-[clamp(2.05rem,9vw,4.25rem)] leading-[0.95] text-[color:var(--color-ink-black)]">
-              Vedic Astrology App Dashboard
-            </h1>
-            <p className="mt-3 text-[0.88rem] font-semibold text-[color:var(--color-ink-black)]">
-              Kundli &bull; Panchang &bull; Rashifal &bull; Ask NI
-            </p>
           </div>
         </div>
       </Container>
@@ -420,12 +470,12 @@ function DashboardTitleBlock() {
   );
 }
 
-function ToolIconGrid({ localizeHref }: Readonly<{ localizeHref: LocalizeHref }>) {
+function SymbolGrid({ localizeHref }: Readonly<{ localizeHref: LocalizeHref }>) {
   return (
     <section className="bg-white">
-      <Container className="py-7 sm:py-9">
-        <div className="grid grid-cols-4 gap-2 sm:gap-3 lg:grid-cols-8">
-          {toolTiles.map((tile) => (
+      <Container className="py-6 px-3 sm:px-8 sm:py-8">
+        <div className="grid grid-cols-2 gap-1.5 min-[430px]:grid-cols-3 min-[540px]:grid-cols-4 sm:gap-3">
+          {symbolTiles.map((tile) => (
             <ToolTileLink
               key={tile.label}
               tile={tile}
@@ -567,31 +617,51 @@ function ShopCategoryRail({ localizeHref }: Readonly<{ localizeHref: LocalizeHre
   return (
     <section className="bg-white pb-8 sm:pb-10">
       <Container>
-        <div className="rounded-[1.6rem] border border-[rgba(185,139,70,0.22)] bg-white p-4 shadow-[0_16px_34px_rgba(5,5,5,0.05)] sm:p-5">
+        <div className="rounded-[1.6rem] border border-[rgba(185,139,70,0.18)] bg-white p-4 shadow-[0_12px_28px_rgba(5,5,5,0.05)] sm:p-5">
           <div className="flex items-start gap-3">
             <DashboardIcon icon="shop" />
             <div>
               <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[color:var(--color-accent-gold-dark)]">
-                Shop rail
+                Vedic shop
               </p>
-              <h2 className="mt-1 font-[family-name:var(--font-display)] text-[1.5rem] leading-tight text-[color:var(--color-ink-black)]">
-                Vedic categories
+              <h2 className="mt-1 font-[family-name:var(--font-display)] text-[1.45rem] leading-tight text-[color:var(--color-ink-black)]">
+                Guided categories
               </h2>
             </div>
           </div>
-          <div className="mt-5 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="mt-4 grid grid-cols-3 gap-2 sm:gap-3">
             {shopItems.map((item) => (
-              <RailLink
+              <ShopGridTile
                 key={item.label}
                 item={item}
                 localizeHref={localizeHref}
-                className="min-w-[8.75rem]"
               />
             ))}
           </div>
         </div>
       </Container>
     </section>
+  );
+}
+
+function ShopGridTile({
+  item,
+  localizeHref,
+}: Readonly<{ item: (typeof shopItems)[number]; localizeHref: LocalizeHref }>) {
+  return (
+    <TrackedLink
+      href={localizeHref(item.href)}
+      eventName="cta_click"
+      eventPayload={{ page: "/", feature: item.feature, route: item.href }}
+      className="group flex min-h-[6.7rem] flex-col items-center justify-center gap-2 rounded-[1rem] border border-[rgba(185,139,70,0.16)] bg-[linear-gradient(180deg,#ffffff,rgba(251,241,203,0.24))] px-2 py-3 text-center shadow-[0_8px_18px_rgba(5,5,5,0.04)] transition hover:-translate-y-0.5 hover:border-[rgba(185,139,70,0.32)] hover:shadow-[0_12px_24px_rgba(5,5,5,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
+    >
+      <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[rgba(185,139,70,0.26)] bg-white text-[0.72rem] font-semibold tracking-[0.08em] text-[color:var(--color-ink-black)] shadow-[0_6px_14px_rgba(5,5,5,0.04)]">
+        {item.initials}
+      </span>
+      <span className="max-w-full break-normal text-[0.64rem] font-semibold leading-tight text-[color:var(--color-ink-black)] sm:text-[0.72rem]">
+        {item.label}
+      </span>
+    </TrackedLink>
   );
 }
 
@@ -625,8 +695,8 @@ export default async function HomePage() {
 
       <main className="launch-page launch-page-home min-w-0 bg-white pb-20 text-[color:var(--color-ink-black)]">
         <CategoryRail localizeHref={localizeHref} />
-        <DashboardTitleBlock />
-        <ToolIconGrid localizeHref={localizeHref} />
+        <DashboardTitleBlock localizeHref={localizeHref} />
+        <SymbolGrid localizeHref={localizeHref} />
         <AskNiStrip localizeHref={localizeHref} />
         <ShowcaseCard
           eyebrow="Reports"

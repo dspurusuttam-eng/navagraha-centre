@@ -115,7 +115,7 @@ export async function Header() {
           </nav>
         </div>
 
-        <div className="flex min-h-14 w-full items-center justify-between gap-3 xl:hidden">
+        <div className="flex min-h-14 w-full items-center justify-between gap-2 xl:hidden">
           <div className="flex min-w-0 flex-1 items-center gap-2">
             <details className="group relative shrink-0">
               <summary
@@ -159,20 +159,31 @@ export async function Header() {
               href={localizeHref("/")}
               className="block min-w-0 flex-1 transition [transition-duration:var(--motion-duration-base)] hover:opacity-90"
             >
-              <span className="block truncate whitespace-nowrap text-[0.62rem] font-semibold uppercase leading-none tracking-[0.055em] text-[#050505] min-[390px]:text-[0.68rem] sm:text-[0.8rem] sm:tracking-[0.12em]">
-                NAVAGRAHA CENTRE
+              <span className="block truncate whitespace-nowrap text-[0.6rem] font-semibold uppercase leading-none tracking-[0.08em] text-[#050505] min-[390px]:text-[0.66rem] sm:text-[0.78rem] sm:tracking-[0.12em]">
+                <span className="sm:hidden">NAVAGRAHA</span>
+                <span className="hidden sm:inline">NAVAGRAHA CENTRE</span>
               </span>
             </Link>
           </div>
 
-          <div className="flex shrink-0 items-center gap-1.5">
+          <div className="flex shrink-0 items-center gap-1">
             <TrackedLink
               href="/ai"
               eventName="premium_ai_cta_click"
               eventPayload={{ page: "global-header-mobile", feature: "header-ask-ni" }}
-              className="inline-flex h-10 shrink-0 items-center justify-center whitespace-nowrap rounded-full border border-[rgba(185,139,70,0.34)] bg-white px-2.5 text-[0.58rem] font-semibold tracking-[0.01em] text-[#050505] shadow-[0_6px_16px_rgba(5,5,5,0.05)] transition hover:border-[rgba(185,139,70,0.5)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] sm:px-3 sm:text-[0.64rem]"
+              className="inline-flex h-10 shrink-0 items-center justify-center whitespace-nowrap rounded-full border border-[rgba(185,139,70,0.34)] bg-white px-2 text-[0.53rem] font-semibold tracking-[0.02em] text-[#050505] shadow-[0_6px_16px_rgba(5,5,5,0.05)] transition hover:border-[rgba(185,139,70,0.5)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] sm:px-3 sm:text-[0.64rem]"
             >
               <span>Ask NI</span>
+            </TrackedLink>
+
+            <TrackedLink
+              href={localizeHref("/reports")}
+              eventName="cta_click"
+              eventPayload={{ page: "global-header-mobile", feature: "header-bell", route: "/reports" }}
+              aria-label="Bell"
+              className="inline-flex h-10 shrink-0 items-center justify-center whitespace-nowrap rounded-full border border-[rgba(185,139,70,0.34)] bg-white px-2 text-[0.54rem] font-semibold tracking-[0.02em] text-[#050505] shadow-[0_6px_16px_rgba(5,5,5,0.05)] transition hover:border-[rgba(185,139,70,0.5)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] sm:px-3 sm:text-[0.64rem]"
+            >
+              <span>Bell</span>
             </TrackedLink>
 
             <div className="relative z-10 h-10 w-10 shrink-0 [&_details]:h-10 [&_details]:w-10 [&_summary]:flex [&_summary]:h-10 [&_summary]:w-10 [&_summary]:max-w-none [&_summary]:cursor-pointer [&_summary]:items-center [&_summary]:justify-center [&_summary]:overflow-hidden [&_summary]:rounded-full [&_summary]:border [&_summary]:border-[rgba(185,139,70,0.34)] [&_summary]:bg-white [&_summary]:p-0 [&_summary]:text-[0px] [&_summary]:text-transparent [&_summary]:shadow-[0_6px_16px_rgba(5,5,5,0.05)] [&_summary]:marker:content-none [&_summary]:[-webkit-tap-highlight-color:transparent] [&_summary::-webkit-details-marker]:hidden">
