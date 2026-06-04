@@ -63,7 +63,7 @@ export async function Header() {
   return (
     <header
       data-nosnippet
-      className="sticky top-0 z-50 border-b border-[rgba(5,5,5,0.12)] bg-white"
+      className="sticky top-0 z-50 border-b border-[rgba(185,139,70,0.32)] bg-white"
     >
       <div className="hidden border-b border-[rgba(185,139,70,0.28)] bg-white xl:block">
         <Container className="flex flex-wrap items-center justify-between gap-2 py-1.5">
@@ -81,7 +81,15 @@ export async function Header() {
               </span>
             ))}
           </div>
-          <LanguageSwitcher variant="compact" />
+          <div className="relative z-10 h-9 w-9 shrink-0 [&_details]:h-9 [&_details]:w-9 [&_summary]:flex [&_summary]:h-9 [&_summary]:w-9 [&_summary]:max-w-none [&_summary]:cursor-pointer [&_summary]:items-center [&_summary]:justify-center [&_summary]:overflow-hidden [&_summary]:rounded-full [&_summary]:border [&_summary]:border-[rgba(5,5,5,0.18)] [&_summary]:bg-white [&_summary]:p-0 [&_summary]:text-[0px] [&_summary]:text-transparent [&_summary]:marker:content-none [&_summary]:[-webkit-tap-highlight-color:transparent] [&_summary::-webkit-details-marker]:hidden">
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center whitespace-nowrap text-[0.56rem] font-semibold uppercase tracking-[0.06em] text-[#050505]"
+            >
+              {requestLocale.toUpperCase()}
+            </span>
+            <LanguageSwitcher variant="compact" />
+          </div>
         </Container>
       </div>
 
@@ -91,7 +99,11 @@ export async function Header() {
             href={localizeHref("/")}
             className="min-w-0 shrink-0 transition [transition-duration:var(--motion-duration-base)] hover:opacity-90"
           >
-            <NavagrahaLogo variant="header" priority />
+            <NavagrahaLogo
+              variant="header"
+              priority
+              className="xl:w-[15.75rem] 2xl:w-[19.5rem]"
+            />
           </Link>
 
           <nav
@@ -120,7 +132,7 @@ export async function Header() {
             <details className="group relative shrink-0">
               <summary
                 aria-label={copy.navigation.menu}
-                className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full border border-[rgba(185,139,70,0.22)] bg-white text-[#050505] marker:content-none [-webkit-tap-highlight-color:transparent] [&::-webkit-details-marker]:hidden"
+                className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full border border-[rgba(5,5,5,0.16)] bg-white text-[#050505] marker:content-none [-webkit-tap-highlight-color:transparent] [&::-webkit-details-marker]:hidden"
               >
                 <span aria-hidden="true" className="text-[0.95rem] leading-none text-[#050505]">
                   {"\u2630"}
@@ -159,9 +171,8 @@ export async function Header() {
               href={localizeHref("/")}
               className="block min-w-0 flex-1 transition [transition-duration:var(--motion-duration-base)] hover:opacity-90"
             >
-              <span className="block truncate whitespace-nowrap text-[0.56rem] font-semibold uppercase leading-none tracking-[0.08em] text-[#050505] min-[390px]:text-[0.6rem] min-[430px]:text-[0.64rem] sm:text-[0.78rem] sm:tracking-[0.12em]">
-                <span className="sm:hidden">NAVAGRAHA</span>
-                <span className="hidden sm:inline">NAVAGRAHA CENTRE</span>
+              <span className="block truncate whitespace-nowrap text-[0.7rem] font-semibold uppercase leading-none tracking-[0.08em] text-[#050505] min-[390px]:text-[0.76rem] min-[430px]:text-[0.82rem] sm:text-[0.9rem] sm:tracking-[0.1em]">
+                NAVAGRAHA
               </span>
             </Link>
           </div>
@@ -171,7 +182,7 @@ export async function Header() {
               href="/ai"
               eventName="premium_ai_cta_click"
               eventPayload={{ page: "global-header-mobile", feature: "header-ask-ni" }}
-              className="inline-flex h-9 shrink-0 items-center justify-center whitespace-nowrap rounded-full border border-[rgba(185,139,70,0.28)] bg-white px-2 text-[0.5rem] font-semibold tracking-[0.02em] text-[#050505] transition hover:border-[rgba(185,139,70,0.48)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] sm:px-3 sm:text-[0.62rem]"
+              className="inline-flex h-9 shrink-0 items-center justify-center whitespace-nowrap rounded-full border border-[rgba(185,139,70,0.46)] bg-white px-2.5 text-[0.56rem] font-semibold tracking-[0.02em] text-[#050505] ring-1 ring-inset ring-[rgba(5,5,5,0.04)] transition hover:border-[rgba(185,139,70,0.62)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] min-[390px]:px-3 sm:text-[0.66rem]"
             >
               <span>Ask NI</span>
             </TrackedLink>
@@ -181,7 +192,7 @@ export async function Header() {
               eventName="cta_click"
               eventPayload={{ page: "global-header-mobile", feature: "header-bell", route: "/reports" }}
               aria-label="Bell"
-              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[rgba(185,139,70,0.28)] bg-white text-[#050505] transition hover:border-[rgba(185,139,70,0.48)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[rgba(5,5,5,0.18)] bg-white text-[#050505] transition hover:border-[rgba(185,139,70,0.52)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
             >
               <svg
                 aria-hidden="true"
@@ -199,7 +210,7 @@ export async function Header() {
               </svg>
             </TrackedLink>
 
-            <div className="relative z-10 h-9 w-9 shrink-0 [&_details]:h-9 [&_details]:w-9 [&_summary]:flex [&_summary]:h-9 [&_summary]:w-9 [&_summary]:max-w-none [&_summary]:cursor-pointer [&_summary]:items-center [&_summary]:justify-center [&_summary]:overflow-hidden [&_summary]:rounded-full [&_summary]:border [&_summary]:border-[rgba(185,139,70,0.28)] [&_summary]:bg-white [&_summary]:p-0 [&_summary]:text-[0px] [&_summary]:text-transparent [&_summary]:marker:content-none [&_summary]:[-webkit-tap-highlight-color:transparent] [&_summary::-webkit-details-marker]:hidden">
+            <div className="relative z-10 h-9 w-9 shrink-0 [&_details]:h-9 [&_details]:w-9 [&_summary]:flex [&_summary]:h-9 [&_summary]:w-9 [&_summary]:max-w-none [&_summary]:cursor-pointer [&_summary]:items-center [&_summary]:justify-center [&_summary]:overflow-hidden [&_summary]:rounded-full [&_summary]:border [&_summary]:border-[rgba(5,5,5,0.18)] [&_summary]:bg-white [&_summary]:p-0 [&_summary]:text-[0px] [&_summary]:text-transparent [&_summary]:marker:content-none [&_summary]:[-webkit-tap-highlight-color:transparent] [&_summary::-webkit-details-marker]:hidden">
               <span
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center whitespace-nowrap text-[0.56rem] font-semibold uppercase tracking-[0.06em] text-[#050505]"

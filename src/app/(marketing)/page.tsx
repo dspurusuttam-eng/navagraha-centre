@@ -183,18 +183,25 @@ const symbolTiles: readonly ToolTile[] = [
 
 const askNiUtilities: readonly AskNiUtilityItem[] = [
   {
-    label: "Career",
+    label: "Kundli",
     href: "/ai",
-    feature: "home-ni-chip-career",
-    icon: "report",
-    accent: "border-[rgba(0,214,255,0.42)]",
+    feature: "home-ni-chip-kundli",
+    icon: "kundli",
+    accent: "border-[rgba(185,139,70,0.34)]",
   },
   {
-    label: "Marriage",
+    label: "Today",
     href: "/ai",
-    feature: "home-ni-chip-marriage",
-    icon: "matching",
-    accent: "border-[rgba(111,28,42,0.34)]",
+    feature: "home-ni-chip-today",
+    icon: "panchang",
+    accent: "border-[rgba(185,139,70,0.28)]",
+  },
+  {
+    label: "Muhurat",
+    href: "/ai",
+    feature: "home-ni-chip-muhurat",
+    icon: "muhurat",
+    accent: "border-[rgba(206,161,57,0.34)]",
   },
   {
     label: "Remedy",
@@ -204,67 +211,32 @@ const askNiUtilities: readonly AskNiUtilityItem[] = [
     accent: "border-[rgba(19,122,83,0.34)]",
   },
   {
-    label: "Kundli Insight",
+    label: "Match",
     href: "/ai",
-    feature: "home-ni-chip-kundli-insight",
-    icon: "kundli",
-    accent: "border-[rgba(185,139,70,0.34)]",
+    feature: "home-ni-chip-match",
+    icon: "matching",
+    accent: "border-[rgba(111,28,42,0.34)]",
   },
   {
-    label: "Panchang Today",
+    label: "Career",
     href: "/ai",
-    feature: "home-ni-chip-panchang-today",
-    icon: "panchang",
-    accent: "border-[rgba(185,139,70,0.28)]",
+    feature: "home-ni-chip-career",
+    icon: "report",
+    accent: "border-[rgba(0,214,255,0.42)]",
   },
   {
-    label: "Gemstone",
+    label: "Report",
     href: "/ai",
-    feature: "home-ni-chip-gemstone",
-    icon: "shop",
-    accent: "border-[rgba(111,28,42,0.28)]",
+    feature: "home-ni-chip-report",
+    icon: "report",
+    accent: "border-[rgba(185,139,70,0.3)]",
   },
   {
-    label: "Dasha",
+    label: "Spiritual",
     href: "/ai",
-    feature: "home-ni-chip-dasha",
-    icon: "dasha",
-    accent: "border-[rgba(5,5,5,0.26)]",
-  },
-  {
-    label: "Transit",
-    href: "/ai",
-    feature: "home-ni-chip-transit",
-    icon: "transit",
-    accent: "border-[rgba(5,5,5,0.22)]",
-  },
-  {
-    label: "Puja/Yagya",
-    href: "/ai",
-    feature: "home-ni-chip-puja-yagya",
-    icon: "muhurat",
-    accent: "border-[rgba(206,161,57,0.34)]",
-  },
-  {
-    label: "Business",
-    href: "/ai",
-    feature: "home-ni-chip-business",
-    icon: "consultation",
-    accent: "border-[rgba(185,139,70,0.28)]",
-  },
-  {
-    label: "Well-being",
-    href: "/ai",
-    feature: "home-ni-chip-well-being",
+    feature: "home-ni-chip-spiritual",
     icon: "remedies",
     accent: "border-[rgba(19,122,83,0.34)]",
-  },
-  {
-    label: "Education",
-    href: "/ai",
-    feature: "home-ni-chip-education",
-    icon: "article",
-    accent: "border-[rgba(0,214,255,0.28)]",
   },
 ] as const;
 
@@ -299,17 +271,17 @@ const learningItems: readonly RailItem[] = [
 ] as const;
 
 const shopItems: ReadonlyArray<
-  RailItem & { initials: string }
+  RailItem & { icon: IconKey; accent: string }
 > = [
-  { label: "Gemstone", href: "/shop", feature: "home-shop-gemstone", initials: "GM" },
-  { label: "Rudraksha", href: "/shop", feature: "home-shop-rudraksha", initials: "RD" },
-  { label: "Mala", href: "/shop", feature: "home-shop-mala", initials: "ML" },
-  { label: "Kavacham", href: "/shop", feature: "home-shop-kavacham", initials: "KV" },
-  { label: "Yantra", href: "/shop", feature: "home-shop-yantra", initials: "YN" },
-  { label: "Bracelet", href: "/shop", feature: "home-shop-bracelet", initials: "BR" },
-  { label: "Puja/Yagya", href: "/shop", feature: "home-shop-puja-items", initials: "PY" },
-  { label: "Reports", href: "/reports", feature: "home-shop-reports", initials: "RP" },
-  { label: "Patrika", href: "/consultation", feature: "home-shop-patrika", initials: "PT" },
+  { label: "Gemstone", href: "/shop", feature: "home-shop-gemstone", icon: "shop", accent: "border-[rgba(185,139,70,0.28)]" },
+  { label: "Rudraksha", href: "/shop", feature: "home-shop-rudraksha", icon: "remedies", accent: "border-[rgba(19,122,83,0.34)]" },
+  { label: "Mala", href: "/shop", feature: "home-shop-mala", icon: "remedies", accent: "border-[rgba(185,139,70,0.28)]" },
+  { label: "Kavacham", href: "/shop", feature: "home-shop-kavacham", icon: "shop", accent: "border-[rgba(185,139,70,0.28)]" },
+  { label: "Yantra", href: "/shop", feature: "home-shop-yantra", icon: "kundli", accent: "border-[rgba(185,139,70,0.34)]" },
+  { label: "Bracelet", href: "/shop", feature: "home-shop-bracelet", icon: "shop", accent: "border-[rgba(111,28,42,0.28)]" },
+  { label: "Puja/Yagya", href: "/shop", feature: "home-shop-puja-items", icon: "muhurat", accent: "border-[rgba(206,161,57,0.34)]" },
+  { label: "Reports", href: "/reports", feature: "home-shop-reports", icon: "report", accent: "border-[rgba(185,139,70,0.3)]" },
+  { label: "Patrika", href: "/consultation", feature: "home-shop-patrika", icon: "kundli", accent: "border-[rgba(185,139,70,0.34)]" },
 ] as const;
 
 function isExternalHref(href: string) {
@@ -480,13 +452,62 @@ function ToolTileLink({
       href={localizeHref(tile.href)}
       eventName="cta_click"
       eventPayload={{ page: "/", feature: tile.feature, route: tile.href }}
-      className="group flex min-h-[7.25rem] min-w-0 snap-start snap-always flex-col items-center justify-center gap-2 rounded-[1rem] border border-[rgba(185,139,70,0.16)] bg-white px-2 py-3 text-center transition hover:-translate-y-0.5 hover:border-[rgba(185,139,70,0.34)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] sm:min-h-[7.5rem] sm:gap-2.5 sm:px-2.5"
+      className="group flex min-h-[6.9rem] min-w-0 snap-start snap-always flex-col items-center justify-center gap-2 rounded-[0.95rem] border border-[rgba(185,139,70,0.14)] bg-white px-2 py-3 text-center transition hover:border-[rgba(185,139,70,0.34)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] sm:min-h-[7.25rem] sm:gap-2.5 sm:px-2.5"
     >
       <RailGlyph icon={tile.icon} accent={tile.accent} />
       <span className="max-w-full break-normal text-[0.56rem] font-semibold leading-tight tracking-[0.03em] text-[color:var(--color-ink-black)] [overflow-wrap:normal] sm:text-[0.68rem] sm:tracking-[0.05em]">
         {tile.label}
       </span>
     </TrackedLink>
+  );
+}
+
+function NavagrahaOrbitPanel() {
+  const orbitNodes = Array.from({ length: 9 }, (_, index) => {
+    const angle = (index / 9) * Math.PI * 2 - Math.PI / 2;
+    const radius = 72;
+    const x = 88 + Math.cos(angle) * radius;
+    const y = 88 + Math.sin(angle) * radius;
+
+    return { index, x, y };
+  });
+
+  return (
+    <div className="hidden min-w-0 rounded-[1.55rem] border border-[rgba(185,139,70,0.18)] bg-white p-4 lg:block">
+      <div className="grid grid-cols-[11rem_minmax(0,1fr)] items-center gap-4">
+        <div
+          aria-hidden="true"
+          className="relative h-44 w-44 rounded-full border border-[rgba(185,139,70,0.3)] bg-white"
+        >
+          <span className="absolute inset-5 rounded-full border border-[rgba(5,5,5,0.18)]" />
+          <span className="absolute inset-[3.35rem] rounded-full border border-[rgba(185,139,70,0.36)]" />
+          <span className="absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[rgba(185,139,70,0.5)] bg-[color:var(--color-ink-black)]" />
+          {orbitNodes.map((node) => (
+            <span
+              key={node.index}
+              className="absolute h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[rgba(185,139,70,0.52)] bg-white"
+              style={{ left: node.x, top: node.y }}
+            />
+          ))}
+          <span className="absolute left-1/2 top-[1.4rem] h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-[color:var(--color-emerald)]" />
+        </div>
+        <div className="min-w-0">
+          <p className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-antique-gold-dark)]">
+            Navagraha Orbit
+          </p>
+          <p className="mt-3 text-sm font-medium leading-6 text-[color:var(--color-ink-black)]">
+            Daily guidance begins with Panchang, Moon sign context,
+            planetary movement and human-led interpretation.
+          </p>
+          <div className="mt-4 grid gap-2">
+            <span className="h-px bg-[rgba(185,139,70,0.24)]" />
+            <span className="text-[0.66rem] font-semibold uppercase tracking-[0.16em] text-[color:var(--color-ink-black)]">
+              J P Sarmah guided
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -790,16 +811,19 @@ function DashboardTitleBlock({ localizeHref }: Readonly<{ localizeHref: Localize
       className="border-b border-[rgba(185,139,70,0.18)] bg-white"
     >
       <Container className="py-3 sm:py-5 lg:py-6">
-        <div className="grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(220px,0.85fr)] lg:items-center">
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,0.95fr)_minmax(420px,1.05fr)] lg:items-center">
           <div className="min-w-0 rounded-[1.55rem] border border-[rgba(185,139,70,0.18)] bg-white p-4 sm:p-5">
             <p className="text-[0.66rem] font-semibold uppercase tracking-[0.24em] text-[color:var(--color-antique-gold-dark)]">
-              Today
+              Sacred Daily Dashboard
             </p>
             <h1 className="mt-1 font-[family-name:var(--font-display)] text-[clamp(1.55rem,6.6vw,3.1rem)] leading-[0.96] text-[color:var(--color-ink-black)]">
-              Vedic Guidance
+              Today at NAVAGRAHA
             </h1>
             <p className="mt-1.5 max-w-2xl text-[0.88rem] leading-6 text-[color:var(--color-ink-black)] sm:text-[0.98rem]">
-              Panchang • Rashifal • Muhurat • Ask NI
+              Panchang | Rashifal | Muhurat | Kundli | Ask NI
+            </p>
+            <p className="mt-2 max-w-xl text-[0.78rem] font-medium leading-5 text-[color:var(--color-ink-black)] sm:text-[0.86rem]">
+              Human-guided by J P Sarmah, assisted by Ask NI.
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
               <TrackedLink
@@ -821,28 +845,7 @@ function DashboardTitleBlock({ localizeHref }: Readonly<{ localizeHref: Localize
             </div>
           </div>
 
-          <div className="hidden min-w-0 rounded-[1.55rem] border border-[rgba(185,139,70,0.18)] bg-white p-4 lg:block">
-            <p className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-antique-gold-dark)]">
-              Quick start
-            </p>
-            <div className="mt-3 grid gap-2">
-              <RailLink
-                item={{ label: "Reports", href: "/reports", feature: "home-top-reports" }}
-                localizeHref={localizeHref}
-                className="w-full justify-start"
-              />
-              <RailLink
-                item={{ label: "From the Desk", href: "/from-the-desk", feature: "home-top-desk" }}
-                localizeHref={localizeHref}
-                className="w-full justify-start"
-              />
-              <RailLink
-                item={{ label: "Learn / Articles", href: "/articles", feature: "home-top-articles" }}
-                localizeHref={localizeHref}
-                className="w-full justify-start"
-              />
-            </div>
-          </div>
+          <NavagrahaOrbitPanel />
         </div>
       </Container>
     </section>
@@ -853,7 +856,7 @@ function SymbolGrid({ localizeHref }: Readonly<{ localizeHref: LocalizeHref }>) 
   return (
     <section className="bg-white">
       <Container className="py-4 px-3 sm:px-8 sm:py-8">
-        <div className="-mx-3 grid grid-flow-col auto-cols-[calc((100%-1.125rem)/4)] gap-1.5 overflow-x-auto overscroll-x-contain px-3 pb-1 pr-6 [scrollbar-width:none] [scroll-padding-inline:0.75rem] snap-x snap-mandatory sm:mx-0 sm:auto-cols-[6.75rem] sm:px-0 sm:pr-0 sm:[scroll-padding-inline:0px] sm:gap-3 [&::-webkit-scrollbar]:hidden">
+        <div className="-mx-3 grid grid-flow-col auto-cols-[calc((100%-1rem)/3)] gap-2 overflow-x-auto overscroll-x-contain px-3 pb-1 pr-6 [scrollbar-width:none] [scroll-padding-inline:0.75rem] snap-x snap-mandatory sm:mx-0 sm:auto-cols-[7.1rem] sm:px-0 sm:pr-0 sm:[scroll-padding-inline:0px] sm:gap-3 [&::-webkit-scrollbar]:hidden">
           {symbolTiles.map((tile) => (
             <ToolTileLink
               key={tile.label}
@@ -988,7 +991,8 @@ function AuthorityCard({ localizeHref }: Readonly<{ localizeHref: LocalizeHref }
                   J P Sarmah Desk
                 </p>
                 <p className="mt-2 text-sm font-medium leading-6 text-[color:var(--color-ink-black)]">
-                  Human-guided Vedic astrology authority.
+                  Human-guided Vedic astrology authority, with Ask NI as
+                  the assistance layer.
                 </p>
               </div>
             </div>
@@ -1051,9 +1055,7 @@ function ShopGridTile({
       eventPayload={{ page: "/", feature: item.feature, route: item.href }}
       className="group flex min-h-[6.7rem] flex-col items-center justify-center gap-2 rounded-[1rem] border border-[rgba(185,139,70,0.16)] bg-white px-2 py-3 text-center transition hover:-translate-y-0.5 hover:border-[rgba(185,139,70,0.32)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
     >
-      <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[rgba(185,139,70,0.26)] bg-white text-[0.72rem] font-semibold tracking-[0.08em] text-[color:var(--color-ink-black)]">
-        {item.initials}
-      </span>
+      <RailGlyph icon={item.icon} accent={item.accent} size="sm" />
       <span className="max-w-full break-normal text-[0.64rem] font-semibold leading-tight text-[color:var(--color-ink-black)] sm:text-[0.72rem]">
         {item.label}
       </span>
@@ -1092,8 +1094,8 @@ export default async function HomePage() {
       <main className="launch-page launch-page-home min-w-0 bg-white pb-20 text-[color:var(--color-ink-black)]">
         <CategoryRail localizeHref={localizeHref} />
         <DashboardTitleBlock localizeHref={localizeHref} />
-        <AskNiStrip localizeHref={localizeHref} />
         <SymbolGrid localizeHref={localizeHref} />
+        <AskNiStrip localizeHref={localizeHref} />
         <ShowcaseCard
           eyebrow="REPORTS"
           title=""
