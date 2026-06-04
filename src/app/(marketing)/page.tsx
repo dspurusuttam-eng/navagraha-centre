@@ -874,12 +874,7 @@ function AskNiStrip({ localizeHref }: Readonly<{ localizeHref: LocalizeHref }>) 
   return (
     <section className="bg-white">
       <Container className="pb-6 sm:pb-8">
-        <TrackedLink
-          href={localizeHref("/ai")}
-          eventName="cta_click"
-          eventPayload={{ page: "/", feature: "home-ni-strip", route: "/ai" }}
-          className="block rounded-[1.6rem] border border-[rgba(185,139,70,0.28)] bg-[linear-gradient(180deg,#101010_0%,#050505_100%)] p-2.5 text-white transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] sm:p-5"
-        >
+        <div className="rounded-[1.6rem] border border-[rgba(185,139,70,0.28)] bg-[linear-gradient(180deg,#101010_0%,#050505_100%)] p-2.5 text-white sm:p-5">
           <div className="grid gap-2.5 lg:grid-cols-[minmax(0,0.96fr)_minmax(0,1.04fr)] lg:items-start">
             <div className="flex min-w-0 items-center gap-2">
               <DashboardIcon icon="ai" className="hidden sm:inline-flex" />
@@ -903,7 +898,7 @@ function AskNiStrip({ localizeHref }: Readonly<{ localizeHref: LocalizeHref }>) 
               <span aria-hidden="true" className="w-1 shrink-0 sm:hidden" />
             </div>
           </div>
-        </TrackedLink>
+        </div>
       </Container>
     </section>
   );
