@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { TrackedLink } from "@/components/analytics/tracked-link";
-import { NavagrahaLogo } from "@/components/brand/navagraha-logo";
 import { LanguageSwitcher } from "@/components/site/language-switcher";
 import { NavigationLink } from "@/components/site/navigation-link";
 import { ToolsMegaMenu } from "@/components/site/tools-mega-menu";
@@ -63,10 +62,10 @@ export async function Header() {
   return (
     <header
       data-nosnippet
-      className="sticky top-0 z-50 border-b-0 bg-white xl:border-b xl:border-[rgba(185,139,70,0.32)]"
+      className="sticky top-0 z-50 bg-white xl:border-b xl:border-[rgba(185,139,70,0.24)]"
     >
       <div className="hidden border-b border-[rgba(185,139,70,0.28)] bg-white xl:block">
-        <Container className="flex flex-wrap items-center justify-between gap-2 py-1.5">
+        <Container className="flex flex-wrap items-center justify-between gap-3 py-2">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
             {topTrustItems.map((item) => (
               <span
@@ -93,20 +92,20 @@ export async function Header() {
         </Container>
       </div>
 
-      <div className="fixed inset-x-0 top-0 z-50 border-b border-[rgba(185,139,70,0.32)] bg-white xl:hidden">
+      <div className="fixed inset-x-0 top-0 z-50 border-b border-[rgba(185,139,70,0.18)] bg-white shadow-[0_8px_24px_rgba(5,5,5,0.04)] xl:hidden">
         <Container className="!px-3 py-2 sm:!px-8">
-          <div className="flex min-h-14 w-full items-center justify-between gap-2">
-            <div className="flex min-w-0 flex-1 items-center gap-2">
+          <div className="flex min-h-14 w-full items-center justify-between gap-1.5">
+            <div className="flex min-w-0 flex-1 items-center gap-1.5">
               <details className="group relative shrink-0">
                 <summary
                   aria-label={copy.navigation.menu}
-                  className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full border border-[rgba(5,5,5,0.16)] bg-white text-[#050505] marker:content-none [-webkit-tap-highlight-color:transparent] [&::-webkit-details-marker]:hidden"
+                  className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full border border-[rgba(185,139,70,0.14)] bg-[linear-gradient(180deg,#ffffff_0%,#fbfbfb_100%)] text-[#050505] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_1px_2px_rgba(5,5,5,0.05)] marker:content-none [-webkit-tap-highlight-color:transparent] [&::-webkit-details-marker]:hidden"
                 >
                   <span aria-hidden="true" className="text-[0.95rem] leading-none text-[#050505]">
                     {"\u2630"}
                   </span>
                 </summary>
-                <div className="absolute top-[calc(100%+0.55rem)] z-30 max-h-[calc(100vh-5.5rem)] w-[min(calc(100vw-1.5rem),23rem)] overflow-y-auto rounded-[var(--radius-xl)] border border-[rgba(185,139,70,0.24)] bg-white p-3 [inset-inline-start:0]">
+                <div className="absolute top-[calc(100%+0.55rem)] z-30 max-h-[calc(100vh-5.5rem)] w-[min(calc(100vw-1.5rem),23rem)] overflow-y-auto rounded-[var(--radius-xl)] border border-[rgba(185,139,70,0.18)] bg-white p-3 shadow-[0_16px_34px_rgba(5,5,5,0.07)] [inset-inline-start:0]">
                   <nav aria-label="Mobile navigation" className="grid gap-4">
                     <div className="grid gap-2">
                       <p className="px-3 text-[0.64rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-antique-gold-dark)]">
@@ -139,18 +138,18 @@ export async function Header() {
                 href={localizeHref("/")}
                 className="block min-w-0 flex-1 transition [transition-duration:var(--motion-duration-base)] hover:opacity-90"
               >
-                <span className="block truncate whitespace-nowrap text-[0.7rem] font-semibold uppercase leading-none tracking-[0.08em] text-[#050505] min-[390px]:text-[0.76rem] min-[430px]:text-[0.82rem] sm:text-[0.9rem] sm:tracking-[0.1em]">
+                <span className="block truncate whitespace-nowrap text-[0.56rem] font-semibold uppercase leading-none tracking-[0.07em] text-[#050505] min-[390px]:text-[0.62rem] min-[430px]:text-[0.68rem] sm:text-[0.76rem] sm:tracking-[0.08em]">
                   NAVAGRAHA
                 </span>
               </Link>
             </div>
 
-            <div className="flex shrink-0 items-center gap-1">
+            <div className="flex shrink-0 items-center gap-0.5">
               <TrackedLink
                 href="/ai"
                 eventName="premium_ai_cta_click"
                 eventPayload={{ page: "global-header-mobile", feature: "header-ask-ni" }}
-                className="inline-flex h-9 shrink-0 items-center justify-center whitespace-nowrap rounded-full border border-[rgba(185,139,70,0.46)] bg-white px-2.5 text-[0.56rem] font-semibold tracking-[0.02em] text-[#050505] ring-1 ring-inset ring-[rgba(5,5,5,0.04)] transition hover:border-[rgba(185,139,70,0.62)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] min-[390px]:px-3 sm:text-[0.66rem]"
+                className="inline-flex h-9 shrink-0 items-center justify-center whitespace-nowrap rounded-full border border-[rgba(113,176,150,0.48)] bg-[linear-gradient(180deg,#ffffff_0%,#f8fdfb_100%)] px-1 text-[0.44rem] font-semibold tracking-[-0.01em] text-[#050505] shadow-[inset_0_1px_0_rgba(255,255,255,0.98),0_1px_2px_rgba(5,5,5,0.06)] transition hover:border-[rgba(113,176,150,0.62)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] min-[390px]:px-1.5 sm:text-[0.52rem]"
               >
                 <span>Ask NI</span>
               </TrackedLink>
@@ -160,7 +159,7 @@ export async function Header() {
                 eventName="cta_click"
                 eventPayload={{ page: "global-header-mobile", feature: "header-bell", route: "/reports" }}
                 aria-label="Bell"
-                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[rgba(5,5,5,0.18)] bg-white text-[#050505] transition hover:border-[rgba(185,139,70,0.52)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[rgba(185,139,70,0.16)] bg-[linear-gradient(180deg,#ffffff_0%,#fafafa_100%)] text-[#050505] shadow-[inset_0_1px_0_rgba(255,255,255,0.98),0_1px_2px_rgba(5,5,5,0.06)] transition hover:border-[rgba(185,139,70,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
               >
                 <svg
                   aria-hidden="true"
@@ -200,11 +199,14 @@ export async function Header() {
             href={localizeHref("/")}
             className="min-w-0 shrink-0 transition [transition-duration:var(--motion-duration-base)] hover:opacity-90"
           >
-            <NavagrahaLogo
-              variant="header"
-              priority
-              className="xl:w-[15.75rem] 2xl:w-[19.5rem]"
-            />
+            <span className="block min-w-0 whitespace-nowrap">
+              <span className="block text-[1.02rem] font-semibold uppercase leading-none tracking-[0.18em] text-[#050505] xl:text-[1.04rem] 2xl:text-[1.08rem]">
+                NAVAGRAHA CENTRE
+              </span>
+              <span className="mt-1 block text-[0.49rem] font-semibold uppercase leading-none tracking-[0.34em] text-[var(--color-antique-gold-dark)] xl:text-[0.51rem] 2xl:text-[0.54rem]">
+                Vedic Astrology • Ask NI
+              </span>
+            </span>
           </Link>
 
           <nav
@@ -218,7 +220,7 @@ export async function Header() {
             <NavigationLink
                   key={item.href}
                   href={item.href}
-                  className="min-h-10 rounded-none border-x-transparent border-t-transparent border-b-[2px] border-b-transparent bg-transparent px-1.5 text-[0.64rem] font-medium tracking-[0.1em] !text-[color:var(--color-ink-strong)] shadow-none hover:bg-transparent hover:!text-black 2xl:px-2.5"
+                  className="min-h-10 rounded-none border-x-transparent border-t-transparent border-b-[2px] border-b-transparent bg-transparent px-1.5 text-[0.62rem] font-medium tracking-[0.09em] !text-[color:var(--color-ink-strong)] shadow-none hover:bg-transparent hover:!text-black 2xl:px-2"
                   activeClassName="rounded-none border-x-transparent border-t-transparent border-b-[2px] border-b-[var(--color-accent-gold)] bg-transparent !text-black shadow-none"
                 >
                   {item.label}

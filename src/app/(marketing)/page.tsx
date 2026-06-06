@@ -926,6 +926,7 @@ function AskNiUtilityLink({
 function ShowcaseCard({
   eyebrow,
   title,
+  description,
   icon,
   items,
   localizeHref,
@@ -933,6 +934,7 @@ function ShowcaseCard({
 }: Readonly<{
   eyebrow: string;
   title?: string;
+  description?: string;
   icon: IconKey;
   items: readonly RailItem[];
   localizeHref: LocalizeHref;
@@ -942,7 +944,7 @@ function ShowcaseCard({
     <section className="bg-white">
       <Container className="pb-7 sm:pb-9">
         <div
-          className={`rounded-[1.6rem] border p-4 sm:p-5 ${className}`}
+          className={`rounded-[1.6rem] border p-4 shadow-[0_1px_0_rgba(255,255,255,0.92),0_1px_14px_rgba(5,5,5,0.03)] sm:p-5 ${className}`}
         >
           <div className="flex items-start gap-3">
             <DashboardIcon icon={icon} />
@@ -954,6 +956,11 @@ function ShowcaseCard({
                 <h2 className="mt-1 font-[family-name:var(--font-display)] text-[1.55rem] leading-tight text-[color:var(--color-ink-black)]">
                   {title}
                 </h2>
+              ) : null}
+              {description ? (
+                <p className="mt-2 max-w-[34rem] text-[0.85rem] leading-6 text-[color:var(--color-ink-black)]/82">
+                  {description}
+                </p>
               ) : null}
             </div>
           </div>
@@ -1094,19 +1101,21 @@ export default async function HomePage() {
         <ShowcaseCard
           eyebrow="REPORTS"
           title=""
+          description="Formal report access and guided handwritten-kundli support in a premium document-style surface."
           icon="report"
           items={reportItems}
           localizeHref={localizeHref}
-          className="border-[rgba(185,139,70,0.28)] bg-white"
+          className="border-[rgba(185,139,70,0.32)] bg-[linear-gradient(180deg,#ffffff_0%,#fffdf8_100%)]"
         />
         <AuthorityCard localizeHref={localizeHref} />
         <ShowcaseCard
           eyebrow="LEARNING"
           title="Education Paths"
+          description="Compact pathways for articles, videos, Acharya notes, and NI Module guidance."
           icon="article"
           items={learningItems}
           localizeHref={localizeHref}
-          className="border-[rgba(206,161,57,0.34)] bg-white"
+          className="border-[rgba(206,161,57,0.38)] bg-[linear-gradient(180deg,#ffffff_0%,#fffef8_100%)]"
         />
         <ShopCategoryRail localizeHref={localizeHref} />
       </main>

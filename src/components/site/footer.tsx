@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { NavagrahaLogo } from "@/components/brand/navagraha-logo";
 import { LanguageSwitcher } from "@/components/site/language-switcher";
 import { Container } from "@/components/ui/container";
 import { siteConfig } from "@/config/site";
@@ -73,16 +72,23 @@ export async function Footer() {
   return (
     <footer
       data-nosnippet
-      className="border-t border-[rgba(185,139,70,0.34)] bg-white text-[color:var(--color-ink-strong)]"
+      className="border-t border-[rgba(185,139,70,0.32)] bg-white text-[color:var(--color-ink-strong)]"
     >
-      <Container className="space-y-7 py-[var(--space-8)] sm:py-[var(--space-10)]">
-        <div className="grid gap-7 rounded-[var(--radius-card)] border border-[rgba(185,139,70,0.28)] bg-white p-5 shadow-[0_14px_34px_rgba(5,5,5,0.06)] lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.55fr)] lg:gap-8 sm:p-6">
+      <Container className="space-y-7 py-[var(--space-8)] sm:py-[var(--space-10)] xl:space-y-8">
+        <div className="grid gap-7 rounded-[var(--radius-card)] border border-[rgba(185,139,70,0.26)] bg-white p-5 shadow-[0_12px_30px_rgba(5,5,5,0.05)] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.6fr)] lg:gap-9 lg:p-6 xl:p-7">
           <div className="space-y-4">
             <Link
               href={localizeHref("/")}
               className="inline-block transition [transition-duration:var(--motion-duration-base)] hover:opacity-90"
             >
-              <NavagrahaLogo variant="footer-light" className="w-[10.5rem] sm:w-[12rem]" />
+              <span className="block min-w-0 whitespace-nowrap">
+                <span className="block text-[1rem] font-semibold uppercase leading-none tracking-[0.18em] text-[#050505] sm:text-[1.08rem] lg:text-[1.12rem]">
+                  NAVAGRAHA CENTRE
+                </span>
+                <span className="mt-1 block text-[0.46rem] font-semibold uppercase leading-none tracking-[0.3em] text-[var(--color-antique-gold-dark)] sm:text-[0.49rem] lg:text-[0.5rem]">
+                  Vedic Astrology • Ask NI
+                </span>
+              </span>
             </Link>
             <p className="max-w-sm text-[length:var(--font-size-body-sm)] leading-relaxed text-[color:var(--color-text-secondary)]">
               Premium Vedic astrology, NAVAGRAHA Intelligence, reports,
@@ -94,11 +100,11 @@ export async function Footer() {
             </p>
           </div>
 
-          <div className="grid min-w-0 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid min-w-0 gap-5 sm:grid-cols-2 xl:grid-cols-4 xl:gap-6">
             {footerColumns.map((column) => (
               <div
                 key={column.title}
-                className="rounded-[var(--radius-lg)] border border-[rgba(185,139,70,0.22)] bg-white p-4"
+                className="rounded-[var(--radius-lg)] border border-[rgba(185,139,70,0.2)] bg-white p-4 xl:p-5"
               >
                 <h2 className="text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-accent-gold-dark)]">
                   {column.title}
@@ -120,14 +126,14 @@ export async function Footer() {
           </div>
         </div>
 
-        <div className="rounded-[var(--radius-xl)] border border-[rgba(185,139,70,0.24)] bg-white p-4 shadow-[0_14px_34px_rgba(5,5,5,0.05)]">
+        <div className="rounded-[var(--radius-xl)] border border-[rgba(185,139,70,0.22)] bg-white p-4 shadow-[0_10px_24px_rgba(5,5,5,0.04)] xl:p-5">
           <div className="mb-3 text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-antique-gold-dark)]">
             Language
           </div>
           <LanguageSwitcher variant="compact" />
         </div>
 
-        <div className="flex min-w-0 flex-col gap-3 border-t border-[rgba(185,139,70,0.28)] pt-5 text-[0.72rem] font-semibold uppercase tracking-[0.1em] text-[color:var(--color-text-primary)] sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex min-w-0 flex-col gap-3 border-t border-[rgba(185,139,70,0.28)] pt-5 text-[0.72rem] font-semibold uppercase tracking-[0.1em] text-[color:var(--color-text-primary)] sm:flex-row sm:items-center sm:justify-between xl:pt-6">
           <p>&copy; {new Date().getFullYear()} {siteConfig.name}</p>
           <div className="flex min-w-0 flex-wrap items-center gap-4">
             <Link
