@@ -25,7 +25,7 @@ function matchesQuery(value: string, query: string) {
 
 function getToolAccentClass(key: string) {
   if (key === "ask-ni") {
-    return "border-[rgba(0,109,255,0.42)] bg-[rgba(0,215,255,0.08)] text-[color:var(--color-text-primary)] shadow-[0_8px_20px_rgba(0,109,255,0.1)] hover:border-[rgba(0,109,255,0.58)] hover:bg-[rgba(0,215,255,0.12)]";
+    return "border-[rgba(0,109,255,0.42)] bg-[rgba(0,215,255,0.08)] text-[color:var(--color-text-primary)] shadow-[0_5px_14px_rgba(0,109,255,0.08)] hover:border-[rgba(0,109,255,0.58)] hover:bg-[rgba(0,215,255,0.12)]";
   }
 
   if (key === "remedies") {
@@ -148,10 +148,10 @@ export function ToolsMegaMenu({ navigation }: Readonly<ToolsMegaMenuProps>) {
       {open ? (
         <div
           id={menuId}
-          className="fixed left-1/2 top-[9rem] z-[70] w-[min(74rem,calc(100vw-2rem))] -translate-x-1/2 overflow-hidden rounded-[1.35rem] border border-[rgba(185,139,70,0.32)] bg-white p-4 text-left shadow-[0_24px_70px_rgba(5,5,5,0.16)] backdrop-blur-xl"
+          className="fixed left-1/2 top-[9rem] z-[70] w-[min(74rem,calc(100vw-2rem))] -translate-x-1/2 overflow-hidden rounded-[1.35rem] border border-[rgba(185,139,70,0.32)] bg-white p-4 text-left shadow-[0_16px_42px_rgba(5,5,5,0.11)]"
         >
           <div className="grid gap-4 lg:grid-cols-[minmax(16rem,0.74fr)_minmax(0,1.26fr)]">
-            <div className="rounded-[1.1rem] border border-[rgba(185,139,70,0.26)] bg-white p-4 shadow-[0_10px_26px_rgba(5,5,5,0.05)]">
+            <div className="rounded-[1.1rem] border border-[rgba(185,139,70,0.26)] bg-white p-4 shadow-[0_6px_16px_rgba(5,5,5,0.035)]">
               <p className="text-[0.64rem] font-semibold uppercase tracking-[0.14em] text-[color:var(--color-antique-gold-dark)]">
                 NAVAGRAHA Tools
               </p>
@@ -189,7 +189,7 @@ export function ToolsMegaMenu({ navigation }: Readonly<ToolsMegaMenuProps>) {
                       href={item.href}
                       onClick={() => setOpen(false)}
                       className={cn(
-                        "min-h-12 rounded-[var(--radius-lg)] border px-3 py-2 text-[0.74rem] font-semibold shadow-[0_8px_20px_rgba(5,5,5,0.04)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]",
+                        "min-h-12 rounded-[var(--radius-lg)] border px-3 py-2 text-[0.74rem] font-semibold shadow-[0_4px_12px_rgba(5,5,5,0.03)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]",
                         getToolAccentClass(item.key),
                       )}
                     >
@@ -204,7 +204,7 @@ export function ToolsMegaMenu({ navigation }: Readonly<ToolsMegaMenuProps>) {
                   {filteredNavigation.groups.map((group) => (
                     <section
                       key={`desktop-tools-${group.key}`}
-                      className="rounded-[1.1rem] border border-[rgba(185,139,70,0.22)] bg-white p-3 shadow-[0_8px_22px_rgba(5,5,5,0.04)]"
+                      className="rounded-[1.1rem] border border-[rgba(185,139,70,0.22)] bg-white p-3 shadow-[0_4px_12px_rgba(5,5,5,0.03)]"
                     >
                       <p className="text-[0.72rem] font-semibold text-[color:var(--color-ink-strong)]">
                         {group.title}

@@ -291,9 +291,9 @@ export default async function RashifalPage() {
 
       <main className="launch-page launch-page-rashifal min-h-screen overflow-hidden bg-white pb-[calc(7.2rem+env(safe-area-inset-bottom))] text-[color:var(--color-ink-strong)] md:pb-0">
         <section className="relative overflow-hidden border-b border-[rgba(155,122,74,0.14)] bg-white">
-          <div className="pointer-events-none absolute right-[-6rem] top-[-7rem] h-64 w-64 rounded-full border border-[rgba(184,137,67,0.16)]" />
-          <div className="pointer-events-none absolute right-[-3.5rem] top-[-4.5rem] h-44 w-44 rounded-full border border-[rgba(184,137,67,0.18)]" />
-          <div className="pointer-events-none absolute left-[-5rem] bottom-[-5rem] h-40 w-40 rounded-full border border-[rgba(184,137,67,0.10)]" />
+          <div className="pointer-events-none absolute right-0 top-[-7rem] h-64 w-64 rounded-full border border-[rgba(184,137,67,0.16)]" />
+          <div className="pointer-events-none absolute right-6 top-[-4.5rem] h-44 w-44 rounded-full border border-[rgba(184,137,67,0.18)]" />
+          <div className="pointer-events-none absolute bottom-[-5rem] left-0 h-40 w-40 rounded-full border border-[rgba(184,137,67,0.10)]" />
           <Container className="relative grid gap-5 py-7 sm:py-9 lg:grid-cols-[minmax(0,0.95fr)_minmax(300px,1.05fr)] lg:items-center lg:py-11">
             <div className="space-y-4">
               <div className="space-y-2.5">
@@ -377,14 +377,14 @@ export default async function RashifalPage() {
 
         <section className="border-b border-[rgba(155,122,74,0.14)] bg-white">
           <Container className="space-y-4 py-5 sm:py-7">
-            <div className="flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex w-full max-w-full min-w-0 gap-2 overflow-x-auto pb-1 pr-4 [-ms-overflow-style:none] [scrollbar-width:none] sm:flex-wrap sm:overflow-visible sm:pr-0 [&::-webkit-scrollbar]:hidden">
               {dailyRail.map((item) => (
                 <TrackedLink
                   key={item.title}
                   href={localizeHref(locale, hasExplicitLocalePrefix, item.href)}
                   eventName="cta_click"
                   eventPayload={{ page: "/rashifal", feature: item.feature }}
-                  className={`min-w-[8.5rem] rounded-[1.1rem] border bg-white px-3.5 py-3 shadow-[0_10px_24px_rgba(17,24,39,0.04)] ${
+                  className={`min-w-[8rem] rounded-[1.1rem] border bg-white px-3.5 py-3 shadow-[0_10px_24px_rgba(17,24,39,0.04)] sm:min-w-0 sm:flex-1 ${
                     item.title === "Ask NI"
                       ? "border-[rgba(0,195,255,0.28)]"
                       : "border-[rgba(184,137,67,0.18)]"

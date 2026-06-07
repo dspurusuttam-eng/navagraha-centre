@@ -179,7 +179,7 @@ function getShellAccentClass({
   const value = `${href ?? ""} ${key ?? ""} ${label ?? ""}`.toLowerCase();
 
   if (value.includes("/ai") || value.includes("ask-ni") || value.includes("ask ni")) {
-    return "border-[rgba(0,109,255,0.42)] bg-[rgba(0,215,255,0.08)] text-[color:var(--color-text-primary)] shadow-[0_8px_22px_rgba(0,109,255,0.1)] hover:border-[rgba(0,109,255,0.58)] hover:bg-[rgba(0,215,255,0.12)]";
+    return "border-[rgba(0,109,255,0.42)] bg-[rgba(0,215,255,0.08)] text-[color:var(--color-text-primary)] shadow-[0_5px_14px_rgba(0,109,255,0.08)] hover:border-[rgba(0,109,255,0.58)] hover:bg-[rgba(0,215,255,0.12)]";
   }
 
   if (value.includes("remedies")) {
@@ -335,7 +335,7 @@ export function MobileBottomActionBar({
             role="dialog"
             aria-modal="true"
             aria-labelledby={`${moreMenuTitleId}-title`}
-            className="fixed inset-x-3 bottom-[calc(6.15rem+env(safe-area-inset-bottom))] z-[60] max-h-[min(68vh,32rem)] overflow-y-auto rounded-[1.35rem] border border-[rgba(185,139,70,0.32)] bg-white p-4 shadow-[0_22px_60px_rgba(5,5,5,0.18)] backdrop-blur-xl xl:hidden"
+            className="fixed inset-x-3 bottom-[calc(6.15rem+env(safe-area-inset-bottom))] z-[60] max-h-[min(68vh,32rem)] overflow-y-auto rounded-[1.35rem] border border-[rgba(185,139,70,0.32)] bg-white p-4 shadow-[0_14px_36px_rgba(5,5,5,0.11)] xl:hidden"
           >
             <div className="flex items-start justify-between gap-3">
               <div>
@@ -371,7 +371,7 @@ export function MobileBottomActionBar({
                         href={link.href}
                         onClick={() => setMoreOpen(false)}
                         className={cn(
-                          "min-h-11 rounded-[var(--radius-lg)] border px-3 py-2 text-[0.78rem] font-semibold shadow-[0_8px_22px_rgba(5,5,5,0.05)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]",
+                          "min-h-11 rounded-[var(--radius-lg)] border px-3 py-2 text-[0.78rem] font-semibold shadow-[0_4px_12px_rgba(5,5,5,0.035)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]",
                           getShellAccentClass(link),
                         )}
                       >
@@ -398,7 +398,7 @@ export function MobileBottomActionBar({
             role="dialog"
             aria-modal="true"
             aria-labelledby={`${toolsMenuTitleId}-title`}
-            className="fixed inset-x-3 bottom-[calc(6.15rem+env(safe-area-inset-bottom))] top-[4.75rem] z-[60] overflow-y-auto rounded-[1.35rem] border border-[rgba(185,139,70,0.32)] bg-white p-4 shadow-[0_22px_60px_rgba(5,5,5,0.18)] backdrop-blur-xl xl:hidden"
+            className="fixed inset-x-3 bottom-[calc(6.15rem+env(safe-area-inset-bottom))] top-[4.75rem] z-[60] overflow-y-auto rounded-[1.35rem] border border-[rgba(185,139,70,0.32)] bg-white p-4 shadow-[0_14px_36px_rgba(5,5,5,0.11)] xl:hidden"
           >
             <div className="flex items-start justify-between gap-3">
               <div>
@@ -445,7 +445,7 @@ export function MobileBottomActionBar({
                       href={item.href}
                       onClick={() => setToolsOpen(false)}
                       className={cn(
-                        "min-h-11 rounded-[var(--radius-lg)] border px-3 py-2 text-[0.78rem] font-semibold shadow-[0_8px_22px_rgba(5,5,5,0.05)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]",
+                        "min-h-11 rounded-[var(--radius-lg)] border px-3 py-2 text-[0.78rem] font-semibold shadow-[0_4px_12px_rgba(5,5,5,0.035)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]",
                         getShellAccentClass(item),
                       )}
                     >
@@ -473,7 +473,7 @@ export function MobileBottomActionBar({
                           href={link.href}
                           onClick={() => setToolsOpen(false)}
                           className={cn(
-                            "min-h-11 rounded-[var(--radius-lg)] border px-3 py-2 text-[0.78rem] font-semibold shadow-[0_8px_22px_rgba(5,5,5,0.05)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]",
+                            "min-h-11 rounded-[var(--radius-lg)] border px-3 py-2 text-[0.78rem] font-semibold shadow-[0_4px_12px_rgba(5,5,5,0.035)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]",
                             getShellAccentClass(link),
                           )}
                         >
@@ -502,7 +502,7 @@ export function MobileBottomActionBar({
       ) : null}
       <nav
         aria-label="Mobile quick actions"
-        className="fixed inset-x-0 bottom-0 z-50 border-t border-[rgba(185,139,70,0.34)] bg-white shadow-[0_-14px_34px_rgba(5,5,5,0.1)] backdrop-blur-xl xl:hidden"
+        className="fixed inset-x-0 bottom-0 z-50 border-t border-[rgba(185,139,70,0.34)] bg-white shadow-[0_-8px_22px_rgba(5,5,5,0.07)] xl:hidden"
       >
         <div className="mx-auto grid max-w-5xl grid-cols-5 px-1.5 pb-[calc(0.45rem+env(safe-area-inset-bottom))] pt-1.5">
           {bottomActions.map((action) => {
@@ -521,7 +521,7 @@ export function MobileBottomActionBar({
             const iconClassName = cn(
               "flex h-10 w-10 items-center justify-center rounded-full border bg-white",
               active
-                ? "border-[rgba(184,137,67,0.4)] text-[color:var(--color-accent-strong)] shadow-[0_8px_18px_rgba(184,137,67,0.18)]"
+                ? "border-[rgba(184,137,67,0.4)] text-[color:var(--color-accent-strong)] shadow-[0_5px_14px_rgba(184,137,67,0.12)]"
                 : "border-black/12 text-[color:var(--color-ink-strong)]"
             );
             const content = (

@@ -351,12 +351,12 @@ export default async function ArticlesPage({
                 area without implying account status, gated records, or inactive commerce.
               </p>
             </div>
-            <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-5">
+            <div className="grid max-w-full min-w-0 grid-cols-1 gap-3 overflow-hidden sm:grid-cols-2 lg:grid-cols-5">
               {contentPillars.map((item) => (
                 <Link
                   key={item.title}
                   href={localizeHref(item.href)}
-                  className="min-w-[240px] rounded-[var(--radius-xl)] border border-[#111111]/15 bg-white p-4 text-[#111111] transition hover:border-[#facc15] sm:min-w-0"
+                  className="min-w-0 rounded-[var(--radius-xl)] border border-[#111111]/15 bg-white p-4 text-[#111111] transition hover:border-[#facc15]"
                 >
                   <span className="text-sm font-semibold">{item.title}</span>
                   <span className="mt-3 block text-sm leading-6">{item.description}</span>

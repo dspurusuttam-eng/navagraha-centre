@@ -361,7 +361,7 @@ function RailLink({
 
 function ScrollHint({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <div className="relative">
+    <div className="relative max-w-full min-w-0 overflow-hidden">
       {children}
       <span
         aria-hidden="true"
@@ -423,9 +423,9 @@ export default async function ToolsHubPage() {
             <ScrollHint>
               <nav
                 aria-label="Tools categories"
-                className="-mx-4 max-w-[calc(100%+2rem)] overflow-x-auto scroll-px-4 px-4 [scrollbar-width:none] sm:mx-0 sm:max-w-full sm:px-0 [&::-webkit-scrollbar]:hidden"
+                className="w-full max-w-full min-w-0 overflow-x-auto scroll-px-0 px-0 pb-1 pr-8 [scrollbar-width:none] sm:overflow-visible sm:pr-0 [&::-webkit-scrollbar]:hidden"
               >
-                <div className="flex w-max max-w-none gap-2 pr-16 sm:flex-wrap sm:pr-0">
+                <div className="flex w-max max-w-full min-w-0 gap-2 sm:w-full sm:flex-wrap sm:pr-0">
                   {categoryRail.map((item, index) => (
                     <RailLink
                       key={item.label}

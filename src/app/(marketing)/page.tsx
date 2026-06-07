@@ -855,8 +855,8 @@ function DashboardTitleBlock({ localizeHref }: Readonly<{ localizeHref: Localize
 function SymbolGrid({ localizeHref }: Readonly<{ localizeHref: LocalizeHref }>) {
   return (
     <section className="bg-white">
-      <Container className="py-4 px-3 sm:px-8 sm:py-8">
-        <div className="-mx-3 grid grid-flow-col auto-cols-[calc((100%-1rem)/3)] gap-2 overflow-x-auto overscroll-x-contain px-3 pb-1 pr-6 [scrollbar-width:none] [scroll-padding-inline:0.75rem] snap-x snap-mandatory sm:mx-0 sm:auto-cols-[7.1rem] sm:px-0 sm:pr-0 sm:[scroll-padding-inline:0px] sm:gap-3 [&::-webkit-scrollbar]:hidden">
+      <Container className="min-w-0 overflow-hidden px-3 py-4 sm:px-8 sm:py-8">
+        <div className="grid w-full max-w-full min-w-0 grid-flow-col auto-cols-[calc((100%-1rem)/3)] gap-2 overflow-x-auto overscroll-x-contain px-0 pb-1 pr-5 [scrollbar-width:none] [scroll-padding-inline:0px] snap-x snap-mandatory sm:gap-3 sm:pr-3 md:grid-flow-row md:grid-cols-6 md:overflow-visible md:pr-0 xl:grid-cols-12 [&::-webkit-scrollbar]:hidden">
           {symbolTiles.map((tile) => (
             <ToolTileLink
               key={tile.label}
@@ -874,7 +874,7 @@ function AskNiStrip({ localizeHref }: Readonly<{ localizeHref: LocalizeHref }>) 
   return (
     <section className="bg-white">
       <Container className="pb-6 sm:pb-8">
-        <div className="rounded-[1.6rem] border border-[rgba(185,139,70,0.28)] bg-[linear-gradient(180deg,#101010_0%,#050505_100%)] p-2.5 text-white sm:p-5">
+        <div className="min-w-0 overflow-hidden rounded-[1.6rem] border border-[rgba(185,139,70,0.28)] bg-[linear-gradient(180deg,#101010_0%,#050505_100%)] p-2.5 text-white sm:p-5">
           <div className="grid gap-2.5 lg:grid-cols-[minmax(0,0.96fr)_minmax(0,1.04fr)] lg:items-start">
             <div className="flex min-w-0 items-center gap-2">
               <DashboardIcon icon="ai" className="hidden sm:inline-flex" />
@@ -887,7 +887,7 @@ function AskNiStrip({ localizeHref }: Readonly<{ localizeHref: LocalizeHref }>) 
                 </h2>
               </div>
             </div>
-            <div className="-mx-1 grid grid-flow-col auto-cols-[calc((100%-1rem)/3)] gap-2 overflow-x-auto px-1 pb-1 pr-5 [scrollbar-width:none] [scroll-padding-inline:0.25rem] snap-x snap-mandatory sm:mx-0 sm:auto-cols-[8.5rem] sm:px-0 sm:pr-1 sm:[scroll-padding-inline:0px] [&::-webkit-scrollbar]:hidden">
+            <div className="grid w-full max-w-full min-w-0 grid-flow-col auto-cols-[calc((100%-1rem)/3)] gap-2 overflow-x-auto px-0 pb-1 pr-4 [scrollbar-width:none] [scroll-padding-inline:0px] snap-x snap-mandatory sm:grid-flow-row sm:grid-cols-4 sm:overflow-visible sm:pr-0 [&::-webkit-scrollbar]:hidden">
               {askNiUtilities.map((item) => (
                 <AskNiUtilityLink
                   key={item.label}
@@ -964,13 +964,13 @@ function ShowcaseCard({
               ) : null}
             </div>
           </div>
-          <div className="mt-5 grid grid-cols-2 gap-2 sm:flex sm:overflow-x-auto sm:pb-1 sm:[scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="mt-5 grid max-w-full min-w-0 grid-cols-2 gap-2 overflow-hidden sm:flex sm:flex-wrap">
             {items.map((item) => (
               <RailLink
                 key={item.label}
                 item={item}
                 localizeHref={localizeHref}
-                className="w-full min-w-0 sm:min-w-[9.25rem]"
+                className="w-full min-w-0 sm:min-w-0 sm:flex-1"
               />
             ))}
           </div>
