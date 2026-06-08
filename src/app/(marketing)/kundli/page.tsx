@@ -1,6 +1,5 @@
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import { TrackedLink } from "@/components/analytics/tracked-link";
-import { KundliPageHeroVisual } from "@/components/graphics/kundli-page-visual";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -9,53 +8,58 @@ import { createToolMetadata } from "@/lib/seo/metadata";
 import { getCoreSeoCopy } from "@/lib/seo/seo-config";
 import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
 import { getRequestLocale, hasExplicitLocalePrefixInRequest } from "@/modules/localization/request";
-import { kundliPreviewItems, kundliTrustNote } from "@/modules/kundli/kundli-foundation";
 
-type KundliHeroPreviewItem = (typeof kundliPreviewItems)[number];
-
-const quickPaths = [
-  { label: "Ask NI", href: "/ai", feature: "kundli-quick-ask-ni" },
-  { label: "Dasha", href: "/dasha", feature: "kundli-quick-dasha" },
-  { label: "Transit", href: "/transit", feature: "kundli-quick-transit" },
-  { label: "Reports", href: "/reports", feature: "kundli-quick-reports" },
-  { label: "Consultation", href: "/consultation", feature: "kundli-quick-consultation" },
+const profileDetails = [
+  { label: "Name", note: "Required after sign-in" },
+  { label: "Gender", note: "Profile detail" },
+  { label: "Date of Birth", note: "Exact date required" },
+  { label: "Time of Birth", note: "Exact time improves Lagna" },
+  { label: "Birth Place", note: "City and country context" },
+  { label: "Language Preference", note: "Experience preference" },
+  { label: "Chart Style", note: "East Indian" },
 ] as const;
 
-const conceptItems = ["Lagna", "Planets", "Houses", "Dasha", "Transit", "Dosha"] as const;
+const advancedDetails = [
+  { label: "Ayanamsa", note: "Backend default only" },
+  { label: "Time Zone", note: "From verified profile" },
+  { label: "Coordinates", note: "From verified profile" },
+  { label: "Chart Type", note: "Display preview" },
+] as const;
 
-const premiumServices = [
+const resultItems = [
+  "Lagna Chart",
+  "Rashi Chart",
+  "Navamsa",
+  "Graha Position",
+  "Dasha",
+  "Basic Interpretation",
+] as const;
+
+const nextSteps = [
   {
-    title: "Digital Kundli Report",
-    label: "Reports",
+    title: "Janam Patrika",
+    description: "Move into guided report pathways when you need a deeper written view.",
     href: "/reports",
-    feature: "kundli-service-reports",
-    tone: "reports",
+    cta: "Reports",
+    eventName: "report_cta_click",
+    feature: "kundli-next-janam-patrika",
   },
   {
-    title: "Handmade Kundli",
-    label: "Human-reviewed",
+    title: "Consult Expert",
+    description: "Use human guidance for important life decisions and birth-time uncertainty.",
     href: "/consultation",
-    feature: "kundli-service-handmade",
-    tone: "authority",
+    cta: "Consultation",
+    eventName: "consultation_cta_click",
+    feature: "kundli-next-consult-expert",
   },
   {
-    title: "Consultation Support",
-    label: "J P Sarmah Desk",
-    href: "/consultation",
-    feature: "kundli-service-consultation",
-    tone: "authority",
+    title: "Ask NI",
+    description: "Use NAVAGRAHA Intelligence as an assistance layer after chart context is ready.",
+    href: "/ai",
+    cta: "Ask NI",
+    eventName: "cta_click",
+    feature: "kundli-next-ask-ni",
   },
-] as const;
-
-const relatedTools = [
-  { label: "Panchang", href: "/panchang", feature: "kundli-related-panchang" },
-  { label: "Dasha", href: "/dasha", feature: "kundli-related-dasha" },
-  { label: "Transit", href: "/transit", feature: "kundli-related-transit" },
-  { label: "Matching", href: "/matchmaking", feature: "kundli-related-matchmaking" },
-  { label: "Dosha/Yoga", href: "/dosha-yoga", feature: "kundli-related-dosha-yoga" },
-  { label: "Remedies", href: "/remedies", feature: "kundli-related-remedies" },
-  { label: "Reports", href: "/reports", feature: "kundli-related-reports" },
-  { label: "Consultation", href: "/consultation", feature: "kundli-related-consultation" },
 ] as const;
 
 function localizeHref(locale: string, hasExplicitLocalePrefix: boolean, href: string) {
@@ -64,20 +68,16 @@ function localizeHref(locale: string, hasExplicitLocalePrefix: boolean, href: st
   });
 }
 
-function KundliPreviewCard({ item }: Readonly<{ item: KundliHeroPreviewItem }>) {
+function SacredDot({ tone = "gold" }: Readonly<{ tone?: "gold" | "green" }>) {
   return (
-    <Card
-      tone="default"
-      className="min-w-0 space-y-3 border-black/8 bg-white shadow-[0_12px_28px_rgba(17,24,39,0.05)] before:opacity-0"
-    >
-      <div className="flex items-center gap-2">
-        <span className="h-2.5 w-2.5 rounded-full bg-[var(--color-accent-gold)]" />
-        <p className="text-[0.64rem] uppercase tracking-[0.14em] text-[color:var(--color-accent-strong)]">
-          {item.title}
-        </p>
-      </div>
-      <p className="text-[0.82rem] leading-6 text-[color:var(--color-ink-body)]">{item.description}</p>
-    </Card>
+    <span
+      aria-hidden="true"
+      className={`h-2.5 w-2.5 rounded-full ${
+        tone === "green"
+          ? "bg-[#4CBB17] shadow-[0_0_0_6px_rgba(76,187,23,0.08)]"
+          : "bg-[var(--color-accent-gold)] shadow-[0_0_0_6px_rgba(184,137,67,0.09)]"
+      }`}
+    />
   );
 }
 
@@ -93,7 +93,8 @@ export async function generateMetadata() {
     locale,
     explicitLocalePrefix: hasExplicitLocalePrefix,
     keywords: [
-      "free kundli",
+      "kundli",
+      "janam kundli",
       "NAVAGRAHA Intelligence birth chart guidance",
       "lagna chart",
       "vedic kundli",
@@ -113,61 +114,42 @@ export default async function KundliPage() {
     <>
       <PageViewTracker page="/kundli" feature="kundli-page" />
 
-      <main className="launch-page launch-page-kundli min-h-screen bg-white pb-[calc(6.5rem+env(safe-area-inset-bottom))] text-[#111111] md:pb-0">
-        <section className="relative overflow-hidden border-b border-black/8 bg-white">
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-[radial-gradient(circle_at_12%_18%,rgba(184,137,67,0.08),transparent_32%),radial-gradient(circle_at_86%_12%,rgba(0,229,255,0.05),transparent_24%)]" />
-          <Container className="relative grid min-w-0 gap-6 py-8 sm:py-10 lg:grid-cols-[minmax(0,1fr)_minmax(300px,0.82fr)] lg:items-center lg:py-12">
+      <main className="launch-page launch-page-kundli min-h-screen overflow-hidden bg-white pb-[calc(6.5rem+env(safe-area-inset-bottom))] text-[#111111] md:pb-0">
+        <section className="relative border-b border-black/8 bg-white">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-[radial-gradient(circle_at_16%_18%,rgba(184,137,67,0.09),transparent_31%),radial-gradient(circle_at_84%_8%,rgba(76,187,23,0.07),transparent_26%)]" />
+          <Container className="relative grid min-w-0 gap-5 py-7 sm:py-9 lg:grid-cols-[minmax(0,0.95fr)_minmax(280px,0.72fr)] lg:items-center lg:py-11">
             <div className="min-w-0 space-y-5">
               <div className="space-y-3">
                 <Badge tone="trust" className="w-fit border border-black/8 bg-white">
-                  Your Vedic Birth Chart Dashboard
+                  Birth Chart Foundation
                 </Badge>
-                <h1
-                  className="max-w-4xl font-[family-name:var(--font-display)] text-[2.55rem] text-[color:var(--color-ink-strong)] sm:text-[length:var(--font-size-display-md)]"
-                  style={{ letterSpacing: "0.005em", lineHeight: "var(--line-height-tight)" }}
-                >
-                  Kundli &mdash; Vedic Birth Chart
-                </h1>
-                <p className="max-w-[44rem] text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                  Create your birth chart, understand planetary structure, and continue into Dasha,
-                  Transit, Reports, Consultation, or Ask NI.
-                </p>
+                <div className="space-y-2">
+                  <h1
+                    className="max-w-3xl font-[family-name:var(--font-display)] text-[2.35rem] text-[#111111] sm:text-[length:var(--font-size-display-md)]"
+                    style={{ letterSpacing: "0.005em", lineHeight: "var(--line-height-tight)" }}
+                  >
+                    Janam Kundli
+                  </h1>
+                  <p className="max-w-[39rem] text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                    Generate your birth chart with accurate birth details
+                  </p>
+                </div>
+                <div className="flex w-fit max-w-full flex-wrap items-center gap-2 rounded-[var(--radius-pill)] border border-[rgba(184,137,67,0.2)] bg-white px-3 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.1em] text-[color:var(--color-accent-strong)] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_8px_20px_rgba(17,17,17,0.04)]">
+                  <span>Lagna</span>
+                  <span aria-hidden="true">•</span>
+                  <span>Rashi</span>
+                  <span aria-hidden="true">•</span>
+                  <span>Navamsa</span>
+                  <span aria-hidden="true">•</span>
+                  <span>Dasha</span>
+                </div>
               </div>
 
-              <Card
-                tone="default"
-                className="relative overflow-hidden border-[rgba(184,137,67,0.22)] bg-white shadow-[0_16px_38px_rgba(17,24,39,0.06)] before:opacity-0"
-              >
-                <div className="pointer-events-none absolute inset-0 opacity-[0.16] [background-image:linear-gradient(rgba(184,137,67,0.34)_1px,transparent_1px),linear-gradient(90deg,rgba(184,137,67,0.34)_1px,transparent_1px)] [background-size:44px_44px]" />
-                <div className="relative space-y-4">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <Badge
-                      tone="outline"
-                      className="border border-black/8 bg-white text-[color:var(--color-ink-strong)]"
-                    >
-                      Kundli Action
-                    </Badge>
-                    <Badge tone="trust" className="border border-black/8 bg-white">
-                      Privacy-Safe
-                    </Badge>
-                  </div>
-                  <div className="space-y-1.5">
-                    <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-ink-strong)]">
-                      Start with verified birth details
-                    </h2>
-                    <p className="max-w-2xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                      The real Kundli flow begins with your birth details, and chart details appear
-                      only after calculation.
-                    </p>
-                  </div>
-                </div>
-              </Card>
-
-              <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:gap-3">
+              <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
                 <TrackedLink
                   href={localize("/sign-in")}
                   eventName="cta_click"
-                  eventPayload={{ page: "/kundli", feature: "kundli-hero-primary" }}
+                  eventPayload={{ page: "/kundli", feature: "kundli-generate-primary" }}
                   className={buttonStyles({
                     tone: "accent",
                     size: "lg",
@@ -177,251 +159,281 @@ export default async function KundliPage() {
                   Generate Kundli
                 </TrackedLink>
                 <TrackedLink
-                  href={localize("/reports")}
-                  eventName="report_cta_click"
-                  eventPayload={{ page: "/kundli", feature: "kundli-hero-secondary" }}
+                  href={localize("/consultation")}
+                  eventName="consultation_cta_click"
+                  eventPayload={{ page: "/kundli", feature: "kundli-birth-time-help-top" }}
                   className={buttonStyles({
                     tone: "secondary",
                     size: "lg",
                     className: "w-full justify-center sm:w-auto",
                   })}
                 >
-                  Explore Kundli Reports
+                  Birth Time Help
                 </TrackedLink>
               </div>
-
-              <div className="-mx-4 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:px-0">
-                <div className="flex w-max max-w-none gap-2 pr-4 sm:flex-wrap sm:pr-0">
-                  {quickPaths.map((path) => (
-                    <TrackedLink
-                      key={path.label}
-                      href={localize(path.href)}
-                      eventName="cta_click"
-                      eventPayload={{ page: "/kundli", feature: path.feature }}
-                      className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-[var(--radius-pill)] border border-[rgba(184,137,67,0.24)] bg-white px-4 text-[0.74rem] font-semibold text-[color:var(--color-ink-strong)] shadow-[0_8px_20px_rgba(17,24,39,0.04)] transition hover:-translate-y-0.5 hover:border-[rgba(184,137,67,0.42)] hover:text-[color:var(--color-accent-strong)]"
-                    >
-                      {path.label}
-                    </TrackedLink>
-                  ))}
-                </div>
-              </div>
             </div>
 
-            <KundliPageHeroVisual />
-          </Container>
-        </section>
-
-        <section className="border-b border-black/8 bg-white">
-          <Container className="space-y-5 py-8 sm:py-10">
-            <div className="space-y-2">
-              <Badge tone="trust" className="border border-black/8 bg-white">
-                Understand
-              </Badge>
-              <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-ink-strong)]">
-                What Kundli helps you understand
-              </h2>
-              <p className="max-w-3xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                These are concept paths only. Chart-specific details appear only after verified
-                birth details.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6">
-              {conceptItems.map((item) => (
-                <div
-                  key={item}
-                  className="rounded-[1.15rem] border border-[rgba(184,137,67,0.2)] bg-white px-3 py-3 text-center shadow-[0_10px_22px_rgba(17,24,39,0.04)]"
-                >
-                  <span className="text-[0.78rem] font-semibold text-[color:var(--color-ink-strong)]">{item}</span>
-                </div>
-              ))}
-            </div>
-          </Container>
-        </section>
-
-        <section className="border-b border-black/8 bg-white">
-          <Container className="grid gap-4 py-8 sm:py-10 lg:grid-cols-[minmax(0,0.94fr)_minmax(0,1.06fr)]">
             <Card
               tone="default"
-              className="relative min-w-0 overflow-hidden border-[rgba(0,229,255,0.28)] bg-[#050505] text-white shadow-[0_18px_44px_rgba(0,0,0,0.18)] before:opacity-0"
+              className="relative min-w-0 overflow-hidden border-[rgba(184,137,67,0.24)] bg-white shadow-[0_18px_42px_rgba(17,17,17,0.06)] before:opacity-0"
             >
-              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(0,229,255,0.16),transparent_32%),linear-gradient(135deg,rgba(184,137,67,0.12),transparent_38%)]" />
+              <div className="pointer-events-none absolute inset-0 opacity-[0.16] [background-image:linear-gradient(rgba(184,137,67,0.28)_1px,transparent_1px),linear-gradient(90deg,rgba(184,137,67,0.28)_1px,transparent_1px)] [background-size:42px_42px]" />
               <div className="relative space-y-4">
-                <Badge tone="outline" className="w-fit border-[rgba(0,229,255,0.34)] bg-black/30 text-[#9EF7FF]">
-                  NAVAGRAHA Intelligence
-                </Badge>
-                <div className="space-y-2">
-                  <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-white">
-                    Ask NI
-                  </h2>
-                  <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-white/76">
-                    Ask NI is powered by NAVAGRAHA Intelligence and helps users understand chart
-                    context, planets, houses, Dasha, Transit, timing, and remedies.
-                  </p>
-                </div>
-                <TrackedLink
-                  href={localize("/ai")}
-                  eventName="cta_click"
-                  eventPayload={{ page: "/kundli", feature: "kundli-ask-ni-bridge" }}
-                  className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-pill)] border border-[rgba(0,229,255,0.36)] bg-[#00E5FF] px-5 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-black shadow-[0_0_28px_rgba(0,229,255,0.18)]"
-                >
-                  Ask NI
-                </TrackedLink>
-              </div>
-            </Card>
-
-            <Card
-              tone="default"
-              className="relative min-w-0 overflow-hidden border-[rgba(184,137,67,0.24)] bg-white shadow-[0_16px_38px_rgba(17,24,39,0.06)] before:opacity-0"
-            >
-              <div className="pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full border border-[rgba(184,137,67,0.24)]" />
-              <div className="relative space-y-3">
-                <Badge tone="trust" className="w-fit border border-black/8 bg-white">
-                  Kundli Foundation
-                </Badge>
-                <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-ink-strong)]">
-                  Chart-aware structure, no sample output
-                </h2>
-                <div className="grid gap-2 sm:grid-cols-2">
-                  {kundliPreviewItems.map((item) => (
-                    <KundliPreviewCard key={item.title} item={item} />
-                  ))}
-                </div>
-              </div>
-            </Card>
-          </Container>
-        </section>
-
-        <section className="border-b border-black/8 bg-white">
-          <Container className="space-y-5 py-8 sm:py-10">
-            <div className="space-y-2">
-              <Badge tone="trust" className="border border-black/8 bg-white">
-                Premium Kundli Services
-              </Badge>
-              <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-ink-strong)]">
-                Human-reviewed paths beyond automatic chart generation
-              </h2>
-              <p className="max-w-3xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                For users who need deeper interpretation, reports, or consultation support.
-              </p>
-            </div>
-
-            <div className="grid gap-3 md:grid-cols-3">
-              {premiumServices.map((service) => (
-                <TrackedLink
-                  key={service.title}
-                  href={localize(service.href)}
-                  eventName={service.href === "/reports" ? "report_cta_click" : "consultation_cta_click"}
-                  eventPayload={{ page: "/kundli", feature: service.feature }}
-                  className="block min-w-0"
-                >
-                  <Card
-                    tone="default"
-                    className={`h-full min-w-0 space-y-4 bg-white shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0 ${
-                      service.tone === "authority"
-                        ? "border-[rgba(109,16,31,0.24)]"
-                        : "border-[rgba(184,137,67,0.28)]"
-                    }`}
-                  >
-                    <Badge
-                      tone="outline"
-                      className={`w-fit bg-white ${
-                        service.tone === "authority"
-                          ? "border-[rgba(109,16,31,0.22)] text-[#6D101F]"
-                          : "border-[rgba(184,137,67,0.22)] text-[color:var(--color-accent-strong)]"
-                      }`}
-                    >
-                      {service.label}
-                    </Badge>
-                    <h3 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-body-lg)] text-[color:var(--color-ink-strong)]">
-                      {service.title}
-                    </h3>
-                    <span className="inline-flex min-h-10 items-center rounded-[var(--radius-pill)] border border-[rgba(184,137,67,0.18)] px-4 text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-[color:var(--color-accent-strong)]">
-                      Open
-                    </span>
-                  </Card>
-                </TrackedLink>
-              ))}
-            </div>
-          </Container>
-        </section>
-
-        <section className="border-b border-black/8 bg-white">
-          <Container className="grid gap-4 py-8 sm:py-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-            <Card
-              tone="default"
-              className="min-w-0 border-[rgba(109,16,31,0.24)] bg-white shadow-[0_16px_38px_rgba(109,16,31,0.08)] before:opacity-0"
-            >
-              <div className="space-y-3">
-                <Badge tone="outline" className="w-fit border-[rgba(109,16,31,0.22)] bg-white text-[#6D101F]">
-                  J P Sarmah Desk
-                </Badge>
-                <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-ink-strong)]">
-                  Human authority remains separate
-                </h2>
-                <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                  J P Sarmah remains the human authority. Ask NI is assistance, not a replacement.
-                  Handmade Kundli and consultation support deeper human-reviewed guidance.
-                </p>
-                <TrackedLink
-                  href={localize("/consultation")}
-                  eventName="consultation_cta_click"
-                  eventPayload={{ page: "/kundli", feature: "kundli-jp-sarmah-bridge" }}
-                  className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-pill)] border border-[rgba(109,16,31,0.22)] bg-[#6D101F] px-5 text-[0.76rem] font-semibold uppercase tracking-[0.08em] text-white"
-                >
-                  Consultation
-                </TrackedLink>
-              </div>
-            </Card>
-
-            <Card
-              tone="default"
-              className="min-w-0 border-black/8 bg-white shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0"
-            >
-              <div className="space-y-4">
-                <div className="space-y-2">
+                <div className="flex items-center justify-between gap-3">
                   <Badge tone="trust" className="border border-black/8 bg-white">
-                    Related Tools
+                    Structural View
                   </Badge>
-                  <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-ink-strong)]">
-                    Continue from your Kundli
-                  </h2>
+                  <SacredDot tone="green" />
                 </div>
-
-                <div className="-mx-4 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:px-0">
-                  <div className="flex w-max gap-2 pr-4 sm:grid sm:w-full sm:grid-cols-2 sm:pr-0 lg:grid-cols-4">
-                    {relatedTools.map((tool) => (
-                      <TrackedLink
-                        key={tool.label}
-                        href={localize(tool.href)}
-                        eventName="cta_click"
-                        eventPayload={{ page: "/kundli", feature: tool.feature }}
-                        className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-[1rem] border border-[rgba(184,137,67,0.2)] bg-white px-4 text-[0.76rem] font-semibold text-[color:var(--color-ink-strong)] shadow-[0_8px_20px_rgba(17,24,39,0.04)] sm:w-full"
-                      >
-                        {tool.label}
-                      </TrackedLink>
-                    ))}
+                <div className="relative mx-auto aspect-square w-full max-w-[17.5rem]">
+                  <div className="absolute inset-[6%] rounded-[2rem] border border-[rgba(184,137,67,0.2)] bg-white shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_12px_28px_rgba(17,17,17,0.045)]" />
+                  <div className="absolute inset-[17%] rounded-[1.45rem] border border-black/8" />
+                  <div className="absolute inset-[29%] rounded-full border border-dashed border-[rgba(184,137,67,0.32)]" />
+                  <div className="absolute left-1/2 top-[14%] h-[72%] w-px -translate-x-1/2 bg-black/8" />
+                  <div className="absolute left-[14%] top-1/2 h-px w-[72%] -translate-y-1/2 bg-black/8" />
+                  <div className="absolute left-1/2 top-1/2 flex h-[35%] w-[35%] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-[rgba(184,137,67,0.28)] bg-white shadow-[0_14px_32px_rgba(17,17,17,0.055)]">
+                    <div className="text-center">
+                      <p className="text-[0.58rem] uppercase tracking-[0.18em] text-[color:var(--color-accent-strong)]">
+                        Janam
+                      </p>
+                      <p className="mt-1 font-[family-name:var(--font-display)] text-[1.15rem] tracking-[0.12em] text-[#111111]">
+                        K
+                      </p>
+                      <p className="mt-1 text-[0.56rem] uppercase tracking-[0.16em] text-[color:var(--color-ink-muted)]">
+                        Chart
+                      </p>
+                    </div>
                   </div>
                 </div>
+                <p className="text-[0.82rem] leading-6 text-[color:var(--color-ink-body)]">
+                  This page prepares the Kundli experience safely. Chart details appear only after a
+                  real authenticated profile-based generation flow.
+                </p>
               </div>
+            </Card>
+          </Container>
+        </section>
+
+        <section className="border-b border-black/8 bg-white">
+          <Container className="grid min-w-0 gap-4 py-7 sm:py-9 lg:grid-cols-[minmax(0,1.08fr)_minmax(280px,0.92fr)]">
+            <Card
+              tone="default"
+              className="min-w-0 space-y-5 border-[rgba(184,137,67,0.24)] bg-white shadow-[0_16px_36px_rgba(17,17,17,0.055)] before:opacity-0"
+            >
+              <div className="space-y-2">
+                <Badge tone="trust" className="w-fit border border-black/8 bg-white">
+                  Profile Details
+                </Badge>
+                <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[#111111]">
+                  3D Birth Details checklist
+                </h2>
+                <p className="max-w-3xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                  Kundli generation uses verified profile details after sign-in. This static shell
+                  does not submit public birth details.
+                </p>
+              </div>
+
+              <div className="grid min-w-0 gap-2.5 sm:grid-cols-2">
+                {profileDetails.map((detail, index) => (
+                  <div
+                    key={detail.label}
+                    className="min-w-0 rounded-[1.1rem] border border-[rgba(184,137,67,0.18)] bg-white px-3.5 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_10px_24px_rgba(17,17,17,0.04)]"
+                  >
+                    <div className="flex items-center gap-2">
+                      <SacredDot tone={index === profileDetails.length - 1 ? "green" : "gold"} />
+                      <p className="text-[0.62rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
+                        {detail.label}
+                      </p>
+                    </div>
+                    <p className="mt-2 text-[0.84rem] font-medium text-[#111111]">{detail.note}</p>
+                  </div>
+                ))}
+              </div>
+
+              <TrackedLink
+                href={localize("/sign-in")}
+                eventName="cta_click"
+                eventPayload={{ page: "/kundli", feature: "kundli-profile-card-generate" }}
+                className={buttonStyles({
+                  tone: "accent",
+                  size: "lg",
+                  className: "w-full justify-center sm:w-auto",
+                })}
+              >
+                Generate Kundli
+              </TrackedLink>
+            </Card>
+
+            <div className="min-w-0 space-y-4">
+              <Card
+                tone="default"
+                className="min-w-0 space-y-3 border-[rgba(76,187,23,0.22)] bg-white shadow-[0_14px_30px_rgba(17,17,17,0.05)] before:opacity-0"
+              >
+                <div className="flex items-center gap-2">
+                  <SacredDot tone="green" />
+                  <p className="text-[0.7rem] uppercase tracking-[0.12em] text-[#4CBB17]">Trust Note</p>
+                </div>
+                <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                  For accurate Kundli, exact date, time and place are important.
+                </p>
+              </Card>
+
+              <Card
+                tone="default"
+                className="min-w-0 space-y-4 border-[rgba(184,137,67,0.22)] bg-white shadow-[0_14px_30px_rgba(17,17,17,0.05)] before:opacity-0"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="space-y-1">
+                    <p className="text-[0.7rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
+                      Advanced Details +
+                    </p>
+                    <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-body-lg)] text-[#111111]">
+                      Static preview only
+                    </h2>
+                  </div>
+                  <Badge tone="outline" className="border border-black/8 bg-white text-[#111111]">
+                    Not editable here
+                  </Badge>
+                </div>
+                <div className="grid gap-2">
+                  {advancedDetails.map((item) => (
+                    <div
+                      key={item.label}
+                      className="flex min-w-0 items-center justify-between gap-3 rounded-[0.95rem] border border-black/8 bg-white px-3 py-2.5 shadow-[0_8px_18px_rgba(17,17,17,0.035)]"
+                    >
+                      <span className="text-[0.78rem] font-semibold text-[#111111]">{item.label}</span>
+                      <span className="text-right text-[0.68rem] uppercase tracking-[0.08em] text-[color:var(--color-ink-muted)]">
+                        {item.note}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            </div>
+          </Container>
+        </section>
+
+        <section className="border-b border-black/8 bg-white">
+          <Container className="space-y-5 py-7 sm:py-9">
+            <div className="space-y-2">
+              <Badge tone="trust" className="w-fit border border-black/8 bg-white">
+                What You Will Get
+              </Badge>
+              <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[#111111]">
+                Kundli output prepared for real backend response
+              </h2>
+            </div>
+
+            <div className="grid min-w-0 grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6">
+              {resultItems.map((item, index) => (
+                <div
+                  key={item}
+                  className="min-w-0 rounded-[1.1rem] border border-[rgba(184,137,67,0.2)] bg-white px-3 py-4 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_10px_24px_rgba(17,17,17,0.045)]"
+                >
+                  <div className="mx-auto mb-3 flex h-9 w-9 items-center justify-center rounded-full border border-[rgba(184,137,67,0.24)] bg-white shadow-[0_8px_18px_rgba(17,17,17,0.04)]">
+                    <span className="text-[0.72rem] font-bold text-[color:var(--color-accent-strong)]">
+                      {index + 1}
+                    </span>
+                  </div>
+                  <p className="text-[0.78rem] font-semibold leading-5 text-[#111111]">{item}</p>
+                </div>
+              ))}
+            </div>
+          </Container>
+        </section>
+
+        <section className="border-b border-black/8 bg-white">
+          <Container className="grid min-w-0 gap-4 py-7 sm:py-9 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
+            <Card
+              tone="default"
+              className="min-w-0 space-y-4 border-[rgba(184,137,67,0.24)] bg-white shadow-[0_16px_36px_rgba(17,17,17,0.055)] before:opacity-0"
+            >
+              <div className="flex items-center gap-2">
+                <SacredDot />
+                <p className="text-[0.7rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
+                  Result
+                </p>
+              </div>
+              <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[#111111]">
+                Kundli result will appear after generation.
+              </h2>
+              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                No sample chart, prediction, Dasha, dosha, remedy, or interpretation is shown before
+                a real authenticated backend response.
+              </p>
+            </Card>
+
+            <Card
+              tone="default"
+              className="min-w-0 space-y-4 border-[rgba(76,187,23,0.22)] bg-white shadow-[0_16px_36px_rgba(17,17,17,0.055)] before:opacity-0"
+            >
+              <Badge tone="trust" className="w-fit border border-black/8 bg-white">
+                Birth Time Help
+              </Badge>
+              <div className="space-y-2">
+                <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[#111111]">
+                  Not sure about birth time?
+                </h2>
+                <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+                  Exact time improves Lagna, Dasha and chart accuracy.
+                </p>
+              </div>
+              <TrackedLink
+                href={localize("/consultation")}
+                eventName="consultation_cta_click"
+                eventPayload={{ page: "/kundli", feature: "kundli-birth-time-help" }}
+                className={buttonStyles({
+                  tone: "secondary",
+                  size: "lg",
+                  className: "w-full justify-center sm:w-auto",
+                })}
+              >
+                Consult Astrologer
+              </TrackedLink>
             </Card>
           </Container>
         </section>
 
         <section className="bg-white">
-          <Container className="py-8 sm:py-10">
-            <Card
-              tone="default"
-              className="space-y-3 border-[rgba(184,137,67,0.2)] bg-white shadow-[0_14px_34px_rgba(17,24,39,0.05)] before:opacity-0"
-            >
+          <Container className="space-y-5 py-7 sm:py-9">
+            <div className="space-y-2">
               <Badge tone="trust" className="w-fit border border-black/8 bg-white">
-                Privacy Note
+                Next Steps
               </Badge>
-              <p className="max-w-4xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                {kundliTrustNote} Birth details are sensitive, and no result preview is shown without
-                verified birth details. Guidance stays privacy-conscious and interpretation-focused.
-              </p>
-            </Card>
+              <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[#111111]">
+                Continue safely after your Kundli foundation
+              </h2>
+            </div>
+
+            <div className="grid min-w-0 gap-3 md:grid-cols-3">
+              {nextSteps.map((step) => (
+                <TrackedLink
+                  key={step.title}
+                  href={localize(step.href)}
+                  eventName={step.eventName}
+                  eventPayload={{ page: "/kundli", feature: step.feature }}
+                  className="block min-w-0"
+                >
+                  <Card
+                    tone="default"
+                    className="h-full min-w-0 space-y-4 border-[rgba(184,137,67,0.22)] bg-white shadow-[0_14px_32px_rgba(17,17,17,0.05)] transition hover:-translate-y-0.5 hover:border-[rgba(184,137,67,0.36)] before:opacity-0"
+                  >
+                    <div className="flex items-center gap-2">
+                      <SacredDot tone={step.href === "/ai" ? "green" : "gold"} />
+                      <p className="text-[0.68rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
+                        {step.cta}
+                      </p>
+                    </div>
+                    <h3 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-body-lg)] text-[#111111]">
+                      {step.title}
+                    </h3>
+                    <p className="text-[0.86rem] leading-6 text-[color:var(--color-ink-body)]">
+                      {step.description}
+                    </p>
+                  </Card>
+                </TrackedLink>
+              ))}
+            </div>
           </Container>
         </section>
       </main>
