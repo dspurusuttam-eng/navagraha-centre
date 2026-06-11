@@ -6,8 +6,11 @@ import { Card } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
 import { createToolMetadata } from "@/lib/seo/metadata";
 import { getCoreSeoCopy } from "@/lib/seo/seo-config";
+import { getSession } from "@/modules/auth/server";
 import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
 import { getRequestLocale, hasExplicitLocalePrefixInRequest } from "@/modules/localization/request";
+import { getOnboardingSnapshot } from "@/modules/onboarding/service";
+import { GenerateKundliControl } from "./generate-kundli-control";
 
 const profileDetails = [
   { label: "Name", note: "Required after sign-in" },
@@ -62,6 +65,36 @@ const nextSteps = [
   },
 ] as const;
 
+type KundliAccessState =
+  | {
+      status: "unauthenticated";
+      eyebrow: string;
+      title: string;
+      message: string;
+      ctaMode: "sign-in";
+    }
+  | {
+      status: "profile-incomplete";
+      eyebrow: string;
+      title: string;
+      message: string;
+      ctaMode: "paused";
+    }
+  | {
+      status: "ready";
+      eyebrow: string;
+      title: string;
+      message: string;
+      ctaMode: "prepared";
+    }
+  | {
+      status: "unknown";
+      eyebrow: string;
+      title: string;
+      message: string;
+      ctaMode: "paused";
+    };
+
 function localizeHref(locale: string, hasExplicitLocalePrefix: boolean, href: string) {
   return getLocalizedPath(locale, href, {
     forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
@@ -79,6 +112,70 @@ function SacredDot({ tone = "gold" }: Readonly<{ tone?: "gold" | "green" }>) {
       }`}
     />
   );
+}
+
+function hasCompleteBirthProfile(
+  snapshot: Awaited<ReturnType<typeof getOnboardingSnapshot>>
+) {
+  const requiredValues = [
+    snapshot.defaults.birthDate,
+    snapshot.defaults.birthTime,
+    snapshot.defaults.city,
+    snapshot.defaults.country,
+    snapshot.defaults.timezone,
+    snapshot.defaults.latitude,
+    snapshot.defaults.longitude,
+  ];
+
+  return snapshot.status.hasBirthProfile && requiredValues.every(Boolean);
+}
+
+async function getKundliAccessState(): Promise<KundliAccessState> {
+  const session = await getSession().catch(() => null);
+
+  if (!session) {
+    return {
+      status: "unauthenticated",
+      eyebrow: "Sign-in required",
+      title: "Generate Kundli from your protected profile.",
+      message:
+        "Sign in first. NAVAGRAHA does not submit public birth details from this page.",
+      ctaMode: "sign-in",
+    };
+  }
+
+  const snapshot = await getOnboardingSnapshot(session.user.id).catch(() => null);
+
+  if (!snapshot) {
+    return {
+      status: "unknown",
+      eyebrow: "Profile check paused",
+      title: "We could not confirm birth profile readiness.",
+      message:
+        "Generation remains paused until verified profile details can be checked safely.",
+      ctaMode: "paused",
+    };
+  }
+
+  if (!hasCompleteBirthProfile(snapshot)) {
+    return {
+      status: "profile-incomplete",
+      eyebrow: "Profile details needed",
+      title: "Complete birth details are required before generation.",
+      message:
+        "A verified date, time, place, timezone and coordinates are needed before real Kundli generation can run.",
+      ctaMode: "paused",
+    };
+  }
+
+  return {
+    status: "ready",
+    eyebrow: "Profile ready",
+    title: "Your protected birth profile appears ready.",
+    message:
+      "Generation can run from verified profile details. Only real backend response fields will be shown.",
+    ctaMode: "prepared",
+  };
 }
 
 export async function generateMetadata() {
@@ -103,12 +200,13 @@ export async function generateMetadata() {
   });
 }
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 export default async function KundliPage() {
   const locale = await getRequestLocale();
   const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
   const localize = (href: string) => localizeHref(locale, hasExplicitLocalePrefix, href);
+  const accessState = await getKundliAccessState();
 
   return (
     <>
@@ -146,18 +244,13 @@ export default async function KundliPage() {
               </div>
 
               <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
-                <TrackedLink
-                  href={localize("/sign-in")}
-                  eventName="cta_click"
-                  eventPayload={{ page: "/kundli", feature: "kundli-generate-primary" }}
-                  className={buttonStyles({
-                    tone: "accent",
-                    size: "lg",
-                    className: "w-full justify-center sm:w-auto",
-                  })}
-                >
-                  Generate Kundli
-                </TrackedLink>
+                <GenerateKundliControl
+                  accessStatus={accessState.status}
+                  ctaMode={accessState.ctaMode}
+                  signInHref={localize("/sign-in")}
+                  feature="kundli-generate-primary"
+                  note={accessState.message}
+                />
                 <TrackedLink
                   href={localize("/consultation")}
                   eventName="consultation_cta_click"
@@ -209,6 +302,17 @@ export default async function KundliPage() {
                   This page prepares the Kundli experience safely. Chart details appear only after a
                   real authenticated profile-based generation flow.
                 </p>
+                <div className="rounded-[1rem] border border-[rgba(184,137,67,0.2)] bg-white p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_10px_24px_rgba(17,17,17,0.04)]">
+                  <p className="text-[0.62rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
+                    {accessState.eyebrow}
+                  </p>
+                  <p className="mt-1 text-[0.88rem] font-semibold leading-5 text-[#111111]">
+                    {accessState.title}
+                  </p>
+                  <p className="mt-1 text-[0.78rem] leading-5 text-[color:var(--color-ink-body)]">
+                    {accessState.message}
+                  </p>
+                </div>
               </div>
             </Card>
           </Container>
@@ -250,18 +354,19 @@ export default async function KundliPage() {
                 ))}
               </div>
 
-              <TrackedLink
-                href={localize("/sign-in")}
-                eventName="cta_click"
-                eventPayload={{ page: "/kundli", feature: "kundli-profile-card-generate" }}
-                className={buttonStyles({
-                  tone: "accent",
-                  size: "lg",
-                  className: "w-full justify-center sm:w-auto",
-                })}
-              >
-                Generate Kundli
-              </TrackedLink>
+              <div className="space-y-3">
+                <GenerateKundliControl
+                  accessStatus={accessState.status}
+                  ctaMode={accessState.ctaMode}
+                  signInHref={localize("/sign-in")}
+                  feature="kundli-profile-card-generate"
+                  note={
+                    accessState.status === "ready"
+                      ? "Generation can now run from verified profile details."
+                      : "This page will not generate a chart until sign-in and verified profile details are confirmed."
+                  }
+                />
+              </div>
             </Card>
 
             <div className="min-w-0 space-y-4">
