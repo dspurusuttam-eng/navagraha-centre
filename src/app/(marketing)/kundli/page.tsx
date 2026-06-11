@@ -19,23 +19,7 @@ const profileDetails = [
   { label: "Time of Birth", note: "Exact time improves Lagna" },
   { label: "Birth Place", note: "City and country context" },
   { label: "Language Preference", note: "Experience preference" },
-  { label: "Chart Style", note: "East Indian" },
-] as const;
-
-const advancedDetails = [
-  { label: "Ayanamsa", note: "Backend default only" },
-  { label: "Time Zone", note: "From verified profile" },
-  { label: "Coordinates", note: "From verified profile" },
-  { label: "Chart Type", note: "Display preview" },
-] as const;
-
-const resultItems = [
-  "Lagna Chart",
-  "Rashi Chart",
-  "Navamsa",
-  "Graha Position",
-  "Dasha",
-  "Basic Interpretation",
+  { label: "Chart Style: East Indian", note: "Display style" },
 ] as const;
 
 const nextSteps = [
@@ -234,36 +218,15 @@ export default async function KundliPage() {
                 </div>
                 <div className="flex w-fit max-w-full flex-wrap items-center gap-2 rounded-[var(--radius-pill)] border border-[rgba(184,137,67,0.2)] bg-white px-3 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.1em] text-[color:var(--color-accent-strong)] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_8px_20px_rgba(17,17,17,0.04)]">
                   <span>Lagna</span>
-                  <span aria-hidden="true">•</span>
+                  <span aria-hidden="true">{"\u2022"}</span>
                   <span>Rashi</span>
-                  <span aria-hidden="true">•</span>
+                  <span aria-hidden="true">{"\u2022"}</span>
                   <span>Navamsa</span>
-                  <span aria-hidden="true">•</span>
+                  <span aria-hidden="true">{"\u2022"}</span>
                   <span>Dasha</span>
                 </div>
               </div>
 
-              <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
-                <GenerateKundliControl
-                  accessStatus={accessState.status}
-                  ctaMode={accessState.ctaMode}
-                  signInHref={localize("/sign-in")}
-                  feature="kundli-generate-primary"
-                  note={accessState.message}
-                />
-                <TrackedLink
-                  href={localize("/consultation")}
-                  eventName="consultation_cta_click"
-                  eventPayload={{ page: "/kundli", feature: "kundli-birth-time-help-top" }}
-                  className={buttonStyles({
-                    tone: "secondary",
-                    size: "lg",
-                    className: "w-full justify-center sm:w-auto",
-                  })}
-                >
-                  Birth Time Help
-                </TrackedLink>
-              </div>
             </div>
 
             <Card
@@ -299,8 +262,8 @@ export default async function KundliPage() {
                   </div>
                 </div>
                 <p className="text-[0.82rem] leading-6 text-[color:var(--color-ink-body)]">
-                  This page prepares the Kundli experience safely. Chart details appear only after a
-                  real authenticated profile-based generation flow.
+                  A compact structural preview for profile-based Kundli generation. Chart details
+                  appear only after a real authenticated backend response.
                 </p>
                 <div className="rounded-[1rem] border border-[rgba(184,137,67,0.2)] bg-white p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_10px_24px_rgba(17,17,17,0.04)]">
                   <p className="text-[0.62rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
@@ -319,7 +282,7 @@ export default async function KundliPage() {
         </section>
 
         <section className="border-b border-black/8 bg-white">
-          <Container className="grid min-w-0 gap-4 py-7 sm:py-9 lg:grid-cols-[minmax(0,1.08fr)_minmax(280px,0.92fr)]">
+          <Container className="py-7 sm:py-9">
             <Card
               tone="default"
               className="min-w-0 space-y-5 border-[rgba(184,137,67,0.24)] bg-white shadow-[0_16px_36px_rgba(17,17,17,0.055)] before:opacity-0"
@@ -332,8 +295,8 @@ export default async function KundliPage() {
                   3D Birth Details checklist
                 </h2>
                 <p className="max-w-3xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                  Kundli generation uses verified profile details after sign-in. This static shell
-                  does not submit public birth details.
+                  Kundli generation uses verified profile details after sign-in. This page does not
+                  submit public inline birth details.
                 </p>
               </div>
 
@@ -369,105 +332,11 @@ export default async function KundliPage() {
               </div>
             </Card>
 
-            <div className="min-w-0 space-y-4">
-              <Card
-                tone="default"
-                className="min-w-0 space-y-3 border-[rgba(76,187,23,0.22)] bg-white shadow-[0_14px_30px_rgba(17,17,17,0.05)] before:opacity-0"
-              >
-                <div className="flex items-center gap-2">
-                  <SacredDot tone="green" />
-                  <p className="text-[0.7rem] uppercase tracking-[0.12em] text-[#4CBB17]">Trust Note</p>
-                </div>
-                <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                  For accurate Kundli, exact date, time and place are important.
-                </p>
-              </Card>
-
-              <Card
-                tone="default"
-                className="min-w-0 space-y-4 border-[rgba(184,137,67,0.22)] bg-white shadow-[0_14px_30px_rgba(17,17,17,0.05)] before:opacity-0"
-              >
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="space-y-1">
-                    <p className="text-[0.7rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
-                      Advanced Details +
-                    </p>
-                    <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-body-lg)] text-[#111111]">
-                      Static preview only
-                    </h2>
-                  </div>
-                  <Badge tone="outline" className="border border-black/8 bg-white text-[#111111]">
-                    Not editable here
-                  </Badge>
-                </div>
-                <div className="grid gap-2">
-                  {advancedDetails.map((item) => (
-                    <div
-                      key={item.label}
-                      className="flex min-w-0 items-center justify-between gap-3 rounded-[0.95rem] border border-black/8 bg-white px-3 py-2.5 shadow-[0_8px_18px_rgba(17,17,17,0.035)]"
-                    >
-                      <span className="text-[0.78rem] font-semibold text-[#111111]">{item.label}</span>
-                      <span className="text-right text-[0.68rem] uppercase tracking-[0.08em] text-[color:var(--color-ink-muted)]">
-                        {item.note}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            </div>
           </Container>
         </section>
 
         <section className="border-b border-black/8 bg-white">
-          <Container className="space-y-5 py-7 sm:py-9">
-            <div className="space-y-2">
-              <Badge tone="trust" className="w-fit border border-black/8 bg-white">
-                What You Will Get
-              </Badge>
-              <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[#111111]">
-                Kundli output prepared for real backend response
-              </h2>
-            </div>
-
-            <div className="grid min-w-0 grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6">
-              {resultItems.map((item, index) => (
-                <div
-                  key={item}
-                  className="min-w-0 rounded-[1.1rem] border border-[rgba(184,137,67,0.2)] bg-white px-3 py-4 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_10px_24px_rgba(17,17,17,0.045)]"
-                >
-                  <div className="mx-auto mb-3 flex h-9 w-9 items-center justify-center rounded-full border border-[rgba(184,137,67,0.24)] bg-white shadow-[0_8px_18px_rgba(17,17,17,0.04)]">
-                    <span className="text-[0.72rem] font-bold text-[color:var(--color-accent-strong)]">
-                      {index + 1}
-                    </span>
-                  </div>
-                  <p className="text-[0.78rem] font-semibold leading-5 text-[#111111]">{item}</p>
-                </div>
-              ))}
-            </div>
-          </Container>
-        </section>
-
-        <section className="border-b border-black/8 bg-white">
-          <Container className="grid min-w-0 gap-4 py-7 sm:py-9 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
-            <Card
-              tone="default"
-              className="min-w-0 space-y-4 border-[rgba(184,137,67,0.24)] bg-white shadow-[0_16px_36px_rgba(17,17,17,0.055)] before:opacity-0"
-            >
-              <div className="flex items-center gap-2">
-                <SacredDot />
-                <p className="text-[0.7rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
-                  Result
-                </p>
-              </div>
-              <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[#111111]">
-                Kundli result will appear after generation.
-              </h2>
-              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-                No sample chart, prediction, Dasha, dosha, remedy, or interpretation is shown before
-                a real authenticated backend response.
-              </p>
-            </Card>
-
+          <Container className="py-7 sm:py-9">
             <Card
               tone="default"
               className="min-w-0 space-y-4 border-[rgba(76,187,23,0.22)] bg-white shadow-[0_16px_36px_rgba(17,17,17,0.055)] before:opacity-0"

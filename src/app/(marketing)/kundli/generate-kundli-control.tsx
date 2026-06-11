@@ -25,6 +25,22 @@ type GenerateState =
   | { status: "partial"; message: string; payload?: unknown }
   | { status: "error"; message: string };
 
+const advancedDetails = [
+  { label: "Ayanamsa", note: "Backend default only" },
+  { label: "Time Zone", note: "From verified profile" },
+  { label: "Coordinates", note: "From verified profile" },
+  { label: "Chart Type", note: "Display preview" },
+] as const;
+
+const resultItems = [
+  "Lagna Chart",
+  "Rashi Chart",
+  "Navamsa",
+  "Graha Position",
+  "Dasha",
+  "Basic Interpretation",
+] as const;
+
 type KundliPlanet = {
   name: string;
   longitude: number;
@@ -376,6 +392,114 @@ function KundliResultRenderer({
   );
 }
 
+function KundliStructuralSections({
+  state,
+}: Readonly<{
+  state: GenerateState;
+}>) {
+  return (
+    <div className="space-y-5">
+      <div className="min-w-0 rounded-[1.05rem] border border-[rgba(76,187,23,0.22)] bg-white p-3.5 shadow-[0_14px_30px_rgba(17,17,17,0.05)]">
+        <div className="flex items-center gap-2">
+          <span
+            aria-hidden="true"
+            className="h-2.5 w-2.5 rounded-full bg-[#4CBB17] shadow-[0_0_0_6px_rgba(76,187,23,0.08)]"
+          />
+          <p className="text-[0.7rem] uppercase tracking-[0.12em] text-[#4CBB17]">
+            Trust Note
+          </p>
+        </div>
+        <p className="mt-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
+          For accurate Kundli, exact date, time and place are important.
+        </p>
+      </div>
+
+      <div className="min-w-0 space-y-4 rounded-[1.05rem] border border-[rgba(184,137,67,0.22)] bg-white p-3.5 shadow-[0_14px_30px_rgba(17,17,17,0.05)]">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="space-y-1">
+            <p className="text-[0.7rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
+              Advanced Details +
+            </p>
+            <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-body-lg)] text-[#111111]">
+              Supported profile context
+            </h2>
+          </div>
+          <span className="rounded-full border border-black/8 bg-white px-3 py-1 text-[0.66rem] font-semibold uppercase tracking-[0.1em] text-[#111111]">
+            Preview only
+          </span>
+        </div>
+        <div className="grid gap-2">
+          {advancedDetails.map((item) => (
+            <div
+              key={item.label}
+              className="flex min-w-0 items-center justify-between gap-3 rounded-[0.95rem] border border-black/8 bg-white px-3 py-2.5 shadow-[0_8px_18px_rgba(17,17,17,0.035)]"
+            >
+              <span className="text-[0.78rem] font-semibold text-[#111111]">
+                {item.label}
+              </span>
+              <span className="text-right text-[0.68rem] uppercase tracking-[0.08em] text-[color:var(--color-ink-muted)]">
+                {item.note}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="min-w-0 space-y-4 rounded-[1.05rem] border border-[rgba(184,137,67,0.2)] bg-white p-3.5 shadow-[0_14px_30px_rgba(17,17,17,0.05)]">
+        <div className="space-y-1">
+          <p className="text-[0.7rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
+            What You Will Get
+          </p>
+          <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-body-lg)] text-[#111111]">
+            Six core Kundli modules
+          </h2>
+        </div>
+        <div className="grid min-w-0 grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6">
+          {resultItems.map((item, index) => (
+            <div
+              key={item}
+              className="min-w-0 rounded-[1.1rem] border border-[rgba(184,137,67,0.2)] bg-white px-3 py-4 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_10px_24px_rgba(17,17,17,0.045)]"
+            >
+              <div className="mx-auto mb-3 flex h-9 w-9 items-center justify-center rounded-full border border-[rgba(184,137,67,0.24)] bg-white shadow-[0_8px_18px_rgba(17,17,17,0.04)]">
+                <span className="text-[0.72rem] font-bold text-[color:var(--color-accent-strong)]">
+                  {index + 1}
+                </span>
+              </div>
+              <p className="text-[0.78rem] font-semibold leading-5 text-[#111111]">
+                {item}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="min-w-0 space-y-4 rounded-[1.05rem] border border-[rgba(184,137,67,0.24)] bg-white p-3.5 shadow-[0_16px_36px_rgba(17,17,17,0.055)]">
+        <div className="space-y-1">
+          <p className="text-[0.7rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
+            Result
+          </p>
+          <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-body-lg)] text-[#111111]">
+            Kundli result will appear after generation.
+          </h2>
+        </div>
+        {state.status === "success" ? (
+          <KundliResultRenderer payload={state.payload} />
+        ) : (
+          <div className="rounded-[0.95rem] border border-[rgba(184,137,67,0.16)] bg-white px-3 py-3 shadow-[0_8px_18px_rgba(17,17,17,0.035)]">
+            <p className="text-[0.82rem] leading-6 text-[color:var(--color-ink-body)]">
+              {state.status === "generating"
+                ? "Generating Kundli..."
+                : state.status === "partial" || state.status === "error"
+                  ? state.message
+                  : "No sample chart, prediction, Dasha, dosha, remedy, or interpretation is shown before a real authenticated backend response."}
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function GenerateKundliControl({
   accessStatus,
   ctaMode,
@@ -438,48 +562,41 @@ export function GenerateKundliControl({
     }
   }
 
-  if (ctaMode === "sign-in") {
-    return (
+  return (
+    <div className="space-y-5">
       <div className="space-y-3">
-        <TrackedLink
-          href={signInHref}
-          eventName="cta_click"
-          eventPayload={{ page: "/kundli", feature }}
-          className={buttonStyles({
-            tone: "accent",
-            size: "lg",
-            className: "w-full justify-center sm:w-auto",
-          })}
-        >
-          Generate Kundli
-        </TrackedLink>
+        {ctaMode === "sign-in" ? (
+          <TrackedLink
+            href={signInHref}
+            eventName="cta_click"
+            eventPayload={{ page: "/kundli", feature }}
+            className={buttonStyles({
+              tone: "accent",
+              size: "lg",
+              className: "w-full justify-center sm:w-auto",
+            })}
+          >
+            Generate Kundli
+          </TrackedLink>
+        ) : (
+          <button
+            type="button"
+            disabled={!canGenerate || isGenerating}
+            onClick={handleGenerate}
+            className={buttonStyles({
+              tone: canGenerate ? "accent" : "secondary",
+              size: "lg",
+              className: "w-full justify-center sm:w-auto",
+            })}
+          >
+            Generate Kundli
+          </button>
+        )}
         <p className="text-[0.76rem] leading-5 text-[color:var(--color-ink-body)]">
           {message}
         </p>
       </div>
-    );
-  }
-
-  return (
-    <div className="space-y-3">
-      <button
-        type="button"
-        disabled={!canGenerate || isGenerating}
-        onClick={handleGenerate}
-        className={buttonStyles({
-          tone: canGenerate ? "accent" : "secondary",
-          size: "lg",
-          className: "w-full justify-center sm:w-auto",
-        })}
-      >
-        Generate Kundli
-      </button>
-      <p className="text-[0.76rem] leading-5 text-[color:var(--color-ink-body)]">
-        {message}
-      </p>
-      {state.status === "success" ? (
-        <KundliResultRenderer payload={state.payload} />
-      ) : null}
+      <KundliStructuralSections state={state} />
     </div>
   );
 }
