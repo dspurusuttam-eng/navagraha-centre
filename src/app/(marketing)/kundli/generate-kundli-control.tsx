@@ -25,21 +25,16 @@ type GenerateState =
   | { status: "partial"; message: string; payload?: unknown }
   | { status: "error"; message: string };
 
-const advancedDetails = [
-  { label: "Ayanamsa", note: "Backend default only" },
-  { label: "Time Zone", note: "From verified profile" },
-  { label: "Coordinates", note: "From verified profile" },
-  { label: "Chart Type", note: "Display preview" },
+const kundliIncludes = [
+  { label: "Lagna", icon: "lagna" },
+  { label: "Rashi", icon: "rashi" },
+  { label: "Navamsa", icon: "navamsa" },
+  { label: "Graha", icon: "graha" },
+  { label: "Dasha", icon: "dasha" },
+  { label: "Basic", icon: "basic" },
 ] as const;
 
-const resultItems = [
-  "Lagna Chart",
-  "Rashi Chart",
-  "Navamsa",
-  "Graha Position",
-  "Dasha",
-  "Basic Interpretation",
-] as const;
+type KundliIncludeIconName = (typeof kundliIncludes)[number]["icon"];
 
 type KundliPlanet = {
   name: string;
@@ -248,6 +243,77 @@ function getModuleStatuses(payload: KundliChartPayload) {
   ];
 }
 
+function KundliIncludeIcon({ name }: Readonly<{ name: KundliIncludeIconName }>) {
+  const commonProps = {
+    fill: "none",
+    stroke: "currentColor",
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    strokeWidth: 1.9,
+  };
+
+  return (
+    <svg
+      aria-hidden="true"
+      className="h-6 w-6 text-[color:var(--color-accent-strong)]"
+      viewBox="0 0 24 24"
+    >
+      {name === "lagna" ? (
+        <>
+          <path {...commonProps} d="M4 17h16" />
+          <path {...commonProps} d="M7 17a5 5 0 0 1 10 0" />
+          <path {...commonProps} d="M12 4v3" />
+          <path {...commonProps} d="M5.5 8.5l2 2" />
+          <path {...commonProps} d="M18.5 8.5l-2 2" />
+        </>
+      ) : null}
+      {name === "rashi" ? (
+        <>
+          <path
+            {...commonProps}
+            d="M17.5 16.5A7 7 0 0 1 7.5 6.5 7.2 7.2 0 0 0 16 15a7 7 0 0 0 1.5 1.5Z"
+          />
+          <path {...commonProps} d="M18 5.5h.01" />
+          <path {...commonProps} d="M20 9h.01" />
+        </>
+      ) : null}
+      {name === "navamsa" ? (
+        <>
+          <rect {...commonProps} x="5" y="5" width="14" height="14" rx="2.5" />
+          <path {...commonProps} d="M9.7 5v14" />
+          <path {...commonProps} d="M14.3 5v14" />
+          <path {...commonProps} d="M5 9.7h14" />
+          <path {...commonProps} d="M5 14.3h14" />
+        </>
+      ) : null}
+      {name === "graha" ? (
+        <>
+          <circle {...commonProps} cx="12" cy="12" r="2.2" />
+          <path {...commonProps} d="M4.8 12a7.2 3.9 0 1 0 14.4 0 7.2 3.9 0 1 0-14.4 0" />
+          <path {...commonProps} d="M7 7a9.2 9.2 0 0 0 10 10" />
+          <circle cx="18.5" cy="8" r="1.2" fill="currentColor" />
+        </>
+      ) : null}
+      {name === "dasha" ? (
+        <>
+          <path {...commonProps} d="M7 4h10" />
+          <path {...commonProps} d="M7 20h10" />
+          <path {...commonProps} d="M9 4v4.5L12 12l3-3.5V4" />
+          <path {...commonProps} d="M9 20v-4.5L12 12l3 3.5V20" />
+        </>
+      ) : null}
+      {name === "basic" ? (
+        <>
+          <rect {...commonProps} x="6" y="4" width="12" height="16" rx="2.4" />
+          <path {...commonProps} d="M9 9h6" />
+          <path {...commonProps} d="M9 12h6" />
+          <path {...commonProps} d="M9 15h4" />
+        </>
+      ) : null}
+    </svg>
+  );
+}
+
 function ResultLine({
   label,
   value,
@@ -398,100 +464,58 @@ function KundliStructuralSections({
   state: GenerateState;
 }>) {
   return (
-    <div className="space-y-5">
-      <div className="min-w-0 rounded-[1.05rem] border border-[rgba(76,187,23,0.22)] bg-white p-3.5 shadow-[0_14px_30px_rgba(17,17,17,0.05)]">
-        <div className="flex items-center gap-2">
-          <span
-            aria-hidden="true"
-            className="h-2.5 w-2.5 rounded-full bg-[#4CBB17] shadow-[0_0_0_6px_rgba(76,187,23,0.08)]"
-          />
-          <p className="text-[0.7rem] uppercase tracking-[0.12em] text-[#4CBB17]">
-            Trust Note
-          </p>
-        </div>
-        <p className="mt-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-ink-body)]">
-          For accurate Kundli, exact date, time and place are important.
-        </p>
+    <div className="space-y-4">
+      <div className="flex min-w-0 items-center justify-center rounded-[1rem] border border-[rgba(76,187,23,0.2)] bg-white px-3 py-2.5 text-[0.72rem] font-bold uppercase tracking-[0.12em] text-[#4CBB17] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_8px_18px_rgba(17,17,17,0.035)]">
+        Date <span className="mx-2 text-[color:var(--color-accent-strong)]">{"\u2022"}</span>{" "}
+        Time <span className="mx-2 text-[color:var(--color-accent-strong)]">{"\u2022"}</span>{" "}
+        Place
       </div>
 
-      <div className="min-w-0 space-y-4 rounded-[1.05rem] border border-[rgba(184,137,67,0.22)] bg-white p-3.5 shadow-[0_14px_30px_rgba(17,17,17,0.05)]">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="space-y-1">
-            <p className="text-[0.7rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
-              Advanced Details +
-            </p>
-            <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-body-lg)] text-[#111111]">
-              Supported profile context
-            </h2>
-          </div>
-          <span className="rounded-full border border-black/8 bg-white px-3 py-1 text-[0.66rem] font-semibold uppercase tracking-[0.1em] text-[#111111]">
-            Preview only
+      <div className="min-w-0 space-y-3 rounded-[1.05rem] border border-[rgba(184,137,67,0.2)] bg-white p-3 shadow-[0_12px_28px_rgba(17,17,17,0.045)]">
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
+            Kundli Includes
+          </p>
+          <span className="rounded-[var(--radius-pill)] border border-black/8 bg-white px-2.5 py-1 text-[0.58rem] font-bold uppercase tracking-[0.1em] text-[#111111]">
+            Display only
           </span>
         </div>
-        <div className="grid gap-2">
-          {advancedDetails.map((item) => (
+        <div className="grid min-w-0 grid-cols-3 gap-2 sm:grid-cols-6">
+          {kundliIncludes.map((item) => (
             <div
               key={item.label}
-              className="flex min-w-0 items-center justify-between gap-3 rounded-[0.95rem] border border-black/8 bg-white px-3 py-2.5 shadow-[0_8px_18px_rgba(17,17,17,0.035)]"
+              className="min-w-0 rounded-[1rem] border border-[rgba(184,137,67,0.18)] bg-white px-2 py-3 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_8px_18px_rgba(17,17,17,0.04)]"
             >
-              <span className="text-[0.78rem] font-semibold text-[#111111]">
-                {item.label}
-              </span>
-              <span className="text-right text-[0.68rem] uppercase tracking-[0.08em] text-[color:var(--color-ink-muted)]">
-                {item.note}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="min-w-0 space-y-4 rounded-[1.05rem] border border-[rgba(184,137,67,0.2)] bg-white p-3.5 shadow-[0_14px_30px_rgba(17,17,17,0.05)]">
-        <div className="space-y-1">
-          <p className="text-[0.7rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
-            What You Will Get
-          </p>
-          <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-body-lg)] text-[#111111]">
-            Six core Kundli modules
-          </h2>
-        </div>
-        <div className="grid min-w-0 grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6">
-          {resultItems.map((item, index) => (
-            <div
-              key={item}
-              className="min-w-0 rounded-[1.1rem] border border-[rgba(184,137,67,0.2)] bg-white px-3 py-4 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_10px_24px_rgba(17,17,17,0.045)]"
-            >
-              <div className="mx-auto mb-3 flex h-9 w-9 items-center justify-center rounded-full border border-[rgba(184,137,67,0.24)] bg-white shadow-[0_8px_18px_rgba(17,17,17,0.04)]">
-                <span className="text-[0.72rem] font-bold text-[color:var(--color-accent-strong)]">
-                  {index + 1}
-                </span>
+              <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-[0.9rem] border border-[rgba(184,137,67,0.2)] bg-white shadow-[0_7px_16px_rgba(17,17,17,0.035)]">
+                <KundliIncludeIcon name={item.icon} />
               </div>
-              <p className="text-[0.78rem] font-semibold leading-5 text-[#111111]">
-                {item}
+              <p className="truncate text-[0.72rem] font-bold text-[#111111]">
+                {item.label}
               </p>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="min-w-0 space-y-4 rounded-[1.05rem] border border-[rgba(184,137,67,0.24)] bg-white p-3.5 shadow-[0_16px_36px_rgba(17,17,17,0.055)]">
-        <div className="space-y-1">
-          <p className="text-[0.7rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
+      <div className="min-w-0 space-y-3 rounded-[1.05rem] border border-[rgba(184,137,67,0.22)] bg-white p-3 shadow-[0_14px_30px_rgba(17,17,17,0.05)]">
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
             Result
           </p>
-          <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-body-lg)] text-[#111111]">
-            Kundli result will appear after generation.
-          </h2>
+          <span className="rounded-[var(--radius-pill)] border border-[rgba(76,187,23,0.18)] bg-white px-2.5 py-1 text-[0.58rem] font-bold uppercase tracking-[0.1em] text-[#4CBB17]">
+            Preview
+          </span>
         </div>
         {state.status === "success" ? (
           <KundliResultRenderer payload={state.payload} />
         ) : (
-          <div className="rounded-[0.95rem] border border-[rgba(184,137,67,0.16)] bg-white px-3 py-3 shadow-[0_8px_18px_rgba(17,17,17,0.035)]">
-            <p className="text-[0.82rem] leading-6 text-[color:var(--color-ink-body)]">
+          <div className="rounded-[0.95rem] border border-[rgba(184,137,67,0.16)] bg-white px-3 py-2.5 shadow-[0_8px_18px_rgba(17,17,17,0.035)]">
+            <p className="text-[0.8rem] leading-5 text-[color:var(--color-ink-body)]">
               {state.status === "generating"
                 ? "Generating Kundli..."
                 : state.status === "partial" || state.status === "error"
                   ? state.message
-                  : "No sample chart, prediction, Dasha, dosha, remedy, or interpretation is shown before a real authenticated backend response."}
+                  : "Kundli result will appear after generation."}
             </p>
           </div>
         )}
@@ -543,8 +567,7 @@ export function GenerateKundliControl({
       if (!isSupportedChartPayload(payload)) {
         setState({
           status: "partial",
-          message:
-            "Kundli response was received, but detailed result rendering is not ready in this phase.",
+          message: "Kundli response was received, but supported chart fields were unavailable.",
           payload,
         });
         return;
