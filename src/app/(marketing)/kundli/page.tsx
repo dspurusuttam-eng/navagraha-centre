@@ -14,11 +14,21 @@ import { GenerateKundliControl } from "./generate-kundli-control";
 
 const heroChips = ["Lagna", "Rashi", "Dasha"] as const;
 
-const birthDetailFields = [
-  { label: "Name", value: "From profile", marker: "N" },
-  { label: "Date", value: "Date of Birth", marker: "D" },
-  { label: "Time", value: "Time of Birth", marker: "T" },
-  { label: "Birth Place", value: "City, Country", marker: "P" },
+const birthDetailFields = {
+  name: { label: "Name", value: "From profile", marker: "N" },
+  date: { label: "Date", value: "Date of Birth", marker: "D" },
+  time: { label: "Time", value: "Time of Birth", marker: "T" },
+  place: { label: "Birth Place", value: "City, Country", marker: "P" },
+} as const;
+
+const timedBirthFields = [
+  birthDetailFields.date,
+  birthDetailFields.time,
+] as const;
+
+const preferenceFields = [
+  { label: "Chart Style", value: "East Indian", tone: "gold" },
+  { label: "Language", value: "Preference", tone: "green" },
 ] as const;
 
 const nextSteps = [
@@ -120,6 +130,38 @@ function getGenerateNote(status: KundliAccessState["status"]) {
   }
 }
 
+function BirthDetailRow({
+  field,
+  compact = false,
+}: Readonly<{
+  field: (typeof birthDetailFields)[keyof typeof birthDetailFields];
+  compact?: boolean;
+}>) {
+  return (
+    <div
+      className={`flex min-w-0 items-center gap-2.5 rounded-[1rem] border border-[rgba(184,137,67,0.18)] bg-white px-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_9px_20px_rgba(17,17,17,0.04)] ${
+        compact ? "py-1.5" : "py-2"
+      }`}
+    >
+      <span
+        className={`flex shrink-0 items-center justify-center rounded-[0.78rem] border border-[rgba(184,137,67,0.22)] bg-white font-bold text-[color:var(--color-accent-strong)] shadow-[0_8px_18px_rgba(17,17,17,0.04)] ${
+          compact ? "h-8 w-8 text-[0.74rem]" : "h-8 w-8 text-[0.76rem]"
+        }`}
+      >
+        {field.marker}
+      </span>
+      <span className="min-w-0">
+        <span className="block text-[0.58rem] font-semibold uppercase tracking-[0.11em] text-[color:var(--color-accent-strong)]">
+          {field.label}
+        </span>
+        <span className="mt-0.5 block truncate text-[0.8rem] font-semibold text-[#111111] sm:text-[0.86rem]">
+          {field.value}
+        </span>
+      </span>
+    </div>
+  );
+}
+
 function hasCompleteBirthProfile(
   snapshot: Awaited<ReturnType<typeof getOnboardingSnapshot>>
 ) {
@@ -217,10 +259,10 @@ export default async function KundliPage() {
       <main className="launch-page launch-page-kundli min-h-screen overflow-hidden bg-white pb-[calc(6rem+env(safe-area-inset-bottom))] text-[#111111] md:pb-0">
         <section className="relative border-b border-black/8 bg-white">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-36 bg-[radial-gradient(circle_at_14%_12%,rgba(184,137,67,0.1),transparent_30%),radial-gradient(circle_at_88%_4%,rgba(76,187,23,0.08),transparent_26%)]" />
-          <Container className="relative py-4 sm:py-6">
+          <Container className="relative py-2.5 sm:py-5">
             <Card
               tone="default"
-              className="min-w-0 overflow-hidden border-[rgba(184,137,67,0.22)] bg-white p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.96),0_14px_34px_rgba(17,17,17,0.055)] before:opacity-0 sm:p-5"
+              className="min-w-0 overflow-hidden border-[rgba(184,137,67,0.22)] bg-white p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.96),0_14px_34px_rgba(17,17,17,0.055)] before:opacity-0 sm:p-5"
             >
               <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="min-w-0 space-y-1.5">
@@ -228,12 +270,12 @@ export default async function KundliPage() {
                     Janam Kundli
                   </Badge>
                   <h1
-                    className="font-[family-name:var(--font-display)] text-[2rem] text-[#111111] sm:text-[2.45rem]"
+                    className="font-[family-name:var(--font-display)] text-[1.7rem] text-[#111111] sm:text-[2.45rem]"
                     style={{ letterSpacing: "0.005em", lineHeight: "var(--line-height-tight)" }}
                   >
                     Janam Kundli
                   </h1>
-                  <p className="text-[0.94rem] leading-6 text-[color:var(--color-ink-body)]">
+                  <p className="text-[0.88rem] leading-5 text-[color:var(--color-ink-body)] sm:text-[0.94rem] sm:leading-6">
                     Generate your birth chart with accurate birth details
                   </p>
                 </div>
@@ -241,7 +283,7 @@ export default async function KundliPage() {
                   Generate Kundli
                 </div>
               </div>
-              <div className="mt-4 flex max-w-full flex-wrap gap-2">
+              <div className="mt-3 flex max-w-full flex-wrap gap-2">
                 {heroChips.map((chip, index) => (
                   <span
                     key={chip}
@@ -257,17 +299,17 @@ export default async function KundliPage() {
         </section>
 
         <section className="border-b border-black/8 bg-white">
-          <Container className="py-4 sm:py-6">
+          <Container className="py-2.5 sm:py-5">
             <Card
               tone="default"
-              className="min-w-0 space-y-4 border-[rgba(184,137,67,0.24)] bg-white p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.96),0_16px_36px_rgba(17,17,17,0.055)] before:opacity-0 sm:p-5"
+              className="min-w-0 space-y-2.5 border-[rgba(184,137,67,0.24)] bg-white p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.96),0_16px_36px_rgba(17,17,17,0.055)] before:opacity-0 sm:space-y-4 sm:p-5"
             >
               <div className="flex min-w-0 items-center justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
                     Birth Details
                   </p>
-                  <h2 className="mt-1 font-[family-name:var(--font-display)] text-[1.35rem] text-[#111111]">
+                  <h2 className="mt-1 font-[family-name:var(--font-display)] text-[1.2rem] text-[#111111] sm:text-[1.35rem]">
                     Profile form
                   </h2>
                 </div>
@@ -276,29 +318,20 @@ export default async function KundliPage() {
                 </span>
               </div>
 
-              <div className="grid min-w-0 gap-2.5 sm:grid-cols-2">
-                {birthDetailFields.map((field) => (
-                  <div
-                    key={field.label}
-                    className="flex min-w-0 items-center gap-3 rounded-[1rem] border border-[rgba(184,137,67,0.18)] bg-white px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_9px_20px_rgba(17,17,17,0.04)]"
-                  >
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[0.8rem] border border-[rgba(184,137,67,0.22)] bg-white text-[0.78rem] font-bold text-[color:var(--color-accent-strong)] shadow-[0_8px_18px_rgba(17,17,17,0.04)]">
-                      {field.marker}
-                    </span>
-                    <span className="min-w-0">
-                      <span className="block text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
-                        {field.label}
-                      </span>
-                      <span className="mt-0.5 block truncate text-[0.86rem] font-semibold text-[#111111]">
-                        {field.value}
-                      </span>
-                    </span>
-                  </div>
-                ))}
+              <div className="grid min-w-0 gap-2">
+                <BirthDetailRow field={birthDetailFields.name} />
+
+                <div className="grid min-w-0 grid-cols-2 gap-2">
+                  {timedBirthFields.map((field) => (
+                    <BirthDetailRow key={field.label} field={field} compact />
+                  ))}
+                </div>
+
+                <BirthDetailRow field={birthDetailFields.place} />
               </div>
 
-              <div className="grid min-w-0 gap-2.5 sm:grid-cols-[1fr_1fr]">
-                <div className="min-w-0 rounded-[1rem] border border-[rgba(184,137,67,0.18)] bg-white p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_9px_20px_rgba(17,17,17,0.04)]">
+              <div className="grid min-w-0 gap-2">
+                <div className="min-w-0 rounded-[1rem] border border-[rgba(184,137,67,0.18)] bg-white p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_9px_20px_rgba(17,17,17,0.04)]">
                   <p className="text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
                     Gender
                   </p>
@@ -306,7 +339,7 @@ export default async function KundliPage() {
                     {["Male", "Female"].map((item) => (
                       <span
                         key={item}
-                        className="rounded-[0.8rem] border border-black/8 bg-white px-3 py-2 text-center text-[0.8rem] font-semibold text-[#111111] shadow-[0_7px_16px_rgba(17,17,17,0.035)]"
+                        className="rounded-[0.8rem] border border-black/8 bg-white px-3 py-1.5 text-center text-[0.78rem] font-semibold text-[#111111] shadow-[0_7px_16px_rgba(17,17,17,0.035)]"
                       >
                         {item}
                       </span>
@@ -314,27 +347,34 @@ export default async function KundliPage() {
                   </div>
                 </div>
 
-                <div className="grid min-w-0 gap-2">
-                  <div className="rounded-[1rem] border border-[rgba(184,137,67,0.18)] bg-white px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_9px_20px_rgba(17,17,17,0.04)]">
-                    <p className="text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
-                      Chart Style
-                    </p>
-                    <p className="mt-0.5 text-[0.86rem] font-semibold text-[#111111]">
-                      East Indian
-                    </p>
-                  </div>
-                  <div className="rounded-[1rem] border border-[rgba(76,187,23,0.18)] bg-white px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_9px_20px_rgba(17,17,17,0.04)]">
-                    <p className="text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-[#4CBB17]">
-                      Language
-                    </p>
-                    <p className="mt-0.5 text-[0.86rem] font-semibold text-[#111111]">
-                      Preference
-                    </p>
-                  </div>
+                <div className="grid min-w-0 grid-cols-2 gap-2">
+                  {preferenceFields.map((field) => (
+                    <div
+                      key={field.label}
+                      className={`rounded-[1rem] border bg-white px-3 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_9px_20px_rgba(17,17,17,0.04)] ${
+                        field.tone === "green"
+                          ? "border-[rgba(76,187,23,0.18)]"
+                          : "border-[rgba(184,137,67,0.18)]"
+                      }`}
+                    >
+                      <p
+                        className={`text-[0.58rem] font-semibold uppercase tracking-[0.1em] ${
+                          field.tone === "green"
+                            ? "text-[#4CBB17]"
+                            : "text-[color:var(--color-accent-strong)]"
+                        }`}
+                      >
+                        {field.label}
+                      </p>
+                      <p className="mt-0.5 truncate text-[0.8rem] font-semibold text-[#111111] sm:text-[0.86rem]">
+                        {field.value}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              <div className="rounded-[1rem] border border-[rgba(76,187,23,0.18)] bg-white px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_9px_20px_rgba(17,17,17,0.04)]">
+              <div className="rounded-[1rem] border border-[rgba(76,187,23,0.18)] bg-white px-3 py-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_9px_20px_rgba(17,17,17,0.04)]">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <span className="text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-[#4CBB17]">
                     Status
@@ -368,7 +408,7 @@ export default async function KundliPage() {
                     Birth Time?
                   </p>
                   <p className="mt-1 text-[0.9rem] font-semibold text-[#111111]">
-                    Exact time improves Lagna, Dasha and chart accuracy.
+                    Exact time improves chart accuracy.
                   </p>
                 </div>
                 <TrackedLink
@@ -396,7 +436,7 @@ export default async function KundliPage() {
               </p>
               <SacredDot tone="green" />
             </div>
-            <div className="grid min-w-0 gap-2.5 sm:grid-cols-3">
+            <div className="grid min-w-0 grid-cols-3 gap-2">
               {nextSteps.map((step) => (
                 <TrackedLink
                   key={step.title}
@@ -407,18 +447,15 @@ export default async function KundliPage() {
                 >
                   <Card
                     tone="default"
-                    className="min-w-0 border-[rgba(184,137,67,0.2)] bg-white p-3.5 shadow-[0_12px_26px_rgba(17,17,17,0.045)] transition hover:-translate-y-0.5 hover:border-[rgba(184,137,67,0.34)] before:opacity-0"
+                    className="min-w-0 border-[rgba(184,137,67,0.2)] bg-white p-2.5 text-center shadow-[0_10px_22px_rgba(17,17,17,0.04)] transition hover:-translate-y-0.5 hover:border-[rgba(184,137,67,0.34)] before:opacity-0 sm:p-3.5"
                   >
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="min-w-0">
-                        <p className="truncate text-[0.68rem] font-semibold uppercase tracking-[0.11em] text-[color:var(--color-accent-strong)]">
-                          {step.cta}
-                        </p>
-                        <h3 className="mt-1 font-[family-name:var(--font-display)] text-[1rem] text-[#111111]">
-                          {step.title}
-                        </h3>
-                      </div>
-                      <SacredDot tone={step.href === "/ai" ? "green" : "gold"} />
+                    <div className="min-w-0 space-y-1">
+                      <p className="truncate text-[0.58rem] font-semibold uppercase tracking-[0.09em] text-[color:var(--color-accent-strong)] sm:text-[0.68rem]">
+                        {step.cta}
+                      </p>
+                      <h3 className="truncate font-[family-name:var(--font-display)] text-[0.9rem] text-[#111111] sm:text-[1rem]">
+                        {step.title}
+                      </h3>
                     </div>
                   </Card>
                 </TrackedLink>

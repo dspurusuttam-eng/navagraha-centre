@@ -464,7 +464,7 @@ function KundliStructuralSections({
   state: GenerateState;
 }>) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <div className="flex min-w-0 items-center justify-center rounded-[1rem] border border-[rgba(76,187,23,0.2)] bg-white px-3 py-2.5 text-[0.72rem] font-bold uppercase tracking-[0.12em] text-[#4CBB17] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_8px_18px_rgba(17,17,17,0.035)]">
         Date <span className="mx-2 text-[color:var(--color-accent-strong)]">{"\u2022"}</span>{" "}
         Time <span className="mx-2 text-[color:var(--color-accent-strong)]">{"\u2022"}</span>{" "}
@@ -477,7 +477,7 @@ function KundliStructuralSections({
             Kundli Includes
           </p>
           <span className="rounded-[var(--radius-pill)] border border-black/8 bg-white px-2.5 py-1 text-[0.58rem] font-bold uppercase tracking-[0.1em] text-[#111111]">
-            Display only
+            Included
           </span>
         </div>
         <div className="grid min-w-0 grid-cols-3 gap-2 sm:grid-cols-6">
@@ -586,8 +586,8 @@ export function GenerateKundliControl({
   }
 
   return (
-    <div className="space-y-5">
-      <div className="space-y-3">
+    <div className="space-y-3">
+      <div className="space-y-2.5">
         {ctaMode === "sign-in" ? (
           <TrackedLink
             href={signInHref}
