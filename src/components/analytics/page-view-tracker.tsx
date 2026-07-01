@@ -27,7 +27,6 @@ export function PageViewTracker({ page, feature }: Readonly<PageViewTrackerProps
     };
 
     trackEvent("page_view", payload, { dispatch: "idle" });
-    trackEvent("page_visit", payload, { dispatch: "idle" });
   }, [featureName, page]);
 
   return null;

@@ -91,7 +91,7 @@ const categoryRail: readonly RailItem[] = [
   { label: "Reports", href: "/reports", feature: "home-rail-reports" },
   { label: "Consult", href: "/consultation", feature: "home-rail-consult" },
   { label: "Shop", href: "/shop", feature: "home-rail-shop" },
-  { label: "Learn", href: "/articles", feature: "home-rail-learn" },
+  { label: "Learn", href: "/learn", feature: "home-rail-learn" },
 ] as const;
 
 const symbolTiles: readonly ToolTile[] = [

@@ -42,7 +42,7 @@ export async function Header() {
     { href: localizeHref("/tools"), label: "Tools" },
     { href: localizeHref("/reports"), label: "Reports" },
     { href: localizeHref("/consultation"), label: "Consultation" },
-    { href: localizeHref("/articles"), label: "Learn" },
+    { href: localizeHref("/learn"), label: "Learn" },
     { href: localizeHref("/sign-in"), label: "Account" },
   ] as const;
 
@@ -55,7 +55,7 @@ export async function Header() {
     { href: localizeHref("/tools"), label: "Tools" },
     { href: localizeHref("/reports"), label: "Reports" },
     { href: localizeHref("/consultation"), label: "Consultation" },
-    { href: localizeHref("/articles"), label: "Learn" },
+    { href: localizeHref("/learn"), label: "Learn" },
     { href: localizeHref("/sign-in"), label: "Account" },
   ] as const;
 

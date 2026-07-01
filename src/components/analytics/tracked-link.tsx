@@ -243,7 +243,7 @@ export function TrackedLink({
         continue;
       }
 
-      trackEvent(companionEvent, eventPayload ?? {});
+      trackEvent(companionEvent, eventPayload ?? {}, { dispatch: "idle" });
     }
 
     onClick?.(event);

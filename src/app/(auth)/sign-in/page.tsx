@@ -70,7 +70,7 @@ export default async function SignInPage({
           { label: "Home", href: "/" },
           { label: "Consultation", href: "/consultation" },
           { label: "Reports", href: "/reports" },
-          { label: "Learn", href: "/articles" },
+          { label: "Learn", href: "/learn" },
         ]}
       />
     </AuthFormShell>

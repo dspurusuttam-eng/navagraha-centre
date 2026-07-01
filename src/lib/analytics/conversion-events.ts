@@ -58,7 +58,7 @@ function toSafePayload(context: SafeConversionContext): AnalyticsEventPayload {
 }
 
 function emit(eventName: TrackedEventName, context: SafeConversionContext) {
-  trackEvent(eventName, toSafePayload(context));
+  trackEvent(eventName, toSafePayload(context), { dispatch: "idle" });
 }
 
 export function trackHomepageCtaClick(context: SafeConversionContext) {
