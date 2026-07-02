@@ -15,13 +15,13 @@ import { GenerateKundliControl } from "./generate-kundli-control";
 const heroChips = ["Lagna", "Rashi", "Dasha"] as const;
 
 const birthDetailRows = [
-  [{ label: "Name", kind: "name" }],
+  [{ label: "Name", kind: "name", placeholder: "Enter full name" }],
   [
-    { label: "Date of Birth", kind: "date" },
-    { label: "Time of Birth", kind: "time" },
+    { label: "Date of Birth", kind: "date", placeholder: "Select date" },
+    { label: "Time of Birth", kind: "time", placeholder: "Select time" },
   ],
   [
-    { label: "Location", kind: "location" },
+    { label: "Location", kind: "location", placeholder: "Search birth place" },
     { label: "Gender", kind: "gender", options: ["Male", "Female"] },
   ],
   [
@@ -30,7 +30,12 @@ const birthDetailRows = [
       kind: "chart",
       options: ["North", "South", "East"],
     },
-    { label: "Language", kind: "language", options: ["EN", "HI", "AS"] },
+    {
+      label: "Language",
+      kind: "language",
+      options: ["EN", "HI", "AS"],
+      activeOption: "EN",
+    },
   ],
 ] as const;
 
@@ -154,9 +159,11 @@ function FieldIcon({ kind }: Readonly<{ kind: BirthDetailField["kind"] }>) {
 
 function OptionRail({
   options,
+  activeOption,
   tone = "gold",
 }: Readonly<{
   options: readonly string[];
+  activeOption?: string;
   tone?: "gold" | "green";
 }>) {
   return (
@@ -165,20 +172,24 @@ function OptionRail({
         options.length === 2 ? "grid-cols-2" : "grid-cols-3"
       } gap-1`}
     >
-      {options.map((option, index) => (
-        <span
-          key={option}
-          className={`min-w-0 whitespace-nowrap rounded-[0.6rem] border bg-white px-1 py-1 text-center text-[0.5rem] font-extrabold leading-none text-[#111111] shadow-[inset_0_1px_0_rgba(255,255,255,0.96),0_4px_9px_rgba(17,17,17,0.055)] sm:text-[0.58rem] ${
-            index === 0
-              ? tone === "green"
-                ? "border-[rgba(76,187,23,0.34)] text-[#2f7e16]"
-                : "border-[rgba(184,137,67,0.38)] text-[color:var(--color-accent-strong)]"
-              : "border-black/10"
-          }`}
-        >
-          {option}
-        </span>
-      ))}
+      {options.map((option) => {
+        const isActive = option === (activeOption ?? options[0]);
+
+        return (
+          <span
+            key={option}
+            className={`min-w-0 whitespace-nowrap rounded-[0.6rem] border px-1 py-1 text-center text-[0.5rem] font-extrabold leading-none shadow-[inset_0_1px_0_rgba(255,255,255,0.96),0_4px_9px_rgba(17,17,17,0.055)] sm:text-[0.58rem] ${
+              isActive
+                ? tone === "green"
+                  ? "border-[rgba(76,187,23,0.55)] bg-[rgba(76,187,23,0.045)] text-[#2f7e16] shadow-[inset_0_1px_0_rgba(255,255,255,0.96),inset_0_-3px_7px_rgba(76,187,23,0.08),0_4px_9px_rgba(17,17,17,0.055)]"
+                  : "border-[rgba(184,137,67,0.46)] bg-[rgba(184,137,67,0.04)] text-[color:var(--color-accent-strong)]"
+                : "border-black/10 bg-white text-[#111111]"
+            }`}
+          >
+            {option}
+          </span>
+        );
+      })}
     </div>
   );
 }
@@ -191,6 +202,8 @@ function BirthDetailBlock({
   compact?: boolean;
 }>) {
   const options = "options" in field ? field.options : null;
+  const placeholder = "placeholder" in field ? field.placeholder : null;
+  const activeOption = "activeOption" in field ? field.activeOption : undefined;
 
   return (
     <div
@@ -209,8 +222,16 @@ function BirthDetailBlock({
       {options ? (
         <OptionRail
           options={options}
+          activeOption={activeOption}
           tone={field.kind === "language" ? "green" : "gold"}
         />
+      ) : null}
+      {placeholder ? (
+        <div className="mt-2 rounded-[0.75rem] border border-black/8 bg-white px-3 py-1.5 shadow-[inset_0_2px_5px_rgba(17,17,17,0.045)]">
+          <p className="truncate text-[0.66rem] font-semibold leading-4 text-[color:var(--color-ink-body)] sm:text-[0.72rem]">
+            {placeholder}
+          </p>
+        </div>
       ) : null}
     </div>
   );
@@ -262,7 +283,7 @@ export default async function KundliPage() {
       `}</style>
       <PageViewTracker page="/kundli" feature="kundli-page" />
 
-      <main className="launch-page launch-page-kundli min-h-screen overflow-hidden bg-white pb-[calc(6rem+env(safe-area-inset-bottom))] text-[#111111] md:pb-0">
+      <main className="launch-page launch-page-kundli min-h-screen overflow-hidden bg-white pb-[calc(9rem+env(safe-area-inset-bottom))] text-[#111111] md:pb-12">
         <section className="border-b border-black/8 bg-white">
           <Container className="py-3 sm:py-5">
             <div className="min-w-0 space-y-3 rounded-[1.25rem] border border-[rgba(184,137,67,0.25)] bg-white p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.98),inset_0_-8px_16px_rgba(184,137,67,0.035),0_14px_26px_rgba(17,17,17,0.075)] sm:p-5">
@@ -340,7 +361,7 @@ export default async function KundliPage() {
               <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="min-w-0">
                   <p className="text-[0.68rem] font-extrabold uppercase tracking-[0.12em] text-[#4CBB17]">
-                    BIRTH TIME
+                    BIRTH TIME HELP
                   </p>
                   <p className="mt-1 text-[0.88rem] font-bold leading-5 text-[#111111]">
                     Exact time improves chart accuracy.

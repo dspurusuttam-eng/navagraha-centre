@@ -99,20 +99,22 @@ export function GenerateKundliControl({
   signInHref,
   feature,
 }: Readonly<KundliGenerateControlProps>) {
+  const signInButtonClassName = buttonStyles({
+    tone: "accent",
+    size: "lg",
+    className:
+      "w-full justify-center rounded-[var(--radius-pill)] border border-[rgba(184,137,67,0.36)] tracking-[0.02em] shadow-[inset_0_1px_0_rgba(255,255,255,0.96),inset_0_-5px_10px_rgba(17,17,17,0.08),0_12px_20px_rgba(184,137,67,0.18)]",
+  }).replace(" uppercase ", " ");
+
   return (
     <div className="space-y-3">
       <TrackedLink
         href={signInHref}
         eventName="cta_click"
         eventPayload={{ page: "/kundli", feature }}
-        className={buttonStyles({
-          tone: "accent",
-          size: "lg",
-          className:
-            "w-full justify-center rounded-[var(--radius-pill)] border border-[rgba(184,137,67,0.36)] shadow-[inset_0_1px_0_rgba(255,255,255,0.96),inset_0_-5px_10px_rgba(17,17,17,0.08),0_12px_20px_rgba(184,137,67,0.18)]",
-        })}
+        className={signInButtonClassName}
       >
-        SIGN IN
+        Sign in to Generate Kundli
       </TrackedLink>
 
       <div className="min-w-0 space-y-3 rounded-[1.05rem] border border-[rgba(184,137,67,0.22)] bg-white p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.98),0_12px_22px_rgba(17,17,17,0.06)]">
