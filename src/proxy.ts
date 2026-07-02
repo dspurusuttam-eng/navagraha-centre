@@ -30,7 +30,15 @@ function shouldBypass(pathname: string) {
   );
 }
 
-function withLocaleHeaders(request: NextRequest, locale: string, explicit: boolean) {
+function shouldUseDefaultLocaleForUnprefixedRoute(pathname: string) {
+  return pathname === "/kundli" || pathname === "/kundli/";
+}
+
+function withLocaleHeaders(
+  request: NextRequest,
+  locale: string,
+  explicit: boolean
+) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set(localeHeaderName, locale);
   requestHeaders.set(localeExplicitHeaderName, explicit ? "1" : "0");
@@ -62,6 +70,8 @@ export function proxy(request: NextRequest) {
   const pathnameLocale = detectLocaleFromPathname(pathname);
   const cookieLocale = request.cookies.get(localeCookieName)?.value ?? null;
   const acceptLanguage = request.headers.get("accept-language");
+  const useDefaultLocaleForRoute =
+    !pathnameLocale && shouldUseDefaultLocaleForUnprefixedRoute(pathname);
   const resolvedLocale = resolveRequestLocaleFromSources({
     pathname,
     cookieLocale,
@@ -86,6 +96,7 @@ export function proxy(request: NextRequest) {
   if (
     localePrefixingEnabled &&
     !pathname.startsWith("/api") &&
+    !useDefaultLocaleForRoute &&
     cookieLocale &&
     isLocaleSelectable(resolvedLocale) &&
     resolvedLocale !== defaultLocale
@@ -102,17 +113,20 @@ export function proxy(request: NextRequest) {
   }
 
   const headerLocale = request.headers.get(localeHeaderName);
-  const candidateLocaleForRequest =
-    pathnameLocale ??
-    (headerLocale || cookieLocale
-      ? resolveRequestLocaleFromSources({
-          headerLocale,
-          cookieLocale,
-          acceptLanguage,
-        })
-      : readLocaleFromAcceptLanguage(acceptLanguage) ?? defaultLocale);
+  const candidateLocaleForRequest = useDefaultLocaleForRoute
+    ? defaultLocale
+    : (pathnameLocale ??
+      (headerLocale || cookieLocale
+        ? resolveRequestLocaleFromSources({
+            headerLocale,
+            cookieLocale,
+            acceptLanguage,
+          })
+        : (readLocaleFromAcceptLanguage(acceptLanguage) ?? defaultLocale)));
   const shouldUseCandidateLocale =
-    Boolean(pathnameLocale) || isLocaleSelectable(candidateLocaleForRequest);
+    useDefaultLocaleForRoute ||
+    Boolean(pathnameLocale) ||
+    isLocaleSelectable(candidateLocaleForRequest);
   const localeForRequest = shouldUseCandidateLocale
     ? candidateLocaleForRequest
     : defaultLocale;
@@ -123,7 +137,7 @@ export function proxy(request: NextRequest) {
     },
   });
 
-  if (cookieLocale !== localeForRequest) {
+  if (!useDefaultLocaleForRoute && cookieLocale !== localeForRequest) {
     persistLocaleCookie(response, localeForRequest);
   }
 

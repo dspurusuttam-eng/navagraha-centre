@@ -21,7 +21,7 @@ const birthDetailRows = [
     { label: "Time of Birth", kind: "time", placeholder: "Select time" },
   ],
   [
-    { label: "Location", kind: "location", placeholder: "Search birth place" },
+    { label: "Location", kind: "location", placeholder: "Birth place" },
     { label: "Gender", kind: "gender", options: ["Male", "Female"] },
   ],
   [
@@ -270,12 +270,12 @@ export default async function KundliPage() {
   return (
     <>
       <style>{`
-        @media (max-width: 768px) {
+        @media (max-width: 1279px) {
           body:has(.launch-page-kundli) > footer {
             display: none;
           }
         }
-        @media (min-width: 769px) {
+        @media (min-width: 1280px) {
           .kundli-mini-footer {
             display: none;
           }
@@ -283,7 +283,7 @@ export default async function KundliPage() {
       `}</style>
       <PageViewTracker page="/kundli" feature="kundli-page" />
 
-      <main className="launch-page launch-page-kundli min-h-screen overflow-hidden bg-white pb-[calc(9rem+env(safe-area-inset-bottom))] text-[#111111] md:pb-12">
+      <main className="launch-page launch-page-kundli min-h-screen overflow-hidden bg-white pb-[calc(7rem+env(safe-area-inset-bottom))] text-[#111111] xl:pb-12">
         <section className="border-b border-black/8 bg-white">
           <Container className="py-3 sm:py-5">
             <div className="min-w-0 space-y-3 rounded-[1.25rem] border border-[rgba(184,137,67,0.25)] bg-white p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.98),inset_0_-8px_16px_rgba(184,137,67,0.035),0_14px_26px_rgba(17,17,17,0.075)] sm:p-5">
@@ -420,11 +420,11 @@ export default async function KundliPage() {
         </section>
 
         <section className="kundli-mini-footer border-t border-[rgba(184,137,67,0.22)] bg-white">
-          <Container className="py-5 text-center">
+          <Container className="py-3 text-center">
             <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#111111]">
               NAVAGRAHA CENTRE
             </p>
-            <p className="mt-2 text-[0.78rem] leading-5 text-[color:var(--color-ink-body)]">
+            <p className="mt-1 text-[0.78rem] leading-5 text-[color:var(--color-ink-body)]">
               Guidance-first. Illuminating your path.
             </p>
           </Container>
