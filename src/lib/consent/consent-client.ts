@@ -141,6 +141,6 @@ export function useConsentPreferences() {
       };
     },
     getConsentPreferences,
-    getDefaultConsentPreferences
+    () => serverConsentSnapshot
   );
 }

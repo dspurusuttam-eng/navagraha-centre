@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { LanguageSwitcher } from "@/components/site/language-switcher";
 import { Container } from "@/components/ui/container";
 import { siteConfig } from "@/config/site";
 import { defaultLocale } from "@/modules/localization/config";
@@ -53,7 +52,7 @@ export async function Footer() {
       ],
     },
     {
-      title: "Company / Support",
+      title: "Platform / Support",
       links: [
         { href: localizeHref("/contact"), label: "Contact" },
         { href: localizeHref("/privacy"), label: "Privacy" },
@@ -68,7 +67,7 @@ export async function Footer() {
       data-nosnippet
       className="border-t border-[rgba(185,139,70,0.32)] bg-white text-[color:var(--color-ink-strong)]"
     >
-      <Container className="space-y-7 py-[var(--space-8)] sm:py-[var(--space-10)] xl:space-y-8">
+      <Container className="space-y-5 py-[var(--space-8)] sm:py-[var(--space-10)] xl:space-y-6">
         <div className="grid gap-7 rounded-[var(--radius-card)] border border-[rgba(185,139,70,0.26)] bg-white p-5 shadow-[0_12px_30px_rgba(5,5,5,0.05)] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.6fr)] lg:gap-9 lg:p-6 xl:p-7">
           <div className="space-y-4">
             <Link
@@ -80,7 +79,7 @@ export async function Footer() {
                   NAVAGRAHA CENTRE
                 </span>
                 <span className="mt-1 block text-[0.46rem] font-semibold uppercase leading-none tracking-[0.3em] text-[var(--color-antique-gold-dark)] sm:text-[0.49rem] lg:text-[0.5rem]">
-                  Kundli-first | Ask NI
+                  Vedic astrology guidance platform
                 </span>
               </span>
             </Link>
@@ -117,13 +116,6 @@ export async function Footer() {
               </div>
             ))}
           </div>
-        </div>
-
-        <div className="rounded-[var(--radius-xl)] border border-[rgba(185,139,70,0.22)] bg-white p-4 shadow-[0_10px_24px_rgba(5,5,5,0.04)] xl:p-5">
-          <div className="mb-3 text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-antique-gold-dark)]">
-            Language
-          </div>
-          <LanguageSwitcher variant="compact" />
         </div>
 
         <div className="flex min-w-0 flex-col gap-3 border-t border-[rgba(185,139,70,0.28)] pt-5 text-[0.72rem] font-semibold uppercase tracking-[0.1em] text-[color:var(--color-text-primary)] sm:flex-row sm:items-center sm:justify-between xl:pt-6">

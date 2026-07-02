@@ -125,7 +125,7 @@ function KundliVisual() {
   return (
     <div
       aria-hidden="true"
-      className="relative mx-auto aspect-square w-full max-w-[17rem] rounded-[2rem] border border-[rgba(184,137,67,0.28)] bg-white p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.98),inset_0_-10px_22px_rgba(184,137,67,0.045),0_18px_34px_rgba(17,17,17,0.075)]"
+      className="relative mx-auto aspect-square w-full max-w-[15rem] rounded-[2rem] border border-[rgba(184,137,67,0.28)] bg-white p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.98),inset_0_-10px_22px_rgba(184,137,67,0.045),0_18px_34px_rgba(17,17,17,0.075)] sm:max-w-[17rem] sm:p-5"
     >
       <div className="absolute inset-5 rounded-[1.45rem] border border-black/10" />
       <div className="absolute inset-10 rounded-full border border-[rgba(76,187,23,0.32)]" />
@@ -169,7 +169,7 @@ function ShortcutCard({
     >
       <Card
         tone="default"
-        className="flex min-h-[8.5rem] min-w-0 flex-col justify-between border-[rgba(184,137,67,0.22)] bg-white p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.98),inset_0_-8px_16px_rgba(184,137,67,0.035),0_12px_22px_rgba(17,17,17,0.06)] before:opacity-0"
+        className="flex min-h-[7.35rem] min-w-0 flex-col justify-between border-[rgba(184,137,67,0.22)] bg-white p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.98),inset_0_-8px_16px_rgba(184,137,67,0.035),0_12px_22px_rgba(17,17,17,0.06)] before:opacity-0 sm:min-h-[8.5rem] sm:p-4"
       >
         <span className="flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(184,137,67,0.26)] bg-white text-[color:var(--color-accent-strong)] shadow-[inset_0_1px_0_rgba(255,255,255,0.96),0_7px_13px_rgba(17,17,17,0.06)]">
           <AppIcon icon={card.icon} />
