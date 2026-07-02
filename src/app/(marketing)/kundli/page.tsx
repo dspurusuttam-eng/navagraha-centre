@@ -249,8 +249,13 @@ export default async function KundliPage() {
   return (
     <>
       <style>{`
-        @media (max-width: 767px) {
+        @media (max-width: 768px) {
           body:has(.launch-page-kundli) > footer {
+            display: none;
+          }
+        }
+        @media (min-width: 769px) {
+          .kundli-mini-footer {
             display: none;
           }
         }
@@ -393,7 +398,7 @@ export default async function KundliPage() {
           </Container>
         </section>
 
-        <section className="border-t border-[rgba(184,137,67,0.22)] bg-white md:hidden">
+        <section className="kundli-mini-footer border-t border-[rgba(184,137,67,0.22)] bg-white">
           <Container className="py-5 text-center">
             <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#111111]">
               NAVAGRAHA CENTRE
