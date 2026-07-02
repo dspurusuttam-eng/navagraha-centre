@@ -17,6 +17,14 @@ const kundliIncludes = [
   { label: "Gochar", icon: "gochar" },
 ] as const;
 
+const resultSections = [
+  "Birth Profile",
+  "Chart",
+  "Planetary Positions",
+  "Basic Interpretation",
+  "Next Step",
+] as const;
+
 type KundliIncludeIconName = (typeof kundliIncludes)[number]["icon"];
 
 function KundliIncludeIcon({
@@ -114,7 +122,7 @@ export function GenerateKundliControl({
         eventPayload={{ page: "/kundli", feature }}
         className={signInButtonClassName}
       >
-        Sign in to Generate Kundli
+        Generate Kundli
       </TrackedLink>
 
       <div className="min-w-0 space-y-3 rounded-[1.05rem] border border-[rgba(184,137,67,0.22)] bg-white p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.98),0_12px_22px_rgba(17,17,17,0.06)]">
@@ -142,10 +150,20 @@ export function GenerateKundliControl({
         <p className="text-[0.68rem] font-extrabold uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
           RESULT
         </p>
-        <div className="rounded-[0.9rem] border border-[rgba(76,187,23,0.2)] bg-white px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.98),inset_0_-4px_10px_rgba(76,187,23,0.035),0_7px_13px_rgba(17,17,17,0.045)]">
+        <div className="space-y-3 rounded-[0.9rem] border border-[rgba(76,187,23,0.2)] bg-white px-3 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.98),inset_0_-4px_10px_rgba(76,187,23,0.035),0_7px_13px_rgba(17,17,17,0.045)]">
           <p className="text-[0.8rem] font-semibold leading-5 text-[color:var(--color-ink-body)]">
             Kundli result will appear after generation.
           </p>
+          <div className="grid gap-2 sm:grid-cols-5">
+            {resultSections.map((section) => (
+              <div
+                key={section}
+                className="rounded-[0.75rem] border border-[rgba(184,137,67,0.18)] bg-white px-2 py-2 text-center text-[0.62rem] font-extrabold leading-tight text-[#111111] shadow-[inset_0_1px_0_rgba(255,255,255,0.98),0_5px_10px_rgba(17,17,17,0.035)]"
+              >
+                {section}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

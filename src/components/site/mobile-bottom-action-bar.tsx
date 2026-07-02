@@ -3,24 +3,24 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useMemo, useState } from "react";
-import {
-  CalculatorIcon,
-  KundliIcon,
-  PanchangIcon,
-} from "@/components/icons/astrology-icons";
+import { CalculatorIcon, KundliIcon } from "@/components/icons/astrology-icons";
 import {
   buildLocalizedToolsNavigation,
   type ToolsNavigationGroup,
   type ToolsNavigationModel,
 } from "@/components/site/tools-navigation-data";
-import { defaultLocale, getLocalizedPath, type SupportedLocale } from "@/modules/localization/config";
+import {
+  defaultLocale,
+  getLocalizedPath,
+  type SupportedLocale,
+} from "@/modules/localization/config";
 import { cn } from "@/lib/cn";
 
 type BottomLinkAction = {
   type: "link";
   label: string;
   href: string;
-  icon: "home" | "kundli" | "panchang";
+  icon: "home" | "kundli" | "ai" | "consult" | "account";
 };
 
 type BottomToolsAction = {
@@ -53,7 +53,7 @@ export type MobileBottomActionBarProps = {
 function localizeHref(
   locale: SupportedLocale,
   hasExplicitLocalePrefix: boolean,
-  href: string,
+  href: string
 ) {
   return getLocalizedPath(locale, href, {
     forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
@@ -107,14 +107,75 @@ function MoreGlyph() {
   );
 }
 
+function AskNiGlyph() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="h-5 w-5"
+      aria-hidden="true"
+    >
+      <path d="M12 4.5 14 9l4.5 2-4.5 2-2 4.5-2-4.5-4.5-2L10 9z" />
+      <path d="M18.5 4.5h.01" />
+      <path d="M5.5 18.5h.01" />
+    </svg>
+  );
+}
+
+function ConsultGlyph() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="h-5 w-5"
+      aria-hidden="true"
+    >
+      <path d="M7 18.5c.8-2.5 2.7-3.8 5-3.8s4.2 1.3 5 3.8" />
+      <path d="M12 12.5a3.4 3.4 0 1 0 0-6.8 3.4 3.4 0 0 0 0 6.8Z" />
+      <path d="M18.2 8.2a2.1 2.1 0 0 1 0 4.2" />
+      <path d="M5.8 8.2a2.1 2.1 0 0 0 0 4.2" />
+    </svg>
+  );
+}
+
+function AccountGlyph() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="h-5 w-5"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="8.2" r="3.2" />
+      <path d="M5.8 19.2c1.2-3.4 3.4-5.1 6.2-5.1s5 1.7 6.2 5.1" />
+    </svg>
+  );
+}
+
 function BarIcon({ icon }: Readonly<{ icon: BottomAction["icon"] }>) {
   switch (icon) {
     case "home":
       return <HomeGlyph />;
     case "kundli":
       return <KundliIcon className="h-9 w-9" />;
-    case "panchang":
-      return <PanchangIcon className="h-9 w-9" />;
+    case "ai":
+      return <AskNiGlyph />;
+    case "consult":
+      return <ConsultGlyph />;
+    case "account":
+      return <AccountGlyph />;
     case "tools":
       return <CalculatorIcon className="h-9 w-9" />;
     case "more":
@@ -137,7 +198,7 @@ function matchesToolQuery(value: string, query: string) {
 
 function filterToolsNavigation(
   navigation: ToolsNavigationModel,
-  query: string,
+  query: string
 ): ToolsNavigationModel {
   const normalizedQuery = query.trim();
 
@@ -152,12 +213,12 @@ function filterToolsNavigation(
         (item) =>
           matchesToolQuery(item.label, normalizedQuery) ||
           matchesToolQuery(item.description, normalizedQuery) ||
-          matchesToolQuery(group.title, normalizedQuery),
+          matchesToolQuery(group.title, normalizedQuery)
       ),
     }))
     .filter((group) => group.items.length > 0);
   const popularTools = navigation.popularTools.filter((item) =>
-    matchesToolQuery(`${item.label} ${item.description}`, normalizedQuery),
+    matchesToolQuery(`${item.label} ${item.description}`, normalizedQuery)
   );
 
   return {
@@ -178,7 +239,11 @@ function getShellAccentClass({
 }) {
   const value = `${href ?? ""} ${key ?? ""} ${label ?? ""}`.toLowerCase();
 
-  if (value.includes("/ai") || value.includes("ask-ni") || value.includes("ask ni")) {
+  if (
+    value.includes("/ai") ||
+    value.includes("ask-ni") ||
+    value.includes("ask ni")
+  ) {
     return "border-[rgba(0,109,255,0.42)] bg-[rgba(0,215,255,0.08)] text-[color:var(--color-text-primary)] shadow-[0_5px_14px_rgba(0,109,255,0.08)] hover:border-[rgba(0,109,255,0.58)] hover:bg-[rgba(0,215,255,0.12)]";
   }
 
@@ -223,17 +288,23 @@ export function MobileBottomActionBar({
   const homeHref = localizeHref(locale, hasExplicitLocalePrefix, "/");
   const toolsHref = localizeHref(locale, hasExplicitLocalePrefix, "/tools");
   const kundliHref = localizeHref(locale, hasExplicitLocalePrefix, "/kundli");
-  const panchangHref = localizeHref(locale, hasExplicitLocalePrefix, "/panchang");
+  const askNiHref = localizeHref(locale, hasExplicitLocalePrefix, "/ai");
+  const consultHref = localizeHref(
+    locale,
+    hasExplicitLocalePrefix,
+    "/consultation"
+  );
+  const accountHref = localizeHref(locale, hasExplicitLocalePrefix, "/sign-in");
   const toolsNavigation = useMemo(
     () =>
       buildLocalizedToolsNavigation((href) =>
-        localizeHref(locale, hasExplicitLocalePrefix, href),
+        localizeHref(locale, hasExplicitLocalePrefix, href)
       ),
-    [locale, hasExplicitLocalePrefix],
+    [locale, hasExplicitLocalePrefix]
   );
   const filteredToolsNavigation = useMemo(
     () => filterToolsNavigation(toolsNavigation, toolsQuery),
-    [toolsNavigation, toolsQuery],
+    [toolsNavigation, toolsQuery]
   );
 
   const hideForPaths = new Set(
@@ -242,8 +313,6 @@ export function MobileBottomActionBar({
       "/sign-up",
       "/forgot-password",
       "/reset-password",
-      "/privacy",
-      "/terms",
       "/disclaimer",
       "/refund-cancellation",
       "/style-guide",
@@ -275,39 +344,85 @@ export function MobileBottomActionBar({
   const bottomActions: readonly BottomAction[] = [
     { type: "link", label: "Home", href: homeHref, icon: "home" },
     { type: "link", label: "Kundli", href: kundliHref, icon: "kundli" },
-    { type: "link", label: "Panchang", href: panchangHref, icon: "panchang" },
-    { type: "tools", label: "Tools", icon: "tools" },
-    { type: "more", label: "More", icon: "more" },
+    { type: "link", label: "Ask NI", href: askNiHref, icon: "ai" },
+    { type: "link", label: "Consult", href: consultHref, icon: "consult" },
+    { type: "link", label: "Account", href: accountHref, icon: "account" },
   ];
 
   const moreSections: readonly MoreSection[] = [
     {
       title: "Daily guidance",
       links: [
-        { label: "Rashifal", href: localizeHref(locale, hasExplicitLocalePrefix, "/rashifal") },
-        { label: "Ask NI", href: localizeHref(locale, hasExplicitLocalePrefix, "/ai") },
-        { label: "Reports", href: localizeHref(locale, hasExplicitLocalePrefix, "/reports") },
+        {
+          label: "Rashifal",
+          href: localizeHref(locale, hasExplicitLocalePrefix, "/rashifal"),
+        },
+        {
+          label: "Ask NI",
+          href: localizeHref(locale, hasExplicitLocalePrefix, "/ai"),
+        },
+        {
+          label: "Reports",
+          href: localizeHref(locale, hasExplicitLocalePrefix, "/reports"),
+        },
       ],
     },
     {
       title: "Services and learning",
       links: [
-        { label: "Consultation", href: localizeHref(locale, hasExplicitLocalePrefix, "/consultation") },
-        { label: "Shop", href: localizeHref(locale, hasExplicitLocalePrefix, "/shop") },
-        { label: "Articles", href: localizeHref(locale, hasExplicitLocalePrefix, "/articles") },
-        { label: "From the Desk", href: localizeHref(locale, hasExplicitLocalePrefix, "/from-the-desk") },
+        {
+          label: "Consultation",
+          href: localizeHref(locale, hasExplicitLocalePrefix, "/consultation"),
+        },
+        {
+          label: "Shop",
+          href: localizeHref(locale, hasExplicitLocalePrefix, "/shop"),
+        },
+        {
+          label: "Articles",
+          href: localizeHref(locale, hasExplicitLocalePrefix, "/articles"),
+        },
+        {
+          label: "From the Desk",
+          href: localizeHref(locale, hasExplicitLocalePrefix, "/from-the-desk"),
+        },
       ],
     },
     {
       title: "Company / Support",
       links: [
-        { label: "Sign-in", href: localizeHref(locale, hasExplicitLocalePrefix, "/sign-in") },
-        { label: "About", href: localizeHref(locale, hasExplicitLocalePrefix, "/about") },
-        { label: "Contact", href: localizeHref(locale, hasExplicitLocalePrefix, "/contact") },
-        { label: "Privacy", href: localizeHref(locale, hasExplicitLocalePrefix, "/privacy") },
-        { label: "Terms", href: localizeHref(locale, hasExplicitLocalePrefix, "/terms") },
-        { label: "Disclaimer", href: localizeHref(locale, hasExplicitLocalePrefix, "/disclaimer") },
-        { label: "Refund", href: localizeHref(locale, hasExplicitLocalePrefix, "/refund-cancellation") },
+        {
+          label: "Sign-in",
+          href: localizeHref(locale, hasExplicitLocalePrefix, "/sign-in"),
+        },
+        {
+          label: "About",
+          href: localizeHref(locale, hasExplicitLocalePrefix, "/about"),
+        },
+        {
+          label: "Contact",
+          href: localizeHref(locale, hasExplicitLocalePrefix, "/contact"),
+        },
+        {
+          label: "Privacy",
+          href: localizeHref(locale, hasExplicitLocalePrefix, "/privacy"),
+        },
+        {
+          label: "Terms",
+          href: localizeHref(locale, hasExplicitLocalePrefix, "/terms"),
+        },
+        {
+          label: "Disclaimer",
+          href: localizeHref(locale, hasExplicitLocalePrefix, "/disclaimer"),
+        },
+        {
+          label: "Refund",
+          href: localizeHref(
+            locale,
+            hasExplicitLocalePrefix,
+            "/refund-cancellation"
+          ),
+        },
       ],
     },
   ];
@@ -372,7 +487,7 @@ export function MobileBottomActionBar({
                         onClick={() => setMoreOpen(false)}
                         className={cn(
                           "min-h-11 rounded-[var(--radius-lg)] border px-3 py-2 text-[0.78rem] font-semibold shadow-[0_4px_12px_rgba(5,5,5,0.035)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]",
-                          getShellAccentClass(link),
+                          getShellAccentClass(link)
                         )}
                       >
                         {link.label}
@@ -435,7 +550,7 @@ export function MobileBottomActionBar({
 
             <div className="mt-4 grid gap-5">
               <section className="grid gap-2">
-                  <p className="px-1 text-[0.64rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-antique-gold-dark)]">
+                <p className="px-1 text-[0.64rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-antique-gold-dark)]">
                   Quick access
                 </p>
                 <div className="grid grid-cols-2 gap-2">
@@ -446,7 +561,7 @@ export function MobileBottomActionBar({
                       onClick={() => setToolsOpen(false)}
                       className={cn(
                         "min-h-11 rounded-[var(--radius-lg)] border px-3 py-2 text-[0.78rem] font-semibold shadow-[0_4px_12px_rgba(5,5,5,0.035)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]",
-                        getShellAccentClass(item),
+                        getShellAccentClass(item)
                       )}
                     >
                       {item.label}
@@ -457,7 +572,10 @@ export function MobileBottomActionBar({
 
               {filteredToolsNavigation.groups.length ? (
                 filteredToolsNavigation.groups.map((section) => (
-                  <section key={`mobile-tools-${section.key}`} className="grid gap-2">
+                  <section
+                    key={`mobile-tools-${section.key}`}
+                    className="grid gap-2"
+                  >
                     <div className="px-1">
                       <p className="text-[0.66rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-antique-gold-dark)]">
                         {section.title}
@@ -474,7 +592,7 @@ export function MobileBottomActionBar({
                           onClick={() => setToolsOpen(false)}
                           className={cn(
                             "min-h-11 rounded-[var(--radius-lg)] border px-3 py-2 text-[0.78rem] font-semibold shadow-[0_4px_12px_rgba(5,5,5,0.035)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]",
-                            getShellAccentClass(link),
+                            getShellAccentClass(link)
                           )}
                         >
                           {link.label}

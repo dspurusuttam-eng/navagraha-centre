@@ -24,37 +24,31 @@ export async function Footer() {
   const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
   const localizeHref = (href: string) =>
     getLocalizedRoutePath(requestLocale, href, {
-      forcePrefix:
-        hasExplicitLocalePrefix || requestLocale !== defaultLocale,
+      forcePrefix: hasExplicitLocalePrefix || requestLocale !== defaultLocale,
     });
 
   const footerColumns: readonly FooterColumn[] = [
     {
       title: "Guidance",
       links: [
-        { href: localizeHref("/kundli"), label: "Kundli" },
-        { href: localizeHref("/rashifal"), label: "Rashifal" },
-        { href: localizeHref("/panchang"), label: "Panchang" },
+        { href: localizeHref("/kundli"), label: "Generate Kundli" },
         { href: localizeHref("/ai"), label: "Ask NI" },
-        { href: localizeHref("/dasha"), label: "Dasha" },
-        { href: localizeHref("/transit"), label: "Transit" },
-        { href: localizeHref("/muhurat"), label: "Muhurat" },
+        { href: localizeHref("/consultation"), label: "Consult Acharya" },
       ],
     },
     {
-      title: "Services",
+      title: "Explore",
       links: [
+        { href: localizeHref("/learn"), label: "Learn" },
+        { href: localizeHref("/shop"), label: "Vedic Shop" },
+      ],
+    },
+    {
+      title: "Secondary",
+      links: [
+        { href: localizeHref("/panchang"), label: "Panchang" },
+        { href: localizeHref("/rashifal"), label: "Rashifal" },
         { href: localizeHref("/reports"), label: "Reports" },
-        { href: localizeHref("/reports"), label: "Handmade Kundli / Reports" },
-        { href: localizeHref("/consultation"), label: "Consultation" },
-        { href: localizeHref("/shop"), label: "Shop" },
-      ],
-    },
-    {
-      title: "Learn",
-      links: [
-        { href: localizeHref("/articles"), label: "Articles" },
-        { href: localizeHref("/from-the-desk"), label: "J P Sarmah Desk" },
         { href: localizeHref("/tools"), label: "Tools" },
       ],
     },
@@ -64,7 +58,7 @@ export async function Footer() {
         { href: localizeHref("/contact"), label: "Contact" },
         { href: localizeHref("/privacy"), label: "Privacy" },
         { href: localizeHref("/terms"), label: "Terms" },
-        { href: localizeHref("/sign-in"), label: "Sign in" },
+        { href: localizeHref("/sign-in"), label: "Account" },
       ],
     },
   ];
@@ -86,14 +80,13 @@ export async function Footer() {
                   NAVAGRAHA CENTRE
                 </span>
                 <span className="mt-1 block text-[0.46rem] font-semibold uppercase leading-none tracking-[0.3em] text-[var(--color-antique-gold-dark)] sm:text-[0.49rem] lg:text-[0.5rem]">
-                  Vedic Astrology • Ask NI
+                  Kundli-first | Ask NI
                 </span>
               </span>
             </Link>
             <p className="max-w-sm text-[length:var(--font-size-body-sm)] leading-relaxed text-[color:var(--color-text-secondary)]">
-              Premium Vedic astrology, NAVAGRAHA Intelligence, reports,
-              consultation, and verified public guidance routes from NAVAGRAHA
-              CENTRE.
+              Generate a Janam Kundli, understand the result with Ask NI, and
+              continue to human consultation when needed.
             </p>
             <p className="inline-flex rounded-full border border-[rgba(185,139,70,0.36)] bg-white px-3 py-2 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-antique-gold-dark)] shadow-[0_8px_20px_rgba(185,139,70,0.08)]">
               Guidance-first. No guaranteed outcomes.
@@ -134,7 +127,9 @@ export async function Footer() {
         </div>
 
         <div className="flex min-w-0 flex-col gap-3 border-t border-[rgba(185,139,70,0.28)] pt-5 text-[0.72rem] font-semibold uppercase tracking-[0.1em] text-[color:var(--color-text-primary)] sm:flex-row sm:items-center sm:justify-between xl:pt-6">
-          <p>&copy; {new Date().getFullYear()} {siteConfig.name}</p>
+          <p>
+            &copy; {new Date().getFullYear()} {siteConfig.name}
+          </p>
           <div className="flex min-w-0 flex-wrap items-center gap-4">
             <Link
               href={localizeHref("/privacy")}
@@ -158,7 +153,7 @@ export async function Footer() {
               href={localizeHref("/sign-in")}
               className="mobile-safe-text hover:text-[color:var(--color-accent-gold-dark)]"
             >
-              Sign in
+              Account
             </Link>
           </div>
         </div>

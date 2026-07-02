@@ -31,8 +31,7 @@ export async function Header() {
 
   const localizeHref = (href: string) =>
     getLocalizedRoutePath(requestLocale, href, {
-      forcePrefix:
-        hasExplicitLocalePrefix || requestLocale !== defaultLocale,
+      forcePrefix: hasExplicitLocalePrefix || requestLocale !== defaultLocale,
     });
 
   const desktopNavigationPrimary: readonly NavigationItem[] = [
@@ -49,14 +48,15 @@ export async function Header() {
   const toolsNavigation = buildLocalizedToolsNavigation(localizeHref);
 
   const mobileMenuItems: readonly NavigationItem[] = [
-    { href: localizeHref("/"), label: "Home" },
-    { href: localizeHref("/kundli"), label: "Kundli" },
-    { href: localizeHref("/rashifal"), label: "Daily Guidance" },
-    { href: localizeHref("/tools"), label: "Tools" },
+    { href: localizeHref("/panchang"), label: "Panchang" },
+    { href: localizeHref("/rashifal"), label: "Rashifal" },
     { href: localizeHref("/reports"), label: "Reports" },
-    { href: localizeHref("/consultation"), label: "Consultation" },
     { href: localizeHref("/learn"), label: "Learn" },
-    { href: localizeHref("/sign-in"), label: "Account" },
+    { href: localizeHref("/shop"), label: "Vedic Shop" },
+    { href: localizeHref("/tools"), label: "Tools" },
+    { href: localizeHref("/privacy"), label: "Privacy" },
+    { href: localizeHref("/terms"), label: "Terms" },
+    { href: localizeHref("/contact"), label: "Contact" },
   ] as const;
 
   return (
@@ -103,7 +103,10 @@ export async function Header() {
                   aria-label={copy.navigation.menu}
                   className="flex h-9 w-9 cursor-pointer list-none items-center justify-center rounded-full border border-[rgba(17,17,17,0.08)] bg-white text-[#111111] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_2px_8px_rgba(17,17,17,0.06)] marker:content-none [-webkit-tap-highlight-color:transparent] [&::-webkit-details-marker]:hidden"
                 >
-                  <span aria-hidden="true" className="text-[1.4rem] leading-none text-[#111111]">
+                  <span
+                    aria-hidden="true"
+                    className="text-[1.4rem] leading-none text-[#111111]"
+                  >
                     {"\u2630"}
                   </span>
                 </summary>
@@ -150,7 +153,10 @@ export async function Header() {
               <TrackedLink
                 href="/ai"
                 eventName="premium_ai_cta_click"
-                eventPayload={{ page: "global-header-mobile", feature: "header-ask-ni" }}
+                eventPayload={{
+                  page: "global-header-mobile",
+                  feature: "header-ask-ni",
+                }}
                 className="inline-flex h-9 shrink-0 items-center justify-center whitespace-nowrap rounded-full border border-[rgba(56,189,248,0.22)] bg-white px-2.5 text-[13px] font-bold tracking-[0.01em] text-[#111111] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_4px_12px_rgba(17,17,17,0.08),0_0_10px_rgba(56,189,248,0.10)] transition hover:border-[rgba(56,189,248,0.34)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] min-[390px]:px-3 min-[430px]:text-[14px]"
               >
                 <span>Ask NI</span>
@@ -159,8 +165,12 @@ export async function Header() {
               <TrackedLink
                 href={localizeHref("/reports")}
                 eventName="cta_click"
-                eventPayload={{ page: "global-header-mobile", feature: "header-bell", route: "/reports" }}
-                aria-label="Bell"
+                eventPayload={{
+                  page: "global-header-mobile",
+                  feature: "header-bell",
+                  route: "/reports",
+                }}
+                aria-label="Notifications"
                 className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[rgba(184,134,11,0.18)] bg-white text-[#B8860B] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_4px_10px_rgba(17,17,17,0.07)] transition hover:border-[rgba(184,134,11,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
               >
                 <svg
@@ -198,38 +208,38 @@ export async function Header() {
       <Container className="!px-3 py-2 sm:!px-8 lg:!px-10 xl:pb-4 xl:pt-2">
         <div className="hidden xl:flex">
           <div className="flex w-full items-center justify-between gap-5 rounded-[1.7rem] border border-[rgba(185,139,70,0.18)] bg-white px-5 py-3.5 shadow-[0_1px_0_rgba(17,17,17,0.04),0_14px_30px_rgba(17,17,17,0.055)] 2xl:px-6">
-          <Link
-            href={localizeHref("/")}
-            className="min-w-0 shrink-0 pr-4 transition [transition-duration:var(--motion-duration-base)] hover:opacity-90"
-          >
-            <span className="block min-w-0 whitespace-nowrap">
-              <span className="block text-[1.05rem] font-bold uppercase leading-none tracking-[0.2em] text-[#050505] xl:text-[1.08rem] 2xl:text-[1.14rem]">
-                NAVAGRAHA CENTRE
+            <Link
+              href={localizeHref("/")}
+              className="min-w-0 shrink-0 pr-4 transition [transition-duration:var(--motion-duration-base)] hover:opacity-90"
+            >
+              <span className="block min-w-0 whitespace-nowrap">
+                <span className="block text-[1.05rem] font-bold uppercase leading-none tracking-[0.2em] text-[#050505] xl:text-[1.08rem] 2xl:text-[1.14rem]">
+                  NAVAGRAHA CENTRE
+                </span>
+                <span className="mt-1.5 block text-[0.5rem] font-semibold uppercase leading-none tracking-[0.3em] text-[var(--color-antique-gold-dark)] xl:text-[0.52rem] 2xl:text-[0.56rem]">
+                  Vedic Astrology • Ask NI
+                </span>
               </span>
-              <span className="mt-1.5 block text-[0.5rem] font-semibold uppercase leading-none tracking-[0.3em] text-[var(--color-antique-gold-dark)] xl:text-[0.52rem] 2xl:text-[0.56rem]">
-                Vedic Astrology • Ask NI
-              </span>
-            </span>
-          </Link>
+            </Link>
 
-          <nav
-            aria-label="Primary navigation"
-            className="flex min-w-0 flex-1 items-center justify-end gap-1.5 2xl:gap-2"
-          >
-            {desktopNavigationPrimary.map((item) =>
-              item.label === "Tools" ? (
-                <ToolsMegaMenu key={item.href} navigation={toolsNavigation} />
-              ) : (
-            <NavigationLink
-                  key={item.href}
-                  href={item.href}
-                  className="min-h-10 rounded-full border border-transparent bg-transparent px-2.5 text-[0.64rem] font-semibold tracking-[0.08em] !text-[color:var(--color-ink-strong)] shadow-none hover:border-[rgba(185,139,70,0.22)] hover:bg-[rgba(185,139,70,0.06)] hover:!text-black 2xl:px-3"
-                  activeClassName="rounded-full border-[rgba(185,139,70,0.28)] bg-white !text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_4px_12px_rgba(17,17,17,0.06)]"
-                >
-                  {item.label}
-                </NavigationLink>
-              )
-            )}
+            <nav
+              aria-label="Primary navigation"
+              className="flex min-w-0 flex-1 items-center justify-end gap-1.5 2xl:gap-2"
+            >
+              {desktopNavigationPrimary.map((item) =>
+                item.label === "Tools" ? (
+                  <ToolsMegaMenu key={item.href} navigation={toolsNavigation} />
+                ) : (
+                  <NavigationLink
+                    key={item.href}
+                    href={item.href}
+                    className="min-h-10 rounded-full border border-transparent bg-transparent px-2.5 text-[0.64rem] font-semibold tracking-[0.08em] !text-[color:var(--color-ink-strong)] shadow-none hover:border-[rgba(185,139,70,0.22)] hover:bg-[rgba(185,139,70,0.06)] hover:!text-black 2xl:px-3"
+                    activeClassName="rounded-full border-[rgba(185,139,70,0.28)] bg-white !text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_4px_12px_rgba(17,17,17,0.06)]"
+                  >
+                    {item.label}
+                  </NavigationLink>
+                )
+              )}
             </nav>
           </div>
         </div>

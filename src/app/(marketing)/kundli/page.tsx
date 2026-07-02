@@ -41,22 +41,16 @@ const birthDetailRows = [
 
 const nextSteps = [
   {
-    title: "Janam Patrika",
-    href: "/reports",
-    eventName: "report_cta_click",
-    feature: "kundli-next-janam-patrika",
-  },
-  {
-    title: "Consult",
-    href: "/consultation",
-    eventName: "consultation_cta_click",
-    feature: "kundli-next-consult-expert",
-  },
-  {
     title: "Ask NI",
     href: "/ai",
     eventName: "cta_click",
     feature: "kundli-next-ask-ni",
+  },
+  {
+    title: "Consult Acharya",
+    href: "/consultation",
+    eventName: "consultation_cta_click",
+    feature: "kundli-next-consult-expert",
   },
 ] as const;
 
@@ -251,7 +245,7 @@ export async function generateMetadata() {
     keywords: [
       "kundli",
       "janam kundli",
-      "NAVAGRAHA Intelligence birth chart guidance",
+      "Ask NI birth chart guidance",
       "lagna chart",
       "vedic kundli",
       "rashi and navamsa guidance",
@@ -396,7 +390,7 @@ export default async function KundliPage() {
               </p>
               <SacredDot tone="green" />
             </div>
-            <div className="grid min-w-0 grid-cols-3 gap-2">
+            <div className="grid min-w-0 gap-2 min-[430px]:grid-cols-2">
               {nextSteps.map((step) => (
                 <TrackedLink
                   key={step.title}

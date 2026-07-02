@@ -1,19 +1,14 @@
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import { TrackedLink } from "@/components/analytics/tracked-link";
 import {
-  CalculatorIcon,
   ConsultationIcon,
   KundliIcon,
   NavagrahaAiIcon,
-  PanchangIcon,
-  RashifalIcon,
-  ReportIcon,
 } from "@/components/icons/astrology-icons";
-import { UtilityIcon } from "@/components/graphics/utility-icons";
+import { buttonStyles } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
-import { siteConfig } from "@/config/site";
 import { createPageMetadata } from "@/lib/seo/metadata";
-import { getCoreSeoCopy } from "@/lib/seo/seo-config";
 import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
 import {
   getRequestLocale,
@@ -23,1044 +18,171 @@ import {
 export async function generateMetadata() {
   const locale = await getRequestLocale();
   const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
-  const localized = getCoreSeoCopy("home", locale);
 
   return createPageMetadata({
-    title: localized.title,
-    description: localized.description,
+    title: "NAVAGRAHA CENTRE Kundli PWA",
+    description:
+      "Generate a Janam Kundli, understand the result with Ask NI, and continue to human consultation when needed.",
     path: "/",
     locale,
     explicitLocalePrefix: hasExplicitLocalePrefix,
     keywords: [
-      "AI Vedic astrology",
+      "janam kundli",
       "kundli",
-      "daily rashifal",
-      "daily panchang",
-      "numerology",
-      "astrology reports",
+      "ask ni",
+      "vedic consultation",
+      "navagraha centre",
     ],
   });
 }
 
 export const revalidate = 3600;
 
-const youtubeChannelUrl =
-  "https://youtube.com/@navagrahaastrologicalcentre?si=UlIJg9BmEClecPqL";
-
 type LocalizeHref = (href: string) => string;
 
-type IconKey =
-  | "ai"
-  | "article"
-  | "authority"
-  | "consultation"
-  | "dasha"
-  | "kundli"
-  | "matching"
-  | "muhurat"
-  | "panchang"
-  | "remedies"
-  | "report"
-  | "rashifal"
-  | "shop"
-  | "transit"
-  | "video";
-
-type ToolTile = {
-  label: string;
-  href: string;
-  icon: IconKey;
-  accent: string;
-  feature: string;
-};
-
-type RailItem = {
-  label: string;
-  href: string;
-  feature: string;
-};
-
-type AskNiUtilityItem = RailItem & {
-  icon: IconKey;
-  accent: string;
-};
-
-const categoryRail: readonly RailItem[] = [
-  { label: "Home", href: "/", feature: "home-rail-home" },
-  { label: "Tools", href: "/tools", feature: "home-rail-tools" },
-  { label: "Reports", href: "/reports", feature: "home-rail-reports" },
-  { label: "Consult", href: "/consultation", feature: "home-rail-consult" },
-  { label: "Shop", href: "/shop", feature: "home-rail-shop" },
-  { label: "Learn", href: "/learn", feature: "home-rail-learn" },
-] as const;
-
-const symbolTiles: readonly ToolTile[] = [
+const primaryCards = [
   {
-    label: "Kundli",
+    title: "Kundli",
+    description: "Start with your birth chart and basic chart structure.",
     href: "/kundli",
+    feature: "home-card-kundli",
     icon: "kundli",
-    accent: "border-[rgba(185,139,70,0.42)]",
-    feature: "home-dashboard-tool-kundli",
   },
   {
-    label: "Panchang",
-    href: "/panchang",
-    icon: "panchang",
-    accent: "border-[rgba(185,139,70,0.42)]",
-    feature: "home-dashboard-tool-panchang",
+    title: "Consultation",
+    description: "Prepare your concern for careful human guidance.",
+    href: "/consultation",
+    feature: "home-card-consultation",
+    icon: "consult",
   },
   {
-    label: "Rashifal",
-    href: "/rashifal",
-    icon: "rashifal",
-    accent: "border-[rgba(185,139,70,0.42)]",
-    feature: "home-dashboard-tool-rashifal",
-  },
-  {
-    label: "Ask NI",
+    title: "Ask NI",
+    description: "Understand Kundli terms in simple language.",
     href: "/ai",
+    feature: "home-card-ask-ni",
     icon: "ai",
-    accent: "border-[rgba(0,214,255,0.38)]",
-    feature: "home-dashboard-tool-ai",
   },
   {
-    label: "Matching",
-    href: "/matchmaking",
-    icon: "matching",
-    accent: "border-[rgba(111,28,42,0.34)]",
-    feature: "home-dashboard-tool-matchmaking",
+    title: "Learn",
+    description: "Read the basics before asking deeper questions.",
+    href: "/learn",
+    feature: "home-card-learn",
+    icon: "learn",
   },
   {
-    label: "Muhurat",
-    href: "/muhurat",
-    icon: "muhurat",
-    accent: "border-[rgba(206,161,57,0.5)]",
-    feature: "home-dashboard-tool-muhurat",
-  },
-  {
-    label: "Dasha",
-    href: "/dasha",
-    icon: "dasha",
-    accent: "border-[rgba(5,5,5,0.34)]",
-    feature: "home-dashboard-tool-dasha",
-  },
-  {
-    label: "Transit",
-    href: "/transit",
-    icon: "transit",
-    accent: "border-[rgba(5,5,5,0.34)]",
-    feature: "home-dashboard-tool-transit",
-  },
-  {
-    label: "Remedies",
-    href: "/remedies",
-    icon: "remedies",
-    accent: "border-[rgba(19,122,83,0.42)]",
-    feature: "home-dashboard-tool-remedies",
-  },
-  {
-    label: "Reports",
-    href: "/reports",
-    icon: "report",
-    accent: "border-[rgba(185,139,70,0.3)]",
-    feature: "home-dashboard-tool-reports",
-  },
-  {
-    label: "Shop",
+    title: "Vedic Shop",
+    description: "Browse guidance-first categories only.",
     href: "/shop",
+    feature: "home-card-shop",
     icon: "shop",
-    accent: "border-[rgba(185,139,70,0.3)]",
-    feature: "home-dashboard-tool-shop",
-  },
-  {
-    label: "Consult",
-    href: "/consultation",
-    icon: "consultation",
-    accent: "border-[rgba(111,28,42,0.28)]",
-    feature: "home-dashboard-tool-consult",
   },
 ] as const;
 
-const askNiUtilities: readonly AskNiUtilityItem[] = [
-  {
-    label: "Kundli",
-    href: "/ai",
-    feature: "home-ni-chip-kundli",
-    icon: "kundli",
-    accent: "border-[rgba(185,139,70,0.34)]",
-  },
-  {
-    label: "Today",
-    href: "/ai",
-    feature: "home-ni-chip-today",
-    icon: "panchang",
-    accent: "border-[rgba(185,139,70,0.28)]",
-  },
-  {
-    label: "Muhurat",
-    href: "/ai",
-    feature: "home-ni-chip-muhurat",
-    icon: "muhurat",
-    accent: "border-[rgba(206,161,57,0.34)]",
-  },
-  {
-    label: "Remedy",
-    href: "/ai",
-    feature: "home-ni-chip-remedy",
-    icon: "remedies",
-    accent: "border-[rgba(19,122,83,0.34)]",
-  },
-  {
-    label: "Match",
-    href: "/ai",
-    feature: "home-ni-chip-match",
-    icon: "matching",
-    accent: "border-[rgba(111,28,42,0.34)]",
-  },
-  {
-    label: "Career",
-    href: "/ai",
-    feature: "home-ni-chip-career",
-    icon: "report",
-    accent: "border-[rgba(0,214,255,0.42)]",
-  },
-  {
-    label: "Report",
-    href: "/ai",
-    feature: "home-ni-chip-report",
-    icon: "report",
-    accent: "border-[rgba(185,139,70,0.3)]",
-  },
-  {
-    label: "Spiritual",
-    href: "/ai",
-    feature: "home-ni-chip-spiritual",
-    icon: "remedies",
-    accent: "border-[rgba(19,122,83,0.34)]",
-  },
-] as const;
-
-const reportItems: readonly RailItem[] = [
-  { label: "PDF Reports", href: "/reports", feature: "home-reports-pdf" },
-  {
-    label: "Handmade Kundli",
-    href: "/consultation",
-    feature: "home-reports-handmade-kundli",
-  },
-] as const;
-
-const authorityItems: readonly RailItem[] = [
-  { label: "Articles", href: "/articles", feature: "home-jps-articles" },
-  {
-    label: "Consultation",
-    href: "/consultation",
-    feature: "home-jps-consultation",
-  },
-  {
-    label: "From the Desk",
-    href: "/from-the-desk",
-    feature: "home-jps-from-the-desk",
-  },
-] as const;
-
-const learningItems: readonly RailItem[] = [
-  { label: "Articles", href: "/articles", feature: "home-learn-articles" },
-  { label: "Videos", href: youtubeChannelUrl, feature: "home-learn-videos" },
-  { label: "Acharya", href: "/from-the-desk", feature: "home-learn-acharya" },
-  { label: "NI Module", href: "/ai", feature: "home-learn-ni-module" },
-] as const;
-
-const shopItems: ReadonlyArray<
-  RailItem & { icon: IconKey; accent: string }
-> = [
-  { label: "Gemstone", href: "/shop", feature: "home-shop-gemstone", icon: "shop", accent: "border-[rgba(185,139,70,0.28)]" },
-  { label: "Rudraksha", href: "/shop", feature: "home-shop-rudraksha", icon: "remedies", accent: "border-[rgba(19,122,83,0.34)]" },
-  { label: "Mala", href: "/shop", feature: "home-shop-mala", icon: "remedies", accent: "border-[rgba(185,139,70,0.28)]" },
-  { label: "Kavacham", href: "/shop", feature: "home-shop-kavacham", icon: "shop", accent: "border-[rgba(185,139,70,0.28)]" },
-  { label: "Yantra", href: "/shop", feature: "home-shop-yantra", icon: "kundli", accent: "border-[rgba(185,139,70,0.34)]" },
-  { label: "Bracelet", href: "/shop", feature: "home-shop-bracelet", icon: "shop", accent: "border-[rgba(111,28,42,0.28)]" },
-  { label: "Puja/Yagya", href: "/shop", feature: "home-shop-puja-items", icon: "muhurat", accent: "border-[rgba(206,161,57,0.34)]" },
-  { label: "Reports", href: "/reports", feature: "home-shop-reports", icon: "report", accent: "border-[rgba(185,139,70,0.3)]" },
-  { label: "Patrika", href: "/consultation", feature: "home-shop-patrika", icon: "kundli", accent: "border-[rgba(185,139,70,0.34)]" },
-] as const;
-
-function isExternalHref(href: string) {
-  return href.startsWith("http://") || href.startsWith("https://");
-}
-
-function routeFor(href: string, localizeHref: LocalizeHref) {
-  return isExternalHref(href) ? href : localizeHref(href);
-}
-
-function DashboardIcon({
+function AppIcon({
   icon,
-  className = "",
-}: Readonly<{ icon: IconKey; className?: string }>) {
-  switch (icon) {
-    case "ai":
-      return (
-        <NavagrahaAiIcon
-          className={`border-[rgba(0,214,255,0.52)] bg-[rgba(0,214,255,0.1)] text-[color:var(--color-ni-cyan)] ${className}`}
-        />
-      );
-    case "consultation":
-      return (
-        <ConsultationIcon
-          className={`border-[rgba(111,28,42,0.36)] bg-[rgba(111,28,42,0.08)] text-[color:var(--color-ruby-maroon)] ${className}`}
-        />
-      );
-    case "dasha":
-    case "transit":
-      return (
-        <CalculatorIcon
-          className={`border-[rgba(5,5,5,0.22)] bg-white text-[color:var(--color-ink-black)] ${className}`}
-        />
-      );
-    case "kundli":
-      return <KundliIcon className={className} />;
-    case "matching":
-      return (
-        <UtilityIcon
-          name="compatibility"
-          className={`border-[rgba(111,28,42,0.28)] bg-white text-[color:var(--color-ruby-maroon)] ${className}`}
-        />
-      );
-    case "muhurat":
-      return (
-        <UtilityIcon
-          name="muhurta"
-          className={`border-[rgba(206,161,57,0.5)] bg-[rgba(251,241,203,0.72)] text-[color:var(--color-yellow-sapphire)] ${className}`}
-        />
-      );
-    case "panchang":
-      return <PanchangIcon className={className} />;
-    case "rashifal":
-      return <RashifalIcon className={className} />;
-    case "report":
-      return (
-        <ReportIcon
-          className={`border-[rgba(185,139,70,0.36)] bg-[color:var(--color-pearl)] text-[color:var(--color-accent-gold-dark)] ${className}`}
-        />
-      );
-    case "remedies":
-      return (
-        <span
-          aria-hidden="true"
-          className={`inline-flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(19,122,83,0.36)] bg-[rgba(19,122,83,0.08)] text-[color:var(--color-emerald)] ${className}`}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.6"
-            className="h-6 w-6"
-          >
-            <path d="M12 20V9" />
-            <path d="M12 14c-4.2 0-6.8-2.2-7.4-6.3C8.7 7.4 11.3 9.2 12 14z" />
-            <path d="M12 12.8c.8-4.1 3.3-6 7.4-6.3C18.8 10.7 16.2 12.8 12 12.8z" />
-          </svg>
-        </span>
-      );
-    default:
-      return (
-        <span
-          aria-hidden="true"
-          className={`inline-flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(185,139,70,0.28)] bg-white text-[0.68rem] font-semibold text-[color:var(--color-ink-black)] ${className}`}
-        >
-          {icon === "video"
-            ? "VID"
-            : icon === "shop"
-              ? "SH"
-              : icon === "authority"
-                ? "JPS"
-                : "NC"}
-        </span>
-      );
+}: Readonly<{ icon: (typeof primaryCards)[number]["icon"] }>) {
+  if (icon === "kundli") {
+    return <KundliIcon className="h-9 w-9" />;
   }
-}
 
-function RailLink({
-  item,
-  localizeHref,
-  active = false,
-  className = "",
-}: Readonly<{
-  item: RailItem;
-  localizeHref: LocalizeHref;
-  active?: boolean;
-  className?: string;
-}>) {
-  const href = routeFor(item.href, localizeHref);
-  const classes = [
-    "inline-flex min-h-10 shrink-0 items-center justify-center rounded-[var(--radius-pill)] border bg-white px-3 text-center text-[0.68rem] font-semibold uppercase tracking-[0.08em] whitespace-nowrap text-[color:var(--color-ink-black)] transition hover:-translate-y-0.5 hover:border-[rgba(185,139,70,0.58)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] sm:px-4 sm:text-[0.72rem] sm:tracking-[0.1em]",
-    active
-      ? "border-[rgba(185,139,70,0.58)] bg-[rgba(251,241,203,0.22)]"
-      : "border-[rgba(185,139,70,0.22)]",
-    className,
-  ].join(" ");
+  if (icon === "consult") {
+    return <ConsultationIcon className="h-6 w-6" />;
+  }
 
-  if (isExternalHref(item.href)) {
-    return (
-      <a href={href} className={classes}>
-        {item.label}
-      </a>
-    );
+  if (icon === "ai") {
+    return <NavagrahaAiIcon className="h-6 w-6" />;
   }
 
   return (
-    <TrackedLink
-      href={href}
-      eventName="cta_click"
-      eventPayload={{ page: "/", feature: item.feature, route: item.href }}
-      className={classes}
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="h-6 w-6"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.8"
     >
-      {item.label}
-    </TrackedLink>
+      {icon === "shop" ? (
+        <>
+          <path d="M6.5 10.2h11L16.9 19H7.1z" />
+          <path d="M8 10.2V8.7c0-2 1.8-3.6 4-3.6s4 1.6 4 3.6v1.5" />
+        </>
+      ) : (
+        <>
+          <path d="M6 5.5h12v13H6z" />
+          <path d="M9 9h6" />
+          <path d="M9 12.3h6" />
+          <path d="M9 15.6h3.5" />
+        </>
+      )}
+    </svg>
   );
 }
 
-function CategoryRail({ localizeHref }: Readonly<{ localizeHref: LocalizeHref }>) {
+function KundliVisual() {
   return (
-    <section className="hidden border-b border-[rgba(185,139,70,0.18)] bg-white md:block">
-      <Container className="py-3">
-        <nav
-          aria-label="Homepage dashboard rail"
-          className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 pr-7 [scrollbar-width:none] [scroll-padding-inline:1rem] sm:mx-0 sm:px-0 sm:pr-0 sm:[scroll-padding-inline:0px] [&::-webkit-scrollbar]:hidden"
-        >
-          {categoryRail.map((item) => (
-            <RailLink
-              key={item.label}
-              item={item}
-              localizeHref={localizeHref}
-              active={item.href === "/"}
-            />
-          ))}
-        </nav>
-      </Container>
-    </section>
-  );
-}
-
-function ToolTileLink({
-  tile,
-  localizeHref,
-}: Readonly<{ tile: ToolTile; localizeHref: LocalizeHref }>) {
-  return (
-    <TrackedLink
-      href={localizeHref(tile.href)}
-      eventName="cta_click"
-      eventPayload={{ page: "/", feature: tile.feature, route: tile.href }}
-      className="group flex min-h-[6.9rem] min-w-0 snap-start snap-always flex-col items-center justify-center gap-2 rounded-[0.95rem] border border-[rgba(185,139,70,0.14)] bg-white px-2 py-3 text-center transition hover:border-[rgba(185,139,70,0.34)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] sm:min-h-[7.25rem] sm:gap-2.5 sm:px-2.5"
+    <div
+      aria-hidden="true"
+      className="relative mx-auto aspect-square w-full max-w-[17rem] rounded-[2rem] border border-[rgba(184,137,67,0.28)] bg-white p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.98),inset_0_-10px_22px_rgba(184,137,67,0.045),0_18px_34px_rgba(17,17,17,0.075)]"
     >
-      <RailGlyph icon={tile.icon} accent={tile.accent} />
-      <span className="max-w-full break-normal text-[0.56rem] font-semibold leading-tight tracking-[0.03em] text-[color:var(--color-ink-black)] [overflow-wrap:normal] sm:text-[0.68rem] sm:tracking-[0.05em]">
-        {tile.label}
+      <div className="absolute inset-5 rounded-[1.45rem] border border-black/10" />
+      <div className="absolute inset-10 rounded-full border border-[rgba(76,187,23,0.32)]" />
+      <div className="absolute left-1/2 top-5 h-[calc(100%-2.5rem)] w-px -translate-x-1/2 bg-[rgba(184,137,67,0.26)]" />
+      <div className="absolute left-5 top-1/2 h-px w-[calc(100%-2.5rem)] -translate-y-1/2 bg-[rgba(184,137,67,0.26)]" />
+      <div className="absolute left-5 top-5 h-[calc(100%-2.5rem)] w-[calc(100%-2.5rem)] rotate-45 border border-[rgba(184,137,67,0.2)]" />
+      <span className="absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-[rgba(76,187,23,0.42)] bg-white text-[0.7rem] font-black text-[#2f7e16] shadow-[0_10px_20px_rgba(17,17,17,0.08)]">
+        OM
       </span>
-    </TrackedLink>
-  );
-}
-
-function NavagrahaOrbitPanel() {
-  const orbitNodes = Array.from({ length: 9 }, (_, index) => {
-    const angle = (index / 9) * Math.PI * 2 - Math.PI / 2;
-    const radius = 72;
-    const x = 88 + Math.cos(angle) * radius;
-    const y = 88 + Math.sin(angle) * radius;
-
-    return { index, x, y };
-  });
-
-  return (
-    <div className="hidden min-w-0 rounded-[1.55rem] border border-[rgba(185,139,70,0.18)] bg-white p-4 lg:block">
-      <div className="grid grid-cols-[11rem_minmax(0,1fr)] items-center gap-4">
-        <div
-          aria-hidden="true"
-          className="relative h-44 w-44 rounded-full border border-[rgba(185,139,70,0.3)] bg-white"
+      {["Lagna", "Rashi", "Dasha"].map((label, index) => (
+        <span
+          key={label}
+          className={`absolute rounded-full border bg-white px-2 py-1 text-[0.55rem] font-extrabold uppercase tracking-[0.08em] shadow-[0_7px_12px_rgba(17,17,17,0.055)] ${
+            index === 0
+              ? "left-4 top-4 border-[rgba(184,137,67,0.34)] text-[color:var(--color-accent-strong)]"
+              : index === 1
+                ? "right-4 top-12 border-[rgba(76,187,23,0.34)] text-[#2f7e16]"
+                : "bottom-5 left-1/2 -translate-x-1/2 border-[rgba(184,137,67,0.34)] text-[color:var(--color-accent-strong)]"
+          }`}
         >
-          <span className="absolute inset-5 rounded-full border border-[rgba(5,5,5,0.18)]" />
-          <span className="absolute inset-[3.35rem] rounded-full border border-[rgba(185,139,70,0.36)]" />
-          <span className="absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[rgba(185,139,70,0.5)] bg-[color:var(--color-ink-black)]" />
-          {orbitNodes.map((node) => (
-            <span
-              key={node.index}
-              className="absolute h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[rgba(185,139,70,0.52)] bg-white"
-              style={{ left: node.x, top: node.y }}
-            />
-          ))}
-          <span className="absolute left-1/2 top-[1.4rem] h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-[color:var(--color-emerald)]" />
-        </div>
-        <div className="min-w-0">
-          <p className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-antique-gold-dark)]">
-            Navagraha Orbit
-          </p>
-          <p className="mt-3 text-sm font-medium leading-6 text-[color:var(--color-ink-black)]">
-            Daily guidance begins with Panchang, Moon sign context,
-            planetary movement and human-led interpretation.
-          </p>
-          <div className="mt-4 grid gap-2">
-            <span className="h-px bg-[rgba(185,139,70,0.24)]" />
-            <span className="text-[0.66rem] font-semibold uppercase tracking-[0.16em] text-[color:var(--color-ink-black)]">
-              J P Sarmah guided
-            </span>
-          </div>
-        </div>
-      </div>
+          {label}
+        </span>
+      ))}
     </div>
   );
 }
 
-function RailGlyph({
-  icon,
-  accent,
-  size = "md",
-}: Readonly<{ icon: IconKey; accent: string; size?: "md" | "sm" }>) {
-  const frame = [
-    size === "sm"
-      ? "inline-flex h-7 w-7 items-center justify-center rounded-full border bg-white text-[color:var(--color-ink-black)] transition-transform duration-300 group-hover:scale-[1.03]"
-      : "inline-flex h-12 w-12 items-center justify-center rounded-full border bg-white text-[color:var(--color-ink-black)] transition-transform duration-300 group-hover:scale-[1.03]",
-    accent,
-  ].join(" ");
-  const glyphClassName = size === "sm" ? "h-4 w-4" : "h-6 w-6";
-
-  switch (icon) {
-    case "kundli":
-      return (
-        <span
-          aria-hidden="true"
-          className={`${frame} bg-[radial-gradient(circle_at_30%_28%,rgba(255,252,242,1)_0%,rgba(251,241,203,0.92)_58%,rgba(236,214,151,0.7)_100%)] text-[color:var(--color-accent-gold-dark)]`}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.55"
-            className={glyphClassName}
-          >
-            <rect x="4" y="4" width="16" height="16" rx="2.25" />
-            <path d="M4 12h16M12 4v16M4 4l16 16M20 4L4 20" />
-            <path d="M12 8.5l.55 1.1 1.2.2-.86.82.2 1.14-1.09-.58-1.09.58.2-1.14-.86-.82 1.2-.2z" />
-          </svg>
-        </span>
-      );
-    case "panchang":
-      return (
-        <span
-          aria-hidden="true"
-          className={`${frame} bg-[radial-gradient(circle_at_30%_28%,rgba(255,255,255,1)_0%,rgba(252,246,228,0.96)_58%,rgba(238,219,169,0.72)_100%)] text-[color:var(--color-yellow-sapphire)]`}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.55"
-            className={glyphClassName}
-          >
-            <rect x="4.5" y="5.2" width="15" height="13.6" rx="2.1" />
-            <path d="M7.8 3.9v2.6M16.2 3.9v2.6M4.5 9.2h15" />
-            <path d="M12 13.2a3.3 3.3 0 1 1 0-6.6 3.3 3.3 0 0 1 0 6.6z" />
-            <path d="M12 10.2l1.65.95" />
-          </svg>
-        </span>
-      );
-    case "rashifal":
-      return (
-        <span
-          aria-hidden="true"
-          className={`${frame} bg-[radial-gradient(circle_at_30%_28%,rgba(252,246,255,1)_0%,rgba(233,222,255,0.92)_58%,rgba(200,180,255,0.72)_100%)] text-[#7b61d6]`}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.55"
-            className={glyphClassName}
-          >
-            <circle cx="12" cy="12" r="8.1" />
-            <circle cx="12" cy="12" r="5.1" />
-            <path d="M12 3.9v1.8M12 18.3v1.8M3.9 12h1.8M18.3 12h1.8M6.3 6.3l1.25 1.25M16.45 16.45l1.25 1.25M17.7 6.3l-1.25 1.25M7.55 16.45l-1.25 1.25" />
-          </svg>
-        </span>
-      );
-    case "ai":
-      return (
-        <span
-          aria-hidden="true"
-          className={`${frame} bg-[radial-gradient(circle_at_30%_28%,rgba(240,255,252,1)_0%,rgba(204,250,242,0.94)_58%,rgba(163,236,221,0.72)_100%)] text-[color:var(--color-ni-cyan)]`}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.55"
-            className={glyphClassName}
-          >
-            <circle cx="12" cy="12" r="6.8" />
-            <path d="M12 4.2v2.2M12 17.6v2.2M4.2 12h2.2M17.6 12h2.2" />
-            <path d="M12 8.1l.9 1.7 1.7.4-1.25 1.2.28 1.7-1.63-.86-1.63.86.28-1.7-1.25-1.2 1.7-.4z" />
-          </svg>
-        </span>
-      );
-    case "matching":
-      return (
-        <span
-          aria-hidden="true"
-          className={`${frame} bg-[radial-gradient(circle_at_30%_28%,rgba(255,246,248,1)_0%,rgba(255,219,227,0.94)_58%,rgba(246,181,196,0.72)_100%)] text-[color:var(--color-ruby-maroon)]`}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.55"
-            className={glyphClassName}
-          >
-            <circle cx="8.2" cy="9" r="3.1" />
-            <circle cx="15.8" cy="9" r="3.1" />
-            <path d="M6.1 18.2c.7-2.4 2.4-3.7 4.1-3.7s3.4 1.3 4.1 3.7" />
-            <path d="M8.2 9.1h7.6" />
-            <path d="M10.7 13.6h2.6" />
-          </svg>
-        </span>
-      );
-    case "muhurat":
-      return (
-        <span
-          aria-hidden="true"
-          className={`${frame} bg-[radial-gradient(circle_at_30%_28%,rgba(255,250,235,1)_0%,rgba(251,229,181,0.94)_58%,rgba(241,196,98,0.72)_100%)] text-[color:var(--color-yellow-sapphire)]`}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.55"
-            className={glyphClassName}
-          >
-            <path d="M12 4.2v3.2" />
-            <path d="M9.2 11c0-2.1 1.2-3.5 2.8-3.5s2.8 1.4 2.8 3.5c0 1.9-1.2 3-2.8 3s-2.8-1.1-2.8-3z" />
-            <path d="M8.2 19h7.6" />
-            <path d="M9.7 16.9c.65.22 1.35.34 2.3.34s1.65-.12 2.3-.34" />
-          </svg>
-        </span>
-      );
-    case "dasha":
-      return (
-        <span
-          aria-hidden="true"
-          className={`${frame} bg-[radial-gradient(circle_at_30%_28%,rgba(240,248,255,1)_0%,rgba(208,227,255,0.94)_58%,rgba(147,180,255,0.72)_100%)] text-[color:var(--color-ink-black)]`}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.55"
-            className={glyphClassName}
-          >
-            <path d="M5 12h14" />
-            <path d="M7 9.2V14.8" />
-            <path d="M11 7.8V16.2" />
-            <path d="M15 9.2V14.8" />
-            <circle cx="12" cy="12" r="7.6" />
-          </svg>
-        </span>
-      );
-    case "transit":
-      return (
-        <span
-          aria-hidden="true"
-          className={`${frame} bg-[radial-gradient(circle_at_30%_28%,rgba(239,255,251,1)_0%,rgba(206,243,239,0.94)_58%,rgba(145,213,205,0.72)_100%)] text-[color:var(--color-emerald)]`}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.55"
-            className={glyphClassName}
-          >
-            <circle cx="12" cy="12" r="4" />
-            <path d="M4.2 12a7.8 7.8 0 0 1 15.6 0" />
-            <path d="M12 4.2v2.6" />
-            <path d="M17.5 8.5l-1.8 1" />
-          </svg>
-        </span>
-      );
-    case "remedies":
-      return (
-        <span
-          aria-hidden="true"
-          className={`${frame} bg-[radial-gradient(circle_at_30%_28%,rgba(240,255,247,1)_0%,rgba(212,245,226,0.94)_58%,rgba(191,225,202,0.72)_100%)] text-[color:var(--color-emerald)]`}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.55"
-            className={glyphClassName}
-          >
-            <path d="M12 20V9" />
-            <path d="M12 14c-4.2 0-6.8-2.2-7.4-6.3C8.7 7.4 11.3 9.2 12 14z" />
-            <path d="M12 12.8c.8-4.1 3.3-6 7.4-6.3C18.8 10.7 16.2 12.8 12 12.8z" />
-          </svg>
-        </span>
-      );
-    case "report":
-      return (
-        <span
-          aria-hidden="true"
-          className={`${frame} bg-[radial-gradient(circle_at_30%_28%,rgba(255,250,235,1)_0%,rgba(252,232,170,0.94)_58%,rgba(230,186,95,0.72)_100%)] text-[color:var(--color-accent-gold-dark)]`}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.55"
-            className={glyphClassName}
-          >
-            <path d="M7 3.8h8l3 3V20.2H7z" />
-            <path d="M15 3.8v3h3" />
-            <path d="M9.4 11.1h5.2M9.4 14.5h5.2M9.4 17.8h3.2" />
-            <path d="M13.2 8.2l.7 1.4 1.6.2-1.15 1.1.27 1.58-1.42-.75-1.42.75.27-1.58-1.15-1.1 1.6-.2z" />
-          </svg>
-        </span>
-      );
-    case "shop":
-      return (
-        <span
-          aria-hidden="true"
-          className={`${frame} bg-[radial-gradient(circle_at_30%_28%,rgba(255,248,238,1)_0%,rgba(240,220,189,0.94)_58%,rgba(194,154,92,0.72)_100%)] text-[color:var(--color-ink-black)]`}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.55"
-            className={glyphClassName}
-          >
-            <path d="M6.5 10.2h11L16.9 19H7.1z" />
-            <path d="M8 10.2V8.7c0-2 1.8-3.6 4-3.6s4 1.6 4 3.6v1.5" />
-            <path d="M9.4 13.2h5.2" />
-            <path d="M12 7.4l1 1.9 2.1.3-1.5 1.5.4 2.1-2-1.1-2 1.1.4-2.1-1.5-1.5 2.1-.3z" />
-          </svg>
-        </span>
-      );
-    case "consultation":
-      return (
-        <span
-          aria-hidden="true"
-          className={`${frame} bg-[radial-gradient(circle_at_30%_28%,rgba(255,244,246,1)_0%,rgba(244,211,220,0.94)_58%,rgba(214,150,170,0.72)_100%)] text-[color:var(--color-ruby-maroon)]`}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.55"
-            className={glyphClassName}
-          >
-            <path d="M12 5.2c-2.1 0-3.8 1.6-3.8 3.6 0 1.2.6 2.2 1.6 2.9V13l2.2-1 2.2 1v-1.3c1-.7 1.6-1.7 1.6-2.9 0-2-1.7-3.6-3.8-3.6z" />
-            <path d="M7.2 19.1c.8-2.7 2.7-4.1 4.8-4.1s4 1.4 4.8 4.1" />
-            <path d="M10 9.2h4" />
-          </svg>
-        </span>
-      );
-    default:
-      return (
-        <span
-          aria-hidden="true"
-          className={`${frame} ${accent}`}
-        >
-          {icon === "video"
-            ? "VID"
-            : icon === "article"
-              ? "ART"
-              : icon === "authority"
-                ? "JPS"
-                : "NC"}
-        </span>
-      );
-  }
-}
-
-function DashboardTitleBlock({ localizeHref }: Readonly<{ localizeHref: LocalizeHref }>) {
-  return (
-    <section
-      id="top"
-      className="border-b border-[rgba(185,139,70,0.18)] bg-white"
-    >
-      <Container className="py-3 sm:py-5 lg:py-6">
-        <div className="grid gap-4 lg:grid-cols-[minmax(0,0.95fr)_minmax(420px,1.05fr)] lg:items-center">
-          <div className="min-w-0 rounded-[1.55rem] border border-[rgba(185,139,70,0.18)] bg-white p-4 sm:p-5">
-            <p className="text-[0.66rem] font-semibold uppercase tracking-[0.24em] text-[color:var(--color-antique-gold-dark)]">
-              Sacred Daily Dashboard
-            </p>
-            <h1 className="mt-1 font-[family-name:var(--font-display)] text-[clamp(1.55rem,6.6vw,3.1rem)] leading-[0.96] text-[color:var(--color-ink-black)]">
-              Today at NAVAGRAHA
-            </h1>
-            <p className="mt-1.5 max-w-2xl text-[0.88rem] leading-6 text-[color:var(--color-ink-black)] sm:text-[0.98rem]">
-              Panchang | Rashifal | Muhurat | Kundli | Ask NI
-            </p>
-            <p className="mt-2 max-w-xl text-[0.78rem] font-medium leading-5 text-[color:var(--color-ink-black)] sm:text-[0.86rem]">
-              Human-guided by J P Sarmah, assisted by Ask NI.
-            </p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <TrackedLink
-                href={localizeHref("/panchang")}
-                eventName="cta_click"
-                eventPayload={{ page: "/", feature: "home-top-panchang", route: "/panchang" }}
-                className="inline-flex h-10 items-center justify-center rounded-full border border-[rgba(185,139,70,0.34)] bg-white px-3 text-[0.58rem] font-semibold uppercase tracking-[0.08em] text-[color:var(--color-ink-black)] transition hover:border-[rgba(185,139,70,0.5)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] sm:px-4 sm:text-[0.66rem]"
-              >
-                Panchang
-              </TrackedLink>
-              <TrackedLink
-                href={localizeHref("/ai")}
-                eventName="premium_ai_cta_click"
-                eventPayload={{ page: "/", feature: "home-top-ai", route: "/ai" }}
-                className="inline-flex h-10 items-center justify-center rounded-full border border-[rgba(185,139,70,0.34)] bg-[color:var(--color-ink-black)] px-3 text-[0.58rem] font-semibold uppercase tracking-[0.08em] text-white transition hover:border-[rgba(185,139,70,0.5)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] sm:px-4 sm:text-[0.66rem]"
-              >
-                Ask NI
-              </TrackedLink>
-            </div>
-          </div>
-
-          <NavagrahaOrbitPanel />
-        </div>
-      </Container>
-    </section>
-  );
-}
-
-function SymbolGrid({ localizeHref }: Readonly<{ localizeHref: LocalizeHref }>) {
-  return (
-    <section className="bg-white">
-      <Container className="min-w-0 overflow-hidden px-3 py-4 sm:px-8 sm:py-8">
-        <div className="grid w-full max-w-full min-w-0 grid-flow-col auto-cols-[calc((100%-1rem)/3)] gap-2 overflow-x-auto overscroll-x-contain px-0 pb-1 pr-5 [scrollbar-width:none] [scroll-padding-inline:0px] snap-x snap-mandatory sm:gap-3 sm:pr-3 md:grid-flow-row md:grid-cols-6 md:overflow-visible md:pr-0 xl:grid-cols-12 [&::-webkit-scrollbar]:hidden">
-          {symbolTiles.map((tile) => (
-            <ToolTileLink
-              key={tile.label}
-              tile={tile}
-              localizeHref={localizeHref}
-            />
-          ))}
-        </div>
-      </Container>
-    </section>
-  );
-}
-
-function AskNiStrip({ localizeHref }: Readonly<{ localizeHref: LocalizeHref }>) {
-  return (
-    <section className="bg-white">
-      <Container className="pb-6 sm:pb-8">
-        <div className="min-w-0 overflow-hidden rounded-[1.6rem] border border-[rgba(185,139,70,0.28)] bg-[linear-gradient(180deg,#101010_0%,#050505_100%)] p-2.5 text-white sm:p-5">
-          <div className="grid gap-2.5 lg:grid-cols-[minmax(0,0.96fr)_minmax(0,1.04fr)] lg:items-start">
-            <div className="flex min-w-0 items-center gap-2">
-              <DashboardIcon icon="ai" className="hidden sm:inline-flex" />
-              <div className="min-w-0">
-                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[rgba(251,241,203,0.82)]">
-                  ASK NI
-                </p>
-                <h2 className="font-[family-name:var(--font-display)] text-[1.35rem] leading-tight text-white sm:text-[1.6rem]">
-                  NAVAGRAHA Intelligence
-                </h2>
-              </div>
-            </div>
-            <div className="grid w-full max-w-full min-w-0 grid-flow-col auto-cols-[calc((100%-1rem)/3)] gap-2 overflow-x-auto px-0 pb-1 pr-4 [scrollbar-width:none] [scroll-padding-inline:0px] snap-x snap-mandatory sm:grid-flow-row sm:grid-cols-4 sm:overflow-visible sm:pr-0 [&::-webkit-scrollbar]:hidden">
-              {askNiUtilities.map((item) => (
-                <AskNiUtilityLink
-                  key={item.label}
-                  item={item}
-                  localizeHref={localizeHref}
-                />
-              ))}
-              <span aria-hidden="true" className="w-1 shrink-0 sm:hidden" />
-            </div>
-          </div>
-        </div>
-      </Container>
-    </section>
-  );
-}
-
-function AskNiUtilityLink({
-  item,
+function ShortcutCard({
+  card,
   localizeHref,
-}: Readonly<{ item: AskNiUtilityItem; localizeHref: LocalizeHref }>) {
-  return (
-    <TrackedLink
-      href={localizeHref(item.href)}
-      eventName="premium_ai_cta_click"
-      eventPayload={{ page: "/", feature: item.feature, route: item.href }}
-      className="group flex min-h-[5.65rem] min-w-0 snap-start flex-col items-center justify-start gap-1 rounded-[1.05rem] border border-[rgba(185,139,70,0.24)] bg-white/95 px-2 py-2.5 text-center text-[color:var(--color-ink-black)] transition hover:-translate-y-0.5 hover:border-[rgba(185,139,70,0.38)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
-    >
-      <RailGlyph icon={item.icon} accent={item.accent} size="sm" />
-      <span className="min-w-0 max-w-full break-words text-[0.64rem] font-semibold leading-[1.08] tracking-[0.03em] text-[color:var(--color-ink-black)] sm:text-[0.6rem]">
-        {item.label}
-      </span>
-    </TrackedLink>
-  );
-}
-
-function ShowcaseCard({
-  eyebrow,
-  title,
-  description,
-  icon,
-  items,
-  localizeHref,
-  className,
 }: Readonly<{
-  eyebrow: string;
-  title?: string;
-  description?: string;
-  icon: IconKey;
-  items: readonly RailItem[];
+  card: (typeof primaryCards)[number];
   localizeHref: LocalizeHref;
-  className: string;
 }>) {
   return (
-    <section className="bg-white">
-      <Container className="pb-7 sm:pb-9">
-        <div
-          className={`rounded-[1.6rem] border p-4 shadow-[0_1px_0_rgba(255,255,255,0.92),0_1px_14px_rgba(5,5,5,0.03)] sm:p-5 ${className}`}
-        >
-          <div className="flex items-start gap-3">
-            <DashboardIcon icon={icon} />
-            <div className="min-w-0">
-              <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[color:var(--color-accent-gold-dark)]">
-                {eyebrow}
-              </p>
-              {title ? (
-                <h2 className="mt-1 font-[family-name:var(--font-display)] text-[1.55rem] leading-tight text-[color:var(--color-ink-black)]">
-                  {title}
-                </h2>
-              ) : null}
-              {description ? (
-                <p className="mt-2 max-w-[34rem] text-[0.85rem] leading-6 text-[color:var(--color-ink-black)]/82">
-                  {description}
-                </p>
-              ) : null}
-            </div>
-          </div>
-          <div className="mt-5 grid max-w-full min-w-0 grid-cols-2 gap-2 overflow-hidden sm:flex sm:flex-wrap">
-            {items.map((item) => (
-              <RailLink
-                key={item.label}
-                item={item}
-                localizeHref={localizeHref}
-                className="w-full min-w-0 sm:min-w-0 sm:flex-1"
-              />
-            ))}
-          </div>
-        </div>
-      </Container>
-    </section>
-  );
-}
-
-function AuthorityCard({ localizeHref }: Readonly<{ localizeHref: LocalizeHref }>) {
-  return (
-    <section className="bg-white">
-      <Container className="pb-7 sm:pb-9">
-        <div className="rounded-[1.6rem] border border-[rgba(111,28,42,0.24)] bg-white p-4 sm:p-5">
-          <div className="grid gap-4 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)] lg:items-center">
-            <div className="flex items-start gap-3">
-              <DashboardIcon icon="authority" />
-              <div className="min-w-0">
-                <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[color:var(--color-ruby-maroon)]">
-                  J P Sarmah Desk
-                </p>
-                <p className="mt-2 text-sm font-medium leading-6 text-[color:var(--color-ink-black)]">
-                  Human-guided Vedic astrology authority, with Ask NI as
-                  the assistance layer.
-                </p>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              {authorityItems.map((item) => (
-                <RailLink
-                  key={item.label}
-                  item={item}
-                  localizeHref={localizeHref}
-                  className="w-full min-w-0 justify-center"
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      </Container>
-    </section>
-  );
-}
-
-function ShopCategoryRail({ localizeHref }: Readonly<{ localizeHref: LocalizeHref }>) {
-  return (
-    <section className="bg-white pb-8 sm:pb-10">
-      <Container>
-        <div className="rounded-[1.6rem] border border-[rgba(185,139,70,0.18)] bg-white p-4 sm:p-5">
-          <div className="flex items-start gap-3">
-            <DashboardIcon icon="shop" />
-            <div>
-              <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[color:var(--color-accent-gold-dark)]">
-                Vedic shop
-              </p>
-              <h2 className="mt-1 font-[family-name:var(--font-display)] text-[1.45rem] leading-tight text-[color:var(--color-ink-black)]">
-                Guided categories
-              </h2>
-            </div>
-          </div>
-          <div className="mt-4 grid grid-cols-3 gap-2 sm:gap-3">
-            {shopItems.map((item) => (
-              <ShopGridTile
-                key={item.label}
-                item={item}
-                localizeHref={localizeHref}
-              />
-            ))}
-          </div>
-        </div>
-      </Container>
-    </section>
-  );
-}
-
-function ShopGridTile({
-  item,
-  localizeHref,
-}: Readonly<{ item: (typeof shopItems)[number]; localizeHref: LocalizeHref }>) {
-  return (
     <TrackedLink
-      href={localizeHref(item.href)}
+      href={localizeHref(card.href)}
       eventName="cta_click"
-      eventPayload={{ page: "/", feature: item.feature, route: item.href }}
-      className="group flex min-h-[6.7rem] flex-col items-center justify-center gap-2 rounded-[1rem] border border-[rgba(185,139,70,0.16)] bg-white px-2 py-3 text-center transition hover:-translate-y-0.5 hover:border-[rgba(185,139,70,0.32)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
+      eventPayload={{ page: "/", feature: card.feature, route: card.href }}
+      className="block min-w-0"
     >
-      <RailGlyph icon={item.icon} accent={item.accent} size="sm" />
-      <span className="max-w-full break-normal text-[0.64rem] font-semibold leading-tight text-[color:var(--color-ink-black)] sm:text-[0.72rem]">
-        {item.label}
-      </span>
+      <Card
+        tone="default"
+        className="flex min-h-[8.5rem] min-w-0 flex-col justify-between border-[rgba(184,137,67,0.22)] bg-white p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.98),inset_0_-8px_16px_rgba(184,137,67,0.035),0_12px_22px_rgba(17,17,17,0.06)] before:opacity-0"
+      >
+        <span className="flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(184,137,67,0.26)] bg-white text-[color:var(--color-accent-strong)] shadow-[inset_0_1px_0_rgba(255,255,255,0.96),0_7px_13px_rgba(17,17,17,0.06)]">
+          <AppIcon icon={card.icon} />
+        </span>
+        <div className="mt-3 min-w-0">
+          <h2 className="text-[1rem] font-extrabold leading-tight text-[#111111]">
+            {card.title}
+          </h2>
+          <p className="mt-1 text-[0.78rem] font-semibold leading-5 text-[#111111]/80">
+            {card.description}
+          </p>
+        </div>
+      </Card>
     </TrackedLink>
   );
 }
@@ -1073,51 +195,100 @@ export default async function HomePage() {
       forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
     });
 
-  const homeStructuredData = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: siteConfig.name,
-    url: siteConfig.url,
-    potentialAction: {
-      "@type": "SearchAction",
-      target: `${siteConfig.url}/tools?query={search_term_string}`,
-      "query-input": "required name=search_term_string",
-    },
-  } as const;
-
   return (
     <>
-      <PageViewTracker page="/" feature="home-page-dashboard-34-2a" />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeStructuredData) }}
-      />
+      <PageViewTracker page="/" feature="kundli-first-home" />
 
-      <main className="launch-page launch-page-home min-w-0 bg-white pb-20 text-[color:var(--color-ink-black)]">
-        <CategoryRail localizeHref={localizeHref} />
-        <DashboardTitleBlock localizeHref={localizeHref} />
-        <SymbolGrid localizeHref={localizeHref} />
-        <AskNiStrip localizeHref={localizeHref} />
-        <ShowcaseCard
-          eyebrow="REPORTS"
-          title=""
-          description="Formal report access and guided handwritten-kundli support in a premium document-style surface."
-          icon="report"
-          items={reportItems}
-          localizeHref={localizeHref}
-          className="border-[rgba(185,139,70,0.32)] bg-[linear-gradient(180deg,#ffffff_0%,#fffdf8_100%)]"
-        />
-        <AuthorityCard localizeHref={localizeHref} />
-        <ShowcaseCard
-          eyebrow="LEARNING"
-          title="Education Paths"
-          description="Compact pathways for articles, videos, Acharya notes, and NI Module guidance."
-          icon="article"
-          items={learningItems}
-          localizeHref={localizeHref}
-          className="border-[rgba(206,161,57,0.38)] bg-[linear-gradient(180deg,#ffffff_0%,#fffef8_100%)]"
-        />
-        <ShopCategoryRail localizeHref={localizeHref} />
+      <main className="launch-page launch-page-home min-w-0 overflow-hidden bg-white pb-[calc(7rem+env(safe-area-inset-bottom))] text-[#111111] xl:pb-12">
+        <section className="border-b border-black/8 bg-white">
+          <Container className="grid gap-5 py-4 sm:py-7 lg:grid-cols-[minmax(0,0.92fr)_minmax(18rem,0.58fr)] lg:items-center">
+            <div className="min-w-0 rounded-[1.55rem] border border-[rgba(184,137,67,0.24)] bg-white p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.98),inset_0_-9px_18px_rgba(184,137,67,0.035),0_16px_30px_rgba(17,17,17,0.065)] sm:p-6">
+              <p className="text-[0.68rem] font-extrabold uppercase tracking-[0.16em] text-[color:var(--color-accent-strong)]">
+                Kundli-first Vedic guidance
+              </p>
+              <h1
+                className="mt-2 font-[family-name:var(--font-display)] text-[2.35rem] font-semibold text-[#111111] sm:text-[3.6rem] lg:text-[4.2rem]"
+                style={{ lineHeight: "0.95" }}
+              >
+                NAVAGRAHA CENTRE
+              </h1>
+              <p className="mt-3 max-w-2xl text-[0.98rem] font-semibold leading-6 text-[#111111] sm:text-[1.08rem]">
+                Generate your Janam Kundli, understand the result with Ask NI,
+                and continue into human guidance when the question needs care.
+              </p>
+              <div className="mt-5 grid gap-3 min-[430px]:grid-cols-2 sm:flex sm:flex-wrap">
+                <TrackedLink
+                  href={localizeHref("/kundli")}
+                  eventName="cta_click"
+                  eventPayload={{
+                    page: "/",
+                    feature: "home-primary-generate-kundli",
+                  }}
+                  className={buttonStyles({
+                    tone: "accent",
+                    size: "lg",
+                    className:
+                      "w-full justify-center rounded-[var(--radius-pill)] sm:w-auto",
+                  })}
+                >
+                  Generate Kundli
+                </TrackedLink>
+                <TrackedLink
+                  href={localizeHref("/ai")}
+                  eventName="premium_ai_cta_click"
+                  eventPayload={{ page: "/", feature: "home-secondary-ask-ni" }}
+                  className={buttonStyles({
+                    tone: "secondary",
+                    size: "lg",
+                    className:
+                      "w-full justify-center rounded-[var(--radius-pill)] border-[rgba(76,187,23,0.34)] sm:w-auto",
+                  })}
+                >
+                  Ask NI
+                </TrackedLink>
+              </div>
+            </div>
+
+            <KundliVisual />
+          </Container>
+        </section>
+
+        <section className="bg-white">
+          <Container className="space-y-3 py-4 sm:py-7">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-[0.68rem] font-extrabold uppercase tracking-[0.14em] text-[color:var(--color-accent-strong)]">
+                Primary path
+              </p>
+              <span className="h-2 w-2 rounded-full bg-[#4CBB17] shadow-[0_0_0_4px_rgba(76,187,23,0.09)]" />
+            </div>
+            <div className="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-5">
+              {primaryCards.map((card) => (
+                <ShortcutCard
+                  key={card.title}
+                  card={card}
+                  localizeHref={localizeHref}
+                />
+              ))}
+            </div>
+          </Container>
+        </section>
+
+        <section className="border-y border-[rgba(184,137,67,0.18)] bg-white">
+          <Container className="grid gap-3 py-4 sm:grid-cols-3 sm:py-6">
+            {[
+              "Guidance-first",
+              "Private birth details",
+              "No guaranteed outcomes",
+            ].map((item) => (
+              <div
+                key={item}
+                className="rounded-[1rem] border border-[rgba(184,137,67,0.22)] bg-white px-4 py-3 text-center text-[0.82rem] font-extrabold text-[#111111] shadow-[inset_0_1px_0_rgba(255,255,255,0.98),0_8px_14px_rgba(17,17,17,0.045)]"
+              >
+                {item}
+              </div>
+            ))}
+          </Container>
+        </section>
       </main>
     </>
   );
