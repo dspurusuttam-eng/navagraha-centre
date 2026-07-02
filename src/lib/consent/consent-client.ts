@@ -12,6 +12,10 @@ import {
 } from "@/lib/consent/consent-preferences";
 
 const consentChangeEventName = "navagraha-consent-change";
+const serverConsentSnapshot = getDefaultConsentPreferences();
+
+let cachedConsentRawValue: string | null | undefined;
+let cachedConsentPreferences: ConsentPreferences = serverConsentSnapshot;
 
 function readCookieValue(cookieName: string) {
   if (typeof document === "undefined") {
@@ -68,10 +72,19 @@ function emitConsentChange() {
 
 export function getConsentPreferences(): ConsentPreferences {
   if (typeof window === "undefined") {
-    return getDefaultConsentPreferences();
+    return serverConsentSnapshot;
   }
 
-  return deserializeConsentPreferences(readCookieValue(consentCookieName));
+  const rawValue = readCookieValue(consentCookieName);
+
+  if (rawValue === cachedConsentRawValue) {
+    return cachedConsentPreferences;
+  }
+
+  cachedConsentRawValue = rawValue;
+  cachedConsentPreferences = deserializeConsentPreferences(rawValue);
+
+  return cachedConsentPreferences;
 }
 
 export function setConsentPreferences(
@@ -79,20 +92,18 @@ export function setConsentPreferences(
 ): ConsentPreferences {
   const current = getConsentPreferences();
   const next = applyConsentPatch(current, patch);
-
-  writeCookieValue(
-    consentCookieName,
-    serializeConsentPreferences({
-      ...next,
-      updatedAtUtc: new Date().toISOString(),
-    })
-  );
-  emitConsentChange();
-
-  return {
+  const stamped = {
     ...next,
     updatedAtUtc: new Date().toISOString(),
-  };
+  } satisfies ConsentPreferences;
+  const rawValue = serializeConsentPreferences(stamped);
+
+  writeCookieValue(consentCookieName, rawValue);
+  cachedConsentRawValue = rawValue;
+  cachedConsentPreferences = stamped;
+  emitConsentChange();
+
+  return stamped;
 }
 
 export function resetConsentPreferences(): ConsentPreferences {
@@ -102,7 +113,11 @@ export function resetConsentPreferences(): ConsentPreferences {
     updatedAtUtc: new Date().toISOString(),
   } satisfies ConsentPreferences;
 
-  writeCookieValue(consentCookieName, serializeConsentPreferences(stamped));
+  const rawValue = serializeConsentPreferences(stamped);
+
+  writeCookieValue(consentCookieName, rawValue);
+  cachedConsentRawValue = rawValue;
+  cachedConsentPreferences = stamped;
   emitConsentChange();
 
   return stamped;
