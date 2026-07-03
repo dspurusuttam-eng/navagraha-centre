@@ -67,7 +67,7 @@ export async function Footer() {
       data-nosnippet
       className="border-t border-[rgba(185,139,70,0.32)] bg-white text-[color:var(--color-ink-strong)]"
     >
-      <Container className="space-y-5 py-[var(--space-8)] sm:py-[var(--space-10)] xl:space-y-6">
+      <Container className="space-y-5 pb-[calc(var(--space-8)+6rem)] pt-[var(--space-8)] sm:pb-[calc(var(--space-10)+6rem)] sm:pt-[var(--space-10)] xl:space-y-6 xl:pb-[var(--space-10)]">
         <div className="grid gap-7 rounded-[var(--radius-card)] border border-[rgba(185,139,70,0.26)] bg-white p-5 shadow-[0_12px_30px_rgba(5,5,5,0.05)] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.6fr)] lg:gap-9 lg:p-6 xl:p-7">
           <div className="space-y-4">
             <Link
