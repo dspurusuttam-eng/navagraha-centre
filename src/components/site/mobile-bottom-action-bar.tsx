@@ -389,7 +389,7 @@ export function MobileBottomActionBar({
       ],
     },
     {
-      title: "Company / Support",
+      title: "Platform / Support",
       links: [
         {
           label: "Sign-in",
