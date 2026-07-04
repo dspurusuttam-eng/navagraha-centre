@@ -1,13 +1,21 @@
-import type { ReactNode } from "react";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import { TrackedLink } from "@/components/analytics/tracked-link";
 import {
-  ConsultationIcon,
+  AskNIIcon,
+  ConsultIcon,
+  GuidanceIcon,
   KundliIcon,
-  NavagrahaAiIcon,
+  LearnIcon,
+  MuhuratIcon,
   PanchangIcon,
+  PlayIcon,
   RashifalIcon,
-} from "@/components/icons/astrology-icons";
+  ShopIcon,
+} from "@/components/icons/navagraha-icons";
+import {
+  PremiumIconBase,
+  type PremiumIconTone,
+} from "@/components/icons/premium-icon";
 import { buttonStyles } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { createPageMetadata } from "@/lib/seo/metadata";
@@ -267,81 +275,64 @@ const exploreCards: readonly LinkCard[] = [
   },
 ] as const;
 
-function IconShell({ children }: Readonly<{ children: ReactNode }>) {
-  return (
-    <span
-      aria-hidden="true"
-      className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-[color:var(--color-accent-strong)] shadow-[inset_0_1px_0_rgba(255,255,255,0.98),0_8px_16px_rgba(17,17,17,0.07)]"
-    >
-      {children}
-    </span>
-  );
-}
-
-function AppIcon({ icon }: Readonly<{ icon: HomeIconName }>) {
+function getHomeIconGlyph(icon: HomeIconName) {
   if (icon === "kundli") {
-    return <KundliIcon className="h-10 w-10 border-0 shadow-none" />;
+    return <KundliIcon />;
   }
 
   if (icon === "ai") {
-    return <NavagrahaAiIcon className="h-10 w-10 border-0 shadow-none" />;
+    return <AskNIIcon />;
   }
 
   if (icon === "consult") {
-    return <ConsultationIcon className="h-10 w-10 border-0 shadow-none" />;
+    return <ConsultIcon />;
   }
 
   if (icon === "panchang" || icon === "today") {
-    return <PanchangIcon className="h-10 w-10 border-0 shadow-none" />;
+    return <PanchangIcon />;
   }
 
   if (icon === "rashifal") {
-    return <RashifalIcon className="h-10 w-10 border-0 shadow-none" />;
+    return <RashifalIcon />;
   }
 
+  if (icon === "shop") {
+    return <ShopIcon />;
+  }
+
+  if (icon === "muhurat") {
+    return <MuhuratIcon />;
+  }
+
+  if (icon === "play") {
+    return <PlayIcon />;
+  }
+
+  if (icon === "trust") {
+    return <GuidanceIcon />;
+  }
+
+  return <LearnIcon />;
+}
+
+function getHomeIconTone(icon: HomeIconName): PremiumIconTone {
+  if (icon === "ai" || icon === "trust") {
+    return "green";
+  }
+
+  return "gold";
+}
+
+function AppIcon({
+  icon,
+  size = "md",
+}: Readonly<{ icon: HomeIconName; size?: "sm" | "md" | "lg" }>) {
   return (
-    <IconShell>
-      <svg
-        aria-hidden="true"
-        viewBox="0 0 24 24"
-        className="h-5 w-5"
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.8"
-      >
-        {icon === "shop" ? (
-          <>
-            <path d="M6.5 10.2h11L16.9 19H7.1z" />
-            <path d="M8 10.2V8.7c0-2 1.8-3.6 4-3.6s4 1.6 4 3.6v1.5" />
-          </>
-        ) : icon === "muhurat" ? (
-          <>
-            <circle cx="12" cy="12" r="7.4" />
-            <path d="M12 7.2v5l3.2 2" />
-            <path d="M7.3 4.8 5.4 6.7M16.7 4.8l1.9 1.9" />
-          </>
-        ) : icon === "play" ? (
-          <>
-            <circle cx="12" cy="12" r="8" />
-            <path d="m10 8.8 5 3.2-5 3.2z" />
-          </>
-        ) : icon === "trust" ? (
-          <>
-            <path d="M12 3.8 18 6v5.2c0 3.7-2.4 6.8-6 8.9-3.6-2.1-6-5.2-6-8.9V6z" />
-            <path d="m9.2 12.1 1.8 1.8 3.9-4" />
-          </>
-        ) : (
-          <>
-            <path d="M6 5.5h12v13H6z" />
-            <path d="M9 9h6" />
-            <path d="M9 12.3h6" />
-            <path d="M9 15.6h3.5" />
-          </>
-        )}
-      </svg>
-    </IconShell>
+    <PremiumIconBase
+      icon={getHomeIconGlyph(icon)}
+      size={size}
+      tone={getHomeIconTone(icon)}
+    />
   );
 }
 
@@ -690,7 +681,7 @@ export default async function HomePage() {
                     />
                     <span className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,5,5,0),rgba(5,5,5,0.18))]" />
                     <span className="absolute left-1/2 top-1/2 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-[color:var(--color-accent-strong)] shadow-[0_10px_22px_rgba(17,17,17,0.16)]">
-                      <AppIcon icon="play" />
+                      <PlayIcon className="h-5 w-5" />
                     </span>
                   </div>
                   <p className="mt-3 text-[0.66rem] font-extrabold uppercase tracking-[0.14em] text-[color:var(--color-accent-strong)]">
