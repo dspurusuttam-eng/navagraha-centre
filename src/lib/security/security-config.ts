@@ -12,6 +12,7 @@ export type SecurityRateLimitPolicyKey =
   | "birth-context-resolve"
   | "panchang-public"
   | "muhurta-public"
+  | "today-decision-public"
   | "calculators-public"
   | "premium-report-generate"
   | "saved-kundli-read"
@@ -212,6 +213,10 @@ function buildRateLimitPolicies(): Record<
     "muhurta-public": {
       limit: readPositiveInt("MUHURTA_RATE_LIMIT", 30),
       windowMs: readPositiveInt("MUHURTA_RATE_WINDOW_MS", 10 * 60 * 1_000),
+    },
+    "today-decision-public": {
+      limit: readPositiveInt("TODAY_DECISION_RATE_LIMIT", 30),
+      windowMs: readPositiveInt("TODAY_DECISION_RATE_WINDOW_MS", 10 * 60 * 1_000),
     },
     "calculators-public": {
       limit: readPositiveInt("CALCULATORS_RATE_LIMIT", 45),
