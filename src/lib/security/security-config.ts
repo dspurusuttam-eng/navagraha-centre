@@ -12,8 +12,12 @@ export type SecurityRateLimitPolicyKey =
   | "birth-context-resolve"
   | "panchang-public"
   | "muhurta-public"
+  | "today-decision-public"
   | "calculators-public"
   | "premium-report-generate"
+  | "saved-kundli-read"
+  | "saved-kundli-create"
+  | "saved-kundli-mutate"
   | "admin-snapshot-events"
   | "shop-checkout-init"
   | "subscriptions-checkout"
@@ -210,6 +214,10 @@ function buildRateLimitPolicies(): Record<
       limit: readPositiveInt("MUHURTA_RATE_LIMIT", 30),
       windowMs: readPositiveInt("MUHURTA_RATE_WINDOW_MS", 10 * 60 * 1_000),
     },
+    "today-decision-public": {
+      limit: readPositiveInt("TODAY_DECISION_RATE_LIMIT", 30),
+      windowMs: readPositiveInt("TODAY_DECISION_RATE_WINDOW_MS", 10 * 60 * 1_000),
+    },
     "calculators-public": {
       limit: readPositiveInt("CALCULATORS_RATE_LIMIT", 45),
       windowMs: readPositiveInt("CALCULATORS_RATE_WINDOW_MS", 10 * 60 * 1_000),
@@ -217,6 +225,24 @@ function buildRateLimitPolicies(): Record<
     "premium-report-generate": {
       limit: readPositiveInt("REPORT_REQUEST_RATE_LIMIT", 8),
       windowMs: readPositiveInt("REPORT_REQUEST_RATE_WINDOW_MS", 10 * 60 * 1_000),
+    },
+    "saved-kundli-read": {
+      limit: readPositiveInt("SAVED_KUNDLI_READ_RATE_LIMIT", 60),
+      windowMs: readPositiveInt("SAVED_KUNDLI_READ_RATE_WINDOW_MS", 10 * 60 * 1_000),
+    },
+    "saved-kundli-create": {
+      limit: readPositiveInt("SAVED_KUNDLI_CREATE_RATE_LIMIT", 12),
+      windowMs: readPositiveInt(
+        "SAVED_KUNDLI_CREATE_RATE_WINDOW_MS",
+        10 * 60 * 1_000
+      ),
+    },
+    "saved-kundli-mutate": {
+      limit: readPositiveInt("SAVED_KUNDLI_MUTATE_RATE_LIMIT", 20),
+      windowMs: readPositiveInt(
+        "SAVED_KUNDLI_MUTATE_RATE_WINDOW_MS",
+        10 * 60 * 1_000
+      ),
     },
     "admin-snapshot-events": {
       limit: readPositiveInt("ADMIN_SNAPSHOT_EVENT_RATE_LIMIT", 30),
