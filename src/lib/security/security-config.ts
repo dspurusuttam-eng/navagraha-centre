@@ -18,6 +18,9 @@ export type SecurityRateLimitPolicyKey =
   | "saved-kundli-read"
   | "saved-kundli-create"
   | "saved-kundli-mutate"
+  | "decision-desk-read"
+  | "decision-desk-create"
+  | "decision-desk-mutate"
   | "admin-snapshot-events"
   | "shop-checkout-init"
   | "subscriptions-checkout"
@@ -241,6 +244,24 @@ function buildRateLimitPolicies(): Record<
       limit: readPositiveInt("SAVED_KUNDLI_MUTATE_RATE_LIMIT", 20),
       windowMs: readPositiveInt(
         "SAVED_KUNDLI_MUTATE_RATE_WINDOW_MS",
+        10 * 60 * 1_000
+      ),
+    },
+    "decision-desk-read": {
+      limit: readPositiveInt("DECISION_DESK_READ_RATE_LIMIT", 60),
+      windowMs: readPositiveInt("DECISION_DESK_READ_RATE_WINDOW_MS", 10 * 60 * 1_000),
+    },
+    "decision-desk-create": {
+      limit: readPositiveInt("DECISION_DESK_CREATE_RATE_LIMIT", 20),
+      windowMs: readPositiveInt(
+        "DECISION_DESK_CREATE_RATE_WINDOW_MS",
+        10 * 60 * 1_000
+      ),
+    },
+    "decision-desk-mutate": {
+      limit: readPositiveInt("DECISION_DESK_MUTATE_RATE_LIMIT", 30),
+      windowMs: readPositiveInt(
+        "DECISION_DESK_MUTATE_RATE_WINDOW_MS",
         10 * 60 * 1_000
       ),
     },

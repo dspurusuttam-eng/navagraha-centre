@@ -171,6 +171,12 @@ enum AiTaskRunStatus {
   FAILED
 }
 
+enum DecisionRecordStatus {
+  PLANNED
+  DONE
+  SKIPPED
+}
+
 model User {
   id            String    @id
   name          String
@@ -195,6 +201,7 @@ model User {
   aiTaskRuns       AiTaskRun[]
   inquiryLeads     InquiryLead[]
   inquiryLifecycleEvents InquiryLifecycleEvent[] @relation("InquiryLifecycleActor")
+  decisionDeskRecords DecisionDeskRecord[]
 
   @@unique([email])
   @@map("user")
@@ -781,4 +788,32 @@ model AdminRoleAssignment {
   @@unique([userId, roleId])
   @@index([roleId])
   @@map("admin_role_assignment")
+}
+
+model DecisionDeskRecord {
+  id               String               @id @default(cuid())
+  userId           String
+  title            String
+  decisionCategory String
+  status           DecisionRecordStatus @default(PLANNED)
+  decisionRating   String?
+  date             String
+  timezone         String
+  latitude         Decimal?             @db.Decimal(9, 6)
+  longitude        Decimal?             @db.Decimal(9, 6)
+  locationLabel    String?
+  panchangSnapshot Json?
+  goodTimeBlocks   Json?
+  avoidTimeBlocks  Json?
+  horaAvailable    Boolean              @default(false)
+  userNote         String?
+  outcomeNote      String?
+  followUpDate     String?
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  user             User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([userId, createdAt])
+  @@map("decision_desk_record")
 }
