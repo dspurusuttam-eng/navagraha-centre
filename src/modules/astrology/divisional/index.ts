@@ -3,6 +3,7 @@ import {
   createAstrologyInfrastructureSnapshot,
   type AstrologyInfrastructureSnapshot,
 } from "@/modules/astrology/core";
+import { vargaCodes } from "@/modules/astrology/divisional/varga-engine";
 
 export type DivisionalInfrastructureSnapshot = AstrologyInfrastructureSnapshot<{
   supported_chart_codes: readonly string[];
@@ -25,15 +26,24 @@ export function buildDivisionalInfrastructureSnapshot(input: {
   }
 
   return createAstrologyInfrastructureSnapshot({
-    status: "partial",
+    status: "ready",
     data: {
-      supported_chart_codes: ["D1", "D9", "D10"] as const,
-      future_chart_codes: ["D7", "D4", "D12", "D60"] as const,
+      supported_chart_codes: vargaCodes,
+      future_chart_codes: [] as const,
       note:
-        "Divisional infrastructure is staged with D1 available and D9/D10 hooks reserved. No fabricated divisional chart is generated here.",
+        "All sixteen Shodashvarga divisional charts are computed from verified natal sidereal longitudes using classical Parashara (BPHS) division rules. Sign placements only; no divisional degrees are fabricated.",
     },
   });
 }
 
 export { buildDivisionalChartReadiness } from "@/modules/astrology/divisional/foundation";
+export {
+  buildVargaChart,
+  calculateVargaPlacement,
+  listVargottamaBodies,
+  vargaCodes,
+  type VargaChart,
+  type VargaCode,
+  type VargaPlacement,
+} from "@/modules/astrology/divisional/varga-engine";
 export { buildDivisionalInterpretationReadiness } from "@/modules/astrology/divisional/interpretation";

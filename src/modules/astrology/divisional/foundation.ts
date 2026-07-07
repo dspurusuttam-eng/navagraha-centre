@@ -6,6 +6,11 @@ import type {
   HouseNumber,
   ZodiacSign,
 } from "@/modules/astrology/types";
+import {
+  buildVargaChart,
+  listVargottamaBodies,
+  vargaCodes,
+} from "@/modules/astrology/divisional/varga-engine";
 
 type DivisionalSourceChart = {
   lagna: {
@@ -29,63 +34,98 @@ type DivisionalSourceChart = {
   }>;
 };
 
-const readinessCatalog = [
+const readinessCatalog: readonly {
+  code: DivisionalReadinessCode;
+  title: string;
+  focus: string;
+}[] = [
   {
     code: "D1",
     title: "Rashi Chart",
     focus: "Natal life structure and baseline expression.",
-    status: "available",
-    note: "The natal chart is the production baseline and remains fully available.",
   },
   {
-    code: "D9",
-    title: "Navamsa",
-    focus: "Inner maturity, devotion, and relationship refinement.",
-    status: "pending",
-    note: "Navamsa is reserved as a safe hook for a future formula-backed divisional engine.",
+    code: "D2",
+    title: "Hora",
+    focus: "Resources, sustenance, and wealth orientation.",
   },
   {
-    code: "D10",
-    title: "Dashamsa",
-    focus: "Career, authority, and visible professional expression.",
-    status: "pending",
-    note: "Dashamsa is reserved as a safe hook for a future formula-backed divisional engine.",
-  },
-  {
-    code: "D7",
-    title: "Saptamsa",
-    focus: "Legacy, contribution, and stewardship themes.",
-    status: "pending",
-    note: "Saptamsa is ready as a future expansion hook without fabricated output.",
+    code: "D3",
+    title: "Drekkana",
+    focus: "Siblings, courage, and personal initiative.",
   },
   {
     code: "D4",
     title: "Chaturthamsha",
     focus: "Inner home, foundations, and settled belonging.",
-    status: "pending",
-    note: "Chaturthamsha is ready as a future expansion hook without fabricated output.",
+  },
+  {
+    code: "D7",
+    title: "Saptamsha",
+    focus: "Legacy, contribution, and stewardship themes.",
+  },
+  {
+    code: "D9",
+    title: "Navamsa",
+    focus: "Inner maturity, devotion, and relationship refinement.",
+  },
+  {
+    code: "D10",
+    title: "Dashamsa",
+    focus: "Career, authority, and visible professional expression.",
   },
   {
     code: "D12",
     title: "Dwadashamsha",
     focus: "Lineage, inherited tone, and parental patterning.",
-    status: "pending",
-    note: "Dwadashamsha is ready as a future expansion hook without fabricated output.",
+  },
+  {
+    code: "D16",
+    title: "Shodashamsha",
+    focus: "Comforts, conveyances, and inner contentment.",
+  },
+  {
+    code: "D20",
+    title: "Vimshamsha",
+    focus: "Devotional practice and spiritual discipline.",
+  },
+  {
+    code: "D24",
+    title: "Chaturvimshamsha",
+    focus: "Learning, knowledge, and study patterns.",
+  },
+  {
+    code: "D27",
+    title: "Bhamsha",
+    focus: "Underlying strengths and subtle vitality.",
+  },
+  {
+    code: "D30",
+    title: "Trimshamsha",
+    focus: "Challenges, resilience, and self-protection themes.",
+  },
+  {
+    code: "D40",
+    title: "Khavedamsha",
+    focus: "Maternal lineage tone and habitual patterns.",
+  },
+  {
+    code: "D45",
+    title: "Akshavedamsha",
+    focus: "Paternal lineage tone and conduct patterns.",
   },
   {
     code: "D60",
     title: "Shashtiamsha",
     focus: "Fine-grained karmic refinement and deep divisional analysis.",
-    status: "pending",
-    note: "Shashtiamsha is reserved for a later high-precision engine and is not fabricated here.",
   },
-] as const satisfies readonly {
-  code: DivisionalReadinessCode;
-  title: string;
-  focus: string;
-  status: DivisionalReadinessStatus;
-  note: string;
-}[];
+];
+
+const AVAILABLE_NOTE =
+  "Computed from verified natal sidereal longitudes using the classical Parashara (BPHS) division rules. Sign placements only; no divisional degrees are fabricated.";
+
+const UNAVAILABLE_NOTE =
+  "Chart context is unavailable, so divisional readiness is not available yet.";
 
 function toPlanetSummary(planet: DivisionalSourceChart["planets"][number]): DivisionalPlanetSummary {
   const degree = Math.floor(planet.degree_in_sign);
@@ -123,6 +163,41 @@ function buildD1Chart(chart: DivisionalSourceChart): NonNullable<DivisionalChart
   };
 }
 
+function buildVargaReadinessChart(
+  chart: DivisionalSourceChart,
+  code: DivisionalReadinessCode
+): NonNullable<DivisionalChartReadiness["chart"]> | null {
+  const varga = buildVargaChart(chart, code);
+
+  if (!varga) {
+    return null;
+  }
+
+  return {
+    chartType: code,
+    ascendantSign: varga.ascendant.sign,
+    planets: varga.planets.map((planet) => ({
+      body: planet.body as DivisionalPlanetSummary["body"],
+      sign: planet.sign,
+      // Natal longitude echoed for reference; varga charts carry sign
+      // placements only — divisional degrees/nakshatras are never fabricated.
+      longitude: planet.natalLongitude,
+      degree: Math.floor(planet.natalDegreeInSign),
+      minute: Math.round(
+        (planet.natalDegreeInSign - Math.floor(planet.natalDegreeInSign)) * 60
+      ),
+      house: planet.house as HouseNumber,
+      retrograde: planet.retrograde,
+      nakshatra: null,
+      pada: null,
+    })),
+    houses: varga.houses.map((house) => ({
+      house: house.house as HouseNumber,
+      sign: house.sign,
+    })),
+  };
+}
+
 export function buildDivisionalChartReadiness(
   chart: DivisionalSourceChart | null | undefined
 ): DivisionalChartReadiness[] {
@@ -132,19 +207,26 @@ export function buildDivisionalChartReadiness(
       title: entry.title,
       focus: entry.focus,
       status: "unavailable" as DivisionalReadinessStatus,
-      note: "Chart context is unavailable, so divisional readiness is not available yet.",
+      note: UNAVAILABLE_NOTE,
       chart: null,
     }));
   }
 
+  const vargottamaBodies = listVargottamaBodies(chart);
+
   return readinessCatalog.map((entry) => {
-    if (entry.code !== "D1") {
+    const builtChart =
+      entry.code === "D1"
+        ? buildD1Chart(chart)
+        : buildVargaReadinessChart(chart, entry.code);
+
+    if (!builtChart) {
       return {
         code: entry.code,
         title: entry.title,
         focus: entry.focus,
-        status: entry.status,
-        note: entry.note,
+        status: "unavailable" as DivisionalReadinessStatus,
+        note: UNAVAILABLE_NOTE,
         chart: null,
       };
     }
@@ -153,9 +235,16 @@ export function buildDivisionalChartReadiness(
       code: entry.code,
       title: entry.title,
       focus: entry.focus,
-      status: entry.status,
-      note: entry.note,
-      chart: buildD1Chart(chart),
+      status: "available" as DivisionalReadinessStatus,
+      note: AVAILABLE_NOTE,
+      chart: builtChart,
+      ...(entry.code === "D9" ? { meta: { vargottamaBodies } } : {}),
     };
   });
 }
+
+export function getVargaCatalogEntry(code: DivisionalReadinessCode) {
+  return readinessCatalog.find((entry) => entry.code === code) ?? null;
+}
+
+export { vargaCodes as supportedVargaCodes };
