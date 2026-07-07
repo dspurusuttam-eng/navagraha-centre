@@ -44,7 +44,7 @@ type FixtureBundle = {
     TransitChartResponse,
     "kind" | "metadata" | "birthDetails" | "houseSystem" | "window" | "asOfUtc" | "planets"
   >;
-  divisionalCharts: Record<DivisionalChartCode, FixtureDivisionalChart>;
+  divisionalCharts: Partial<Record<DivisionalChartCode, FixtureDivisionalChart>>;
 };
 
 function createWholeSignHouses(ascendantSign: ZodiacSign): HousePlacement[] {
@@ -413,7 +413,7 @@ const mercurialTransitEvents: TransitEvent[] = [
   },
 ];
 
-export const mockAstrologyFixtures = [
+export const mockAstrologyFixtures: readonly FixtureBundle[] = [
   {
     key: "oceanic-balance",
     generatedAtUtc: "2026-04-04T00:00:00.000Z",
@@ -572,4 +572,4 @@ export const mockAstrologyFixtures = [
       ),
     },
   },
-] satisfies readonly FixtureBundle[];
+];

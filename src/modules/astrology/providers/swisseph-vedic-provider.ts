@@ -6,13 +6,23 @@ import {
   generateTransitSnapshot,
 } from "@/lib/astrology/chart-generator";
 import { getSwissEphemerisRuntime } from "@/lib/astrology/ephemeris";
+import { signRulerMap } from "@/lib/astrology/constants";
+import { zodiacSigns } from "@/modules/astrology/constants";
+import { getVargaCatalogEntry } from "@/modules/astrology/divisional/foundation";
+import {
+  calculateVargaPlacement,
+  isClassicalVargaBody,
+} from "@/modules/astrology/divisional/varga-engine";
 import type { AstrologyProvider } from "@/modules/astrology/provider";
 import { MockDeterministicAstrologyProvider } from "@/modules/astrology/providers/mock-deterministic-provider";
 import type {
   DivisionalChartRequest,
   DivisionalChartResponse,
+  HouseNumber,
+  HousePlacement,
   NatalChartRequest,
   NatalChartResponse,
+  PlanetPosition,
   TransitChartRequest,
   TransitChartResponse,
 } from "@/modules/astrology/types";
@@ -150,6 +160,86 @@ export class SwissEphemerisVedicProvider implements AstrologyProvider {
       };
     }
 
-    return this.fallbackProvider.getDivisionalChart(request);
+    const chart = await this.getNatalChart({
+      ...request,
+      kind: "NATAL",
+      requestedDivisionalCharts: [],
+    });
+    const catalogEntry = getVargaCatalogEntry(request.chartCode);
+    const lagnaLongitude = chart.lagna?.longitude;
+    const lagnaPlacement =
+      lagnaLongitude === undefined || lagnaLongitude === null
+        ? null
+        : calculateVargaPlacement(lagnaLongitude, request.chartCode);
+
+    if (!catalogEntry || !lagnaPlacement) {
+      // Without a verified natal lagna longitude, the varga ascendant cannot
+      // be derived honestly — defer instead of fabricating.
+      return this.fallbackProvider.getDivisionalChart(request);
+    }
+
+    const planets: PlanetPosition[] = [];
+
+    for (const planet of chart.planets) {
+      if (!isClassicalVargaBody(planet.body)) {
+        continue;
+      }
+
+      const placement = calculateVargaPlacement(
+        planet.longitude,
+        request.chartCode
+      );
+
+      if (!placement) {
+        return this.fallbackProvider.getDivisionalChart(request);
+      }
+
+      planets.push({
+        body: planet.body,
+        sign: placement.sign,
+        // Natal longitude/degree echoed for reference; varga charts carry
+        // sign placements only — divisional nakshatras are never fabricated.
+        longitude: planet.longitude,
+        degree: planet.degree,
+        minute: planet.minute,
+        house: (((placement.signIndex - lagnaPlacement.signIndex + 12) % 12) +
+          1) as HouseNumber,
+        retrograde: planet.retrograde,
+        speed: planet.speed,
+      });
+    }
+
+    const houses: HousePlacement[] = Array.from({ length: 12 }, (_, index) => {
+      const sign = zodiacSigns[(lagnaPlacement.signIndex + index) % 12];
+
+      return {
+        house: (index + 1) as HouseNumber,
+        sign,
+        ruler: signRulerMap[sign],
+      };
+    });
+
+    return {
+      kind: "DIVISIONAL",
+      metadata: {
+        ...chart.metadata,
+        requestId: request.requestId,
+      },
+      birthDetails: request.birthDetails,
+      houseSystem: request.houseSystem,
+      chart: {
+        code: request.chartCode,
+        title: catalogEntry.title,
+        focus: catalogEntry.focus,
+        ascendantSign: lagnaPlacement.sign,
+        planets,
+        houses,
+        highlights: [
+          `${catalogEntry.title} (${request.chartCode}) sign placements derived from verified natal sidereal longitudes using classical Parashara division rules.`,
+          "Divisional placements are structural reference data, not predictions.",
+        ],
+      },
+      remedySignals: chart.remedySignals,
+    };
   }
 }

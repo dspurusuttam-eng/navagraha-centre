@@ -32,7 +32,7 @@ export type YogaKey = (typeof yogaKeys)[number];
 export type YogaStrength = (typeof yogaStrengths)[number];
 export type ClassicalPlanetaryBody = (typeof classicalPlanetaryBodies)[number];
 export type DivisionalReadinessStatus = "available" | "pending" | "unavailable";
-export type DivisionalReadinessCode = "D1" | "D4" | "D7" | "D9" | "D10" | "D12" | "D60";
+export type DivisionalReadinessCode = DivisionalChartCode;
 
 export type DivisionalPlanetSummary = {
   body: PlanetaryBody;
@@ -60,6 +60,9 @@ export type DivisionalChartReadiness = {
       house: HouseNumber;
       sign: ZodiacSign;
     }>;
+  };
+  meta?: {
+    vargottamaBodies?: string[];
   };
 };
 

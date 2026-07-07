@@ -56,6 +56,7 @@
     "debug:saved-kundli:qa": "tsx scripts/debug-saved-kundli-qa.ts",
     "debug:today-decision:qa": "tsx scripts/debug-today-decision-qa.ts",
     "debug:decision-desk:qa": "tsx scripts/debug-decision-desk-qa.ts",
+    "debug:varga:qa": "tsx scripts/debug-varga-qa.ts",
     "debug:numerology": "tsx scripts/debug-numerology.ts",
     "debug:numerology:core:qa": "tsx scripts/debug-numerology-core-qa.ts",
     "debug:numerology:utilities:qa": "tsx scripts/debug-numerology-utilities-qa.ts",

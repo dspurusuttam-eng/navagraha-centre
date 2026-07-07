@@ -337,7 +337,8 @@ export class MockDeterministicAstrologyProvider implements AstrologyProvider {
       houseSystem: request.houseSystem,
       chart:
         cloneValue(
-          fixture.divisionalCharts[request.chartCode]
+          fixture.divisionalCharts[request.chartCode] ??
+            fixture.divisionalCharts.D1
         ) as unknown as DivisionalChartResponse["chart"],
       remedySignals: cloneValue(fixture.natal.remedySignals),
     };
