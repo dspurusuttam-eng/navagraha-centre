@@ -1,0 +1,74 @@
+name: Ephemeris QA
+
+# Runs the deterministic astrology QA harnesses on the project's sanctioned
+# runtime (package.json engines.node = 22.x), where the `swisseph` native
+# binary builds and loads correctly.
+#
+# Purpose: prove the ephemeris-backed QA groups that cannot run on developer
+# machines pinned to a different Node major (e.g. Node 24), without weakening
+# or skipping those tests.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ephemeris-qa-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ephemeris-qa:
+    name: Ephemeris QA (Node 22)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+
+      - name: Install dependencies (builds swisseph native module)
+        run: npm ci
+
+      - name: Verify swisseph loads natively
+        run: node -e "const swe=require('swisseph'); if (typeof swe.swe_calc_ut!=='function') { throw new Error('swisseph loaded without swe_calc_ut'); } console.log('swisseph-ready');"
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Gochar + Sade Sati QA (must be fully unblocked)
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run debug:gochar:qa 2>&1 | tee gochar-qa.log
+
+          if ! grep -q "0 environment-blocked" gochar-qa.log; then
+            echo "::error::Gochar QA still reports environment-blocked groups. QA 8/9 must run on this runner."
+            grep -n "environment-blocked" gochar-qa.log || true
+            exit 1
+          fi
+
+          if ! grep -q "12 groups passed, 0 environment-blocked" gochar-qa.log; then
+            echo "::error::Gochar QA summary did not report 12 groups passed, 0 environment-blocked."
+            tail -n 20 gochar-qa.log
+            exit 1
+          fi
+
+          echo "Gochar QA: 12 groups passed, 0 environment-blocked."
+
+      - name: Upload Gochar QA log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gochar-qa-log
+          path: gochar-qa.log
+          if-no-files-found: ignore
