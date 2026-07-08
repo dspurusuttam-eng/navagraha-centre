@@ -18,12 +18,6 @@ type NavigationItem = {
   label: string;
 };
 
-const topTrustItems = [
-  "Since 1950 Legacy",
-  "12-Planet Calculations",
-  "Privacy-Safe Guidance",
-] as const;
-
 export async function Header() {
   const requestLocale = await getRequestLocale();
   const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
@@ -64,36 +58,6 @@ export async function Header() {
       data-nosnippet
       className="sticky top-0 z-50 bg-white xl:bg-transparent"
     >
-      <div className="hidden bg-transparent xl:block xl:pt-3">
-        <Container className="xl:!px-6 2xl:!px-10">
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-[1.35rem] border border-[rgba(185,139,70,0.18)] bg-white px-4 py-2.5 shadow-[0_1px_0_rgba(17,17,17,0.04),0_10px_24px_rgba(17,17,17,0.05)] 2xl:px-5">
-            <div className="flex min-w-0 flex-wrap items-center gap-2.5">
-              {topTrustItems.map((item) => (
-                <span
-                  key={item}
-                  className="inline-flex min-h-8 min-w-0 items-center gap-1.5 rounded-[var(--radius-pill)] border border-[rgba(185,139,70,0.24)] bg-white px-3 py-1 text-[0.62rem] tracking-[0.04em] text-[var(--color-ink-strong)] shadow-[inset_0_1px_0_rgba(255,255,255,0.92),0_2px_8px_rgba(17,17,17,0.04)]"
-                >
-                  <span
-                    aria-hidden="true"
-                    className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-accent-gold)]"
-                  />
-                  <span className="mobile-safe-text">{item}</span>
-                </span>
-              ))}
-            </div>
-            <div className="relative z-10 h-9 w-10 shrink-0 [&_details]:h-9 [&_details]:w-10 [&_summary]:flex [&_summary]:h-9 [&_summary]:w-10 [&_summary]:max-w-none [&_summary]:cursor-pointer [&_summary]:items-center [&_summary]:justify-center [&_summary]:overflow-hidden [&_summary]:rounded-[13px] [&_summary]:border [&_summary]:border-[rgba(76,187,23,0.22)] [&_summary]:bg-white [&_summary]:p-0 [&_summary]:text-[0px] [&_summary]:text-transparent [&_summary]:shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_4px_12px_rgba(17,17,17,0.07),0_0_8px_rgba(76,187,23,0.08)] [&_summary]:marker:content-none [&_summary]:[-webkit-tap-highlight-color:transparent] [&_summary::-webkit-details-marker]:hidden">
-              <span
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center whitespace-nowrap text-[0.72rem] font-bold uppercase tracking-[0.06em] text-[#4CBB17]"
-              >
-                {requestLocale.toUpperCase()}
-              </span>
-              <LanguageSwitcher variant="compact" />
-            </div>
-          </div>
-        </Container>
-      </div>
-
       <div className="fixed inset-x-0 top-0 z-50 border-b border-[rgba(185,139,70,0.16)] bg-white shadow-[0_1px_0_rgba(17,17,17,0.05),0_8px_20px_rgba(17,17,17,0.06)] xl:hidden">
         <Container className="!px-[10px] py-1.5 min-[390px]:!px-3 sm:!px-8">
           <div className="flex min-h-[3rem] w-full items-center justify-between gap-1.5 min-[390px]:gap-2">
