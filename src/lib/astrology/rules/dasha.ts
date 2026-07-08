@@ -322,6 +322,114 @@ function toYearsFromDates(startAt: Date, endAt: Date) {
   return dayDelta / daysPerDashaYear;
 }
 
+// --- Generic recursive sub-period splitter (Card 5B) -------------------------
+// One reusable expansion for every nested Vimshottari level (L2 Antardasha,
+// L3 Pratyantardasha, L4 Sookshma, L5 Prana). Children split the parent's FULL
+// period via `parentFullYears * childLordYears / 120`, the last child absorbs
+// float remainder by ending exactly at the parent's full end, and each child is
+// clipped to the parent's VISIBLE window. Start inclusive / end exclusive.
+
+export type VimshottariSubPeriodNode = {
+  planet: ClassicalPlanetaryBody;
+  visibleStartAt: Date;
+  visibleEndAt: Date;
+  fullStartAt: Date;
+  fullEndAt: Date;
+  fullDurationYears: number;
+  isActive: boolean;
+  children: VimshottariSubPeriodNode[] | null;
+};
+
+export type VimshottariSubPeriodExpansion = {
+  periods: VimshottariSubPeriodNode[];
+  activeChild: VimshottariSubPeriodNode | null;
+};
+
+export function buildVimshottariSubPeriods(input: {
+  parentLord: ClassicalPlanetaryBody;
+  parentVisibleStartAt: Date;
+  parentVisibleEndAt: Date;
+  parentFullStartAt: Date;
+  parentFullEndAt: Date;
+  parentFullDurationYears: number;
+  asOfDateUtc: Date;
+  depth: number;
+}): VimshottariSubPeriodExpansion {
+  const order = getDashaOrderFromLord(input.parentLord);
+  const periods: VimshottariSubPeriodNode[] = [];
+  let activeChild: VimshottariSubPeriodNode | null = null;
+  let cursor = input.parentFullStartAt;
+
+  for (let index = 0; index < order.length; index += 1) {
+    const lord = order[index] ?? "KETU";
+    const fullDurationYears =
+      (input.parentFullDurationYears * dashaYearsByLord[lord]) / 120;
+    const fullEndAt =
+      index === order.length - 1
+        ? input.parentFullEndAt
+        : addDays(cursor, fullDurationYears * daysPerDashaYear);
+    const visibleStartAt = maxDate(cursor, input.parentVisibleStartAt);
+    const visibleEndAt = minDate(fullEndAt, input.parentVisibleEndAt);
+
+    if (visibleStartAt.getTime() < visibleEndAt.getTime()) {
+      const isActive =
+        input.asOfDateUtc.getTime() >= visibleStartAt.getTime() &&
+        input.asOfDateUtc.getTime() < visibleEndAt.getTime();
+      const childExpansion =
+        input.depth > 1
+          ? buildVimshottariSubPeriods({
+              parentLord: lord,
+              parentVisibleStartAt: visibleStartAt,
+              parentVisibleEndAt: visibleEndAt,
+              parentFullStartAt: cursor,
+              parentFullEndAt: fullEndAt,
+              parentFullDurationYears: fullDurationYears,
+              asOfDateUtc: input.asOfDateUtc,
+              depth: input.depth - 1,
+            })
+          : null;
+      const entry: VimshottariSubPeriodNode = {
+        planet: lord,
+        visibleStartAt,
+        visibleEndAt,
+        fullStartAt: cursor,
+        fullEndAt,
+        fullDurationYears,
+        isActive,
+        children: childExpansion?.periods ?? null,
+      };
+
+      if (isActive && !activeChild) {
+        activeChild = entry;
+      }
+
+      periods.push(entry);
+    }
+
+    cursor = fullEndAt;
+  }
+
+  return {
+    periods,
+    activeChild,
+  };
+}
+
+function toPratyantarPeriod(
+  node: VimshottariSubPeriodNode
+): VimshottariPratyantarPeriod {
+  return {
+    planet: node.planet,
+    startAtUtc: node.visibleStartAt.toISOString(),
+    endAtUtc: node.visibleEndAt.toISOString(),
+    durationYears: roundTo(
+      toYearsFromDates(node.visibleStartAt, node.visibleEndAt),
+      6
+    ),
+    isActive: node.isActive,
+  };
+}
+
 function buildAntardashasForMahadasha(input: {
   mahadashaLord: ClassicalPlanetaryBody;
   mahadashaVisibleStartAt: Date;
@@ -335,123 +443,56 @@ function buildAntardashasForMahadasha(input: {
   activeAntardasha: VimshottariAntardashaPeriod | null;
   activePratyantar: ActivePratyantarWithinMahadasha | null;
 } {
-  const antardashaOrder = getDashaOrderFromLord(input.mahadashaLord);
-  const antardashas: VimshottariAntardashaPeriod[] = [];
+  const expansion = buildVimshottariSubPeriods({
+    parentLord: input.mahadashaLord,
+    parentVisibleStartAt: input.mahadashaVisibleStartAt,
+    parentVisibleEndAt: input.mahadashaVisibleEndAt,
+    parentFullStartAt: input.mahadashaFullStartAt,
+    parentFullEndAt: input.mahadashaFullEndAt,
+    parentFullDurationYears: input.mahadashaFullDurationYears,
+    asOfDateUtc: input.asOfDateUtc,
+    depth: 2,
+  });
   let activeAntardasha: VimshottariAntardashaPeriod | null = null;
   let activePratyantar: ActivePratyantarWithinMahadasha | null = null;
-  let cursor = input.mahadashaFullStartAt;
 
-  for (let index = 0; index < antardashaOrder.length; index += 1) {
-    const antardashaLord = antardashaOrder[index] ?? "KETU";
-    const antardashaDurationYears =
-      (input.mahadashaFullDurationYears * dashaYearsByLord[antardashaLord]) /
-      120;
-    const antardashaEndAt =
-      index === antardashaOrder.length - 1
-        ? input.mahadashaFullEndAt
-        : addDays(cursor, antardashaDurationYears * daysPerDashaYear);
-    const visibleStartAt = maxDate(cursor, input.mahadashaVisibleStartAt);
-    const visibleEndAt = minDate(antardashaEndAt, input.mahadashaVisibleEndAt);
+  const antardashas = expansion.periods.map((node) => {
+    const pratyantars = (node.children ?? []).map(toPratyantarPeriod);
+    const entry: VimshottariAntardashaPeriod = {
+      planet: node.planet,
+      startAtUtc: node.visibleStartAt.toISOString(),
+      endAtUtc: node.visibleEndAt.toISOString(),
+      durationYears: roundTo(
+        toYearsFromDates(node.visibleStartAt, node.visibleEndAt),
+        6
+      ),
+      isActive: node.isActive,
+      pratyantars,
+    };
 
-    if (visibleStartAt.getTime() < visibleEndAt.getTime()) {
-      const pratyantarResult = buildPratyantarsForAntardasha({
-        antardashaLord,
-        antardashaVisibleStartAt: visibleStartAt,
-        antardashaVisibleEndAt: visibleEndAt,
-        antardashaFullStartAt: cursor,
-        antardashaFullEndAt: antardashaEndAt,
-        antardashaFullDurationYears: antardashaDurationYears,
-        asOfDateUtc: input.asOfDateUtc,
-      });
-      const isActive =
-        input.asOfDateUtc.getTime() >= visibleStartAt.getTime() &&
-        input.asOfDateUtc.getTime() < visibleEndAt.getTime();
-      const entry: VimshottariAntardashaPeriod = {
-        planet: antardashaLord,
-        startAtUtc: visibleStartAt.toISOString(),
-        endAtUtc: visibleEndAt.toISOString(),
-        durationYears: roundTo(toYearsFromDates(visibleStartAt, visibleEndAt), 6),
-        isActive,
-        pratyantars: pratyantarResult.pratyantars,
-      };
-
-      if (isActive && !activeAntardasha) {
-        activeAntardasha = entry;
-      }
-
-      if (pratyantarResult.activePratyantar && !activePratyantar) {
-        activePratyantar = {
-          ...pratyantarResult.activePratyantar,
-          antardashaPlanet: antardashaLord,
-        };
-      }
-
-      antardashas.push(entry);
+    if (node.isActive && !activeAntardasha) {
+      activeAntardasha = entry;
     }
 
-    cursor = antardashaEndAt;
-  }
+    if (!activePratyantar) {
+      const activeChildIndex = (node.children ?? []).findIndex(
+        (child) => child.isActive
+      );
+
+      if (activeChildIndex >= 0) {
+        activePratyantar = {
+          ...pratyantars[activeChildIndex]!,
+          antardashaPlanet: node.planet,
+        };
+      }
+    }
+
+    return entry;
+  });
 
   return {
     antardashas,
     activeAntardasha,
-    activePratyantar,
-  };
-}
-
-function buildPratyantarsForAntardasha(input: {
-  antardashaLord: ClassicalPlanetaryBody;
-  antardashaVisibleStartAt: Date;
-  antardashaVisibleEndAt: Date;
-  antardashaFullStartAt: Date;
-  antardashaFullEndAt: Date;
-  antardashaFullDurationYears: number;
-  asOfDateUtc: Date;
-}): {
-  pratyantars: VimshottariPratyantarPeriod[];
-  activePratyantar: VimshottariPratyantarPeriod | null;
-} {
-  const pratyantarOrder = getDashaOrderFromLord(input.antardashaLord);
-  const pratyantars: VimshottariPratyantarPeriod[] = [];
-  let activePratyantar: VimshottariPratyantarPeriod | null = null;
-  let cursor = input.antardashaFullStartAt;
-
-  for (let index = 0; index < pratyantarOrder.length; index += 1) {
-    const pratyantarLord = pratyantarOrder[index] ?? "KETU";
-    const pratyantarDurationYears =
-      (input.antardashaFullDurationYears * dashaYearsByLord[pratyantarLord]) /
-      120;
-    const pratyantarEndAt =
-      index === pratyantarOrder.length - 1
-        ? input.antardashaFullEndAt
-        : addDays(cursor, pratyantarDurationYears * daysPerDashaYear);
-    const visibleStartAt = maxDate(cursor, input.antardashaVisibleStartAt);
-    const visibleEndAt = minDate(pratyantarEndAt, input.antardashaVisibleEndAt);
-
-    if (visibleStartAt.getTime() < visibleEndAt.getTime()) {
-      const isActive =
-        input.asOfDateUtc.getTime() >= visibleStartAt.getTime() &&
-        input.asOfDateUtc.getTime() < visibleEndAt.getTime();
-      const entry: VimshottariPratyantarPeriod = {
-        planet: pratyantarLord,
-        startAtUtc: visibleStartAt.toISOString(),
-        endAtUtc: visibleEndAt.toISOString(),
-        durationYears: roundTo(toYearsFromDates(visibleStartAt, visibleEndAt), 6),
-        isActive,
-      };
-
-      if (isActive && !activePratyantar) {
-        activePratyantar = entry;
-      }
-
-      pratyantars.push(entry);
-    }
-
-    cursor = pratyantarEndAt;
-  }
-
-  return {
-    pratyantars,
     activePratyantar,
   };
 }
@@ -461,46 +502,45 @@ function buildDayDashasForPratyantar(input: {
   pratyantarStartAt: Date;
   pratyantarEndAt: Date;
   asOfDateUtc: Date;
-}) {
-  const dayDashaOrder = getDashaOrderFromLord(input.pratyantarLord);
-  const dayDashaPeriods: VimshottariDayDashaPeriod[] = [];
+}): {
+  dayDashaPeriods: VimshottariDayDashaPeriod[];
+  activeDayDasha: VimshottariDayDashaPeriod | null;
+} {
+  // Legacy L4 window behavior (preserved): the visible pratyantar span is
+  // treated as the full period for the day-dasha split.
+  const expansion = buildVimshottariSubPeriods({
+    parentLord: input.pratyantarLord,
+    parentVisibleStartAt: input.pratyantarStartAt,
+    parentVisibleEndAt: input.pratyantarEndAt,
+    parentFullStartAt: input.pratyantarStartAt,
+    parentFullEndAt: input.pratyantarEndAt,
+    parentFullDurationYears: toYearsFromDates(
+      input.pratyantarStartAt,
+      input.pratyantarEndAt
+    ),
+    asOfDateUtc: input.asOfDateUtc,
+    depth: 1,
+  });
   let activeDayDasha: VimshottariDayDashaPeriod | null = null;
-  let cursor = input.pratyantarStartAt;
-  const fullDurationYears = toYearsFromDates(
-    input.pratyantarStartAt,
-    input.pratyantarEndAt
-  );
 
-  for (let index = 0; index < dayDashaOrder.length; index += 1) {
-    const dayDashaLord = dayDashaOrder[index] ?? "KETU";
-    const dayDashaDurationYears =
-      (fullDurationYears * dashaYearsByLord[dayDashaLord]) / 120;
-    const dayDashaEndAt =
-      index === dayDashaOrder.length - 1
-        ? input.pratyantarEndAt
-        : addDays(cursor, dayDashaDurationYears * daysPerDashaYear);
+  const dayDashaPeriods = expansion.periods.map((node) => {
+    const entry: VimshottariDayDashaPeriod = {
+      planet: node.planet,
+      startAtUtc: node.visibleStartAt.toISOString(),
+      endAtUtc: node.visibleEndAt.toISOString(),
+      durationYears: roundTo(
+        toYearsFromDates(node.visibleStartAt, node.visibleEndAt),
+        6
+      ),
+      isActive: node.isActive,
+    };
 
-    if (cursor.getTime() < dayDashaEndAt.getTime()) {
-      const isActive =
-        input.asOfDateUtc.getTime() >= cursor.getTime() &&
-        input.asOfDateUtc.getTime() < dayDashaEndAt.getTime();
-      const entry: VimshottariDayDashaPeriod = {
-        planet: dayDashaLord,
-        startAtUtc: cursor.toISOString(),
-        endAtUtc: dayDashaEndAt.toISOString(),
-        durationYears: roundTo(toYearsFromDates(cursor, dayDashaEndAt), 6),
-        isActive,
-      };
-
-      if (isActive && !activeDayDasha) {
-        activeDayDasha = entry;
-      }
-
-      dayDashaPeriods.push(entry);
+    if (node.isActive && !activeDayDasha) {
+      activeDayDasha = entry;
     }
 
-    cursor = dayDashaEndAt;
-  }
+    return entry;
+  });
 
   return {
     dayDashaPeriods,
@@ -734,5 +774,413 @@ export function calculateCurrentVimshottariDasha(input: {
     ),
     progress: Number(progress.toFixed(3)),
     sourceNakshatra: timelineResult.data.moonNakshatra.name,
+  };
+}
+
+// --- Deep-level resolvers (Card 5B): L4 Sookshma + L5 Prana, on demand -------
+// The full 5-level tree is never materialized (9^5 = 59,049 leaves). Deep
+// levels are resolved only along the active instant or a requested path, so
+// every response stays bounded (<= 9 children + <= 5 lineage nodes).
+
+export type VimshottariDashaLevel = 1 | 2 | 3 | 4 | 5;
+
+export const vimshottariDashaLevelNames = [
+  "MAHADASHA",
+  "ANTARDASHA",
+  "PRATYANTARDASHA",
+  "SOOKSHMA",
+  "PRANA",
+] as const;
+
+export type VimshottariDashaLevelName =
+  (typeof vimshottariDashaLevelNames)[number];
+
+export type VimshottariDeepPeriod = {
+  level: VimshottariDashaLevel;
+  levelName: VimshottariDashaLevelName;
+  planet: ClassicalPlanetaryBody;
+  startAtUtc: string;
+  endAtUtc: string;
+  durationYears: number;
+  isActive: boolean;
+  lineage: ClassicalPlanetaryBody[];
+  lineagePath: string;
+};
+
+export type VimshottariDeepIssueCode =
+  | VimshottariMahadashaIssueCode
+  | "NO_ACTIVE_PERIOD"
+  | "INVALID_LINEAGE"
+  | "PATH_NOT_FOUND";
+
+export type VimshottariDeepFailure = {
+  success: false;
+  issue: {
+    code: VimshottariDeepIssueCode;
+    message: string;
+  };
+};
+
+export type VimshottariActiveLineage = {
+  asOfDateUtc: string;
+  levels: VimshottariDeepPeriod[];
+  mahadasha: VimshottariDeepPeriod;
+  antardasha: VimshottariDeepPeriod;
+  pratyantardasha: VimshottariDeepPeriod;
+  sookshma: VimshottariDeepPeriod;
+  prana: VimshottariDeepPeriod;
+};
+
+export type VimshottariActiveLineageResult =
+  | { success: true; data: VimshottariActiveLineage }
+  | VimshottariDeepFailure;
+
+export type VimshottariDashaPathData = {
+  target: VimshottariDeepPeriod | null;
+  children: VimshottariDeepPeriod[];
+};
+
+export type VimshottariDashaPathResult =
+  | { success: true; data: VimshottariDashaPathData }
+  | VimshottariDeepFailure;
+
+function deepFail(
+  code: VimshottariDeepIssueCode,
+  message: string
+): VimshottariDeepFailure {
+  return {
+    success: false,
+    issue: {
+      code,
+      message,
+    },
+  };
+}
+
+function toTitleCaseLord(lord: ClassicalPlanetaryBody) {
+  return lord.charAt(0) + lord.slice(1).toLowerCase();
+}
+
+export function formatDashaLineagePath(lords: readonly ClassicalPlanetaryBody[]) {
+  return lords.map(toTitleCaseLord).join(" > ");
+}
+
+function toDeepPeriod(input: {
+  level: VimshottariDashaLevel;
+  planet: ClassicalPlanetaryBody;
+  visibleStartAt: Date;
+  visibleEndAt: Date;
+  isActive: boolean;
+  lineage: ClassicalPlanetaryBody[];
+}): VimshottariDeepPeriod {
+  return {
+    level: input.level,
+    levelName: vimshottariDashaLevelNames[input.level - 1],
+    planet: input.planet,
+    startAtUtc: input.visibleStartAt.toISOString(),
+    endAtUtc: input.visibleEndAt.toISOString(),
+    durationYears: roundTo(
+      toYearsFromDates(input.visibleStartAt, input.visibleEndAt),
+      6
+    ),
+    isActive: input.isActive,
+    lineage: input.lineage,
+    lineagePath: formatDashaLineagePath(input.lineage),
+  };
+}
+
+type DeepParentBounds = {
+  lord: ClassicalPlanetaryBody;
+  visibleStartAt: Date;
+  visibleEndAt: Date;
+  fullStartAt: Date;
+  fullEndAt: Date;
+  fullDurationYears: number;
+};
+
+function resolveMahadashaParentBounds(
+  timeline: VimshottariMahadashaTimeline,
+  mahadasha: VimshottariMahadashaPeriod
+): DeepParentBounds {
+  const isBirthMahadasha =
+    timeline.mahadashaPeriods.length > 0 &&
+    timeline.mahadashaPeriods[0] === mahadasha;
+  const fullStartAt = isBirthMahadasha
+    ? new Date(timeline.birthBalance.periodStartAtUtc)
+    : new Date(mahadasha.startAtUtc);
+
+  return {
+    lord: mahadasha.planet,
+    visibleStartAt: new Date(mahadasha.startAtUtc),
+    visibleEndAt: new Date(mahadasha.endAtUtc),
+    fullStartAt,
+    fullEndAt: new Date(mahadasha.endAtUtc),
+    fullDurationYears: dashaYearsByLord[mahadasha.planet],
+  };
+}
+
+export function getActiveDashaLineage(input: {
+  moonLongitude: number;
+  birthDateUtc: Date | string;
+  asOfDateUtc?: Date | string;
+}): VimshottariActiveLineageResult {
+  const timelineResult = calculateVimshottariMahadashaTimeline({
+    moonLongitude: input.moonLongitude,
+    birthDateUtc: input.birthDateUtc,
+    asOfDateUtc: input.asOfDateUtc,
+  });
+
+  if (!timelineResult.success) {
+    return deepFail(timelineResult.issue.code, timelineResult.issue.message);
+  }
+
+  const timeline = timelineResult.data;
+  const activeMahadasha = timeline.activeMahadasha;
+
+  if (!activeMahadasha) {
+    return deepFail(
+      "NO_ACTIVE_PERIOD",
+      "No active Vimshottari Mahadasha exists for the provided as-of instant (it may be before birth or beyond the generated timeline)."
+    );
+  }
+
+  const asOfDateUtc = input.asOfDateUtc
+    ? parseDateInput(input.asOfDateUtc)
+    : new Date();
+
+  if (!asOfDateUtc) {
+    return deepFail(
+      "INVALID_AS_OF_DATE_UTC",
+      "asOfDateUtc is invalid. Provide a valid Date or UTC ISO string."
+    );
+  }
+
+  const lineageLords: ClassicalPlanetaryBody[] = [activeMahadasha.planet];
+  const levels: VimshottariDeepPeriod[] = [
+    toDeepPeriod({
+      level: 1,
+      planet: activeMahadasha.planet,
+      visibleStartAt: new Date(activeMahadasha.startAtUtc),
+      visibleEndAt: new Date(activeMahadasha.endAtUtc),
+      isActive: true,
+      lineage: [...lineageLords],
+    }),
+  ];
+  let parent = resolveMahadashaParentBounds(timeline, activeMahadasha);
+
+  for (let level = 2 as VimshottariDashaLevel; level <= 5; level += 1) {
+    const expansion = buildVimshottariSubPeriods({
+      parentLord: parent.lord,
+      parentVisibleStartAt: parent.visibleStartAt,
+      parentVisibleEndAt: parent.visibleEndAt,
+      parentFullStartAt: parent.fullStartAt,
+      parentFullEndAt: parent.fullEndAt,
+      parentFullDurationYears: parent.fullDurationYears,
+      asOfDateUtc,
+      depth: 1,
+    });
+    const activeNode = expansion.activeChild;
+
+    if (!activeNode) {
+      return deepFail(
+        "NO_ACTIVE_PERIOD",
+        `No active ${vimshottariDashaLevelNames[level - 1]} period could be resolved for the provided as-of instant.`
+      );
+    }
+
+    lineageLords.push(activeNode.planet);
+    levels.push(
+      toDeepPeriod({
+        level,
+        planet: activeNode.planet,
+        visibleStartAt: activeNode.visibleStartAt,
+        visibleEndAt: activeNode.visibleEndAt,
+        isActive: true,
+        lineage: [...lineageLords],
+      })
+    );
+    parent = {
+      lord: activeNode.planet,
+      visibleStartAt: activeNode.visibleStartAt,
+      visibleEndAt: activeNode.visibleEndAt,
+      fullStartAt: activeNode.fullStartAt,
+      fullEndAt: activeNode.fullEndAt,
+      fullDurationYears: activeNode.fullDurationYears,
+    };
+  }
+
+  return {
+    success: true,
+    data: {
+      asOfDateUtc: asOfDateUtc.toISOString(),
+      levels,
+      mahadasha: levels[0]!,
+      antardasha: levels[1]!,
+      pratyantardasha: levels[2]!,
+      sookshma: levels[3]!,
+      prana: levels[4]!,
+    },
+  };
+}
+
+export function resolveVimshottariDashaPath(input: {
+  moonLongitude: number;
+  birthDateUtc: Date | string;
+  asOfDateUtc?: Date | string;
+  lineage: readonly ClassicalPlanetaryBody[];
+}): VimshottariDashaPathResult {
+  if (!Array.isArray(input.lineage) || input.lineage.length > 4) {
+    return deepFail(
+      "INVALID_LINEAGE",
+      "lineage must be an array of at most 4 dasha lords (Mahadasha first)."
+    );
+  }
+
+  for (const lord of input.lineage) {
+    if (!dashaSequence.includes(lord)) {
+      return deepFail(
+        "INVALID_LINEAGE",
+        `lineage contains an unknown dasha lord: ${String(lord)}.`
+      );
+    }
+  }
+
+  const timelineResult = calculateVimshottariMahadashaTimeline({
+    moonLongitude: input.moonLongitude,
+    birthDateUtc: input.birthDateUtc,
+    asOfDateUtc: input.asOfDateUtc,
+  });
+
+  if (!timelineResult.success) {
+    return deepFail(timelineResult.issue.code, timelineResult.issue.message);
+  }
+
+  const timeline = timelineResult.data;
+  const asOfDateUtc = input.asOfDateUtc
+    ? parseDateInput(input.asOfDateUtc)
+    : new Date();
+
+  if (!asOfDateUtc) {
+    return deepFail(
+      "INVALID_AS_OF_DATE_UTC",
+      "asOfDateUtc is invalid. Provide a valid Date or UTC ISO string."
+    );
+  }
+
+  // Path resolution is scoped to the first full 120-year cycle from birth,
+  // where each lord holds exactly one Mahadasha.
+  const firstCycle = timeline.mahadashaPeriods.slice(0, dashaSequence.length);
+
+  if (input.lineage.length === 0) {
+    return {
+      success: true,
+      data: {
+        target: null,
+        children: firstCycle.map((period) =>
+          toDeepPeriod({
+            level: 1,
+            planet: period.planet,
+            visibleStartAt: new Date(period.startAtUtc),
+            visibleEndAt: new Date(period.endAtUtc),
+            isActive: period.isActive,
+            lineage: [period.planet],
+          })
+        ),
+      },
+    };
+  }
+
+  const mahadasha = firstCycle.find(
+    (period) => period.planet === input.lineage[0]
+  );
+
+  if (!mahadasha) {
+    return deepFail(
+      "PATH_NOT_FOUND",
+      `No ${toTitleCaseLord(input.lineage[0]!)} Mahadasha exists in the first Vimshottari cycle of this chart.`
+    );
+  }
+
+  const lineageLords: ClassicalPlanetaryBody[] = [mahadasha.planet];
+  let parent = resolveMahadashaParentBounds(timeline, mahadasha);
+  let target = toDeepPeriod({
+    level: 1,
+    planet: mahadasha.planet,
+    visibleStartAt: new Date(mahadasha.startAtUtc),
+    visibleEndAt: new Date(mahadasha.endAtUtc),
+    isActive: mahadasha.isActive,
+    lineage: [...lineageLords],
+  });
+  let expansion = buildVimshottariSubPeriods({
+    parentLord: parent.lord,
+    parentVisibleStartAt: parent.visibleStartAt,
+    parentVisibleEndAt: parent.visibleEndAt,
+    parentFullStartAt: parent.fullStartAt,
+    parentFullEndAt: parent.fullEndAt,
+    parentFullDurationYears: parent.fullDurationYears,
+    asOfDateUtc,
+    depth: 1,
+  });
+
+  for (let depthIndex = 1; depthIndex < input.lineage.length; depthIndex += 1) {
+    const requestedLord = input.lineage[depthIndex]!;
+    const matchedNode = expansion.periods.find(
+      (node) => node.planet === requestedLord
+    );
+
+    if (!matchedNode) {
+      return deepFail(
+        "PATH_NOT_FOUND",
+        `No visible ${toTitleCaseLord(requestedLord)} ${vimshottariDashaLevelNames[depthIndex]} period exists under ${formatDashaLineagePath(lineageLords)} (it may be fully consumed before birth).`
+      );
+    }
+
+    lineageLords.push(matchedNode.planet);
+    target = toDeepPeriod({
+      level: (depthIndex + 1) as VimshottariDashaLevel,
+      planet: matchedNode.planet,
+      visibleStartAt: matchedNode.visibleStartAt,
+      visibleEndAt: matchedNode.visibleEndAt,
+      isActive: matchedNode.isActive,
+      lineage: [...lineageLords],
+    });
+    parent = {
+      lord: matchedNode.planet,
+      visibleStartAt: matchedNode.visibleStartAt,
+      visibleEndAt: matchedNode.visibleEndAt,
+      fullStartAt: matchedNode.fullStartAt,
+      fullEndAt: matchedNode.fullEndAt,
+      fullDurationYears: matchedNode.fullDurationYears,
+    };
+    expansion = buildVimshottariSubPeriods({
+      parentLord: parent.lord,
+      parentVisibleStartAt: parent.visibleStartAt,
+      parentVisibleEndAt: parent.visibleEndAt,
+      parentFullStartAt: parent.fullStartAt,
+      parentFullEndAt: parent.fullEndAt,
+      parentFullDurationYears: parent.fullDurationYears,
+      asOfDateUtc,
+      depth: 1,
+    });
+  }
+
+  const childLevel = (input.lineage.length + 1) as VimshottariDashaLevel;
+  const children = expansion.periods.map((node) =>
+    toDeepPeriod({
+      level: childLevel,
+      planet: node.planet,
+      visibleStartAt: node.visibleStartAt,
+      visibleEndAt: node.visibleEndAt,
+      isActive: node.isActive,
+      lineage: [...lineageLords, node.planet],
+    })
+  );
+
+  return {
+    success: true,
+    data: {
+      target,
+      children,
+    },
   };
 }
