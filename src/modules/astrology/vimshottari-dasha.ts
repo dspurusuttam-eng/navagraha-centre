@@ -1,7 +1,12 @@
 import {
   calculateVimshottariMahadashaTimeline,
+  getActiveDashaLineage,
+  resolveVimshottariDashaPath,
+  type VimshottariActiveLineage,
+  type VimshottariDashaPathData,
   type VimshottariMahadashaTimeline,
 } from "@/lib/astrology/rules/dasha";
+import type { ClassicalPlanetaryBody } from "@/modules/astrology/types";
 
 type ChartPlanetRow = {
   name: string;
@@ -63,15 +68,20 @@ function isNonEmptyString(value: unknown): value is string {
   return typeof value === "string" && value.trim().length > 0;
 }
 
-export function buildVimshottariMahadashaForChartContext(input: {
-  chart: VimshottariChartContextInput | null | undefined;
-  asOfDateUtc?: Date | string;
-  periodCount?: number;
-}): VimshottariChartDashaResult {
+type VerifiedMoonContext = {
+  moonLongitude: number;
+  birthDateUtc: string;
+};
+
+function resolveVerifiedMoonContext(
+  chart: VimshottariChartContextInput | null | undefined
+):
+  | { success: true; data: VerifiedMoonContext }
+  | VimshottariChartDashaFailure {
   if (
-    !input.chart ||
-    !isNonEmptyString(input.chart.birth_context?.birth_utc) ||
-    !Array.isArray(input.chart.planets)
+    !chart ||
+    !isNonEmptyString(chart.birth_context?.birth_utc) ||
+    !Array.isArray(chart.planets)
   ) {
     return fail(
       "INVALID_CHART_CONTEXT",
@@ -79,14 +89,14 @@ export function buildVimshottariMahadashaForChartContext(input: {
     );
   }
 
-  if (!input.chart.verification?.is_verified_for_chart_logic) {
+  if (!chart.verification?.is_verified_for_chart_logic) {
     return fail(
       "UNVERIFIED_CHART_CONTEXT",
       "Chart context must be verified before Vimshottari Mahadasha can be calculated."
     );
   }
 
-  const moon = input.chart.planets.find(
+  const moon = chart.planets.find(
     (planet) => planet.name.trim().toUpperCase() === "MOON"
   );
 
@@ -104,9 +114,29 @@ export function buildVimshottariMahadashaForChartContext(input: {
     );
   }
 
+  return {
+    success: true,
+    data: {
+      moonLongitude: moon.longitude,
+      birthDateUtc: chart.birth_context.birth_utc,
+    },
+  };
+}
+
+export function buildVimshottariMahadashaForChartContext(input: {
+  chart: VimshottariChartContextInput | null | undefined;
+  asOfDateUtc?: Date | string;
+  periodCount?: number;
+}): VimshottariChartDashaResult {
+  const context = resolveVerifiedMoonContext(input.chart);
+
+  if (!context.success) {
+    return context;
+  }
+
   const timeline = calculateVimshottariMahadashaTimeline({
-    moonLongitude: moon.longitude,
-    birthDateUtc: input.chart.birth_context.birth_utc,
+    moonLongitude: context.data.moonLongitude,
+    birthDateUtc: context.data.birthDateUtc,
     asOfDateUtc: input.asOfDateUtc,
     periodCount: input.periodCount,
   });
@@ -122,5 +152,75 @@ export function buildVimshottariMahadashaForChartContext(input: {
   return {
     success: true,
     data: timeline.data,
+  };
+}
+
+export type VimshottariChartActiveLineageResult =
+  | { success: true; data: VimshottariActiveLineage }
+  | VimshottariChartDashaFailure;
+
+export function buildVimshottariActiveLineageForChartContext(input: {
+  chart: VimshottariChartContextInput | null | undefined;
+  asOfDateUtc?: Date | string;
+}): VimshottariChartActiveLineageResult {
+  const context = resolveVerifiedMoonContext(input.chart);
+
+  if (!context.success) {
+    return context;
+  }
+
+  const lineage = getActiveDashaLineage({
+    moonLongitude: context.data.moonLongitude,
+    birthDateUtc: context.data.birthDateUtc,
+    asOfDateUtc: input.asOfDateUtc,
+  });
+
+  if (!lineage.success) {
+    return fail(
+      "DASHA_CALCULATION_FAILED",
+      lineage.issue.message,
+      lineage.issue
+    );
+  }
+
+  return {
+    success: true,
+    data: lineage.data,
+  };
+}
+
+export type VimshottariChartDashaPathResult =
+  | { success: true; data: VimshottariDashaPathData }
+  | VimshottariChartDashaFailure;
+
+export function buildVimshottariDashaPathForChartContext(input: {
+  chart: VimshottariChartContextInput | null | undefined;
+  lineage: readonly ClassicalPlanetaryBody[];
+  asOfDateUtc?: Date | string;
+}): VimshottariChartDashaPathResult {
+  const context = resolveVerifiedMoonContext(input.chart);
+
+  if (!context.success) {
+    return context;
+  }
+
+  const resolved = resolveVimshottariDashaPath({
+    moonLongitude: context.data.moonLongitude,
+    birthDateUtc: context.data.birthDateUtc,
+    asOfDateUtc: input.asOfDateUtc,
+    lineage: input.lineage,
+  });
+
+  if (!resolved.success) {
+    return fail(
+      "DASHA_CALCULATION_FAILED",
+      resolved.issue.message,
+      resolved.issue
+    );
+  }
+
+  return {
+    success: true,
+    data: resolved.data,
   };
 }
