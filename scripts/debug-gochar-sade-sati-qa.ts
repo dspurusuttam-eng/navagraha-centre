@@ -4,6 +4,7 @@ import {
   BENEFIC_HOUSES_FROM_MOON,
   GOCHAR_GRAHAS,
   buildGocharSnapshot,
+  distanceToRashiBoundaryDegrees,
   enumerateSadeSatiWindow,
   findNextIngress,
   houseFromMoon,
@@ -304,7 +305,26 @@ const blocked: string[] = [];
   assert.equal(none.success, false);
   if (!none.success) assert.equal(none.issue.code, "NO_INGRESS_IN_HORIZON");
 
-  results.push("QA6 ingress accuracy (direct, retrograde, wrap, stationary)");
+  // Fast body must ALSO satisfy the ANGULAR tolerance, not just the 60 s
+  // bracket. At ~15.4 deg/day the Moon covers ~0.011 deg in 60 s, so a
+  // time-only stop condition misses the 0.001 deg boundary requirement.
+  // (Regression guard: this exact case failed on the real ephemeris in CI.)
+  for (const degPerDay of [15.4, -15.4, 13.2]) {
+    const fastMoon = makeLinearSampler({ MOON: { at: 89.0, degPerDay } });
+    const fastIng = findNextIngress({ sampler: fastMoon, graha: "MOON", from: QUERY });
+    assert.equal(fastIng.success, true, `fast Moon ingress at ${degPerDay} deg/day`);
+    if (!fastIng.success) throw new Error("unreachable");
+    const fastLong = fastMoon(new Date(fastIng.data.atUtc))!.MOON.longitude;
+    const off = distanceToRashiBoundaryDegrees(fastLong);
+    assert.ok(
+      off <= INGRESS_BOUNDARY_TOLERANCE_DEG,
+      `fast Moon (${degPerDay} deg/day) must land within ${INGRESS_BOUNDARY_TOLERANCE_DEG} deg of the boundary (off by ${off})`
+    );
+  }
+
+  results.push(
+    "QA6 ingress accuracy (direct, retrograde, wrap, stationary, fast-body angular tolerance)"
+  );
 }
 
 // ============================================================================

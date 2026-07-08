@@ -57,11 +57,39 @@ const DEFAULT_HORIZON_DAYS: Record<GocharGraha, number> = {
   KETU: 1200,
 };
 
-/** Bisection stops when the bracket is this tight (contract: <= 60 s). */
+/** Bisection bracket target (contract: <= 60 s). */
 export const INGRESS_TOLERANCE_MS = 60_000;
 
-/** Post-verification tolerance on the 30 deg boundary (contract: <= 0.001 deg). */
+/** Angular tolerance on the 30 deg boundary (contract: <= 0.001 deg). */
 export const INGRESS_BOUNDARY_TOLERANCE_DEG = 0.001;
+
+/**
+ * Hard cap on bisection halvings. Reaching a 60 s bracket from a multi-day
+ * coarse step takes ~13 halvings; driving the Moon (~15.4 deg/day) under
+ * 0.001 deg needs a ~5.6 s bracket, i.e. a few more. The cap only guards a
+ * pathological sampler and is not reached in practice.
+ */
+const MAX_BISECTION_ITERATIONS = 80;
+
+/** Angular distance from `longitude` to the nearest 30 deg rashi boundary. */
+export function distanceToRashiBoundaryDegrees(longitude: number): number {
+  const within = ((longitude % 30) + 30) % 30;
+
+  return Math.min(within, 30 - within);
+}
+
+/**
+ * A crossing is accepted only when BOTH contract tolerances hold: the bracket
+ * is <= 60 s AND the sampled longitude sits within 0.001 deg of the boundary.
+ * Time alone is insufficient for fast bodies -- the Moon covers ~0.011 deg in
+ * 60 s, roughly 10x the angular tolerance.
+ */
+function crossingWithinTolerance(bracketMs: number, longitude: number): boolean {
+  return (
+    bracketMs <= INGRESS_TOLERANCE_MS &&
+    distanceToRashiBoundaryDegrees(longitude) <= INGRESS_BOUNDARY_TOLERANCE_DEG
+  );
+}
 
 export type IngressEvent = {
   graha: GocharGraha;
@@ -114,7 +142,13 @@ function bisectRashiChange(input: {
     return null;
   }
 
-  while (hi - lo > INGRESS_TOLERANCE_MS) {
+  for (
+    let iteration = 0;
+    iteration < MAX_BISECTION_ITERATIONS &&
+    hi - lo > 1 &&
+    !crossingWithinTolerance(hi - lo, hiSample.longitude);
+    iteration += 1
+  ) {
     const mid = lo + Math.floor((hi - lo) / 2);
     const midSample = sampleGraha(input.sampler, input.graha, new Date(mid));
 
@@ -262,7 +296,15 @@ function bisectStateChange(input: {
     return null;
   }
 
-  while (hi - lo > INGRESS_TOLERANCE_MS) {
+  // A Sade Sati activation boundary is itself a rashi boundary, so the same
+  // dual tolerance (time AND angle) applies.
+  for (
+    let iteration = 0;
+    iteration < MAX_BISECTION_ITERATIONS &&
+    hi - lo > 1 &&
+    !crossingWithinTolerance(hi - lo, hiEval.sample.longitude);
+    iteration += 1
+  ) {
     const mid = lo + Math.floor((hi - lo) / 2);
     const midEval = input.stateAt(new Date(mid));
 

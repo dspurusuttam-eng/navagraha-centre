@@ -37,6 +37,7 @@ export {
   type VedhaStatus,
 } from "@/modules/astrology/gochar/core";
 export {
+  distanceToRashiBoundaryDegrees,
   enumerateSadeSatiWindow,
   findNextIngress,
   INGRESS_BOUNDARY_TOLERANCE_DEG,
