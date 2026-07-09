@@ -15,6 +15,10 @@ import { buildPageMetadata } from "@/lib/metadata";
 import { getDashboardOverview } from "@/modules/account/service";
 import { DashboardEcosystemHome } from "@/modules/account/components/dashboard-ecosystem-home";
 import {
+  DecisionDeskCard,
+  type DecisionDeskCardInput,
+} from "@/modules/account/components/decision-desk-card";
+import {
   TodayDecisionCard,
   type TodayDecisionCardInput,
 } from "@/modules/account/components/today-decision-card";
@@ -360,6 +364,14 @@ export default async function DashboardPage() {
       locale: localeDefinition.code,
     } satisfies TodayDecisionCardInput;
   })();
+  const decisionDeskInput = todayDecisionInput
+    ? ({
+        latitude: todayDecisionInput.latitude,
+        longitude: todayDecisionInput.longitude,
+        timezone: todayDecisionInput.timezone,
+        locationLabel: todayDecisionInput.locationLabel,
+      } satisfies DecisionDeskCardInput)
+    : null;
 
   return (
     <Section
@@ -529,6 +541,8 @@ export default async function DashboardPage() {
           />
 
           <TodayDecisionCard input={todayDecisionInput} />
+
+          <DecisionDeskCard input={decisionDeskInput} />
 
           <Card tone="accent" className="space-y-5">
             <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
