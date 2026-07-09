@@ -36,6 +36,7 @@
     "debug:dasha:qa": "tsx scripts/debug-dasha-qa.ts",
     "debug:dasha:5level:qa": "tsx scripts/debug-dasha-5level-qa.ts",
     "debug:gochar:qa": "tsx scripts/debug-gochar-sade-sati-qa.ts",
+    "debug:ashtakavarga:qa": "tsx scripts/debug-ashtakavarga-qa.ts",
     "debug:houses": "tsx scripts/debug-houses.ts",
     "debug:lagna": "tsx scripts/debug-lagna.ts",
     "debug:yoga-rules": "tsx scripts/debug-yoga-rules.ts",
