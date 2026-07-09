@@ -129,9 +129,31 @@ export function DashboardPersonalHub({
   const askMyChartHref = askMyChartReady ? hub.dailyGuidance.askMyChartHref : guidanceHref;
   const panchangHref = hub.readiness.canViewPanchang ? hub.panchangSnapshot.panchangHref : "/panchang";
   const currentPratyantardasha = hub.dasha.currentPratyantardasha ?? hub.dasha.currentPratyantar;
+  const dashaLineage: Array<{ label: string; value: string }> = [];
   const recentReports = hub.reports.saved.recent.slice(0, 3);
   const recentConsultations = hub.consultations.recentConsultations.slice(0, 2);
   const upcomingConsultation = hub.consultations.upcomingConsultation;
+
+  if (hub.dasha.currentMahadasha) {
+    dashaLineage.push({
+      label: "Mahadasha",
+      value: `${hub.dasha.currentMahadasha.lord} - until ${formatDate(hub.dasha.currentMahadasha.endAtUtc)}`,
+    });
+  }
+
+  if (hub.dasha.currentAntardasha) {
+    dashaLineage.push({
+      label: "Antardasha",
+      value: `${hub.dasha.currentAntardasha.lord} - until ${formatDate(hub.dasha.currentAntardasha.endAtUtc)}`,
+    });
+  }
+
+  if (currentPratyantardasha) {
+    dashaLineage.push({
+      label: "Pratyantar",
+      value: `${currentPratyantardasha.lord} - until ${formatDate(currentPratyantardasha.endAtUtc)}`,
+    });
+  }
 
   return (
     <div className="space-y-6">
@@ -223,41 +245,37 @@ export function DashboardPersonalHub({
                 Current Dasha
               </p>
               <h2 className="break-words text-[length:var(--font-size-title-sm)] text-[#111111]">
-                {hub.dasha.currentMahadasha ? "Timing summary" : "No Dasha available"}
+                {dashaLineage.length ? "Current Dasha Lineage" : "Dasha lineage unavailable"}
               </h2>
             </div>
           </div>
-          <Badge tone={readinessTone(hub.dasha.state === "ready")}>{hub.dasha.state === "ready" ? "Ready" : "Fallback"}</Badge>
-          <p className="break-words text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[#4A4A4A]">
-            {hub.dasha.summary}
-          </p>
-          <div className="grid gap-3">
-            <InfoLine
-              label="Mahadasha"
-              value={
-                hub.dasha.currentMahadasha
-                  ? `${hub.dasha.currentMahadasha.lord} - until ${formatDate(hub.dasha.currentMahadasha.endAtUtc)}`
-                  : "Unavailable"
-              }
-            />
-            <InfoLine
-              label="Antardasha"
-              value={
-                hub.dasha.currentAntardasha
-                  ? `${hub.dasha.currentAntardasha.lord} - until ${formatDate(hub.dasha.currentAntardasha.endAtUtc)}`
-                  : "Unavailable"
-              }
-            />
-            <InfoLine
-              label="Pratyantar"
-              value={
-                currentPratyantardasha
-                  ? `${currentPratyantardasha.lord} - until ${formatDate(currentPratyantardasha.endAtUtc)}`
-                  : "Unavailable"
-              }
-            />
-            <InfoLine label="Timing tone" value={hub.dasha.timingTone} />
+          <div className="flex flex-wrap gap-2">
+            <Badge tone={readinessTone(hub.dasha.state === "ready")}>
+              {hub.dasha.state === "ready" ? "Ready" : "Data unavailable"}
+            </Badge>
+            <Badge tone={hub.dasha.dashaType === "VIMSHOTTARI" ? "accent" : "neutral"}>
+              {hub.dasha.dashaType === "VIMSHOTTARI" ? "Vimshottari" : "No Dasha type"}
+            </Badge>
           </div>
+          <p className="break-words text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[#4A4A4A]">
+            Active levels are shown from the saved Kundli payload only. Missing lineage levels stay hidden until available.
+          </p>
+          {dashaLineage.length ? (
+            <div className="grid gap-3">
+              {dashaLineage.map((entry) => (
+                <InfoLine key={entry.label} label={entry.label} value={entry.value} />
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-[var(--radius-xl)] border border-[#EAEAEA] bg-white px-4 py-4">
+              <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[#C89B2C]">
+                Data unavailable
+              </p>
+              <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[#4A4A4A]">
+                Save a Kundli with chart data to view the active Dasha lineage.
+              </p>
+            </div>
+          )}
           {hub.dasha.timeline.length ? (
             <div className="space-y-3 rounded-[var(--radius-xl)] border border-[#EAEAEA] bg-white px-4 py-4">
               <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[#C89B2C]">
@@ -275,7 +293,7 @@ export function DashboardPersonalHub({
                       </Badge>
                     </div>
                     <p className="text-[length:var(--font-size-body-xs)] text-[#4A4A4A]">
-                      {segment.summary}
+                      {formatDate(segment.startAtUtc)} - {formatDate(segment.endAtUtc)}
                     </p>
                   </div>
                 ))}
