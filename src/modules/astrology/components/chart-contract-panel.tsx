@@ -139,6 +139,18 @@ function isPremiumPlanType(planType: MonetizationPlanType) {
   return planType === "PREMIUM" || planType === "PRO";
 }
 
+function formatReadinessStatus(status: string) {
+  if (status === "available") {
+    return "Calculation available";
+  }
+
+  if (status === "pending") {
+    return "Data pending";
+  }
+
+  return "Data unavailable";
+}
+
 export function ChartContractPanel({
   planType,
   upgradeHref,
@@ -500,47 +512,42 @@ export function ChartContractPanel({
 
           {divisionalReadiness.length ? (
             <Card className="space-y-4">
-              <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-                Divisional Chart Foundation
-              </p>
-              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              <div className="space-y-2">
+                <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                  Shodashvarga Foundation
+                </p>
+                <h2 className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]">
+                  Divisional chart readiness
+                </h2>
+                <p className="max-w-3xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+                  Readiness is shown from the saved chart payload only. Detailed interpretation is not shown here.
+                </p>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                 {divisionalReadiness.map((entry) => (
                   <div
                     key={entry.code}
-                    className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] p-4"
+                    className="rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-white p-4"
                   >
-                    <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-start justify-between gap-3">
                       <p className="text-[0.7rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
                         {entry.code}
                       </p>
-                      <span className="rounded-[var(--radius-pill)] border border-[color:var(--color-border)] px-2 py-1 text-[0.62rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-muted)]">
-                        {entry.status}
+                      <span className="rounded-[var(--radius-pill)] border border-[rgba(16,122,74,0.22)] px-2 py-1 text-[0.62rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-muted)]">
+                        {entry.chart ? "Ready" : "Unavailable"}
                       </span>
                     </div>
                     <p className="mt-2 text-[length:var(--font-size-body-md)] text-[color:var(--color-foreground)]">
                       {entry.title}
                     </p>
-                    <p className="mt-1 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                      {entry.focus}
-                    </p>
                     <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                      {entry.note}
+                      {formatReadinessStatus(entry.status)}
                     </p>
                     {entry.chart ? (
-                      <div className="mt-3 rounded-[var(--radius-lg)] border border-[rgba(215,187,131,0.18)] bg-[rgba(215,187,131,0.06)] px-3 py-3">
-                        <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-                          Available
-                        </p>
-                        <p className="mt-1 text-[length:var(--font-size-body-sm)] text-[color:var(--color-foreground)]">
-                          {entry.chart.chartType} with {entry.chart.planets.length} planets and{" "}
-                          {entry.chart.houses.length} houses.
-                        </p>
-                      </div>
-                    ) : (
-                      <p className="mt-3 text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-muted)]">
-                        Coming Soon
+                      <p className="mt-2 text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
+                        {entry.chart.planets.length} planets | {entry.chart.houses.length} houses
                       </p>
-                    )}
+                    ) : null}
                   </div>
                 ))}
               </div>
