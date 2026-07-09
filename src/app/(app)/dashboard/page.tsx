@@ -15,6 +15,10 @@ import { buildPageMetadata } from "@/lib/metadata";
 import { getDashboardOverview } from "@/modules/account/service";
 import { DashboardEcosystemHome } from "@/modules/account/components/dashboard-ecosystem-home";
 import {
+  TodayDecisionCard,
+  type TodayDecisionCardInput,
+} from "@/modules/account/components/today-decision-card";
+import {
   buildDashboardHubData,
   createEmptyDashboardHubData,
 } from "@/modules/account/dashboard-hub";
@@ -332,6 +336,30 @@ export default async function DashboardPage() {
   const leadRemedy = report.remedies[0] ?? null;
   const currentCycle = dashboardHub.dasha.currentCycle;
   const hasAdvancedTimingInsights = dashboardHub.access.advancedTimingInsights;
+  const todayDecisionInput = (() => {
+    const profile = chartOverview.birthProfile;
+
+    if (
+      !profile ||
+      profile.latitude === null ||
+      profile.longitude === null ||
+      !profile.timezone
+    ) {
+      return null;
+    }
+
+    const locationLabel = [profile.city, profile.region, profile.country]
+      .filter(Boolean)
+      .join(", ");
+
+    return {
+      latitude: profile.latitude,
+      longitude: profile.longitude,
+      timezone: profile.timezone,
+      locationLabel: locationLabel || profile.label,
+      locale: localeDefinition.code,
+    } satisfies TodayDecisionCardInput;
+  })();
 
   return (
     <Section
@@ -499,6 +527,8 @@ export default async function DashboardPage() {
             title="Access status in your current workflow."
             description="Current access and retention guidance stay visible without pressure."
           />
+
+          <TodayDecisionCard input={todayDecisionInput} />
 
           <Card tone="accent" className="space-y-5">
             <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
