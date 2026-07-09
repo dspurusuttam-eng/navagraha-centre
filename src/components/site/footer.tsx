@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/container";
-import { siteConfig } from "@/config/site";
 import { defaultLocale } from "@/modules/localization/config";
 import {
   getRequestLocale,
@@ -28,35 +27,18 @@ export async function Footer() {
 
   const footerColumns: readonly FooterColumn[] = [
     {
-      title: "Guidance",
+      title: "Platform",
       links: [
-        { href: localizeHref("/kundli"), label: "Generate Kundli" },
-        { href: localizeHref("/ai"), label: "Ask NI" },
-        { href: localizeHref("/consultation"), label: "Consult Acharya" },
-      ],
-    },
-    {
-      title: "Explore",
-      links: [
-        { href: localizeHref("/learn"), label: "Learn" },
-        { href: localizeHref("/shop"), label: "Vedic Shop" },
-      ],
-    },
-    {
-      title: "Secondary",
-      links: [
-        { href: localizeHref("/panchang"), label: "Panchang" },
-        { href: localizeHref("/rashifal"), label: "Rashifal" },
-        { href: localizeHref("/reports"), label: "Reports" },
-        { href: localizeHref("/tools"), label: "Tools" },
-      ],
-    },
-    {
-      title: "Platform / Support",
-      links: [
-        { href: localizeHref("/contact"), label: "Contact" },
+        { href: localizeHref("/learn"), label: "Profile" },
+        { href: localizeHref("/contact"), label: "Support" },
         { href: localizeHref("/privacy"), label: "Privacy" },
+      ],
+    },
+    {
+      title: "Access",
+      links: [
         { href: localizeHref("/terms"), label: "Terms" },
+        { href: localizeHref("/contact"), label: "Contact" },
         { href: localizeHref("/sign-in"), label: "Account" },
       ],
     },
@@ -67,8 +49,8 @@ export async function Footer() {
       data-nosnippet
       className="border-t border-[rgba(185,139,70,0.32)] bg-white text-[color:var(--color-ink-strong)]"
     >
-      <Container className="space-y-5 pb-[calc(var(--space-8)+6rem)] pt-[var(--space-8)] sm:pb-[calc(var(--space-10)+6rem)] sm:pt-[var(--space-10)] xl:space-y-6 xl:pb-[var(--space-10)]">
-        <div className="grid gap-7 rounded-[var(--radius-card)] border border-[rgba(185,139,70,0.26)] bg-white p-5 shadow-[0_12px_30px_rgba(5,5,5,0.05)] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.6fr)] lg:gap-9 lg:p-6 xl:p-7">
+      <Container className="space-y-3 pb-[calc(7.5rem+env(safe-area-inset-bottom))] pt-[var(--space-6)] sm:pb-[calc(7.5rem+env(safe-area-inset-bottom))] sm:pt-[var(--space-8)] xl:space-y-3 xl:pb-[var(--space-8)]">
+        <div className="grid gap-5 rounded-[var(--radius-card)] border border-[rgba(185,139,70,0.24)] bg-white p-5 shadow-[0_10px_24px_rgba(5,5,5,0.045)] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.35fr)] lg:gap-7 lg:p-6">
           <div className="space-y-4">
             <Link
               href={localizeHref("/")}
@@ -84,19 +66,16 @@ export async function Footer() {
               </span>
             </Link>
             <p className="max-w-sm text-[length:var(--font-size-body-sm)] leading-relaxed text-[color:var(--color-text-secondary)]">
-              Generate a Janam Kundli, understand the result with Ask NI, and
-              continue to human consultation when needed.
-            </p>
-            <p className="inline-flex rounded-full border border-[rgba(185,139,70,0.36)] bg-white px-3 py-2 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-antique-gold-dark)] shadow-[0_8px_20px_rgba(185,139,70,0.08)]">
-              Guidance-first. No guaranteed outcomes.
+              Calculation-first Vedic Astrology &bull; Astronomical data &bull;
+              Panchang mathematics &bull; Acharya guidance
             </p>
           </div>
 
-          <div className="grid min-w-0 gap-5 sm:grid-cols-2 xl:grid-cols-4 xl:gap-6">
+          <div className="grid min-w-0 gap-4 sm:grid-cols-2 xl:gap-5">
             {footerColumns.map((column) => (
               <div
                 key={column.title}
-                className="rounded-[var(--radius-lg)] border border-[rgba(185,139,70,0.2)] bg-white p-4 xl:p-5"
+                className="rounded-[var(--radius-lg)] border border-[rgba(185,139,70,0.2)] bg-white p-4 shadow-[0_8px_18px_rgba(5,5,5,0.035)]"
               >
                 <h2 className="text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-accent-gold-dark)]">
                   {column.title}
@@ -118,36 +97,14 @@ export async function Footer() {
           </div>
         </div>
 
-        <div className="flex min-w-0 flex-col gap-3 border-t border-[rgba(185,139,70,0.28)] pt-5 text-[0.72rem] font-semibold uppercase tracking-[0.1em] text-[color:var(--color-text-primary)] sm:flex-row sm:items-center sm:justify-between xl:pt-6">
+        <div className="flex min-w-0 flex-col gap-2 rounded-[var(--radius-lg)] border border-[rgba(185,139,70,0.22)] bg-white px-4 py-3 text-[0.72rem] font-semibold tracking-[0.04em] text-[color:var(--color-text-primary)] shadow-[0_8px_18px_rgba(5,5,5,0.035)] sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           <p>
-            &copy; {new Date().getFullYear()} {siteConfig.name}
+            &copy; {new Date().getFullYear()}
           </p>
-          <div className="flex min-w-0 flex-wrap items-center gap-4">
-            <Link
-              href={localizeHref("/privacy")}
-              className="mobile-safe-text hover:text-[color:var(--color-accent-gold-dark)]"
-            >
-              Privacy
-            </Link>
-            <Link
-              href={localizeHref("/terms")}
-              className="mobile-safe-text hover:text-[color:var(--color-accent-gold-dark)]"
-            >
-              Terms
-            </Link>
-            <Link
-              href={localizeHref("/contact")}
-              className="mobile-safe-text hover:text-[color:var(--color-accent-gold-dark)]"
-            >
-              Contact
-            </Link>
-            <Link
-              href={localizeHref("/sign-in")}
-              className="mobile-safe-text hover:text-[color:var(--color-accent-gold-dark)]"
-            >
-              Account
-            </Link>
-          </div>
+          <p className="max-w-full leading-5 text-[color:var(--color-antique-gold-dark)] sm:text-right">
+            Since 1950 Legacy &bull; 12-Planet Calculations &bull; 28
+            Nakshatras &bull; Guidance-first
+          </p>
         </div>
       </Container>
     </footer>
