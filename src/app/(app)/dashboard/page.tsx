@@ -12,9 +12,11 @@ import { fallbackCurrentCycleSummary } from "@/lib/astrology/current-cycle";
 import { generateUserReport } from "@/lib/ai/report-generator";
 import type { ChartInsights, GeneratedUserReport } from "@/lib/ai/types";
 import { buildPageMetadata } from "@/lib/metadata";
+import { buildGocharSnapshot, type GocharResult } from "@/modules/astrology/gochar";
 import { getDashboardOverview } from "@/modules/account/service";
 import { DashboardEcosystemHome } from "@/modules/account/components/dashboard-ecosystem-home";
 import { DashboardDashaLineagePanel } from "@/modules/account/components/dashboard-personal-hub";
+import { GocharSadeSatiCard } from "@/modules/account/components/gochar-sade-sati-card";
 import {
   DecisionDeskCard,
   type DecisionDeskCardInput,
@@ -341,6 +343,38 @@ export default async function DashboardPage() {
   const leadRemedy = report.remedies[0] ?? null;
   const currentCycle = dashboardHub.dasha.currentCycle;
   const hasAdvancedTimingInsights = dashboardHub.access.advancedTimingInsights;
+  const gocharResult = (() => {
+    const moon = chartOverview.chart?.planets.find((planet) => planet.body === "MOON");
+    const lagna = chartOverview.chart?.lagna;
+
+    if (!moon || !lagna) {
+      return null;
+    }
+
+    try {
+      return buildGocharSnapshot({
+        natalMoonLongitude: moon.longitude,
+        natalLagnaLongitude: lagna.longitude,
+        queryInstant:
+          currentCycle.transitSnapshot.asOfUtc ??
+          currentCycle.generatedAtUtc ??
+          new Date().toISOString(),
+        resolveIngress: false,
+        resolveSadeSatiWindow: false,
+      });
+    } catch (error) {
+      console.error("Dashboard gochar snapshot failed", error);
+
+      return {
+        success: false,
+        issue: {
+          code: "EPHEMERIS_UNAVAILABLE",
+          message:
+            "Gochar calculation could not be refreshed just now, so the card is staying in a safe fallback state.",
+        },
+      } satisfies GocharResult;
+    }
+  })();
   const todayDecisionInput = (() => {
     const profile = chartOverview.birthProfile;
 
@@ -729,7 +763,10 @@ export default async function DashboardPage() {
           )}
         </Card>
 
-        <DashboardDashaLineagePanel hub={dashboardHub} />
+        <div className="space-y-6">
+          <GocharSadeSatiCard currentCycle={currentCycle} gocharResult={gocharResult} />
+          <DashboardDashaLineagePanel hub={dashboardHub} />
+        </div>
       </div>
     </Section>
   );
