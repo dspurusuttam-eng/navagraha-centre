@@ -65,6 +65,40 @@ jobs:
 
           echo "Gochar QA: 12 groups passed, 0 environment-blocked."
 
+      - name: Premium Daily Horoscope QA (Card 8B, deterministic)
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run debug:horoscope:daily:qa 2>&1 | tee horoscope-daily-qa.log
+
+          if ! grep -q "0 failed" horoscope-daily-qa.log; then
+            echo "::error::Premium Daily Horoscope QA reported failures."
+            tail -n 40 horoscope-daily-qa.log
+            exit 1
+          fi
+
+          echo "Premium Daily Horoscope QA: all groups passed."
+
+      - name: Premium Daily Horoscope REAL integration QA (Card 8B-R1, Node 22)
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run debug:horoscope:daily:integration:qa 2>&1 | tee horoscope-integration-qa.log
+
+          if ! grep -q "swisseph=available" horoscope-integration-qa.log; then
+            echo "::error::Integration QA did not detect swisseph on the Node 22 runner; ephemeris groups cannot be proven."
+            tail -n 40 horoscope-integration-qa.log
+            exit 1
+          fi
+
+          if ! grep -q "0 failed, 0 environment-blocked" horoscope-integration-qa.log; then
+            echo "::error::Real horoscope integration QA must pass with 0 failed and 0 environment-blocked on Node 22."
+            tail -n 40 horoscope-integration-qa.log
+            exit 1
+          fi
+
+          echo "Premium Daily Horoscope integration QA: all real-dependency groups passed."
+
       - name: Upload Gochar QA log
         if: always()
         uses: actions/upload-artifact@v4
