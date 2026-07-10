@@ -25,15 +25,18 @@ function daySegmentPeriod(input: {
   timezoneIana: string;
 }): PremiumTimedPeriod {
   const rule = getPremiumRule(input.ruleId);
-  const spanMs = input.sunsetMs - input.sunriseMs;
-  const startMs = input.sunriseMs + ((input.segmentIndex1To8 - 1) * spanMs) / 8;
-  const endMs = input.sunriseMs + (input.segmentIndex1To8 * spanMs) / 8;
+  // Match Card 2's exact segment arithmetic (buildDaySegmentTimingWindow) so
+  // Rahu/Yamaganda/Gulika are byte-identical to the authoritative output: same
+  // grouping, no rounding (new Date() truncation is the only quantization).
+  const segmentDurationMs = (input.sunsetMs - input.sunriseMs) / 8;
+  const startMs = input.sunriseMs + (input.segmentIndex1To8 - 1) * segmentDurationMs;
+  const endMs = startMs + segmentDurationMs;
 
   return {
     type: input.type,
     ...periodTimes({
-      startMs: Math.round(startMs),
-      endMs: Math.round(endMs),
+      startMs,
+      endMs,
       timezoneIana: input.timezoneIana,
     }),
     status: "available",
@@ -75,14 +78,15 @@ export function buildDailyPeriods(input: {
   });
 
   const abhijitRule = getPremiumRule("ABHIJIT_MIDDAY_MUHURTA");
+  // Card 2 exact arithmetic (buildAbhijitMuhurtaTimingWindow), no rounding.
   const dayMs = input.sunsetMs - input.sunriseMs;
   const middayMs = input.sunriseMs + dayMs / 2;
   const halfMuhurtaMs = dayMs / 30;
   const abhijit = {
     type: "ABHIJIT_MUHURTA",
     ...periodTimes({
-      startMs: Math.round(middayMs - halfMuhurtaMs),
-      endMs: Math.round(middayMs + halfMuhurtaMs),
+      startMs: middayMs - halfMuhurtaMs,
+      endMs: middayMs + halfMuhurtaMs,
       timezoneIana: input.timezoneIana,
     }),
     status: "available" as const,
