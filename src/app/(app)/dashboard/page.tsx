@@ -12,8 +12,11 @@ import { fallbackCurrentCycleSummary } from "@/lib/astrology/current-cycle";
 import { generateUserReport } from "@/lib/ai/report-generator";
 import type { ChartInsights, GeneratedUserReport } from "@/lib/ai/types";
 import { buildPageMetadata } from "@/lib/metadata";
+import { buildAshtakavargaSnapshot } from "@/modules/astrology/ashtakavarga";
 import { buildGocharSnapshot, type GocharResult } from "@/modules/astrology/gochar";
+import { retrieveOrRefreshBirthChartForUser } from "@/modules/astrology/chart-retrieval";
 import { getDashboardOverview } from "@/modules/account/service";
+import { AshtakavargaCard } from "@/modules/account/components/ashtakavarga-card";
 import { DashboardEcosystemHome } from "@/modules/account/components/dashboard-ecosystem-home";
 import { DashboardDashaLineagePanel } from "@/modules/account/components/dashboard-personal-hub";
 import { GocharSadeSatiCard } from "@/modules/account/components/gochar-sade-sati-card";
@@ -180,6 +183,15 @@ function createFallbackRetentionDashboardState(): RetentionDashboardSnapshot {
 export default async function DashboardPage() {
   const session = await requireUserSession();
   const localeDefinition = await getRequestLocaleDefinition();
+  const savedChartResult = await (async () => {
+    try {
+      return await retrieveOrRefreshBirthChartForUser(session.user.id);
+    } catch (error) {
+      console.error("Dashboard saved chart retrieval failed", error);
+
+      return null;
+    }
+  })();
   const [
     overview,
     chartOverview,
@@ -202,7 +214,12 @@ export default async function DashboardPage() {
     })(),
     (async () => {
       try {
-        return await getChartOverview(session.user.id);
+        return await getChartOverview(
+          session.user.id,
+          savedChartResult
+            ? { preloadedSavedChartResult: savedChartResult }
+            : undefined
+        );
       } catch (error) {
         console.error("Chart overview failed", error);
 
@@ -375,6 +392,9 @@ export default async function DashboardPage() {
       } satisfies GocharResult;
     }
   })();
+  const ashtakavargaResult = savedChartResult?.success
+    ? buildAshtakavargaSnapshot({ chart: savedChartResult.data.chart })
+    : null;
   const todayDecisionInput = (() => {
     const profile = chartOverview.birthProfile;
 
@@ -765,6 +785,7 @@ export default async function DashboardPage() {
 
         <div className="space-y-6">
           <GocharSadeSatiCard currentCycle={currentCycle} gocharResult={gocharResult} />
+          <AshtakavargaCard result={ashtakavargaResult} />
           <DashboardDashaLineagePanel hub={dashboardHub} />
         </div>
       </div>
