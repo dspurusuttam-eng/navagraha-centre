@@ -10,6 +10,7 @@ export type SecurityRateLimitPolicyKey =
   | "ai-session-read"
   | "ai-message"
   | "birth-context-resolve"
+  | "location-timezone-public"
   | "panchang-public"
   | "muhurta-public"
   | "today-decision-public"
@@ -208,6 +209,10 @@ function buildRateLimitPolicies(): Record<
         "BIRTH_CONTEXT_RESOLVE_RATE_WINDOW_MS",
         10 * 60 * 1_000
       ),
+    },
+    "location-timezone-public": {
+      limit: readPositiveInt("LOCATION_TIMEZONE_RATE_LIMIT", 36),
+      windowMs: readPositiveInt("LOCATION_TIMEZONE_RATE_WINDOW_MS", 10 * 60 * 1_000),
     },
     "panchang-public": {
       limit: readPositiveInt("PANCHANG_RATE_LIMIT", 30),
