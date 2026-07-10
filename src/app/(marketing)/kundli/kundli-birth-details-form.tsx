@@ -1,9 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-
-type LocationSource = "browser" | "search" | "saved" | "manual";
+import type {
+  KundliCanonicalLocation,
+  KundliChartStyle,
+  KundliGender,
+  KundliLanguage,
+  KundliRequestPayload,
+} from "@/lib/kundli/pending-kundli-draft";
 
 type LocationSearchResult = {
   id: string;
@@ -19,22 +24,13 @@ type LocationSearchResult = {
   provider: string;
 };
 
-type CanonicalLocationDateTime = {
-  displayName: string;
-  city: string | null;
-  district: string | null;
-  state: string | null;
-  country: string;
-  countryCode: string;
-  latitude: number;
-  longitude: number;
-  timezone: string;
-  utcOffsetMinutes: number;
-  localDateTime: string;
-  utcDateTime: string;
-  locationSource: LocationSource;
-  accuracyMeters: number | null;
-  timezoneResolution: "coordinate" | "provider" | "manual";
+type CanonicalLocationDateTime = KundliCanonicalLocation;
+
+export type KundliBirthDetailsFormValue = KundliRequestPayload;
+
+type KundliBirthDetailsFormProps = {
+  initialValue?: KundliBirthDetailsFormValue | null;
+  onValueChange?: (value: KundliBirthDetailsFormValue | null) => void;
 };
 
 type ApiErrorPayload = {
@@ -165,21 +161,38 @@ function optionClass(active: boolean, tone: "gold" | "green" = "gold") {
   return "border-black/10 bg-white text-[#111111]";
 }
 
-export function KundliBirthDetailsForm() {
-  const [name, setName] = useState("");
-  const [dateLocal, setDateLocal] = useState("");
-  const [timeLocal, setTimeLocal] = useState("");
-  const [gender, setGender] = useState("Male");
-  const [chartStyle, setChartStyle] = useState("North");
-  const [language, setLanguage] = useState("EN");
-  const [query, setQuery] = useState("");
+export function KundliBirthDetailsForm({
+  initialValue,
+  onValueChange,
+}: Readonly<KundliBirthDetailsFormProps>) {
+  const [name, setName] = useState(initialValue?.name ?? "");
+  const [dateLocal, setDateLocal] = useState(initialValue?.dateLocal ?? "");
+  const [timeLocal, setTimeLocal] = useState(initialValue?.timeLocal ?? "");
+  const [gender, setGender] = useState<KundliGender>(
+    initialValue?.gender ?? "Male"
+  );
+  const [chartStyle, setChartStyle] = useState<KundliChartStyle>(
+    initialValue?.chartStyle ?? "North"
+  );
+  const [language, setLanguage] = useState<KundliLanguage>(
+    initialValue?.language ?? "EN"
+  );
+  const [query, setQuery] = useState(initialValue?.location.displayName ?? "");
   const [results, setResults] = useState<LocationSearchResult[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<LocationSearchResult | null>(
     null
   );
-  const [resolved, setResolved] = useState<CanonicalLocationDateTime | null>(null);
-  const [status, setStatus] = useState<LocationStatus>("idle");
-  const [message, setMessage] = useState("Manual place search is the primary fallback.");
+  const [resolved, setResolved] = useState<CanonicalLocationDateTime | null>(
+    initialValue?.location ?? null
+  );
+  const [status, setStatus] = useState<LocationStatus>(
+    initialValue ? "confirmed" : "idle"
+  );
+  const [message, setMessage] = useState(
+    initialValue
+      ? "Restored place, timezone, and birth moment are confirmed."
+      : "Manual place search is the primary fallback."
+  );
   const [manualOpen, setManualOpen] = useState(false);
   const [manual, setManual] = useState({
     displayName: "",
@@ -195,6 +208,32 @@ export function KundliBirthDetailsForm() {
   const [disambiguation, setDisambiguation] = useState<"earlier" | "later" | "">("");
 
   const canResolveTime = Boolean(dateLocal && timeLocal);
+
+  useEffect(() => {
+    if (!resolved) {
+      onValueChange?.(null);
+      return;
+    }
+
+    onValueChange?.({
+      name,
+      dateLocal,
+      timeLocal,
+      gender,
+      chartStyle,
+      language,
+      location: resolved,
+    });
+  }, [
+    chartStyle,
+    dateLocal,
+    gender,
+    language,
+    name,
+    onValueChange,
+    resolved,
+    timeLocal,
+  ]);
   const statusLabel = useMemo(() => {
     switch (status) {
       case "permission-requested":
@@ -698,7 +737,7 @@ export function KundliBirthDetailsForm() {
                 <button
                   type="button"
                   key={option}
-                  onClick={() => setGender(option)}
+                  onClick={() => setGender(option as KundliGender)}
                   className={`min-w-0 rounded-[0.6rem] border px-1 py-2 text-center text-[0.58rem] font-extrabold leading-none ${optionClass(
                     gender === option
                   )}`}
@@ -721,7 +760,7 @@ export function KundliBirthDetailsForm() {
                 <button
                   type="button"
                   key={option}
-                  onClick={() => setChartStyle(option)}
+                  onClick={() => setChartStyle(option as KundliChartStyle)}
                   className={`min-w-0 rounded-[0.6rem] border px-1 py-2 text-center text-[0.58rem] font-extrabold leading-none ${optionClass(
                     chartStyle === option
                   )}`}
@@ -744,7 +783,7 @@ export function KundliBirthDetailsForm() {
                 <button
                   type="button"
                   key={option}
-                  onClick={() => setLanguage(option)}
+                  onClick={() => setLanguage(option as KundliLanguage)}
                   className={`min-w-0 rounded-[0.6rem] border px-1 py-2 text-center text-[0.58rem] font-extrabold leading-none ${optionClass(
                     language === option,
                     "green"
