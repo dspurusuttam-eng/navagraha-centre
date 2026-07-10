@@ -141,7 +141,11 @@ export function resolveConfidence(input: {
 
   let level: ConfidenceLevel | "insufficient";
 
-  if (missingCriticalSystems.length > 0 || value < 0.4) {
+  // "insufficient" (-> category unavailable) means a CRITICAL source is missing,
+  // i.e. we genuinely lack the data to rate the category. Thin evidence coverage
+  // with every critical source present is honestly reported as LOW confidence,
+  // not as unavailable — the data exists; the signal is simply sparse.
+  if (missingCriticalSystems.length > 0) {
     level = "insufficient";
   } else if (value >= 0.85) {
     level = "high";

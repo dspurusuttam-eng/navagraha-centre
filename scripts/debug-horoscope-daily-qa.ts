@@ -627,12 +627,20 @@ const groups: Array<{ name: string; run: () => void }> = [
     run: () => {
       const chart = makeChart({ lagnaLongitude: 15, planets: BASE_NATAL });
       const gochar = makeGocharSnapshot({ moonLongitude: BASE_NATAL.MOON, lagnaLongitude: 15, grahaLongitudes: BASE_TRANSIT });
+      // Explicitly inject an UNAVAILABLE Panchang source so the assertion is
+      // deterministic on every runtime (never relying on the ambient absence of
+      // Swiss Ephemeris — the real Panchang succeeds on Node 22 CI).
+      const failingPanchang = {
+        success: false as const,
+        missingReason: "simulated unavailable",
+        error: { code: "MISSING_LOCATION", message: "simulated unavailable" },
+      } as unknown as PanchangContextResult;
       const snap = buildDailyHoroscopeSnapshot({
         chart,
         localDate: "2026-07-10",
         location: LOCATION,
         asOfInstant: "2026-07-10T00:41:00.000Z",
-        injected: { gocharSnapshot: gochar }, // no panchang
+        injected: { gocharSnapshot: gochar, panchang: failingPanchang },
       });
       assert(snap.timeWindows.length === 0, "no windows should be fabricated without Panchang");
       assert(snap.sourceSystems.panchang === "unavailable", "panchang should be unavailable");
