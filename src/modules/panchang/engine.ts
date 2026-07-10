@@ -142,9 +142,11 @@ const ZODIAC_SIGNS = [
   "Pisces",
 ] as const;
 
-const RAHU_KAAL_SEGMENTS_BY_WEEKDAY = [8, 2, 7, 5, 6, 4, 3] as const;
-const GULIKA_KAAL_SEGMENTS_BY_WEEKDAY = [7, 6, 5, 4, 3, 2, 1] as const;
-const YAMAGANDA_SEGMENTS_BY_WEEKDAY = [5, 4, 3, 2, 1, 7, 6] as const;
+// Exported additively for the Card 9 premium timing module (single source of
+// truth for the classical weekday segment tables; values unchanged).
+export const RAHU_KAAL_SEGMENTS_BY_WEEKDAY = [8, 2, 7, 5, 6, 4, 3] as const;
+export const GULIKA_KAAL_SEGMENTS_BY_WEEKDAY = [7, 6, 5, 4, 3, 2, 1] as const;
+export const YAMAGANDA_SEGMENTS_BY_WEEKDAY = [5, 4, 3, 2, 1, 7, 6] as const;
 
 export type PanchangLocationInput = {
   displayName: string;
@@ -448,7 +450,7 @@ function getTimeZoneOffsetMs(date: Date, timeZone: string) {
   return asUtc - date.getTime();
 }
 
-function convertLocalDateTimeToUtc(
+export function convertLocalDateTimeToUtc(
   dateLocal: string,
   timeLocal: string,
   timeZone: string
@@ -478,7 +480,7 @@ function convertLocalDateTimeToUtc(
   return new Date(utcMs);
 }
 
-function toJulianDayUt(date: Date, swisseph: ReturnType<typeof getSwissEphModule>) {
+export function toJulianDayUt(date: Date, swisseph: ReturnType<typeof getSwissEphModule>) {
   const year = date.getUTCFullYear();
   const month = date.getUTCMonth() + 1;
   const day = date.getUTCDate();
@@ -527,7 +529,7 @@ function julianUtToUtcIso(
   ).toISOString();
 }
 
-function getSunEventUtc(input: {
+export function getSunEventUtc(input: {
   julianDayStartUt: number;
   longitude: number;
   latitude: number;
@@ -567,7 +569,7 @@ function getSunEventUtc(input: {
   return julianUtToUtcIso(response.transitTime, input.swisseph);
 }
 
-function getMoonEventUtc(input: {
+export function getMoonEventUtc(input: {
   julianDayStartUt: number;
   longitude: number;
   latitude: number;
@@ -607,7 +609,7 @@ function getMoonEventUtc(input: {
   return julianUtToUtcIso(response.transitTime, input.swisseph);
 }
 
-function formatLocalTime(utcIso: string, timeZone: string) {
+export function formatLocalTime(utcIso: string, timeZone: string) {
   return new Intl.DateTimeFormat("en-US", {
     timeZone,
     hour: "2-digit",
@@ -650,7 +652,7 @@ function formatTimingWindow(input: {
   } satisfies PanchangTimingWindow;
 }
 
-function getSunAndMoon(planets: CoreGrahaSiderealLongitude[]) {
+export function getSunAndMoon(planets: CoreGrahaSiderealLongitude[]) {
   const sun = planets.find((planet) => planet.graha === "SUN");
   const moon = planets.find((planet) => planet.graha === "MOON");
 
@@ -666,7 +668,7 @@ function getSunAndMoon(planets: CoreGrahaSiderealLongitude[]) {
 
 type PanchangFactorKey = "tithi" | "nakshatra" | "yoga" | "karana";
 
-type PanchangFactorKeys = {
+export type PanchangFactorKeys = {
   tithi: number;
   nakshatra: number;
   yoga: number;
@@ -684,7 +686,7 @@ type PanchangTransitionState = {
   factor_keys: PanchangFactorKeys;
 };
 
-function getTithi(input: { sunLongitude: number; moonLongitude: number }) {
+export function getTithi(input: { sunLongitude: number; moonLongitude: number }) {
   const phase = normalizeLongitude(input.moonLongitude - input.sunLongitude);
   const tithiIndex = Math.floor(phase / TITHI_SPAN_DEGREES) + 1;
   const progress = ((phase % TITHI_SPAN_DEGREES) / TITHI_SPAN_DEGREES) * 100;
@@ -698,7 +700,7 @@ function getTithi(input: { sunLongitude: number; moonLongitude: number }) {
   };
 }
 
-function getNakshatra(moonLongitude: number) {
+export function getNakshatra(moonLongitude: number) {
   const index = Math.floor(moonLongitude / NAKSHATRA_SPAN_DEGREES) + 1;
   const offset = moonLongitude - (index - 1) * NAKSHATRA_SPAN_DEGREES;
   const pada = Math.floor(offset / PADA_SPAN_DEGREES) + 1;
@@ -712,7 +714,7 @@ function getNakshatra(moonLongitude: number) {
   };
 }
 
-function getYoga(input: { sunLongitude: number; moonLongitude: number }) {
+export function getYoga(input: { sunLongitude: number; moonLongitude: number }) {
   const sum = normalizeLongitude(input.sunLongitude + input.moonLongitude);
   const index = Math.floor(sum / NAKSHATRA_SPAN_DEGREES) + 1;
   const offset = sum - (index - 1) * NAKSHATRA_SPAN_DEGREES;
@@ -725,7 +727,7 @@ function getYoga(input: { sunLongitude: number; moonLongitude: number }) {
   };
 }
 
-function getKarana(phaseDegrees: number) {
+export function getKarana(phaseDegrees: number) {
   const halfTithiIndex = Math.floor(phaseDegrees / KARANA_SPAN_DEGREES) + 1;
 
   if (halfTithiIndex === 1) {
@@ -750,7 +752,7 @@ function getKarana(phaseDegrees: number) {
   };
 }
 
-function getFactorKeys(input: { sunLongitude: number; moonLongitude: number }) {
+export function getFactorKeys(input: { sunLongitude: number; moonLongitude: number }) {
   const phase = normalizeLongitude(input.moonLongitude - input.sunLongitude);
   const tithi = Math.floor(phase / TITHI_SPAN_DEGREES);
   const nakshatra = Math.floor(input.moonLongitude / NAKSHATRA_SPAN_DEGREES);

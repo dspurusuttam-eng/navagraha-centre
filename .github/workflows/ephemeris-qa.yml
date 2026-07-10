@@ -99,6 +99,40 @@ jobs:
 
           echo "Premium Daily Horoscope integration QA: all real-dependency groups passed."
 
+      - name: Premium Panchang QA (Card 9.2, pure deterministic)
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run debug:panchang:premium:qa 2>&1 | tee panchang-premium-qa.log
+
+          if ! grep -q "0 failed" panchang-premium-qa.log; then
+            echo "::error::Premium Panchang pure QA reported failures."
+            tail -n 40 panchang-premium-qa.log
+            exit 1
+          fi
+
+          echo "Premium Panchang pure QA: all groups passed."
+
+      - name: Premium Panchang REAL integration QA (Card 9.2, Node 22)
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run debug:panchang:premium:integration:qa 2>&1 | tee panchang-premium-integration-qa.log
+
+          if ! grep -q "swisseph=available" panchang-premium-integration-qa.log; then
+            echo "::error::Panchang integration QA did not detect swisseph on the Node 22 runner."
+            tail -n 40 panchang-premium-integration-qa.log
+            exit 1
+          fi
+
+          if ! grep -q "0 failed, 0 environment-blocked" panchang-premium-integration-qa.log; then
+            echo "::error::Premium Panchang integration QA must pass with 0 failed and 0 environment-blocked on Node 22."
+            tail -n 40 panchang-premium-integration-qa.log
+            exit 1
+          fi
+
+          echo "Premium Panchang integration QA: all real-ephemeris groups passed."
+
       - name: Upload Gochar QA log
         if: always()
         uses: actions/upload-artifact@v4
