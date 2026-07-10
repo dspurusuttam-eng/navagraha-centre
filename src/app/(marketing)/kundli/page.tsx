@@ -11,33 +11,9 @@ import {
   hasExplicitLocalePrefixInRequest,
 } from "@/modules/localization/request";
 import { GenerateKundliControl } from "./generate-kundli-control";
+import { KundliBirthDetailsForm } from "./kundli-birth-details-form";
 
 const heroChips = ["Lagna", "Rashi", "Dasha"] as const;
-
-const birthDetailRows = [
-  [{ label: "Name", kind: "name", placeholder: "Enter full name" }],
-  [
-    { label: "Date of Birth", kind: "date", placeholder: "Select date" },
-    { label: "Time of Birth", kind: "time", placeholder: "Select time" },
-  ],
-  [
-    { label: "Location", kind: "location", placeholder: "Birth place" },
-    { label: "Gender", kind: "gender", options: ["Male", "Female"] },
-  ],
-  [
-    {
-      label: "Chart Style",
-      kind: "chart",
-      options: ["North", "South", "East"],
-    },
-    {
-      label: "Language",
-      kind: "language",
-      options: ["EN", "HI", "AS"],
-      activeOption: "EN",
-    },
-  ],
-] as const;
 
 const nextSteps = [
   {
@@ -53,8 +29,6 @@ const nextSteps = [
     feature: "kundli-next-consult-expert",
   },
 ] as const;
-
-type BirthDetailField = (typeof birthDetailRows)[number][number];
 
 function localizeHref(
   locale: string,
@@ -76,158 +50,6 @@ function SacredDot({ tone = "gold" }: Readonly<{ tone?: "gold" | "green" }>) {
           : "bg-[var(--color-accent-gold)] shadow-[0_0_0_4px_rgba(184,137,67,0.1)]"
       }`}
     />
-  );
-}
-
-function CalendarIcon() {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4">
-      <path
-        d="M7 4v3M17 4v3M5 9h14M6.5 6h11A2.5 2.5 0 0 1 20 8.5v9A2.5 2.5 0 0 1 17.5 20h-11A2.5 2.5 0 0 1 4 17.5v-9A2.5 2.5 0 0 1 6.5 6Z"
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.9"
-      />
-    </svg>
-  );
-}
-
-function ClockIcon() {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4">
-      <path
-        d="M12 7v5l3 2M20 12a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.9"
-      />
-    </svg>
-  );
-}
-
-function LocationIcon() {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4">
-      <path
-        d="M12 21s6-5.1 6-10a6 6 0 0 0-12 0c0 4.9 6 10 6 10Z"
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.9"
-      />
-      <circle cx="12" cy="11" r="2" fill="currentColor" />
-    </svg>
-  );
-}
-
-function FieldIcon({ kind }: Readonly<{ kind: BirthDetailField["kind"] }>) {
-  if (kind === "date") {
-    return <CalendarIcon />;
-  }
-
-  if (kind === "time") {
-    return <ClockIcon />;
-  }
-
-  if (kind === "location") {
-    return <LocationIcon />;
-  }
-
-  return (
-    <span className="text-[0.68rem] font-black uppercase">
-      {kind === "gender"
-        ? "G"
-        : kind === "chart"
-          ? "C"
-          : kind === "language"
-            ? "L"
-            : "N"}
-    </span>
-  );
-}
-
-function OptionRail({
-  options,
-  activeOption,
-  tone = "gold",
-}: Readonly<{
-  options: readonly string[];
-  activeOption?: string;
-  tone?: "gold" | "green";
-}>) {
-  return (
-    <div
-      className={`mt-2 grid min-w-0 ${
-        options.length === 2 ? "grid-cols-2" : "grid-cols-3"
-      } gap-1`}
-    >
-      {options.map((option) => {
-        const isActive = option === (activeOption ?? options[0]);
-
-        return (
-          <span
-            key={option}
-            className={`min-w-0 whitespace-nowrap rounded-[0.6rem] border px-1 py-1 text-center text-[0.5rem] font-extrabold leading-none shadow-[inset_0_1px_0_rgba(255,255,255,0.96),0_4px_9px_rgba(17,17,17,0.055)] sm:text-[0.58rem] ${
-              isActive
-                ? tone === "green"
-                  ? "border-[rgba(76,187,23,0.55)] bg-[rgba(76,187,23,0.045)] text-[#2f7e16] shadow-[inset_0_1px_0_rgba(255,255,255,0.96),inset_0_-3px_7px_rgba(76,187,23,0.08),0_4px_9px_rgba(17,17,17,0.055)]"
-                  : "border-[rgba(184,137,67,0.46)] bg-[rgba(184,137,67,0.04)] text-[color:var(--color-accent-strong)]"
-                : "border-black/10 bg-white text-[#111111]"
-            }`}
-          >
-            {option}
-          </span>
-        );
-      })}
-    </div>
-  );
-}
-
-function BirthDetailBlock({
-  field,
-  compact = false,
-}: Readonly<{
-  field: BirthDetailField;
-  compact?: boolean;
-}>) {
-  const options = "options" in field ? field.options : null;
-  const placeholder = "placeholder" in field ? field.placeholder : null;
-  const activeOption = "activeOption" in field ? field.activeOption : undefined;
-
-  return (
-    <div
-      className={`min-w-0 rounded-[1rem] border border-[rgba(184,137,67,0.24)] bg-white px-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.98),inset_0_-5px_12px_rgba(184,137,67,0.035),0_10px_18px_rgba(17,17,17,0.075)] ${
-        compact ? "py-2.5" : "py-3"
-      }`}
-    >
-      <div className="flex min-w-0 items-center gap-2">
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[rgba(184,137,67,0.26)] bg-white text-[color:var(--color-accent-strong)] shadow-[inset_0_1px_0_rgba(255,255,255,0.96),0_6px_12px_rgba(17,17,17,0.06)]">
-          <FieldIcon kind={field.kind} />
-        </span>
-        <span className="min-w-0 text-[0.72rem] font-extrabold leading-tight text-[#111111] sm:text-[0.86rem]">
-          {field.label}
-        </span>
-      </div>
-      {options ? (
-        <OptionRail
-          options={options}
-          activeOption={activeOption}
-          tone={field.kind === "language" ? "green" : "gold"}
-        />
-      ) : null}
-      {placeholder ? (
-        <div className="mt-2 rounded-[0.75rem] border border-black/8 bg-white px-3 py-1.5 shadow-[inset_0_2px_5px_rgba(17,17,17,0.045)]">
-          <p className="truncate text-[0.66rem] font-semibold leading-4 text-[color:var(--color-ink-body)] sm:text-[0.72rem]">
-            {placeholder}
-          </p>
-        </div>
-      ) : null}
-    </div>
   );
 }
 
@@ -319,24 +141,7 @@ export default async function KundliPage() {
                 BIRTH DETAILS
               </p>
 
-              <div className="grid min-w-0 gap-2">
-                {birthDetailRows.map((row) => (
-                  <div
-                    key={row.map((field) => field.label).join("-")}
-                    className={`grid min-w-0 gap-2 ${
-                      row.length > 1 ? "grid-cols-2" : ""
-                    }`}
-                  >
-                    {row.map((field) => (
-                      <BirthDetailBlock
-                        key={field.label}
-                        field={field}
-                        compact={row.length > 1}
-                      />
-                    ))}
-                  </div>
-                ))}
-              </div>
+              <KundliBirthDetailsForm />
 
               <GenerateKundliControl
                 signInHref={localize("/sign-in")}

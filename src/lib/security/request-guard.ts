@@ -45,6 +45,7 @@ export function guardTrustedOrigin(
   request: Request,
   options?: {
     allowMissingOrigin?: boolean;
+    allowSameOrigin?: boolean;
     headers?: HeadersInit;
   }
 ) {
@@ -66,6 +67,16 @@ export function guardTrustedOrigin(
 
   if (isTrustedOrigin(origin)) {
     return null;
+  }
+
+  if (options?.allowSameOrigin) {
+    try {
+      if (origin === new URL(request.url).origin) {
+        return null;
+      }
+    } catch {
+      // Fall through to the standard trusted-origin error.
+    }
   }
 
   return apiErrorResponse({
