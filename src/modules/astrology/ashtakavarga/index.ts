@@ -1,0 +1,27 @@
+export {
+  buildAshtakavargaSnapshot,
+  ASHTAKAVARGA_AYANAMSA,
+  type AshtakavargaChartContext,
+  type AshtakavargaSnapshot,
+  type AshtakavargaBavEntry,
+  type AshtakavargaResult,
+  type AshtakavargaFailureCode,
+} from "@/modules/astrology/ashtakavarga/engine";
+export {
+  ASHTAKAVARGA_PLANETS,
+  ASHTAKAVARGA_REFERENCES,
+  BENEFIC_HOUSES,
+  BAV_CHECKSUMS,
+  SAV_CHECKSUM,
+  SIGNS_IN_ZODIAC,
+  computeBhinnashtakavarga,
+  computeSarvashtakavarga,
+  houseFromLagnaSign,
+  normalizeSignIndex,
+  rashiIndexFromLongitude,
+  signFromHouse,
+  type AshtakavargaPlanet,
+  type AshtakavargaReference,
+  type BhinnashtakavargaResult,
+  type SarvashtakavargaResult,
+} from "@/modules/astrology/ashtakavarga/core";
