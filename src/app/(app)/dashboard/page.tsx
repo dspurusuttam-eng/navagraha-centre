@@ -14,6 +14,7 @@ import type { ChartInsights, GeneratedUserReport } from "@/lib/ai/types";
 import { buildPageMetadata } from "@/lib/metadata";
 import { getDashboardOverview } from "@/modules/account/service";
 import { DashboardEcosystemHome } from "@/modules/account/components/dashboard-ecosystem-home";
+import { DashboardDashaLineagePanel } from "@/modules/account/components/dashboard-personal-hub";
 import {
   DecisionDeskCard,
   type DecisionDeskCardInput,
@@ -728,65 +729,7 @@ export default async function DashboardPage() {
           )}
         </Card>
 
-        <Card tone="accent" className="space-y-5">
-          <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-            Timing Snapshot
-          </p>
-          {hasAdvancedTimingInsights ? (
-            <div className="space-y-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              <p>
-                Dasha:{" "}
-                <span className="text-[color:var(--color-foreground)]">
-                  {currentCycle.dasha
-                    ? `${currentCycle.dasha.lord} until ${new Date(
-                        currentCycle.dasha.endAtUtc
-                      ).toLocaleDateString("en-IN", {
-                        dateStyle: "medium",
-                      })}`
-                    : "Not available"}
-                </span>
-              </p>
-              <p>
-                Transit snapshot:{" "}
-                <span className="text-[color:var(--color-foreground)]">
-                  {currentCycle.transitSnapshot.asOfUtc
-                    ? new Date(currentCycle.transitSnapshot.asOfUtc).toLocaleString(
-                        "en-IN",
-                        {
-                          dateStyle: "medium",
-                          timeStyle: "short",
-                        }
-                      )
-                    : "Not available"}
-                </span>
-              </p>
-              <p>
-                Lead transit:{" "}
-                <span className="text-[color:var(--color-foreground)]">
-                  {currentCycle.transitSnapshot.planets[0]
-                    ? `${currentCycle.transitSnapshot.planets[0].body} in ${currentCycle.transitSnapshot.planets[0].sign}, house ${currentCycle.transitSnapshot.planets[0].house}`
-                    : "No transit snapshot available"}
-                </span>
-              </p>
-              <p>
-                Follow-up theme:{" "}
-                <span className="text-[color:var(--color-foreground)]">
-                  {currentCycle.synthesis.followUpThemes[0]?.title ??
-                    "Will appear once timing context is available"}
-                </span>
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              <p>
-                Timing snapshots include dasha timing windows and richer transit sequencing.
-              </p>
-              <p>
-                These layers are currently free under limited launch access.
-              </p>
-            </div>
-          )}
-        </Card>
+        <DashboardDashaLineagePanel hub={dashboardHub} />
       </div>
     </Section>
   );

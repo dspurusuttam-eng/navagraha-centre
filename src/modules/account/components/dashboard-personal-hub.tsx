@@ -112,27 +112,14 @@ function consultationTone(status: string) {
   return "neutral" as const;
 }
 
-export function DashboardPersonalHub({
+export function DashboardDashaLineagePanel({
   hub,
 }: Readonly<{
   hub: DashboardHubData;
 }>) {
-  const profileReady = hub.profile.birthDetailsStatus === "Saved";
-  const askMyChartReady = hub.readiness.canAskMyChart;
-  const reportActionLabel = hub.readiness.canViewReportHistory ? "View Reports" : "Generate Report";
-  const aiHistoryHref = hub.ai.historyHref;
-  const aiContinueHref = hub.readiness.canContinueAIHistory ? hub.ai.continueHref : hub.ai.historyHref;
-  const aiPrimaryLabel = askMyChartReady ? "Ask NAVAGRAHA AI" : "Generate Kundli";
-  const aiSecondaryLabel = hub.readiness.canContinueAIHistory ? "Continue Conversation" : "View AI History";
-  const kundliHref = hub.readiness.hasActiveKundli ? "/dashboard/kundli" : "/dashboard/kundli/new";
-  const guidanceHref = askMyChartReady ? hub.ai.historyHref : "/dashboard/kundli/new";
-  const askMyChartHref = askMyChartReady ? hub.dailyGuidance.askMyChartHref : guidanceHref;
-  const panchangHref = hub.readiness.canViewPanchang ? hub.panchangSnapshot.panchangHref : "/panchang";
-  const currentPratyantardasha = hub.dasha.currentPratyantardasha ?? hub.dasha.currentPratyantar;
+  const currentPratyantardasha =
+    hub.dasha.currentPratyantardasha ?? hub.dasha.currentPratyantar;
   const dashaLineage: Array<{ label: string; value: string }> = [];
-  const recentReports = hub.reports.saved.recent.slice(0, 3);
-  const recentConsultations = hub.consultations.recentConsultations.slice(0, 2);
-  const upcomingConsultation = hub.consultations.upcomingConsultation;
 
   if (hub.dasha.currentMahadasha) {
     dashaLineage.push({
@@ -150,10 +137,95 @@ export function DashboardPersonalHub({
 
   if (currentPratyantardasha) {
     dashaLineage.push({
-      label: "Pratyantar",
+      label: "Pratyantardasha",
       value: `${currentPratyantardasha.lord} - until ${formatDate(currentPratyantardasha.endAtUtc)}`,
     });
   }
+
+  return (
+    <Card tone="accent" className="space-y-5">
+      <div className="flex items-start gap-3">
+        <HubMark label="DA" />
+        <div className="min-w-0 space-y-1">
+          <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[#C89B2C]">
+            Current Dasha
+          </p>
+          <h2 className="break-words text-[length:var(--font-size-title-sm)] text-[#111111]">
+            {dashaLineage.length ? "Current Dasha Lineage" : "Data unavailable"}
+          </h2>
+        </div>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        <Badge tone={readinessTone(hub.dasha.state === "ready")}>
+          {hub.dasha.state === "ready" ? "Ready" : "Data unavailable"}
+        </Badge>
+        <Badge tone={hub.dasha.dashaType === "VIMSHOTTARI" ? "accent" : "neutral"}>
+          {hub.dasha.dashaType === "VIMSHOTTARI" ? "Vimshottari" : "No Dasha type"}
+        </Badge>
+      </div>
+      {dashaLineage.length ? (
+        <div className="grid gap-3">
+          {dashaLineage.map((entry) => (
+            <InfoLine key={entry.label} label={entry.label} value={entry.value} />
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-[var(--radius-xl)] border border-[#EAEAEA] bg-white px-4 py-4">
+          <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[#C89B2C]">
+            Data unavailable
+          </p>
+          <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[#4A4A4A]">
+            Save a Kundli with chart data to view the active Dasha lineage.
+          </p>
+        </div>
+      )}
+      {hub.dasha.timeline.length ? (
+        <div className="space-y-3 rounded-[var(--radius-xl)] border border-[#EAEAEA] bg-white px-4 py-4">
+          <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[#C89B2C]">
+            Mahadasha timeline
+          </p>
+          <div className="space-y-3">
+            {hub.dasha.timeline.slice(0, 3).map((segment) => (
+              <div key={`${segment.lord}-${segment.startAtUtc}`} className="space-y-1">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-[length:var(--font-size-body-sm)] font-medium text-[#111111]">
+                    {segment.lord}
+                  </p>
+                  <Badge tone={segment.isCurrent ? "accent" : "neutral"}>
+                    {segment.isCurrent ? "Current" : "Upcoming"}
+                  </Badge>
+                </div>
+                <p className="text-[length:var(--font-size-body-xs)] text-[#4A4A4A]">
+                  {formatDate(segment.startAtUtc)} - {formatDate(segment.endAtUtc)}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
+    </Card>
+  );
+}
+
+export function DashboardPersonalHub({
+  hub,
+}: Readonly<{
+  hub: DashboardHubData;
+}>) {
+  const profileReady = hub.profile.birthDetailsStatus === "Saved";
+  const askMyChartReady = hub.readiness.canAskMyChart;
+  const reportActionLabel = hub.readiness.canViewReportHistory ? "View Reports" : "Generate Report";
+  const aiHistoryHref = hub.ai.historyHref;
+  const aiContinueHref = hub.readiness.canContinueAIHistory ? hub.ai.continueHref : hub.ai.historyHref;
+  const aiPrimaryLabel = askMyChartReady ? "Ask NAVAGRAHA AI" : "Generate Kundli";
+  const aiSecondaryLabel = hub.readiness.canContinueAIHistory ? "Continue Conversation" : "View AI History";
+  const kundliHref = hub.readiness.hasActiveKundli ? "/dashboard/kundli" : "/dashboard/kundli/new";
+  const guidanceHref = askMyChartReady ? hub.ai.historyHref : "/dashboard/kundli/new";
+  const askMyChartHref = askMyChartReady ? hub.dailyGuidance.askMyChartHref : guidanceHref;
+  const panchangHref = hub.readiness.canViewPanchang ? hub.panchangSnapshot.panchangHref : "/panchang";
+  const recentReports = hub.reports.saved.recent.slice(0, 3);
+  const recentConsultations = hub.consultations.recentConsultations.slice(0, 2);
+  const upcomingConsultation = hub.consultations.upcomingConsultation;
 
   return (
     <div className="space-y-6">
@@ -237,78 +309,7 @@ export function DashboardPersonalHub({
       </Card>
 
       <div className="grid gap-4 lg:grid-cols-2 2xl:grid-cols-4">
-        <Card className="space-y-4">
-          <div className="flex items-start gap-3">
-            <HubMark label="DA" />
-            <div className="min-w-0 space-y-1">
-              <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[#C89B2C]">
-                Current Dasha
-              </p>
-              <h2 className="break-words text-[length:var(--font-size-title-sm)] text-[#111111]">
-                {dashaLineage.length ? "Current Dasha Lineage" : "Dasha lineage unavailable"}
-              </h2>
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Badge tone={readinessTone(hub.dasha.state === "ready")}>
-              {hub.dasha.state === "ready" ? "Ready" : "Data unavailable"}
-            </Badge>
-            <Badge tone={hub.dasha.dashaType === "VIMSHOTTARI" ? "accent" : "neutral"}>
-              {hub.dasha.dashaType === "VIMSHOTTARI" ? "Vimshottari" : "No Dasha type"}
-            </Badge>
-          </div>
-          <p className="break-words text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[#4A4A4A]">
-            Active levels are shown from the saved Kundli payload only. Missing lineage levels stay hidden until available.
-          </p>
-          {dashaLineage.length ? (
-            <div className="grid gap-3">
-              {dashaLineage.map((entry) => (
-                <InfoLine key={entry.label} label={entry.label} value={entry.value} />
-              ))}
-            </div>
-          ) : (
-            <div className="rounded-[var(--radius-xl)] border border-[#EAEAEA] bg-white px-4 py-4">
-              <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[#C89B2C]">
-                Data unavailable
-              </p>
-              <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[#4A4A4A]">
-                Save a Kundli with chart data to view the active Dasha lineage.
-              </p>
-            </div>
-          )}
-          {hub.dasha.timeline.length ? (
-            <div className="space-y-3 rounded-[var(--radius-xl)] border border-[#EAEAEA] bg-white px-4 py-4">
-              <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[#C89B2C]">
-                Mahadasha timeline
-              </p>
-              <div className="space-y-3">
-                {hub.dasha.timeline.slice(0, 3).map((segment) => (
-                  <div key={`${segment.lord}-${segment.startAtUtc}`} className="space-y-1">
-                    <div className="flex items-center justify-between gap-3">
-                      <p className="text-[length:var(--font-size-body-sm)] font-medium text-[#111111]">
-                        {segment.lord}
-                      </p>
-                      <Badge tone={segment.isCurrent ? "accent" : "neutral"}>
-                        {segment.isCurrent ? "Current" : "Upcoming"}
-                      </Badge>
-                    </div>
-                    <p className="text-[length:var(--font-size-body-xs)] text-[#4A4A4A]">
-                      {formatDate(segment.startAtUtc)} - {formatDate(segment.endAtUtc)}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : null}
-          <div className="flex flex-wrap gap-2">
-            <Link href={hub.readiness.hasActiveKundli ? kundliHref : "/dashboard/kundli/new"} className={buttonStyles({ size: "sm", tone: "secondary" })}>
-              {hub.readiness.hasActiveKundli ? "View Kundli" : "Add / Generate Kundli"}
-            </Link>
-            <Link href={hub.reports.saved.historyHref} className={buttonStyles({ size: "sm", tone: "ghost" })}>
-              View Reports
-            </Link>
-          </div>
-        </Card>
+        <DashboardDashaLineagePanel hub={hub} />
 
         <Card className="space-y-4">
           <div className="flex items-start gap-3">
