@@ -59,6 +59,8 @@
     "debug:panchang:muhurat:qa": "tsx scripts/debug-panchang-muhurat-qa.ts",
     "debug:matchmaking:qa": "tsx scripts/debug-matchmaking-qa.ts",
     "debug:matchmaking:compatibility:qa": "tsx scripts/debug-matchmaking-compatibility-qa.ts",
+    "debug:matchmaking:premium:qa": "tsx scripts/debug-matchmaking-premium-qa.ts",
+    "debug:matchmaking:legacy-compat:qa": "tsx scripts/debug-matchmaking-legacy-compat-qa.ts",
     "debug:dosha:qa": "tsx scripts/debug-dosha-qa.ts",
     "debug:saved-kundli:qa": "tsx scripts/debug-saved-kundli-qa.ts",
     "debug:today-decision:qa": "tsx scripts/debug-today-decision-qa.ts",

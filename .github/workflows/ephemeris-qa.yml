@@ -133,6 +133,45 @@ jobs:
 
           echo "Premium Panchang integration QA: all real-ephemeris groups passed."
 
+      - name: Premium Matchmaking QA (Card 10.2, pure exhaustive)
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run debug:matchmaking:premium:qa 2>&1 | tee matchmaking-premium-qa.log
+
+          if ! grep -q "0 failed" matchmaking-premium-qa.log; then
+            echo "::error::Premium Matchmaking pure QA reported failures."
+            tail -n 40 matchmaking-premium-qa.log
+            exit 1
+          fi
+
+          echo "Premium Matchmaking pure QA: all groups passed."
+
+      - name: Matchmaking legacy consumer compatibility QA (Card 10.2)
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run debug:matchmaking:legacy-compat:qa 2>&1 | tee matchmaking-legacy-compat-qa.log
+
+          if ! grep -q '"legacyCompat": "PASS"' matchmaking-legacy-compat-qa.log; then
+            echo "::error::Matchmaking legacy consumer compatibility QA did not pass."
+            tail -n 40 matchmaking-legacy-compat-qa.log
+            exit 1
+          fi
+
+          echo "Matchmaking legacy consumer compatibility QA: passed."
+
+      - name: Existing Matchmaking QA scripts (Node 22; ephemeris-backed)
+        shell: bash
+        run: |
+          set -o pipefail
+          # These pre-existing scripts build a real Gochar transit (Swiss
+          # Ephemeris) for outer-planet synthesis, so they only run on this
+          # Node 22 runner. They exercise the now-delegating foundation.
+          npm run debug:matchmaking:qa
+          npm run debug:matchmaking:compatibility:qa
+          echo "Existing matchmaking QA scripts passed on Node 22."
+
       - name: Upload Gochar QA log
         if: always()
         uses: actions/upload-artifact@v4
