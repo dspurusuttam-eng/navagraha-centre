@@ -13,6 +13,7 @@ import {
   type KundliRequestPayload,
   type StorageLike,
 } from "../src/lib/kundli/pending-kundli-draft";
+import { resolveTrustedOriginsForAuth } from "../src/lib/auth";
 
 class MemoryStorage implements StorageLike {
   private readonly data = new Map<string, string>();
@@ -133,6 +134,27 @@ assert.throws(() =>
   buildKundliSignInHref({ callbackPath: "https://example.com/steal" })
 );
 assert.throws(() => buildKundliSignInHref({ callbackPath: "//example.com" }));
+
+const previewTrustedOrigins = resolveTrustedOriginsForAuth({
+  VERCEL: "1",
+  VERCEL_ENV: "preview",
+  VERCEL_URL:
+    "navagraha-centre-git-fix-kun-415795-dspurusuttam-7119s-projects.vercel.app",
+  VERCEL_BRANCH_URL:
+    "navagraha-centre-git-fix-kun-415795-dspurusuttam-7119s-projects.vercel.app",
+  VERCEL_PROJECT_PRODUCTION_URL: "www.navagrahacentre.com",
+  BETTER_AUTH_URL: "https://www.navagrahacentre.com",
+  NEXT_PUBLIC_SITE_URL: "https://www.navagrahacentre.com",
+});
+assert.ok(
+  previewTrustedOrigins.includes(
+    "https://navagraha-centre-git-fix-kun-415795-dspurusuttam-7119s-projects.vercel.app"
+  )
+);
+assert.equal(
+  previewTrustedOrigins.some((origin) => origin.includes("*")),
+  false
+);
 
 assert.equal(
   resolveKundliGenerateAction({
