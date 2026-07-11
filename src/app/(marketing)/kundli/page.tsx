@@ -10,8 +10,8 @@ import {
   getRequestLocale,
   hasExplicitLocalePrefixInRequest,
 } from "@/modules/localization/request";
-import { GenerateKundliControl } from "./generate-kundli-control";
-import { KundliBirthDetailsForm } from "./kundli-birth-details-form";
+import { getSession } from "@/modules/auth/server";
+import { KundliGenerationExperience } from "./kundli-generation-experience";
 
 const heroChips = ["Lagna", "Rashi", "Dasha"] as const;
 
@@ -77,11 +77,23 @@ export async function generateMetadata() {
 
 export const dynamic = "force-dynamic";
 
-export default async function KundliPage() {
+type KundliPageSearchParams = Promise<{
+  resume?: string | string[];
+}>;
+
+export default async function KundliPage({
+  searchParams,
+}: Readonly<{ searchParams?: KundliPageSearchParams }>) {
   const locale = await getRequestLocale();
   const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
+  const session = await getSession().catch(() => null);
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const resumeValue = Array.isArray(resolvedSearchParams?.resume)
+    ? resolvedSearchParams.resume[0]
+    : resolvedSearchParams?.resume;
   const localize = (href: string) =>
     localizeHref(locale, hasExplicitLocalePrefix, href);
+  const callbackPath = `${localize("/kundli")}?resume=1`;
 
   return (
     <>
@@ -141,11 +153,11 @@ export default async function KundliPage() {
                 BIRTH DETAILS
               </p>
 
-              <KundliBirthDetailsForm />
-
-              <GenerateKundliControl
-                signInHref={localize("/sign-in")}
-                feature="kundli-profile-card-sign-in"
+              <KundliGenerationExperience
+                isAuthenticated={Boolean(session)}
+                resumeRequested={resumeValue === "1"}
+                signInPath={localize("/sign-in")}
+                callbackPath={callbackPath}
               />
             </Card>
           </Container>

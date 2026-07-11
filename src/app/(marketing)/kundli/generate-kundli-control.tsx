@@ -1,11 +1,53 @@
 "use client";
 
-import { TrackedLink } from "@/components/analytics/tracked-link";
 import { buttonStyles } from "@/components/ui/button";
 
+type KundliPlanet = {
+  name: string;
+  longitude: number;
+  sign: string;
+  degree_in_sign: number;
+  nakshatra: string;
+  pada: number;
+  house: number;
+};
+
+export type KundliChartPayload = {
+  chart: {
+    birth_context?: {
+      date_local?: string;
+      time_local?: string;
+      place?: string;
+      latitude?: number;
+      longitude?: number;
+      timezone?: string;
+      birth_utc?: string;
+    };
+    settings?: { ayanamsha?: string };
+    lagna?: { sign?: string; degree_in_sign?: number };
+    houses: Array<{ house: number; sign: string }>;
+    planets: KundliPlanet[];
+    verification?: {
+      verification_status?: "VERIFIED" | "WARNINGS" | "FAILED";
+      warnings?: unknown[];
+      errors?: unknown[];
+    };
+  };
+};
+
+export type KundliGenerateState =
+  | { status: "idle"; message: string }
+  | { status: "validating"; message: string }
+  | { status: "saving"; message: string }
+  | { status: "generating"; message: string }
+  | { status: "error"; message: string }
+  | { status: "success"; message: string; payload: KundliChartPayload };
+
 type KundliGenerateControlProps = {
-  signInHref: string;
-  feature: string;
+  state: KundliGenerateState;
+  onGenerate: () => void;
+  onCancelPending?: () => void;
+  hasPendingDraft: boolean;
 };
 
 const kundliIncludes = [
@@ -103,10 +145,138 @@ function KundliIncludeIcon({
   );
 }
 
+export function isSupportedKundliChartPayload(
+  payload: unknown
+): payload is KundliChartPayload {
+  if (!payload || typeof payload !== "object") {
+    return false;
+  }
+
+  const candidate = payload as {
+    chart?: { houses?: unknown; planets?: unknown };
+  };
+
+  return (
+    Boolean(candidate.chart) &&
+    Array.isArray(candidate.chart?.houses) &&
+    Array.isArray(candidate.chart?.planets)
+  );
+}
+
+function formatLabel(value: string | null | undefined) {
+  if (!value) {
+    return "Unavailable";
+  }
+
+  return value
+    .toLowerCase()
+    .split(/[_\s-]+/g)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+function formatNumber(value: number | null | undefined, digits = 2) {
+  return Number.isFinite(value ?? Number.NaN)
+    ? Number(value).toFixed(digits)
+    : "Unavailable";
+}
+
+function ResultLine({
+  label,
+  value,
+}: Readonly<{ label: string; value: string }>) {
+  return (
+    <div className="min-w-0 rounded-[0.9rem] border border-[rgba(184,137,67,0.16)] bg-white px-3 py-2 shadow-[0_8px_18px_rgba(17,17,17,0.035)]">
+      <p className="text-[0.58rem] uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
+        {label}
+      </p>
+      <p className="mt-1 break-words text-[0.82rem] font-semibold leading-5 text-[#111111]">
+        {value}
+      </p>
+    </div>
+  );
+}
+
+function KundliResultRenderer({ payload }: Readonly<{ payload: KundliChartPayload }>) {
+  const chart = payload.chart;
+  const context = chart.birth_context;
+  const moonSign = chart.planets.find(
+    (planet) => planet.name.toLowerCase() === "moon"
+  )?.sign;
+
+  return (
+    <div className="space-y-3 rounded-[0.9rem] border border-[rgba(76,187,23,0.2)] bg-white px-3 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.98),inset_0_-4px_10px_rgba(76,187,23,0.035),0_7px_13px_rgba(17,17,17,0.045)]">
+      <div>
+        <p className="text-[0.62rem] font-extrabold uppercase tracking-[0.12em] text-[#2f7e16]">
+          GENERATED RESULT
+        </p>
+        <p className="mt-1 text-[0.8rem] font-semibold leading-5 text-[color:var(--color-ink-body)]">
+          Confirmed backend chart fields are shown below.
+        </p>
+      </div>
+
+      <div className="grid min-w-0 gap-2 sm:grid-cols-2">
+        <ResultLine label="Date" value={context?.date_local ?? "Unavailable"} />
+        <ResultLine label="Time" value={context?.time_local ?? "Unavailable"} />
+        <ResultLine label="Birth Place" value={context?.place ?? "Unavailable"} />
+        <ResultLine label="Timezone" value={context?.timezone ?? "Unavailable"} />
+        <ResultLine
+          label="Coordinates"
+          value={`${formatNumber(context?.latitude, 4)}, ${formatNumber(
+            context?.longitude,
+            4
+          )}`}
+        />
+        <ResultLine
+          label="Ayanamsa"
+          value={formatLabel(chart.settings?.ayanamsha)}
+        />
+        <ResultLine label="Lagna" value={formatLabel(chart.lagna?.sign)} />
+        <ResultLine label="Moon Sign" value={formatLabel(moonSign)} />
+      </div>
+
+      <div className="space-y-2">
+        <p className="text-[0.62rem] font-extrabold uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
+          Graha Position
+        </p>
+        <div className="grid min-w-0 gap-2 sm:grid-cols-2">
+          {chart.planets.slice(0, 9).map((planet) => (
+            <div
+              key={`${planet.name}-${planet.house}-${planet.longitude}`}
+              className="min-w-0 rounded-[0.85rem] border border-[rgba(184,137,67,0.16)] bg-white px-3 py-2"
+            >
+              <p className="text-[0.76rem] font-extrabold text-[#111111]">
+                {formatLabel(planet.name)}
+              </p>
+              <p className="mt-1 text-[0.7rem] leading-5 text-[color:var(--color-ink-body)]">
+                {formatLabel(planet.sign)} - House {planet.house} -{" "}
+                {formatNumber(planet.degree_in_sign)} deg
+              </p>
+              <p className="text-[0.7rem] leading-5 text-[color:var(--color-ink-body)]">
+                {formatLabel(planet.nakshatra)} Pada {planet.pada}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="rounded-[0.85rem] border border-black/10 bg-white px-3 py-2 text-[0.72rem] font-semibold leading-5 text-[#4A4A4A]">
+        Verification: {formatLabel(chart.verification?.verification_status)}.
+        Warnings: {chart.verification?.warnings?.length ?? 0}. Errors:{" "}
+        {chart.verification?.errors?.length ?? 0}.
+      </div>
+    </div>
+  );
+}
+
 export function GenerateKundliControl({
-  signInHref,
-  feature,
+  state,
+  onGenerate,
+  onCancelPending,
+  hasPendingDraft,
 }: Readonly<KundliGenerateControlProps>) {
+  const isBusy = ["validating", "saving", "generating"].includes(state.status);
   const signInButtonClassName = buttonStyles({
     tone: "accent",
     size: "lg",
@@ -116,14 +286,35 @@ export function GenerateKundliControl({
 
   return (
     <div className="space-y-3">
-      <TrackedLink
-        href={signInHref}
-        eventName="cta_click"
-        eventPayload={{ page: "/kundli", feature }}
+      <button
+        type="button"
+        disabled={isBusy}
+        onClick={onGenerate}
         className={signInButtonClassName}
       >
-        Generate Kundli
-      </TrackedLink>
+        {isBusy ? "Generating Kundli..." : "Generate Kundli"}
+      </button>
+
+      <div
+        role={state.status === "error" ? "alert" : "status"}
+        className={`rounded-[0.85rem] border px-3 py-2 text-[0.74rem] font-semibold leading-5 ${
+          state.status === "error"
+            ? "border-[rgba(216,68,62,0.28)] text-[#9f302c]"
+            : "border-[rgba(184,137,67,0.18)] text-[#4A4A4A]"
+        }`}
+      >
+        {state.message}
+      </div>
+
+      {hasPendingDraft && onCancelPending ? (
+        <button
+          type="button"
+          onClick={onCancelPending}
+          className="text-[0.7rem] font-extrabold text-[color:var(--color-accent-strong)] underline decoration-[rgba(184,137,67,0.42)] underline-offset-4"
+        >
+          Clear saved details
+        </button>
+      ) : null}
 
       <div className="min-w-0 space-y-3 rounded-[1.05rem] border border-[rgba(184,137,67,0.22)] bg-white p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.98),0_12px_22px_rgba(17,17,17,0.06)]">
         <p className="text-[0.68rem] font-extrabold uppercase tracking-[0.12em] text-[color:var(--color-accent-strong)]">
@@ -151,19 +342,25 @@ export function GenerateKundliControl({
           RESULT
         </p>
         <div className="space-y-3 rounded-[0.9rem] border border-[rgba(76,187,23,0.2)] bg-white px-3 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.98),inset_0_-4px_10px_rgba(76,187,23,0.035),0_7px_13px_rgba(17,17,17,0.045)]">
-          <p className="text-[0.8rem] font-semibold leading-5 text-[color:var(--color-ink-body)]">
-            Kundli result will appear after generation.
-          </p>
-          <div className="grid gap-2 sm:grid-cols-5">
-            {resultSections.map((section) => (
-              <div
-                key={section}
-                className="rounded-[0.75rem] border border-[rgba(184,137,67,0.18)] bg-white px-2 py-2 text-center text-[0.62rem] font-extrabold leading-tight text-[#111111] shadow-[inset_0_1px_0_rgba(255,255,255,0.98),0_5px_10px_rgba(17,17,17,0.035)]"
-              >
-                {section}
+          {state.status === "success" ? (
+            <KundliResultRenderer payload={state.payload} />
+          ) : (
+            <>
+              <p className="text-[0.8rem] font-semibold leading-5 text-[color:var(--color-ink-body)]">
+                Kundli result will appear after generation.
+              </p>
+              <div className="grid gap-2 sm:grid-cols-5">
+                {resultSections.map((section) => (
+                  <div
+                    key={section}
+                    className="rounded-[0.75rem] border border-[rgba(184,137,67,0.18)] bg-white px-2 py-2 text-center text-[0.62rem] font-extrabold leading-tight text-[#111111] shadow-[inset_0_1px_0_rgba(255,255,255,0.98),0_5px_10px_rgba(17,17,17,0.035)]"
+                  >
+                    {section}
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </>
+          )}
         </div>
       </div>
     </div>

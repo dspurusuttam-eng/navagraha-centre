@@ -5,6 +5,8 @@ import { getRequiredServerEnvironmentValue } from "@/config/env";
 import { siteConfig } from "@/config/site";
 import { getPrisma } from "@/lib/prisma";
 
+type AuthEnvironment = NodeJS.ProcessEnv | Record<string, string | undefined>;
+
 function getAuthSecret() {
   return getRequiredServerEnvironmentValue("BETTER_AUTH_SECRET");
 }
@@ -44,18 +46,25 @@ function parseConfiguredOrigins(value: string) {
     .filter((origin): origin is string => Boolean(origin));
 }
 
-function isVercelProduction() {
-  return process.env.VERCEL_ENV === "production";
+function isVercelProduction(env: AuthEnvironment = process.env) {
+  return env.VERCEL_ENV === "production";
+}
+
+function isVercelRuntime(env: AuthEnvironment = process.env) {
+  return (
+    env.VERCEL === "1" ||
+    Boolean(env.VERCEL_URL || env.VERCEL_BRANCH_URL || env.VERCEL_PROJECT_PRODUCTION_URL)
+  );
 }
 
 function getCanonicalSiteOrigin() {
   return normalizeOrigin(siteConfig.url) ?? "http://localhost:3000";
 }
 
-function getBaseUrl() {
-  const configuredBaseUrl = normalizeOrigin(process.env.BETTER_AUTH_URL ?? "");
+function getBaseUrl(env: AuthEnvironment = process.env) {
+  const configuredBaseUrl = normalizeOrigin(env.BETTER_AUTH_URL ?? "");
 
-  if (isVercelProduction()) {
+  if (isVercelProduction(env)) {
     return getCanonicalSiteOrigin();
   }
 
@@ -78,17 +87,19 @@ function getProductionOriginVariants() {
   return variants;
 }
 
-function getTrustedOrigins() {
+export function resolveTrustedOriginsForAuth(
+  env: AuthEnvironment = process.env
+) {
   const trustedOrigins = new Set<string>();
-  const configuredOrigins = process.env.BETTER_AUTH_TRUSTED_ORIGINS ?? "";
-  const configuredBaseUrl = normalizeOrigin(process.env.BETTER_AUTH_URL ?? "");
+  const configuredOrigins = env.BETTER_AUTH_TRUSTED_ORIGINS ?? "";
+  const configuredBaseUrl = normalizeOrigin(env.BETTER_AUTH_URL ?? "");
   const configuredPublicSiteUrl = normalizeOrigin(
-    process.env.NEXT_PUBLIC_SITE_URL ?? ""
+    env.NEXT_PUBLIC_SITE_URL ?? ""
   );
   const vercelOrigins = [
-    process.env.VERCEL_PROJECT_PRODUCTION_URL,
-    process.env.VERCEL_BRANCH_URL,
-    process.env.VERCEL_URL,
+    env.VERCEL_PROJECT_PRODUCTION_URL,
+    env.VERCEL_BRANCH_URL,
+    env.VERCEL_URL,
   ]
     .map((value) => normalizeHostToOrigin(value ?? ""))
     .filter((origin): origin is string => Boolean(origin));
@@ -105,13 +116,15 @@ function getTrustedOrigins() {
     trustedOrigins.add(configuredPublicSiteUrl);
   }
 
-  trustedOrigins.add(getBaseUrl());
+  trustedOrigins.add(getBaseUrl(env));
 
-  if (isVercelProduction()) {
+  if (isVercelProduction(env)) {
     for (const productionOrigin of getProductionOriginVariants()) {
       trustedOrigins.add(productionOrigin);
     }
+  }
 
+  if (isVercelRuntime(env)) {
     for (const vercelOrigin of vercelOrigins) {
       trustedOrigins.add(vercelOrigin);
     }
@@ -217,7 +230,7 @@ function createAuth() {
     appName: siteConfig.name,
     secret: getAuthSecret(),
     baseURL: getBaseUrl(),
-    trustedOrigins: getTrustedOrigins(),
+    trustedOrigins: resolveTrustedOriginsForAuth(),
     database: prismaAdapter(getPrisma(), {
       provider: "postgresql",
     }),
