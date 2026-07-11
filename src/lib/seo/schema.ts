@@ -279,7 +279,9 @@ export function createProductSchema(input: {
       locale: input.locale,
       path: input.path,
     }),
-    image: input.imagePath ? buildSeoUrl(input.imagePath) : buildSeoUrl("/og-default.svg"),
+    image: input.imagePath
+      ? buildSeoUrl(input.imagePath)
+      : buildSeoUrl(seoConfig.defaultOpenGraphImage),
     brand: {
       "@type": "Brand",
       name: seoConfig.organization.name,

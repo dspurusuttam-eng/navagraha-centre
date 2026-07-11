@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { NavagrahaLogo } from "@/components/brand/navagraha-logo";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
@@ -29,9 +30,10 @@ export function AuthFormShell({
         <div className="space-y-7">
           <Link
             href="/"
-            className="inline-flex text-[0.74rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)] transition hover:text-[color:var(--color-foreground)]"
+            className="inline-flex items-center gap-3 text-[0.74rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)] transition hover:text-[color:var(--color-foreground)]"
           >
-            Return To NAVAGRAHA CENTRE
+            <NavagrahaLogo variant="auth" priority />
+            <span>Return To NAVAGRAHA CENTRE</span>
           </Link>
 
           <div className="space-y-4">

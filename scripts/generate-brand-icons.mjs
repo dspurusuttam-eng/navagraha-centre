@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
@@ -6,12 +6,21 @@ import sharp from "sharp";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, "..");
-const emblemPath = path.join(repoRoot, "public", "brand", "navagraha-emblem.svg");
+const masterPath = path.join(
+  repoRoot,
+  "public",
+  "brand",
+  "navagraha-centre-logo-master.png"
+);
+const brandOutputDir = path.join(repoRoot, "public", "brand");
 const outputDir = path.join(repoRoot, "public");
+const appIconPath = path.join(repoRoot, "src", "app", "icon.png");
 
-const iconSizes = [64, 96, 192, 512];
+const logoSizes = [2048, 1024, 512, 256, 192, 180, 128, 96, 64, 48, 32, 16];
+const rootIconSizes = [2048, 1024, 512, 256, 192, 180, 128, 96, 64, 48, 32, 16];
 const appleIconSize = 180;
 const faviconSizes = [16, 32, 48];
+const maskableIconSize = 512;
 
 function createIcoFromPngBuffers(pngBuffers, sizes) {
   const count = pngBuffers.length;
@@ -43,26 +52,69 @@ function createIcoFromPngBuffers(pngBuffers, sizes) {
 }
 
 async function renderPng(size) {
-  return sharp(emblemPath)
-    .resize(size, size)
+  return sharp(masterPath)
+    .resize(size, size, {
+      fit: "contain",
+      kernel: sharp.kernel.lanczos3,
+      background: { r: 255, g: 255, b: 255, alpha: 1 },
+    })
     .png({
       compressionLevel: 9,
       adaptiveFiltering: true,
-      palette: true,
+    })
+    .toBuffer();
+}
+
+async function renderMaskablePng(size) {
+  const safeLogoSize = Math.round(size * 0.82);
+
+  return sharp(masterPath)
+    .resize(safeLogoSize, safeLogoSize, {
+      fit: "contain",
+      kernel: sharp.kernel.lanczos3,
+      background: { r: 255, g: 255, b: 255, alpha: 1 },
+    })
+    .extend({
+      top: Math.floor((size - safeLogoSize) / 2),
+      bottom: Math.ceil((size - safeLogoSize) / 2),
+      left: Math.floor((size - safeLogoSize) / 2),
+      right: Math.ceil((size - safeLogoSize) / 2),
+      background: { r: 255, g: 255, b: 255, alpha: 1 },
+    })
+    .png({
+      compressionLevel: 9,
+      adaptiveFiltering: true,
     })
     .toBuffer();
 }
 
 async function run() {
+  await mkdir(brandOutputDir, { recursive: true });
   await mkdir(outputDir, { recursive: true });
 
-  for (const size of iconSizes) {
+  for (const size of logoSizes) {
+    const pngBuffer = await renderPng(size);
+    await writeFile(
+      path.join(brandOutputDir, `navagraha-centre-logo-${size}.png`),
+      pngBuffer
+    );
+  }
+
+  for (const size of rootIconSizes) {
     const pngBuffer = await renderPng(size);
     await writeFile(path.join(outputDir, `icon-${size}.png`), pngBuffer);
   }
 
   const appleBuffer = await renderPng(appleIconSize);
   await writeFile(path.join(outputDir, "apple-touch-icon.png"), appleBuffer);
+
+  const maskableBuffer = await renderMaskablePng(maskableIconSize);
+  await writeFile(
+    path.join(outputDir, `icon-maskable-${maskableIconSize}.png`),
+    maskableBuffer
+  );
+
+  await copyFile(path.join(outputDir, "icon-512.png"), appIconPath);
 
   const faviconPngs = await Promise.all(faviconSizes.map((size) => renderPng(size)));
   const faviconIco = createIcoFromPngBuffers(faviconPngs, faviconSizes);

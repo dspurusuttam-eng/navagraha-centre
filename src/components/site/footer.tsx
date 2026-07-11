@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { NavagrahaLogo } from "@/components/brand/navagraha-logo";
 import { Container } from "@/components/ui/container";
 import { defaultLocale } from "@/modules/localization/config";
 import {
@@ -54,8 +55,9 @@ export async function Footer() {
           <div className="space-y-4">
             <Link
               href={localizeHref("/")}
-              className="inline-block transition [transition-duration:var(--motion-duration-base)] hover:opacity-90"
+              className="inline-flex max-w-full items-center gap-3 transition [transition-duration:var(--motion-duration-base)] hover:opacity-90"
             >
+              <NavagrahaLogo variant="footer-light" />
               <span className="block min-w-0 whitespace-nowrap">
                 <span className="block text-[1rem] font-semibold uppercase leading-none tracking-[0.18em] text-[#050505] sm:text-[1.08rem] lg:text-[1.12rem]">
                   NAVAGRAHA CENTRE

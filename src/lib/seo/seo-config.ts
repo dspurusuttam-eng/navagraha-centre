@@ -65,7 +65,7 @@ export const seoConfig = {
   titleTemplate: "%s | NAVAGRAHA CENTRE",
   defaultDescription:
     "Discover AI-powered Vedic astrology with Kundli, Rashifal, Panchang, Numerology, Compatibility, Reports and expert guidance from NAVAGRAHA CENTRE.",
-  defaultOpenGraphImage: "/og-default.svg",
+  defaultOpenGraphImage: "/brand/navagraha-centre-logo-1024.png",
   twitterHandle: process.env.NEXT_PUBLIC_TWITTER_HANDLE ?? "@navagrahacentre",
   brandKeywords: [
     "NAVAGRAHA CENTRE",
@@ -85,7 +85,7 @@ export const seoConfig = {
     authorName: "J P Sarmah",
     authorTitle: "Vedic Astrologer and Spiritual Guide",
     contactPagePath: "/contact",
-    logoPath: "/og-default.svg",
+    logoPath: "/brand/navagraha-centre-logo-512.png",
     serviceArea: ["Assam", "India", "Worldwide (Online)"] as const,
     serviceTypes: [
       "Kundli Analysis",
