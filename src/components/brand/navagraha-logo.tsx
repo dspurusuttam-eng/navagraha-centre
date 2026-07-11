@@ -7,85 +7,91 @@ export type NavagrahaLogoVariant =
   | "footer-light"
   | "footer-dark"
   | "emblem-only"
+  | "auth"
+  | "onboarding"
   | "watermark";
 
 type NavagrahaLogoProps = {
   variant?: NavagrahaLogoVariant;
+  displaySize?: number;
+  alt?: string;
   className?: string;
   priority?: boolean;
 };
 
 type VariantConfig = {
-  src: string;
-  width: number;
-  height: number;
-  alt: string;
+  displaySize: number;
+  sizes: string;
 };
 
 const variantMap: Record<NavagrahaLogoVariant, VariantConfig> = {
   header: {
-    src: "/brand/navagraha-logo-horizontal.svg",
-    width: 312,
-    height: 84,
-    alt: "NAVAGRAHA CENTRE logo",
+    displaySize: 48,
+    sizes: "48px",
   },
   mobile: {
-    src: "/brand/navagraha-emblem.svg",
-    width: 36,
-    height: 36,
-    alt: "NAVAGRAHA CENTRE emblem",
+    displaySize: 36,
+    sizes: "36px",
   },
   "footer-light": {
-    src: "/brand/navagraha-logo-horizontal.svg",
-    width: 288,
-    height: 76,
-    alt: "NAVAGRAHA CENTRE logo",
+    displaySize: 56,
+    sizes: "56px",
   },
   "footer-dark": {
-    src: "/brand/navagraha-logo-stacked.svg",
-    width: 240,
-    height: 220,
-    alt: "NAVAGRAHA CENTRE logo",
+    displaySize: 64,
+    sizes: "64px",
   },
   "emblem-only": {
-    src: "/brand/navagraha-emblem.svg",
-    width: 42,
-    height: 42,
-    alt: "NAVAGRAHA CENTRE emblem",
+    displaySize: 48,
+    sizes: "48px",
+  },
+  auth: {
+    displaySize: 88,
+    sizes: "(max-width: 640px) 72px, 88px",
+  },
+  onboarding: {
+    displaySize: 72,
+    sizes: "72px",
   },
   watermark: {
-    src: "/brand/navagraha-watermark.svg",
-    width: 420,
-    height: 420,
-    alt: "NAVAGRAHA watermark",
+    displaySize: 96,
+    sizes: "96px",
   },
 };
 
-const variantSizes: Record<NavagrahaLogoVariant, string> = {
-  header: "(max-width: 1280px) 0px, 312px",
-  mobile: "36px",
-  "footer-light": "(max-width: 640px) 180px, 288px",
-  "footer-dark": "(max-width: 640px) 152px, 184px",
-  "emblem-only": "42px",
-  watermark: "(max-width: 768px) 220px, 420px",
-};
+const generatedSizes = [16, 32, 48, 64, 96, 128, 180, 192, 256, 512] as const;
+
+function getLogoAssetSize(displaySize: number) {
+  return (
+    generatedSizes.find((size) => size >= displaySize * 1.5) ??
+    generatedSizes[generatedSizes.length - 1]
+  );
+}
 
 export function NavagrahaLogo({
   variant = "header",
+  displaySize,
+  alt = "NAVAGRAHA CENTRE",
   className,
   priority = false,
 }: Readonly<NavagrahaLogoProps>) {
   const config = variantMap[variant];
+  const resolvedDisplaySize = displaySize ?? config.displaySize;
+  const assetSize = getLogoAssetSize(resolvedDisplaySize);
 
   return (
     <Image
-      src={config.src}
-      alt={config.alt}
-      width={config.width}
-      height={config.height}
+      src={`/brand/navagraha-centre-logo-${assetSize}.png`}
+      alt={alt}
+      width={assetSize}
+      height={assetSize}
       priority={priority}
-      className={cn("h-auto max-w-full shrink-0", className)}
-      sizes={variantSizes[variant]}
+      className={cn("shrink-0 object-contain", className)}
+      sizes={config.sizes}
+      style={{
+        width: resolvedDisplaySize,
+        height: resolvedDisplaySize,
+      }}
     />
   );
 }

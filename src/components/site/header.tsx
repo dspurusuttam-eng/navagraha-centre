@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { TrackedLink } from "@/components/analytics/tracked-link";
+import { NavagrahaLogo } from "@/components/brand/navagraha-logo";
 import { LanguageSwitcher } from "@/components/site/language-switcher";
 import { NavigationLink } from "@/components/site/navigation-link";
 import { ToolsMegaMenu } from "@/components/site/tools-mega-menu";
@@ -105,9 +106,14 @@ export async function Header() {
 
               <Link
                 href={localizeHref("/")}
-                className="block min-w-0 flex-1 transition [transition-duration:var(--motion-duration-base)] hover:opacity-90"
+                className="flex min-w-0 flex-1 items-center gap-1.5 transition [transition-duration:var(--motion-duration-base)] hover:opacity-90"
               >
-                <span className="block truncate whitespace-nowrap text-[17px] font-bold uppercase leading-none tracking-[0.08em] text-[#111111] min-[390px]:text-[18px] min-[430px]:text-[19px] sm:text-[19px] sm:tracking-[0.1em]">
+                <NavagrahaLogo
+                  variant="mobile"
+                  displaySize={32}
+                  priority
+                />
+                <span className="block min-w-0 truncate whitespace-nowrap text-[13px] font-bold uppercase leading-none tracking-[0.02em] text-[#111111] min-[390px]:text-[14px] min-[430px]:text-[15px] min-[430px]:tracking-[0.04em] sm:text-[16px] sm:tracking-[0.06em]">
                   NAVAGRAHA
                 </span>
               </Link>
@@ -174,8 +180,9 @@ export async function Header() {
           <div className="flex w-full items-center justify-between gap-5 rounded-[1.7rem] border border-[rgba(185,139,70,0.18)] bg-white px-5 py-3.5 shadow-[0_1px_0_rgba(17,17,17,0.04),0_14px_30px_rgba(17,17,17,0.055)] 2xl:px-6">
             <Link
               href={localizeHref("/")}
-              className="min-w-0 shrink-0 pr-4 transition [transition-duration:var(--motion-duration-base)] hover:opacity-90"
+              className="flex min-w-0 shrink-0 items-center gap-3 pr-4 transition [transition-duration:var(--motion-duration-base)] hover:opacity-90"
             >
+              <NavagrahaLogo variant="header" priority />
               <span className="block min-w-0 whitespace-nowrap">
                 <span className="block text-[1.05rem] font-bold uppercase leading-none tracking-[0.2em] text-[#050505] xl:text-[1.08rem] 2xl:text-[1.14rem]">
                   NAVAGRAHA CENTRE

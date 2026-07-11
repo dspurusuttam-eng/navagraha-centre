@@ -84,12 +84,12 @@ export function HomepageHeroArt({
           className="absolute left-1/2 top-[42%] flex h-[6.6rem] w-[6.6rem] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-[rgba(184,137,67,0.42)] bg-[radial-gradient(circle_at_center,#fffef9_0%,#f8e6c4_100%)] shadow-[0_18px_36px_rgba(110,79,33,0.2)] sm:h-[7.4rem] sm:w-[7.4rem]"
         >
           <Image
-            src="/brand/navagraha-emblem.svg"
-            alt="NAVAGRAHA emblem"
+            src="/brand/navagraha-centre-logo-128.png"
+            alt=""
             width={74}
             height={74}
             priority
-            className="h-[4.2rem] w-[4.2rem] sm:h-[4.6rem] sm:w-[4.6rem]"
+            className="h-[4.2rem] w-[4.2rem] object-contain sm:h-[4.6rem] sm:w-[4.6rem]"
           />
         </div>
 
