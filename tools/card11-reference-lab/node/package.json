@@ -1,0 +1,21 @@
+{
+  "name": "card11-reference-lab-node",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Card 11.R1 isolated astronomy validation laboratory (Node/TypeScript). NOT part of the production application. The production app must never import from this package.",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "astronomy-engine": "tsx src/astronomy-engine-adapter.ts",
+    "compare": "tsx src/comparator.ts",
+    "benchmark": "tsx src/benchmark.ts",
+    "test": "tsx tests/run-tests.ts"
+  },
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@types/node": "26.1.1",
+    "astronomy-engine": "2.1.19",
+    "tsx": "4.23.0",
+    "typescript": "7.0.2"
+  }
+}

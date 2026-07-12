@@ -1,0 +1,116 @@
+name: Accuracy CI (Deep Certification)
+
+# Card 11.R5 — deep certification: full corpus, sweeps, panchang, transition solver,
+# full engine certification, and deterministic-rerun proof. Manual + scheduled.
+# Validation-only; no production dependency or JPL kernel enters the app bundle.
+
+on:
+  schedule:
+    - cron: "0 3 * * 1" # weekly, Monday 03:00 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: accuracy-deep-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  DE440S_SHA256: c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2
+  DE440S_URL: https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/de440s.bsp
+
+jobs:
+  accuracy-deep:
+    name: Accuracy Deep (Node 22 / Python 3.12)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 22 (pinned)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+
+      - name: Use Python 3.12 (pinned)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install production deps (builds swisseph)
+        run: npm ci
+
+      - name: Restore/verify DE440s kernel (cache; checksum gate)
+        uses: actions/cache@v4
+        with:
+          path: tools/card11-reference-lab/cache/de440s.bsp
+          key: de440s-${{ env.DE440S_SHA256 }}
+
+      - name: Ensure kernel present + checksum
+        run: |
+          set -e
+          f=tools/card11-reference-lab/cache/de440s.bsp
+          mkdir -p "$(dirname "$f")"
+          if [ ! -f "$f" ]; then curl -sSL -o "$f" "$DE440S_URL"; fi
+          echo "$DE440S_SHA256  $f" | sha256sum -c -
+
+      - name: Lab + Python deps (pinned)
+        run: |
+          (cd tools/card11-reference-lab/node && npm ci)
+          python -m pip install --upgrade pip
+          python -m pip install "skyfield==1.54" "numpy>=2,<3" "jplephem>=2.22"
+
+      - name: Regenerate full 473+ fixture corpus + G1/G2 sweeps (deterministic)
+        working-directory: tools/card11-reference-lab/python
+        run: python generate_reference_fixtures.py
+
+      - name: Current-engine adapter (full corpus + 1000-node + Lahiri sweep + transitions)
+        run: |
+          LAB="$PWD/tools/card11-reference-lab"
+          cp "$LAB/node/src/current-engine-adapter-r2.ts" scripts/_adapter.ci.ts
+          SWISSEPH_EPHE_PATH="$PWD/node_modules/swisseph/ephe" LAB_DIR="$LAB" npx tsx scripts/_adapter.ci.ts
+          cp "$LAB/node/src/panchang-adapter-r3.ts" scripts/_pan.ci.ts
+          SWISSEPH_EPHE_PATH="$PWD/node_modules/swisseph/ephe" LAB_DIR="$LAB" npx tsx scripts/_pan.ci.ts
+          rm -f scripts/_adapter.ci.ts scripts/_pan.ci.ts
+
+      - name: Skyfield oracle (full corpus + node sweep + panchang, no network after kernel)
+        working-directory: tools/card11-reference-lab/python
+        run: |
+          python skyfield_oracle_r2.py
+          python panchang_oracle.py
+
+      - name: Differential + boundary + G1-R2 + G2-R2 + panchang certification
+        working-directory: tools/card11-reference-lab/node
+        run: |
+          npx tsx src/comparator-r2.ts
+          npx tsx src/panchang-comparator-r3.ts
+
+      - name: Deterministic rerun proof (byte-identical canonical reports)
+        working-directory: tools/card11-reference-lab/node
+        run: |
+          set -e
+          s1=$(sha256sum ../reports/differential-report-r2.json | cut -d' ' -f1)
+          npx tsx src/comparator-r2.ts
+          s2=$(sha256sum ../reports/differential-report-r2.json | cut -d' ' -f1)
+          [ "$s1" = "$s2" ] || { echo "::error::non-deterministic differential report"; exit 1; }
+          echo "deterministic: $s1"
+
+      - name: Provenance emit + supply-chain isolation proof
+        working-directory: tools/card11-reference-lab/node
+        run: |
+          npx tsx src/provenance-emitter.ts
+          npx tsx src/supply-chain-check.ts
+
+      - name: Full engine regressions (Node 22)
+        run: |
+          set -e
+          npm run typecheck && npm run lint && npm run build
+          npm run debug:gochar:qa
+          npm run debug:panchang:premium:qa
+          npm run debug:panchang:muhurat:qa
+          npm run debug:horoscope:daily:qa
+          npm run debug:varga:qa
+          npm run debug:dasha:5level:qa
+          npm run debug:ashtakavarga:qa
+          npm run debug:matchmaking:premium:qa
+          npm run debug:matchmaking:advanced:qa
+          npm run debug:saved-kundli:qa

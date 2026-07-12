@@ -261,6 +261,11 @@ function calculatePlanetsFromJulianDayUt(
     }
   } finally {
     swisseph.swe_close();
+    // Card 11.R3: swe_close() resets Swiss Ephemeris global state (including the
+    // sidereal mode) to its Fagan-Bradley default. Re-assert the project's canonical
+    // LAHIRI sidereal mode so no non-Lahiri state leaks to a later cross-call reader.
+    // This runs after the sidereal calculation above, so computed outputs are unchanged.
+    swisseph.swe_set_sid_mode(swisseph.SE_SIDM_LAHIRI, 0, 0);
   }
 
   const rahu = planets.find((planet) => planet.graha === "RAHU");

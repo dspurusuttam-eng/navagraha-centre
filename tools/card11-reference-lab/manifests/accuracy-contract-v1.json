@@ -1,0 +1,44 @@
+{
+  "schema": "card11-accuracy-contract-v1",
+  "version": "1.0.0",
+  "status": "APPROVED (validation contract; does not alter production)",
+  "sourceHierarchy": {
+    "astronomicalNumericalOracle": {
+      "primary": "Skyfield + pinned JPL DE440s",
+      "purpose": "independent reference for planetary/lunar astronomical states",
+      "authorityNote": "authoritative for CLASS_B numerical quantities"
+    },
+    "secondaryNumericalComparator": {
+      "provider": "Astronomy Engine 2.1.19",
+      "purpose": "triangulation, disagreement detection, performance only; never truth"
+    },
+    "productionContinuityBaseline": {
+      "provider": "NAVAGRAHA Swiss-based path (swisseph 0.5.17 / SE 2.09.03)",
+      "purpose": "current production behaviour + continuity",
+      "note": "NOT automatically correct merely because it is production"
+    },
+    "vedicDiscreteAuthority": {
+      "sources": ["pinned NAVAGRAHA formula contracts", "approved classical tables", "deterministic mathematical invariants", "independently generated astronomical inputs"],
+      "purpose": "Rashi/Nakshatra/Pada/Tithi inputs, True Node convention, Lahiri continuity"
+    },
+    "rules": ["never average provider results", "never choose by majority vote"]
+  },
+  "accuracyClasses": {
+    "CLASS_A_EXACT_DISCRETE_EQUALITY": {
+      "appliesTo": ["Rashi", "Nakshatra", "Pada", "retrograde/direct", "Ketu opposition", "normalized angle domain", "deterministic rule IDs", "fixture identity", "interval ownership"],
+      "expected": "exact equality unless formally marked boundary-sensitive"
+    },
+    "CLASS_B_NUMERICAL_TOLERANCE": {
+      "appliesTo": ["longitude", "latitude", "distance", "speed", "ayanamsa", "True Node", "transition time"],
+      "expected": "within per-quantity justified tolerance (tolerance-registry-v1.json)"
+    },
+    "CLASS_C_BOUNDARY_CERTIFICATION": {
+      "appliesTo": ["sign ingress", "Nakshatra transition", "Pada transition", "Tithi input", "Yoga input", "retrograde/direct station", "0/360 wraparound", "sunrise/sunset inputs (future)"],
+      "method": "transition-time comparison / root-finding; rounded display values prohibited for certification"
+    },
+    "CLASS_D_CONTROLLED_UNAVAILABLE": {
+      "appliesTo": ["outside kernel range", "missing asset", "checksum failure", "unnormalizable frame", "provider lacks comparable value", "unsupported input (e.g. DST gap)"],
+      "expected": "structured unavailable status; never fabricate/approximate silently"
+    }
+  }
+}

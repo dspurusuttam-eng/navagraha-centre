@@ -1,0 +1,12 @@
+{
+  "schema": "card11-invariants-v1",
+  "invariants": [
+    { "id": "INV-KETU-OPP", "description": "Ketu longitude = normalize(Rahu + 180) exactly (float noise only).", "toleranceDeg": 1e-6 },
+    { "id": "INV-LON-RANGE", "description": "All longitudes in [0,360).", "min": 0, "max": 360 },
+    { "id": "INV-NO-NAN", "description": "No NaN/Infinity in any numeric output." },
+    { "id": "INV-RASHI-RANGE", "description": "Rashi index in 0..11." },
+    { "id": "INV-NAK-RANGE", "description": "Nakshatra index in 0..26." },
+    { "id": "INV-PADA-RANGE", "description": "Pada in 1..4." },
+    { "id": "INV-DETERMINISM", "description": "Repeated runs of each provider produce byte-identical results for the same fixture set." }
+  ]
+}

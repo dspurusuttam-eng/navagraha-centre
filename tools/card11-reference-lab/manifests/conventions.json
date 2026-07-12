@@ -1,0 +1,28 @@
+{
+  "contract": "card11-r1-normalization-contract",
+  "version": "1.0.0",
+  "canonicalQuantity": "geocentric apparent ecliptic longitude of date, degrees [0,360)",
+  "frame": {
+    "origin": "geocentric",
+    "plane": "ecliptic of date (true equinox of date)",
+    "corrections": ["light-time", "aberration", "nutation"],
+    "mode": "apparent"
+  },
+  "timeScale": {
+    "inputCivil": "local wall time in IANA timezone",
+    "canonicalInstant": "UTC (resolved once by the production tz->UTC owner)",
+    "ephemerisScale": "provider-internal TT via each provider's Delta-T; UT1~=UTC approximation accepted at product tolerance",
+    "calendar": "Gregorian (SE_GREG_CAL); pre-1582 out of corpus scope"
+  },
+  "bodies": ["SUN", "MOON", "MERCURY", "VENUS", "MARS", "JUPITER", "SATURN"],
+  "nodeBodies": ["RAHU", "KETU"],
+  "angleUnits": "degrees",
+  "speedUnits": "degrees/day (tropical ecliptic longitude rate)",
+  "distanceUnits": "AU",
+  "retrogradeRule": "longitudinal speed < 0",
+  "ketuRule": "normalize(RAHU + 180 deg)",
+  "rahuModel": "TRUE (osculating) node",
+  "circularComparison": "minimum angular separation in [0,180]",
+  "ayanamsaProductionSource": "swe_get_ayanamsa_ut under SE_SIDM_LAHIRI (identical to the value the SEFLG_SIDEREAL production path subtracts)",
+  "note": "This lab compares independent references against the UNCHANGED production engine. It never mutates production output and never averages providers."
+}

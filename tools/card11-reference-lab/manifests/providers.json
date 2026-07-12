@@ -1,0 +1,29 @@
+{
+  "schema": "card11-providers-v1",
+  "roles": {
+    "current-engine": {
+      "status": "PROTECTED PRODUCTION BASELINE — unchanged",
+      "library": "swisseph@0.5.17 (SE_VERSION 2.09.03)",
+      "productionFunction": "calculateCoreGrahaSiderealLongitudesAtUtc (@/lib/astrology/swiss-planetary-service)",
+      "ephemerisMode": "SWISSEPH (SWIEPH; node_modules/swisseph/ephe _18 block)",
+      "runtime": "Node 22 (native ABI); executed via a temporary, removed in-project bootstrap"
+    },
+    "skyfield-de440s": {
+      "status": "PRIMARY independent oracle (validation / dev-CI only)",
+      "library": "skyfield 1.54 (MIT) + jplephem 2.24 (MIT) + numpy 2.5.1 (BSD-3)",
+      "kernel": "JPL DE440s (public domain)",
+      "runtime": "Python 3.14 venv (isolated); no network at runtime"
+    },
+    "astronomy-engine": {
+      "status": "SECONDARY comparator / triangulation (isolated lab only)",
+      "library": "astronomy-engine 2.1.19 (MIT)",
+      "runtime": "Node (pure JS; no native, no kernel)"
+    }
+  },
+  "rules": [
+    "The three provider results are NEVER averaged.",
+    "current-engine is the protected baseline; the others are independent references.",
+    "No provider cutover is authorized in Card 11.R1.",
+    "The production application never imports any lab file."
+  ]
+}

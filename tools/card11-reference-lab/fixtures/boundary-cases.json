@@ -1,0 +1,15 @@
+{
+  "schema": "card11-fixture-corpus-v1",
+  "note": "Boundary + motion cases. Boundary proximity is detected DYNAMICALLY by the comparator from the computed longitude (guard bands), so exact ingress dates need not be pre-known. Retrograde/station states arise naturally and are reported, not assumed.",
+  "fixtures": [
+    { "id": "MOT-2016-MERC-JAN", "kind": "motion", "dateLocal": "2016-01-10", "timeLocal": "00:00", "timezone": "UTC", "latitude": 0, "longitude": 0, "tags": ["mercury-retro-window"] },
+    { "id": "MOT-2018-MARS-JUN", "kind": "motion", "dateLocal": "2018-07-01", "timeLocal": "00:00", "timezone": "UTC", "latitude": 0, "longitude": 0, "tags": ["mars-retro-window"] },
+    { "id": "MOT-2020-VEN-MAY",  "kind": "motion", "dateLocal": "2020-05-20", "timeLocal": "00:00", "timezone": "UTC", "latitude": 0, "longitude": 0, "tags": ["venus-retro-window"] },
+    { "id": "MOT-2009-JUP-AUG",  "kind": "motion", "dateLocal": "2009-08-15", "timeLocal": "00:00", "timezone": "UTC", "latitude": 0, "longitude": 0, "tags": ["jupiter-retro-window"] },
+    { "id": "MOT-2006-SAT-APR",  "kind": "motion", "dateLocal": "2006-04-05", "timeLocal": "00:00", "timezone": "UTC", "latitude": 0, "longitude": 0, "tags": ["saturn-retro-window"] },
+    { "id": "MOT-2011-MERC-MAR", "kind": "motion", "dateLocal": "2011-03-30", "timeLocal": "00:00", "timezone": "UTC", "latitude": 0, "longitude": 0, "tags": ["mercury-station-window"] },
+    { "id": "BND-2000-SUN-EQX",  "kind": "boundary", "dateLocal": "2000-03-20", "timeLocal": "07:35", "timezone": "UTC", "latitude": 0, "longitude": 0, "tags": ["sun-near-aries-tropical","sidereal-cusp-scan"] },
+    { "id": "BND-2024-SUN-SANK", "kind": "boundary", "dateLocal": "2024-01-14", "timeLocal": "19:00", "timezone": "Asia/Kolkata", "latitude": 28.6139, "longitude": 77.2090, "tags": ["makar-sankranti-window","sidereal-capricorn-ingress"] },
+    { "id": "BND-2022-MOON-FAST","kind": "boundary", "dateLocal": "2022-06-15", "timeLocal": "12:00", "timezone": "UTC", "latitude": 0, "longitude": 0, "tags": ["fast-moon-cusp-scan"] }
+  ]
+}

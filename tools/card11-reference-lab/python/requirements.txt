@@ -1,0 +1,8 @@
+# Card 11.R1 reference lab — Python oracle dependencies (INTERNAL VALIDATION ONLY).
+# Never installed into, imported by, or deployed with the production application.
+# Licences (verified from primary sources, see LICENSE-NOTICES.md):
+#   skyfield  - MIT (Brandon Rhodes)
+#   jplephem  - MIT (Brandon Rhodes)   [transitive via skyfield]
+#   numpy     - BSD-3-Clause            [transitive via skyfield]
+#   sgp4      - MIT                      [transitive via skyfield]
+skyfield>=1.49
