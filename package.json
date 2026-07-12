@@ -69,6 +69,7 @@
     "debug:varga:qa": "tsx scripts/debug-varga-qa.ts",
     "debug:numerology": "tsx scripts/debug-numerology.ts",
     "debug:numerology:core:qa": "tsx scripts/debug-numerology-core-qa.ts",
+    "debug:numerology:premium:qa": "tsx scripts/debug-numerology-premium-qa.ts",
     "debug:numerology:utilities:qa": "tsx scripts/debug-numerology-utilities-qa.ts",
     "debug:utilities:qa": "tsx scripts/debug-utility-hub-qa.ts",
     "debug:panchang": "tsx scripts/debug-panchang.ts",
