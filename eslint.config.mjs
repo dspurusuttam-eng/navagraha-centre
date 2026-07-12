@@ -16,6 +16,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Card 11: the isolated validation laboratory is never part of the app's
+    // compile/lint graph (it has its own pinned tsconfig + package).
+    "tools/card11-reference-lab/**",
   ]),
 ]);
 
