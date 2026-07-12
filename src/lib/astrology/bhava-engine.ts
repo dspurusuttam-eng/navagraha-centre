@@ -456,6 +456,9 @@ export function calculateSiderealBhavaCusps(
     };
   } finally {
     swisseph.swe_close();
+    // Card 11.R3: re-assert canonical LAHIRI sidereal mode after swe_close() (which
+    // resets Swiss Ephemeris global state) so no non-Lahiri state leaks between calls.
+    swisseph.swe_set_sid_mode(swisseph.SE_SIDM_LAHIRI, 0, 0);
   }
 }
 

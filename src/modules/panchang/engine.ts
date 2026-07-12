@@ -561,7 +561,12 @@ export function getSunEventUtc(input: {
   if (
     ("error" in response && typeof response.error === "string") ||
     !("transitTime" in response) ||
-    !Number.isFinite(response.transitTime)
+    !Number.isFinite(response.transitTime) ||
+    // Card 11.R3: swe_rise_trans folds its no-event flag (-2) into transitTime for
+    // circumpolar / midnight-sun / polar-night locations where no rise/set exists. A
+    // valid Julian Day is always > 0, so a non-positive value means "no event" — report
+    // unavailable instead of fabricating a bogus timestamp (high-latitude safety guard).
+    response.transitTime <= 0
   ) {
     return null;
   }
@@ -601,7 +606,12 @@ export function getMoonEventUtc(input: {
   if (
     ("error" in response && typeof response.error === "string") ||
     !("transitTime" in response) ||
-    !Number.isFinite(response.transitTime)
+    !Number.isFinite(response.transitTime) ||
+    // Card 11.R3: swe_rise_trans folds its no-event flag (-2) into transitTime for
+    // circumpolar / midnight-sun / polar-night locations where no rise/set exists. A
+    // valid Julian Day is always > 0, so a non-positive value means "no event" — report
+    // unavailable instead of fabricating a bogus timestamp (high-latitude safety guard).
+    response.transitTime <= 0
   ) {
     return null;
   }

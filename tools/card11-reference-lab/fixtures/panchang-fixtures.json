@@ -1,0 +1,2058 @@
+{
+  "count": 108,
+  "fixtures": [
+    {
+      "civilDate": "2000-03-20",
+      "dayStartUtc": "2000-03-20T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0000",
+      "latitude": 51.5074,
+      "location": "London",
+      "longitude": -0.1278,
+      "noonUtc": "2000-03-20T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2010-06-21",
+      "dayStartUtc": "2010-06-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0001",
+      "latitude": 51.5074,
+      "location": "London",
+      "longitude": -0.1278,
+      "noonUtc": "2010-06-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2015-09-23",
+      "dayStartUtc": "2015-09-23T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0002",
+      "latitude": 51.5074,
+      "location": "London",
+      "longitude": -0.1278,
+      "noonUtc": "2015-09-23T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2020-12-21",
+      "dayStartUtc": "2020-12-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0003",
+      "latitude": 51.5074,
+      "location": "London",
+      "longitude": -0.1278,
+      "noonUtc": "2020-12-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2023-07-15",
+      "dayStartUtc": "2023-07-15T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0004",
+      "latitude": 51.5074,
+      "location": "London",
+      "longitude": -0.1278,
+      "noonUtc": "2023-07-15T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2024-01-14",
+      "dayStartUtc": "2024-01-14T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0005",
+      "latitude": 51.5074,
+      "location": "London",
+      "longitude": -0.1278,
+      "noonUtc": "2024-01-14T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2000-03-20",
+      "dayStartUtc": "2000-03-20T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0006",
+      "latitude": 40.7128,
+      "location": "NewYork",
+      "longitude": -74.006,
+      "noonUtc": "2000-03-20T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2010-06-21",
+      "dayStartUtc": "2010-06-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0007",
+      "latitude": 40.7128,
+      "location": "NewYork",
+      "longitude": -74.006,
+      "noonUtc": "2010-06-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2015-09-23",
+      "dayStartUtc": "2015-09-23T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0008",
+      "latitude": 40.7128,
+      "location": "NewYork",
+      "longitude": -74.006,
+      "noonUtc": "2015-09-23T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2020-12-21",
+      "dayStartUtc": "2020-12-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0009",
+      "latitude": 40.7128,
+      "location": "NewYork",
+      "longitude": -74.006,
+      "noonUtc": "2020-12-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2023-07-15",
+      "dayStartUtc": "2023-07-15T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0010",
+      "latitude": 40.7128,
+      "location": "NewYork",
+      "longitude": -74.006,
+      "noonUtc": "2023-07-15T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2024-01-14",
+      "dayStartUtc": "2024-01-14T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0011",
+      "latitude": 40.7128,
+      "location": "NewYork",
+      "longitude": -74.006,
+      "noonUtc": "2024-01-14T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2000-03-20",
+      "dayStartUtc": "2000-03-20T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0012",
+      "latitude": 28.6139,
+      "location": "Delhi",
+      "longitude": 77.209,
+      "noonUtc": "2000-03-20T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2010-06-21",
+      "dayStartUtc": "2010-06-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0013",
+      "latitude": 28.6139,
+      "location": "Delhi",
+      "longitude": 77.209,
+      "noonUtc": "2010-06-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2015-09-23",
+      "dayStartUtc": "2015-09-23T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0014",
+      "latitude": 28.6139,
+      "location": "Delhi",
+      "longitude": 77.209,
+      "noonUtc": "2015-09-23T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2020-12-21",
+      "dayStartUtc": "2020-12-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0015",
+      "latitude": 28.6139,
+      "location": "Delhi",
+      "longitude": 77.209,
+      "noonUtc": "2020-12-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2023-07-15",
+      "dayStartUtc": "2023-07-15T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0016",
+      "latitude": 28.6139,
+      "location": "Delhi",
+      "longitude": 77.209,
+      "noonUtc": "2023-07-15T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2024-01-14",
+      "dayStartUtc": "2024-01-14T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0017",
+      "latitude": 28.6139,
+      "location": "Delhi",
+      "longitude": 77.209,
+      "noonUtc": "2024-01-14T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2000-03-20",
+      "dayStartUtc": "2000-03-20T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0018",
+      "latitude": 35.6762,
+      "location": "Tokyo",
+      "longitude": 139.6503,
+      "noonUtc": "2000-03-20T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2010-06-21",
+      "dayStartUtc": "2010-06-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0019",
+      "latitude": 35.6762,
+      "location": "Tokyo",
+      "longitude": 139.6503,
+      "noonUtc": "2010-06-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2015-09-23",
+      "dayStartUtc": "2015-09-23T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0020",
+      "latitude": 35.6762,
+      "location": "Tokyo",
+      "longitude": 139.6503,
+      "noonUtc": "2015-09-23T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2020-12-21",
+      "dayStartUtc": "2020-12-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0021",
+      "latitude": 35.6762,
+      "location": "Tokyo",
+      "longitude": 139.6503,
+      "noonUtc": "2020-12-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2023-07-15",
+      "dayStartUtc": "2023-07-15T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0022",
+      "latitude": 35.6762,
+      "location": "Tokyo",
+      "longitude": 139.6503,
+      "noonUtc": "2023-07-15T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2024-01-14",
+      "dayStartUtc": "2024-01-14T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0023",
+      "latitude": 35.6762,
+      "location": "Tokyo",
+      "longitude": 139.6503,
+      "noonUtc": "2024-01-14T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2000-03-20",
+      "dayStartUtc": "2000-03-20T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0024",
+      "latitude": -33.8688,
+      "location": "Sydney",
+      "longitude": 151.2093,
+      "noonUtc": "2000-03-20T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2010-06-21",
+      "dayStartUtc": "2010-06-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0025",
+      "latitude": -33.8688,
+      "location": "Sydney",
+      "longitude": 151.2093,
+      "noonUtc": "2010-06-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2015-09-23",
+      "dayStartUtc": "2015-09-23T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0026",
+      "latitude": -33.8688,
+      "location": "Sydney",
+      "longitude": 151.2093,
+      "noonUtc": "2015-09-23T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2020-12-21",
+      "dayStartUtc": "2020-12-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0027",
+      "latitude": -33.8688,
+      "location": "Sydney",
+      "longitude": 151.2093,
+      "noonUtc": "2020-12-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2023-07-15",
+      "dayStartUtc": "2023-07-15T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0028",
+      "latitude": -33.8688,
+      "location": "Sydney",
+      "longitude": 151.2093,
+      "noonUtc": "2023-07-15T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2024-01-14",
+      "dayStartUtc": "2024-01-14T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0029",
+      "latitude": -33.8688,
+      "location": "Sydney",
+      "longitude": 151.2093,
+      "noonUtc": "2024-01-14T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2000-03-20",
+      "dayStartUtc": "2000-03-20T00:00:00+00:00",
+      "elevationM": 1400,
+      "highLatitude": false,
+      "id": "PAN-0030",
+      "latitude": 27.7172,
+      "location": "Kathmandu",
+      "longitude": 85.324,
+      "noonUtc": "2000-03-20T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2010-06-21",
+      "dayStartUtc": "2010-06-21T00:00:00+00:00",
+      "elevationM": 1400,
+      "highLatitude": false,
+      "id": "PAN-0031",
+      "latitude": 27.7172,
+      "location": "Kathmandu",
+      "longitude": 85.324,
+      "noonUtc": "2010-06-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2015-09-23",
+      "dayStartUtc": "2015-09-23T00:00:00+00:00",
+      "elevationM": 1400,
+      "highLatitude": false,
+      "id": "PAN-0032",
+      "latitude": 27.7172,
+      "location": "Kathmandu",
+      "longitude": 85.324,
+      "noonUtc": "2015-09-23T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2020-12-21",
+      "dayStartUtc": "2020-12-21T00:00:00+00:00",
+      "elevationM": 1400,
+      "highLatitude": false,
+      "id": "PAN-0033",
+      "latitude": 27.7172,
+      "location": "Kathmandu",
+      "longitude": 85.324,
+      "noonUtc": "2020-12-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2023-07-15",
+      "dayStartUtc": "2023-07-15T00:00:00+00:00",
+      "elevationM": 1400,
+      "highLatitude": false,
+      "id": "PAN-0034",
+      "latitude": 27.7172,
+      "location": "Kathmandu",
+      "longitude": 85.324,
+      "noonUtc": "2023-07-15T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2024-01-14",
+      "dayStartUtc": "2024-01-14T00:00:00+00:00",
+      "elevationM": 1400,
+      "highLatitude": false,
+      "id": "PAN-0035",
+      "latitude": 27.7172,
+      "location": "Kathmandu",
+      "longitude": 85.324,
+      "noonUtc": "2024-01-14T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2000-03-20",
+      "dayStartUtc": "2000-03-20T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0036",
+      "latitude": -23.5505,
+      "location": "SaoPaulo",
+      "longitude": -46.6333,
+      "noonUtc": "2000-03-20T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2010-06-21",
+      "dayStartUtc": "2010-06-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0037",
+      "latitude": -23.5505,
+      "location": "SaoPaulo",
+      "longitude": -46.6333,
+      "noonUtc": "2010-06-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2015-09-23",
+      "dayStartUtc": "2015-09-23T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0038",
+      "latitude": -23.5505,
+      "location": "SaoPaulo",
+      "longitude": -46.6333,
+      "noonUtc": "2015-09-23T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2020-12-21",
+      "dayStartUtc": "2020-12-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0039",
+      "latitude": -23.5505,
+      "location": "SaoPaulo",
+      "longitude": -46.6333,
+      "noonUtc": "2020-12-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2023-07-15",
+      "dayStartUtc": "2023-07-15T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0040",
+      "latitude": -23.5505,
+      "location": "SaoPaulo",
+      "longitude": -46.6333,
+      "noonUtc": "2023-07-15T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2024-01-14",
+      "dayStartUtc": "2024-01-14T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0041",
+      "latitude": -23.5505,
+      "location": "SaoPaulo",
+      "longitude": -46.6333,
+      "noonUtc": "2024-01-14T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2000-03-20",
+      "dayStartUtc": "2000-03-20T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0042",
+      "latitude": 30.0444,
+      "location": "Cairo",
+      "longitude": 31.2357,
+      "noonUtc": "2000-03-20T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2010-06-21",
+      "dayStartUtc": "2010-06-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0043",
+      "latitude": 30.0444,
+      "location": "Cairo",
+      "longitude": 31.2357,
+      "noonUtc": "2010-06-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2015-09-23",
+      "dayStartUtc": "2015-09-23T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0044",
+      "latitude": 30.0444,
+      "location": "Cairo",
+      "longitude": 31.2357,
+      "noonUtc": "2015-09-23T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2020-12-21",
+      "dayStartUtc": "2020-12-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0045",
+      "latitude": 30.0444,
+      "location": "Cairo",
+      "longitude": 31.2357,
+      "noonUtc": "2020-12-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2023-07-15",
+      "dayStartUtc": "2023-07-15T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0046",
+      "latitude": 30.0444,
+      "location": "Cairo",
+      "longitude": 31.2357,
+      "noonUtc": "2023-07-15T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2024-01-14",
+      "dayStartUtc": "2024-01-14T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0047",
+      "latitude": 30.0444,
+      "location": "Cairo",
+      "longitude": 31.2357,
+      "noonUtc": "2024-01-14T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2000-03-20",
+      "dayStartUtc": "2000-03-20T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0048",
+      "latitude": 55.7558,
+      "location": "Moscow",
+      "longitude": 37.6173,
+      "noonUtc": "2000-03-20T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2010-06-21",
+      "dayStartUtc": "2010-06-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0049",
+      "latitude": 55.7558,
+      "location": "Moscow",
+      "longitude": 37.6173,
+      "noonUtc": "2010-06-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2015-09-23",
+      "dayStartUtc": "2015-09-23T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0050",
+      "latitude": 55.7558,
+      "location": "Moscow",
+      "longitude": 37.6173,
+      "noonUtc": "2015-09-23T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2020-12-21",
+      "dayStartUtc": "2020-12-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0051",
+      "latitude": 55.7558,
+      "location": "Moscow",
+      "longitude": 37.6173,
+      "noonUtc": "2020-12-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2023-07-15",
+      "dayStartUtc": "2023-07-15T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0052",
+      "latitude": 55.7558,
+      "location": "Moscow",
+      "longitude": 37.6173,
+      "noonUtc": "2023-07-15T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2024-01-14",
+      "dayStartUtc": "2024-01-14T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0053",
+      "latitude": 55.7558,
+      "location": "Moscow",
+      "longitude": 37.6173,
+      "noonUtc": "2024-01-14T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2000-03-20",
+      "dayStartUtc": "2000-03-20T00:00:00+00:00",
+      "elevationM": 1795,
+      "highLatitude": false,
+      "id": "PAN-0054",
+      "latitude": -1.2921,
+      "location": "Nairobi",
+      "longitude": 36.8219,
+      "noonUtc": "2000-03-20T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2010-06-21",
+      "dayStartUtc": "2010-06-21T00:00:00+00:00",
+      "elevationM": 1795,
+      "highLatitude": false,
+      "id": "PAN-0055",
+      "latitude": -1.2921,
+      "location": "Nairobi",
+      "longitude": 36.8219,
+      "noonUtc": "2010-06-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2015-09-23",
+      "dayStartUtc": "2015-09-23T00:00:00+00:00",
+      "elevationM": 1795,
+      "highLatitude": false,
+      "id": "PAN-0056",
+      "latitude": -1.2921,
+      "location": "Nairobi",
+      "longitude": 36.8219,
+      "noonUtc": "2015-09-23T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2020-12-21",
+      "dayStartUtc": "2020-12-21T00:00:00+00:00",
+      "elevationM": 1795,
+      "highLatitude": false,
+      "id": "PAN-0057",
+      "latitude": -1.2921,
+      "location": "Nairobi",
+      "longitude": 36.8219,
+      "noonUtc": "2020-12-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2023-07-15",
+      "dayStartUtc": "2023-07-15T00:00:00+00:00",
+      "elevationM": 1795,
+      "highLatitude": false,
+      "id": "PAN-0058",
+      "latitude": -1.2921,
+      "location": "Nairobi",
+      "longitude": 36.8219,
+      "noonUtc": "2023-07-15T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2024-01-14",
+      "dayStartUtc": "2024-01-14T00:00:00+00:00",
+      "elevationM": 1795,
+      "highLatitude": false,
+      "id": "PAN-0059",
+      "latitude": -1.2921,
+      "location": "Nairobi",
+      "longitude": 36.8219,
+      "noonUtc": "2024-01-14T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2000-03-20",
+      "dayStartUtc": "2000-03-20T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0060",
+      "latitude": 64.1466,
+      "location": "Reykjavik",
+      "longitude": -21.9426,
+      "noonUtc": "2000-03-20T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2010-06-21",
+      "dayStartUtc": "2010-06-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0061",
+      "latitude": 64.1466,
+      "location": "Reykjavik",
+      "longitude": -21.9426,
+      "noonUtc": "2010-06-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2015-09-23",
+      "dayStartUtc": "2015-09-23T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0062",
+      "latitude": 64.1466,
+      "location": "Reykjavik",
+      "longitude": -21.9426,
+      "noonUtc": "2015-09-23T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2020-12-21",
+      "dayStartUtc": "2020-12-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0063",
+      "latitude": 64.1466,
+      "location": "Reykjavik",
+      "longitude": -21.9426,
+      "noonUtc": "2020-12-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2023-07-15",
+      "dayStartUtc": "2023-07-15T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0064",
+      "latitude": 64.1466,
+      "location": "Reykjavik",
+      "longitude": -21.9426,
+      "noonUtc": "2023-07-15T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2024-01-14",
+      "dayStartUtc": "2024-01-14T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0065",
+      "latitude": 64.1466,
+      "location": "Reykjavik",
+      "longitude": -21.9426,
+      "noonUtc": "2024-01-14T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2000-03-20",
+      "dayStartUtc": "2000-03-20T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0066",
+      "latitude": -18.1416,
+      "location": "Fiji",
+      "longitude": 178.4419,
+      "noonUtc": "2000-03-20T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2010-06-21",
+      "dayStartUtc": "2010-06-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0067",
+      "latitude": -18.1416,
+      "location": "Fiji",
+      "longitude": 178.4419,
+      "noonUtc": "2010-06-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2015-09-23",
+      "dayStartUtc": "2015-09-23T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0068",
+      "latitude": -18.1416,
+      "location": "Fiji",
+      "longitude": 178.4419,
+      "noonUtc": "2015-09-23T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2020-12-21",
+      "dayStartUtc": "2020-12-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0069",
+      "latitude": -18.1416,
+      "location": "Fiji",
+      "longitude": 178.4419,
+      "noonUtc": "2020-12-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2023-07-15",
+      "dayStartUtc": "2023-07-15T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0070",
+      "latitude": -18.1416,
+      "location": "Fiji",
+      "longitude": 178.4419,
+      "noonUtc": "2023-07-15T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2024-01-14",
+      "dayStartUtc": "2024-01-14T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0071",
+      "latitude": -18.1416,
+      "location": "Fiji",
+      "longitude": 178.4419,
+      "noonUtc": "2024-01-14T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2000-03-20",
+      "dayStartUtc": "2000-03-20T00:00:00+00:00",
+      "elevationM": 2850,
+      "highLatitude": false,
+      "id": "PAN-0072",
+      "latitude": -0.1807,
+      "location": "Quito",
+      "longitude": -78.4678,
+      "noonUtc": "2000-03-20T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2010-06-21",
+      "dayStartUtc": "2010-06-21T00:00:00+00:00",
+      "elevationM": 2850,
+      "highLatitude": false,
+      "id": "PAN-0073",
+      "latitude": -0.1807,
+      "location": "Quito",
+      "longitude": -78.4678,
+      "noonUtc": "2010-06-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2015-09-23",
+      "dayStartUtc": "2015-09-23T00:00:00+00:00",
+      "elevationM": 2850,
+      "highLatitude": false,
+      "id": "PAN-0074",
+      "latitude": -0.1807,
+      "location": "Quito",
+      "longitude": -78.4678,
+      "noonUtc": "2015-09-23T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2020-12-21",
+      "dayStartUtc": "2020-12-21T00:00:00+00:00",
+      "elevationM": 2850,
+      "highLatitude": false,
+      "id": "PAN-0075",
+      "latitude": -0.1807,
+      "location": "Quito",
+      "longitude": -78.4678,
+      "noonUtc": "2020-12-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2023-07-15",
+      "dayStartUtc": "2023-07-15T00:00:00+00:00",
+      "elevationM": 2850,
+      "highLatitude": false,
+      "id": "PAN-0076",
+      "latitude": -0.1807,
+      "location": "Quito",
+      "longitude": -78.4678,
+      "noonUtc": "2023-07-15T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2024-01-14",
+      "dayStartUtc": "2024-01-14T00:00:00+00:00",
+      "elevationM": 2850,
+      "highLatitude": false,
+      "id": "PAN-0077",
+      "latitude": -0.1807,
+      "location": "Quito",
+      "longitude": -78.4678,
+      "noonUtc": "2024-01-14T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2000-03-20",
+      "dayStartUtc": "2000-03-20T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": true,
+      "id": "PAN-0078",
+      "latitude": 69.6496,
+      "location": "Tromso",
+      "longitude": 18.956,
+      "noonUtc": "2000-03-20T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2010-06-21",
+      "dayStartUtc": "2010-06-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": true,
+      "id": "PAN-0079",
+      "latitude": 69.6496,
+      "location": "Tromso",
+      "longitude": 18.956,
+      "noonUtc": "2010-06-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2015-09-23",
+      "dayStartUtc": "2015-09-23T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": true,
+      "id": "PAN-0080",
+      "latitude": 69.6496,
+      "location": "Tromso",
+      "longitude": 18.956,
+      "noonUtc": "2015-09-23T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2020-12-21",
+      "dayStartUtc": "2020-12-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": true,
+      "id": "PAN-0081",
+      "latitude": 69.6496,
+      "location": "Tromso",
+      "longitude": 18.956,
+      "noonUtc": "2020-12-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2023-07-15",
+      "dayStartUtc": "2023-07-15T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": true,
+      "id": "PAN-0082",
+      "latitude": 69.6496,
+      "location": "Tromso",
+      "longitude": 18.956,
+      "noonUtc": "2023-07-15T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2024-01-14",
+      "dayStartUtc": "2024-01-14T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": true,
+      "id": "PAN-0083",
+      "latitude": 69.6496,
+      "location": "Tromso",
+      "longitude": 18.956,
+      "noonUtc": "2024-01-14T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2000-03-20",
+      "dayStartUtc": "2000-03-20T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": true,
+      "id": "PAN-0084",
+      "latitude": -77.8419,
+      "location": "McMurdo",
+      "longitude": 166.6863,
+      "noonUtc": "2000-03-20T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2010-06-21",
+      "dayStartUtc": "2010-06-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": true,
+      "id": "PAN-0085",
+      "latitude": -77.8419,
+      "location": "McMurdo",
+      "longitude": 166.6863,
+      "noonUtc": "2010-06-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2015-09-23",
+      "dayStartUtc": "2015-09-23T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": true,
+      "id": "PAN-0086",
+      "latitude": -77.8419,
+      "location": "McMurdo",
+      "longitude": 166.6863,
+      "noonUtc": "2015-09-23T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2020-12-21",
+      "dayStartUtc": "2020-12-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": true,
+      "id": "PAN-0087",
+      "latitude": -77.8419,
+      "location": "McMurdo",
+      "longitude": 166.6863,
+      "noonUtc": "2020-12-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2023-07-15",
+      "dayStartUtc": "2023-07-15T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": true,
+      "id": "PAN-0088",
+      "latitude": -77.8419,
+      "location": "McMurdo",
+      "longitude": 166.6863,
+      "noonUtc": "2023-07-15T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2024-01-14",
+      "dayStartUtc": "2024-01-14T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": true,
+      "id": "PAN-0089",
+      "latitude": -77.8419,
+      "location": "McMurdo",
+      "longitude": 166.6863,
+      "noonUtc": "2024-01-14T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2000-03-20",
+      "dayStartUtc": "2000-03-20T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0090",
+      "latitude": 61.2181,
+      "location": "Anchorage",
+      "longitude": -149.9003,
+      "noonUtc": "2000-03-20T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2010-06-21",
+      "dayStartUtc": "2010-06-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0091",
+      "latitude": 61.2181,
+      "location": "Anchorage",
+      "longitude": -149.9003,
+      "noonUtc": "2010-06-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2015-09-23",
+      "dayStartUtc": "2015-09-23T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0092",
+      "latitude": 61.2181,
+      "location": "Anchorage",
+      "longitude": -149.9003,
+      "noonUtc": "2015-09-23T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2020-12-21",
+      "dayStartUtc": "2020-12-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0093",
+      "latitude": 61.2181,
+      "location": "Anchorage",
+      "longitude": -149.9003,
+      "noonUtc": "2020-12-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2023-07-15",
+      "dayStartUtc": "2023-07-15T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0094",
+      "latitude": 61.2181,
+      "location": "Anchorage",
+      "longitude": -149.9003,
+      "noonUtc": "2023-07-15T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2024-01-14",
+      "dayStartUtc": "2024-01-14T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0095",
+      "latitude": 61.2181,
+      "location": "Anchorage",
+      "longitude": -149.9003,
+      "noonUtc": "2024-01-14T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2000-03-20",
+      "dayStartUtc": "2000-03-20T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0096",
+      "latitude": 1.8721,
+      "location": "Kiritimati",
+      "longitude": -157.4278,
+      "noonUtc": "2000-03-20T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2010-06-21",
+      "dayStartUtc": "2010-06-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0097",
+      "latitude": 1.8721,
+      "location": "Kiritimati",
+      "longitude": -157.4278,
+      "noonUtc": "2010-06-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2015-09-23",
+      "dayStartUtc": "2015-09-23T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0098",
+      "latitude": 1.8721,
+      "location": "Kiritimati",
+      "longitude": -157.4278,
+      "noonUtc": "2015-09-23T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2020-12-21",
+      "dayStartUtc": "2020-12-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0099",
+      "latitude": 1.8721,
+      "location": "Kiritimati",
+      "longitude": -157.4278,
+      "noonUtc": "2020-12-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2023-07-15",
+      "dayStartUtc": "2023-07-15T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0100",
+      "latitude": 1.8721,
+      "location": "Kiritimati",
+      "longitude": -157.4278,
+      "noonUtc": "2023-07-15T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2024-01-14",
+      "dayStartUtc": "2024-01-14T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0101",
+      "latitude": 1.8721,
+      "location": "Kiritimati",
+      "longitude": -157.4278,
+      "noonUtc": "2024-01-14T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2000-03-20",
+      "dayStartUtc": "2000-03-20T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0102",
+      "latitude": 1.3521,
+      "location": "Singapore",
+      "longitude": 103.8198,
+      "noonUtc": "2000-03-20T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2010-06-21",
+      "dayStartUtc": "2010-06-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0103",
+      "latitude": 1.3521,
+      "location": "Singapore",
+      "longitude": 103.8198,
+      "noonUtc": "2010-06-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2015-09-23",
+      "dayStartUtc": "2015-09-23T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0104",
+      "latitude": 1.3521,
+      "location": "Singapore",
+      "longitude": 103.8198,
+      "noonUtc": "2015-09-23T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2020-12-21",
+      "dayStartUtc": "2020-12-21T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0105",
+      "latitude": 1.3521,
+      "location": "Singapore",
+      "longitude": 103.8198,
+      "noonUtc": "2020-12-21T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2023-07-15",
+      "dayStartUtc": "2023-07-15T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0106",
+      "latitude": 1.3521,
+      "location": "Singapore",
+      "longitude": 103.8198,
+      "noonUtc": "2023-07-15T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    },
+    {
+      "civilDate": "2024-01-14",
+      "dayStartUtc": "2024-01-14T00:00:00+00:00",
+      "elevationM": 0,
+      "highLatitude": false,
+      "id": "PAN-0107",
+      "latitude": 1.3521,
+      "location": "Singapore",
+      "longitude": 103.8198,
+      "noonUtc": "2024-01-14T12:00:00+00:00",
+      "requested": [
+        "SUNRISE",
+        "SUNSET",
+        "TITHI",
+        "NAKSHATRA",
+        "YOGA",
+        "KARANA"
+      ]
+    }
+  ],
+  "schema": "card11-panchang-fixtures-v1"
+}
