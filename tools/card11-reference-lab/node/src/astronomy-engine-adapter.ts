@@ -5,14 +5,17 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import * as Astronomy from "astronomy-engine";
+import { createRequire } from "node:module";
+import type { Body as AEBody } from "astronomy-engine";
+const _req = createRequire(import.meta.url);
+const Astronomy = _req("astronomy-engine") as typeof import("astronomy-engine");
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const LAB = join(HERE, "..", "..");
 const REPORTS = join(LAB, "reports");
 const DT = 0.02; // days, for speed finite-difference
 
-const BODY: Record<string, Astronomy.Body> = {
+const BODY: Record<string, AEBody> = {
   SUN: Astronomy.Body.Sun,
   MOON: Astronomy.Body.Moon,
   MERCURY: Astronomy.Body.Mercury,

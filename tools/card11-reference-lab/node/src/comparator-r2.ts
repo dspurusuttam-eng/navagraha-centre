@@ -6,7 +6,11 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import * as Astronomy from "astronomy-engine";
+import { createRequire } from "node:module";
+import type { Body as AEBody } from "astronomy-engine";
+// CJS interop: `import * as` leaves `.Body` undefined on Node 22; require() is stable across versions.
+const _req = createRequire(import.meta.url);
+const Astronomy = _req("astronomy-engine") as typeof import("astronomy-engine");
 import { norm360, circularDiffDeg, signedCircularDiff, degToArcsec, rashiIndex, nakshatraIndex, padaIndex, boundaryDistances } from "./normalizer.ts";
 import { candidateAyanamsaDeg } from "./lahiri-candidate.ts";
 
@@ -26,7 +30,7 @@ const AE_TOL_ARCSEC = 90;
 const RAD = 180 / Math.PI;
 
 function aeEclOfDate(bodyName: string, when: Date) {
-  const map: Record<string, Astronomy.Body> = {
+  const map: Record<string, AEBody> = {
     SUN: Astronomy.Body.Sun, MOON: Astronomy.Body.Moon, MERCURY: Astronomy.Body.Mercury,
     VENUS: Astronomy.Body.Venus, MARS: Astronomy.Body.Mars, JUPITER: Astronomy.Body.Jupiter, SATURN: Astronomy.Body.Saturn,
   };
