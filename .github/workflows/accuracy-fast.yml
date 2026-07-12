@@ -69,6 +69,7 @@ jobs:
           npm run debug:matchmaking:premium:qa
           npm run debug:matchmaking:advanced:qa
           npm run debug:matchmaking:legacy-compat:qa
+          npm run debug:numerology:premium:qa
 
       - name: Restore/verify DE440s kernel (cache; checksum gate)
         uses: actions/cache@v4
