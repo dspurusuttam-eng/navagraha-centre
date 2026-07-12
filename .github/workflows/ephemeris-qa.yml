@@ -161,6 +161,27 @@ jobs:
 
           echo "Matchmaking legacy consumer compatibility QA: passed."
 
+      - name: Advanced Matchmaking Completion QA (Card 10A.2, pure exhaustive)
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run debug:matchmaking:advanced:qa 2>&1 | tee matchmaking-advanced-qa.log
+
+          if ! grep -q "0 failed" matchmaking-advanced-qa.log; then
+            echo "::error::Advanced Matchmaking Completion QA reported failures."
+            tail -n 40 matchmaking-advanced-qa.log
+            exit 1
+          fi
+
+          # Hard gate: Card 10 raw Ashtakoot byte-integrity must be proven.
+          if ! grep -q "INT1 Card 10 byte-integrity" matchmaking-advanced-qa.log; then
+            echo "::error::Advanced Matchmaking QA did not run the Card 10 byte-integrity group (INT1)."
+            tail -n 40 matchmaking-advanced-qa.log
+            exit 1
+          fi
+
+          echo "Advanced Matchmaking Completion QA: all groups passed."
+
       - name: Existing Matchmaking QA scripts (Node 22; ephemeris-backed)
         shell: bash
         run: |
