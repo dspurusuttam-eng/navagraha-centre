@@ -1,0 +1,10 @@
+# Card 11.R1 reference lab — local-only artifacts (never committed, never deployed)
+cache/
+node/node_modules/
+python/.venv/
+reports/*.json
+reports/*.log
+*.bsp
+*.tmp
+__pycache__/
+*.pyc

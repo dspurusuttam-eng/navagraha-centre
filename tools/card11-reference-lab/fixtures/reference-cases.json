@@ -1,0 +1,30 @@
+{
+  "schema": "card11-fixture-corpus-v1",
+  "note": "Deterministic prototype corpus. All instants inside DE440s (1849-12-26..2150-01-22) and the bundled swisseph _18 block (>=1800). Local->UTC is resolved once by the production tz owner.",
+  "fixtures": [
+    { "id": "ORD-1900-LONDON",   "kind": "ordinary",   "dateLocal": "1900-06-15", "timeLocal": "12:00", "timezone": "Europe/London",       "latitude": 51.5074,  "longitude": -0.1278,  "tags": ["historical","1900","north"] },
+    { "id": "ORD-1950-NYC",      "kind": "ordinary",   "dateLocal": "1950-03-21", "timeLocal": "06:30", "timezone": "America/New_York",     "latitude": 40.7128,  "longitude": -74.0060, "tags": ["historical","1950","north","west"] },
+    { "id": "ORD-1975-DELHI",    "kind": "ordinary",   "dateLocal": "1975-08-15", "timeLocal": "05:55", "timezone": "Asia/Kolkata",        "latitude": 28.6139,  "longitude": 77.2090,  "tags": ["india","fractional-tz","north"] },
+    { "id": "ORD-1984-TOKYO",    "kind": "ordinary",   "dateLocal": "1984-11-02", "timeLocal": "23:10", "timezone": "Asia/Tokyo",          "latitude": 35.6762,  "longitude": 139.6503, "tags": ["1980s","north","east"] },
+    { "id": "ORD-1990-SYDNEY",   "kind": "ordinary",   "dateLocal": "1990-12-25", "timeLocal": "14:45", "timezone": "Australia/Sydney",    "latitude": -33.8688, "longitude": 151.2093, "tags": ["south","east","dst-zone"] },
+    { "id": "ORD-1999-KATHMANDU","kind": "ordinary",   "dateLocal": "1999-09-09", "timeLocal": "09:09", "timezone": "Asia/Kathmandu",      "latitude": 27.7172,  "longitude": 85.3240,  "tags": ["fractional-tz-45","north"] },
+    { "id": "ORD-2000-GREENWICH","kind": "ordinary",   "dateLocal": "2000-01-01", "timeLocal": "12:00", "timezone": "UTC",                 "latitude": 51.4779,  "longitude": 0.0,      "tags": ["j2000-ish","utc","north"] },
+    { "id": "ORD-2005-SAOPAULO", "kind": "ordinary",   "dateLocal": "2005-04-18", "timeLocal": "18:20", "timezone": "America/Sao_Paulo",   "latitude": -23.5505, "longitude": -46.6333, "tags": ["south","west"] },
+    { "id": "ORD-2010-CAIRO",    "kind": "ordinary",   "dateLocal": "2010-07-07", "timeLocal": "03:33", "timezone": "Africa/Cairo",        "latitude": 30.0444,  "longitude": 31.2357,  "tags": ["africa","north"] },
+    { "id": "ORD-2012-MOSCOW",   "kind": "ordinary",   "dateLocal": "2012-02-29", "timeLocal": "22:00", "timezone": "Europe/Moscow",       "latitude": 55.7558,  "longitude": 37.6173,  "tags": ["leap-year","north"] },
+    { "id": "ORD-2015-CHENNAI",  "kind": "ordinary",   "dateLocal": "2015-10-30", "timeLocal": "16:16", "timezone": "Asia/Kolkata",        "latitude": 13.0827,  "longitude": 80.2707,  "tags": ["india","fractional-tz"] },
+    { "id": "ORD-2020-LA",       "kind": "ordinary",   "dateLocal": "2020-06-20", "timeLocal": "01:11", "timezone": "America/Los_Angeles", "latitude": 34.0522,  "longitude": -118.2437,"tags": ["west","dst-zone"] },
+    { "id": "ORD-2023-JOHANNES", "kind": "ordinary",   "dateLocal": "2023-01-15", "timeLocal": "11:11", "timezone": "Africa/Johannesburg", "latitude": -26.2041, "longitude": 28.0473,  "tags": ["south","africa"] },
+    { "id": "ORD-2025-SINGAPORE","kind": "ordinary",   "dateLocal": "2025-07-04", "timeLocal": "08:00", "timezone": "Asia/Singapore",      "latitude": 1.3521,   "longitude": 103.8198, "tags": ["equator-near","east"] },
+    { "id": "ORD-2050-REYKJAVIK","kind": "ordinary",   "dateLocal": "2050-05-05", "timeLocal": "12:00", "timezone": "Atlantic/Reykjavik",  "latitude": 64.1466,  "longitude": -21.9426, "tags": ["future","high-lat","north"] },
+    { "id": "ORD-2100-WELLINGTN","kind": "ordinary",   "dateLocal": "2100-03-20", "timeLocal": "20:20", "timezone": "Pacific/Auckland",    "latitude": -41.2865, "longitude": 174.7762, "tags": ["future","south","dateline"] },
+    { "id": "GEO-EQUATOR-0",     "kind": "geographic", "dateLocal": "2001-09-23", "timeLocal": "12:00", "timezone": "UTC",                 "latitude": 0.0,      "longitude": 0.0,      "tags": ["equator","equinox"] },
+    { "id": "GEO-HILAT-TROMSO",  "kind": "geographic", "dateLocal": "2018-06-21", "timeLocal": "00:30", "timezone": "Europe/Oslo",         "latitude": 69.6496,  "longitude": 18.9560,  "tags": ["high-lat","midnight-sun","solstice"] },
+    { "id": "GEO-HILAT-SOUTH",   "kind": "geographic", "dateLocal": "2019-12-21", "timeLocal": "00:00", "timezone": "Antarctica/McMurdo",  "latitude": -77.8419, "longitude": 166.6863, "tags": ["extreme-lat","south","solstice"] },
+    { "id": "GEO-DATELINE-FIJI", "kind": "geographic", "dateLocal": "2022-01-01", "timeLocal": "00:05", "timezone": "Pacific/Fiji",        "latitude": -18.1416, "longitude": 178.4419, "tags": ["dateline","south"] },
+    { "id": "TIME-UTC-MIDNIGHT", "kind": "time",       "dateLocal": "2016-02-29", "timeLocal": "00:00", "timezone": "UTC",                 "latitude": 19.0760,  "longitude": 72.8777,  "tags": ["midnight-rollover","leap-year"] },
+    { "id": "TIME-NEARMIDNIGHT", "kind": "time",       "dateLocal": "2016-02-29", "timeLocal": "23:59", "timezone": "UTC",                 "latitude": 19.0760,  "longitude": 72.8777,  "tags": ["day-rollover-edge","leap-year"] },
+    { "id": "TIME-DST-SPRING",   "kind": "time",       "dateLocal": "2021-03-15", "timeLocal": "10:00", "timezone": "America/New_York",    "latitude": 40.7128,  "longitude": -74.0060, "tags": ["post-dst-spring","unambiguous"] },
+    { "id": "TIME-DST-FALL",     "kind": "time",       "dateLocal": "2021-11-15", "timeLocal": "10:00", "timezone": "America/New_York",    "latitude": 40.7128,  "longitude": -74.0060, "tags": ["post-dst-fall","unambiguous"] }
+  ]
+}
