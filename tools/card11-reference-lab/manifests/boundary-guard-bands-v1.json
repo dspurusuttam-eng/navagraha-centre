@@ -1,0 +1,28 @@
+{
+  "schema": "card11-boundary-guard-bands-v1",
+  "version": "1.0.0",
+  "approvalStatus": "APPROVED (validation-only)",
+  "principle": "A coarse comparator must never decide a discrete Vedic classification near a cusp. Within a guard band, escalate to CLASS_C transition-time certification.",
+  "guardBands": {
+    "rashiDeg": 0.025,
+    "nakshatraDeg": 0.025,
+    "padaDeg": 0.025,
+    "wraparoundDeg": 0.01,
+    "stationSpeedDegPerDay": 0.01,
+    "rationale": "0.025 deg = 90 arcsec >= the secondary comparator (Astronomy Engine) design accuracy, so its ~1' error can never flip a discrete class inside the band."
+  },
+  "certification": {
+    "method": "transition-time comparison via deterministic bisection root-finding (transition-solver.ts / Python oracle)",
+    "convergenceMs": 1000,
+    "maxIterations": 80,
+    "toleranceSeconds": 60,
+    "roundedValuesProhibited": true,
+    "resultClasses": [
+      "BOUNDARY_CERTIFIED_MATCH",
+      "BOUNDARY_CERTIFIED_WITH_MODEL_OFFSET",
+      "INPUT_OR_FRAME_MISMATCH",
+      "POSSIBLE_IMPLEMENTATION_DEFECT",
+      "UNRESOLVED_BLOCKER"
+    ]
+  }
+}

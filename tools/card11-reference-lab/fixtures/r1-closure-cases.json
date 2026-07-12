@@ -1,0 +1,231 @@
+{
+  "schema": "card11-r1-closure-v1",
+  "count": 9,
+  "fixtures": [
+    {
+      "id": "R1CLOSE-01",
+      "r1Fixture": "ORD-1975-DELHI",
+      "category": "r1-closure",
+      "utcInstant": "1975-08-15T00:25:00.000Z",
+      "latitude": 0,
+      "longitude": 0,
+      "elevationM": 0,
+      "requestedBodies": [
+        "VENUS"
+      ],
+      "expectedClass": "CLASS_C",
+      "boundaryMeta": {
+        "body": "VENUS",
+        "type": "PADA"
+      },
+      "r1SiderealLon": 136.67400834092464,
+      "r1BoundaryDistanceDeg": 0.007341674257942632,
+      "wrapLongitudeDiffArcsec": 15.64329292596085,
+      "creationMethod": "r1-closure-derivation",
+      "seed": null,
+      "tags": [
+        "r1-nine"
+      ]
+    },
+    {
+      "id": "R1CLOSE-02",
+      "r1Fixture": "ORD-1975-DELHI",
+      "category": "r1-closure",
+      "utcInstant": "1975-08-15T00:25:00.000Z",
+      "latitude": 0,
+      "longitude": 0,
+      "elevationM": 0,
+      "requestedBodies": [
+        "JUPITER"
+      ],
+      "expectedClass": "CLASS_C",
+      "boundaryMeta": {
+        "body": "JUPITER",
+        "type": "STATION"
+      },
+      "r1SiderealLon": 1.1827746054367365,
+      "r1BoundaryDistanceDeg": 0,
+      "wrapLongitudeDiffArcsec": 15.640754916375954,
+      "creationMethod": "r1-closure-derivation",
+      "seed": null,
+      "tags": [
+        "r1-nine"
+      ]
+    },
+    {
+      "id": "R1CLOSE-03",
+      "r1Fixture": "GEO-EQUATOR-0",
+      "category": "r1-closure",
+      "utcInstant": "2001-09-23T12:00:00.000Z",
+      "latitude": 0,
+      "longitude": 0,
+      "elevationM": 0,
+      "requestedBodies": [
+        "SUN"
+      ],
+      "expectedClass": "CLASS_C",
+      "boundaryMeta": {
+        "body": "SUN",
+        "type": "PADA"
+      },
+      "r1SiderealLon": 156.65084674017317,
+      "r1BoundaryDistanceDeg": 0.015819926493508607,
+      "wrapLongitudeDiffArcsec": 17.4506677847603,
+      "creationMethod": "r1-closure-derivation",
+      "seed": null,
+      "tags": [
+        "r1-nine"
+      ]
+    },
+    {
+      "id": "R1CLOSE-04",
+      "r1Fixture": "GEO-EQUATOR-0",
+      "category": "r1-closure",
+      "utcInstant": "2001-09-23T12:00:00.000Z",
+      "latitude": 0,
+      "longitude": 0,
+      "elevationM": 0,
+      "requestedBodies": [
+        "SATURN"
+      ],
+      "expectedClass": "CLASS_C",
+      "boundaryMeta": {
+        "body": "SATURN",
+        "type": "STATION"
+      },
+      "r1SiderealLon": 51.08196517359033,
+      "r1BoundaryDistanceDeg": 0,
+      "wrapLongitudeDiffArcsec": 17.448300493015267,
+      "creationMethod": "r1-closure-derivation",
+      "seed": null,
+      "tags": [
+        "r1-nine"
+      ]
+    },
+    {
+      "id": "R1CLOSE-05",
+      "r1Fixture": "GEO-DATELINE-FIJI",
+      "category": "r1-closure",
+      "utcInstant": "2021-12-31T12:05:00.000Z",
+      "latitude": 0,
+      "longitude": 0,
+      "elevationM": 0,
+      "requestedBodies": [
+        "MERCURY"
+      ],
+      "expectedClass": "CLASS_C",
+      "boundaryMeta": {
+        "body": "MERCURY",
+        "type": "PADA"
+      },
+      "r1SiderealLon": 273.3115608414649,
+      "r1BoundaryDistanceDeg": 0.021772491868520483,
+      "wrapLongitudeDiffArcsec": 14.482943963139405,
+      "creationMethod": "r1-closure-derivation",
+      "seed": null,
+      "tags": [
+        "r1-nine"
+      ]
+    },
+    {
+      "id": "R1CLOSE-06",
+      "r1Fixture": "TIME-DST-FALL",
+      "category": "r1-closure",
+      "utcInstant": "2021-11-15T15:00:00.000Z",
+      "latitude": 0,
+      "longitude": 0,
+      "elevationM": 0,
+      "requestedBodies": [
+        "MARS"
+      ],
+      "expectedClass": "CLASS_C",
+      "boundaryMeta": {
+        "body": "MARS",
+        "type": "PADA"
+      },
+      "r1SiderealLon": 196.67559656307154,
+      "r1BoundaryDistanceDeg": 0.008929896404832771,
+      "wrapLongitudeDiffArcsec": 16.414474966632042,
+      "creationMethod": "r1-closure-derivation",
+      "seed": null,
+      "tags": [
+        "r1-nine"
+      ]
+    },
+    {
+      "id": "R1CLOSE-07",
+      "r1Fixture": "MOT-2016-MERC-JAN",
+      "category": "r1-closure",
+      "utcInstant": "2016-01-10T00:00:00.000Z",
+      "latitude": 0,
+      "longitude": 0,
+      "elevationM": 0,
+      "requestedBodies": [
+        "JUPITER"
+      ],
+      "expectedClass": "CLASS_C",
+      "boundaryMeta": {
+        "body": "JUPITER",
+        "type": "STATION"
+      },
+      "r1SiderealLon": 149.1518671662835,
+      "r1BoundaryDistanceDeg": 0,
+      "wrapLongitudeDiffArcsec": 0.5740816841807828,
+      "creationMethod": "r1-closure-derivation",
+      "seed": null,
+      "tags": [
+        "r1-nine"
+      ]
+    },
+    {
+      "id": "R1CLOSE-08",
+      "r1Fixture": "MOT-2006-SAT-APR",
+      "category": "r1-closure",
+      "utcInstant": "2006-04-05T00:00:00.000Z",
+      "latitude": 0,
+      "longitude": 0,
+      "elevationM": 0,
+      "requestedBodies": [
+        "SATURN"
+      ],
+      "expectedClass": "CLASS_C",
+      "boundaryMeta": {
+        "body": "SATURN",
+        "type": "STATION"
+      },
+      "r1SiderealLon": 100.43160032800989,
+      "r1BoundaryDistanceDeg": 0,
+      "wrapLongitudeDiffArcsec": 1.5121706894660747,
+      "creationMethod": "r1-closure-derivation",
+      "seed": null,
+      "tags": [
+        "r1-nine"
+      ]
+    },
+    {
+      "id": "R1CLOSE-09",
+      "r1Fixture": "BND-2000-SUN-EQX",
+      "category": "r1-closure",
+      "utcInstant": "2000-03-20T07:35:00.000Z",
+      "latitude": 0,
+      "longitude": 0,
+      "elevationM": 0,
+      "requestedBodies": [
+        "SUN"
+      ],
+      "expectedClass": "CLASS_C",
+      "boundaryMeta": {
+        "body": "SUN",
+        "type": "WRAP_SEAM"
+      },
+      "r1SiderealLon": 336.14381538605943,
+      "r1BoundaryDistanceDeg": 0.003922035022583259,
+      "wrapLongitudeDiffArcsec": 14.712989737518,
+      "creationMethod": "r1-closure-derivation",
+      "seed": null,
+      "tags": [
+        "r1-nine"
+      ]
+    }
+  ]
+}
