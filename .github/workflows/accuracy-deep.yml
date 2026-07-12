@@ -49,6 +49,7 @@ jobs:
         run: |
           set -e
           f=tools/card11-reference-lab/cache/de440s.bsp
+          mkdir -p "$(dirname "$f")"
           if [ ! -f "$f" ]; then curl -sSL -o "$f" "$DE440S_URL"; fi
           echo "$DE440S_SHA256  $f" | sha256sum -c -
 
