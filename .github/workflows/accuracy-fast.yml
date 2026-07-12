@@ -94,7 +94,17 @@ jobs:
         working-directory: tools/card11-reference-lab/python
         run: python kernel_manifest.py
 
-      - name: Lab fast suites (pure + guards + timezone)
+      - name: Core golden fixtures + boundary + True Node/Lahiri continuity (oracle)
+        working-directory: tools/card11-reference-lab
+        run: |
+          set -e
+          LAB="$PWD"
+          cp node/src/current-engine-adapter-r2.ts "$GITHUB_WORKSPACE/scripts/_adapter.ci.ts"
+          (cd "$GITHUB_WORKSPACE" && SWISSEPH_EPHE_PATH="$PWD/node_modules/swisseph/ephe" LAB_DIR="$LAB" npx tsx scripts/_adapter.ci.ts && rm -f scripts/_adapter.ci.ts)
+          (cd python && python skyfield_oracle_r2.py)
+          (cd node && npx tsx src/comparator-r2.ts)
+
+      - name: Lab suites (pure + guards + timezone; validates generated artifacts)
         working-directory: tools/card11-reference-lab/node
         run: |
           npm run typecheck
@@ -108,16 +118,6 @@ jobs:
           cp tools/card11-reference-lab/node/src/global-state-regression.ts scripts/_gs.ci.ts
           SWISSEPH_EPHE_PATH="$PWD/node_modules/swisseph/ephe" npx tsx scripts/_gs.ci.ts
           rm -f scripts/_gs.ci.ts
-
-      - name: Core golden fixtures + boundary + True Node/Lahiri continuity (oracle)
-        working-directory: tools/card11-reference-lab
-        run: |
-          set -e
-          LAB="$PWD"
-          cp node/src/current-engine-adapter-r2.ts "$GITHUB_WORKSPACE/scripts/_adapter.ci.ts"
-          (cd "$GITHUB_WORKSPACE" && SWISSEPH_EPHE_PATH="$PWD/node_modules/swisseph/ephe" LAB_DIR="$LAB" npx tsx scripts/_adapter.ci.ts && rm -f scripts/_adapter.ci.ts)
-          (cd python && python skyfield_oracle_r2.py)
-          (cd node && npx tsx src/comparator-r2.ts)
 
       - name: Git diff check
         run: git diff --check
