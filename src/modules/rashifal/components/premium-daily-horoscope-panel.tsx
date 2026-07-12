@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -41,10 +42,10 @@ const ratingLabels: Record<string, string> = {
 };
 
 const confidenceLabels: Record<string, string> = {
-  high: "High source coverage",
-  moderate: "Moderate source coverage",
-  low: "Limited source coverage",
-  insufficient: "Insufficient source coverage",
+  high: "High evidence coverage",
+  moderate: "Moderate evidence coverage",
+  low: "Limited evidence coverage",
+  insufficient: "Insufficient evidence coverage",
 };
 
 function formatRating(value: string | null) {
@@ -52,7 +53,7 @@ function formatRating(value: string | null) {
 }
 
 function formatConfidence(value: string) {
-  return confidenceLabels[value] ?? "Source coverage";
+  return confidenceLabels[value] ?? "Evidence coverage";
 }
 
 function formatSourceKey(value: string) {
@@ -60,6 +61,32 @@ function formatSourceKey(value: string) {
     .replace(/([a-z])([A-Z])/g, "$1 $2")
     .replace(/_/g, " ")
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function formatQueryInstant(value: string | null, timezone: string | null) {
+  if (!value || !timezone) {
+    return "Unavailable";
+  }
+
+  const parsed = new Date(value);
+
+  if (Number.isNaN(parsed.getTime())) {
+    return "Unavailable";
+  }
+
+  try {
+    return new Intl.DateTimeFormat("en-IN", {
+      dateStyle: "medium",
+      timeStyle: "short",
+      timeZone: timezone,
+      timeZoneName: "short",
+    }).format(parsed);
+  } catch {
+    return parsed.toLocaleString("en-IN", {
+      dateStyle: "medium",
+      timeStyle: "short",
+    });
+  }
 }
 
 function toLocalDate() {
@@ -111,7 +138,7 @@ function ResultFact({
 }>) {
   return (
     <div className="rounded-[1rem] border border-[#E9DFC9] bg-white px-4 py-3 shadow-[0_10px_24px_rgba(17,17,17,0.04)]">
-      <p className="text-[0.66rem] uppercase tracking-[var(--tracking-label)] text-[#B88943]">
+      <p className="text-[0.7rem] font-semibold uppercase tracking-[0.08em] text-[#8A641F]">
         {label}
       </p>
       <p className="mt-1 break-words text-[0.92rem] leading-[var(--line-height-copy)] text-[#111111]">
@@ -130,13 +157,30 @@ function EmptyState({
 }>) {
   return (
     <Card className="border-[#E9DFC9] bg-white p-4 shadow-[0_14px_34px_rgba(17,17,17,0.05)] before:opacity-0">
-      <p className="text-[0.7rem] uppercase tracking-[var(--tracking-label)] text-[#B88943]">
+      <p className="text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-[#8A641F]">
         {title}
       </p>
-      <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[#4A4A4A]">
+      <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[#333333]">
         {message}
       </p>
     </Card>
+  );
+}
+
+function TechnicalDisclosure({
+  title,
+  children,
+}: Readonly<{
+  title: string;
+  children: ReactNode;
+}>) {
+  return (
+    <details className="rounded-[1rem] border border-[#E9DFC9] bg-white px-4 py-3 shadow-[0_10px_24px_rgba(17,17,17,0.035)]">
+      <summary className="cursor-pointer rounded-[0.65rem] text-[0.74rem] font-semibold uppercase tracking-[0.08em] text-[#8A641F] outline-none focus-visible:ring-2 focus-visible:ring-[#B88943] focus-visible:ring-offset-2">
+        {title}
+      </summary>
+      <div className="mt-3">{children}</div>
+    </details>
   );
 }
 
@@ -148,8 +192,8 @@ function EvidenceList({
   items: DailyHoroscopeViewModel["categories"][number]["supportiveEvidence"];
 }>) {
   return (
-    <details className="rounded-[1rem] border border-[#EFE5CF] bg-[#FFFDF8] px-3 py-2">
-      <summary className="cursor-pointer text-[0.72rem] font-semibold uppercase tracking-[var(--tracking-label)] text-[#B88943]">
+    <details className="rounded-[1rem] border border-[#E9DFC9] bg-[#FFFDF8] px-3 py-2">
+      <summary className="cursor-pointer rounded-[0.6rem] text-[0.74rem] font-semibold uppercase tracking-[0.08em] text-[#8A641F] outline-none focus-visible:ring-2 focus-visible:ring-[#B88943] focus-visible:ring-offset-2">
         {title} ({items.length})
       </summary>
       {items.length ? (
@@ -157,10 +201,10 @@ function EvidenceList({
           {items.slice(0, 4).map((item) => (
             <div key={`${item.ruleId}-${item.calculationReference}-${item.tier}`} className="space-y-1">
               <p className="break-words text-[0.82rem] text-[#111111]">
-                {item.ruleId} · {formatSourceKey(item.sourceSystem)}
+                {item.ruleId} - {formatSourceKey(item.sourceSystem)}
               </p>
               <p className="break-words text-[0.76rem] leading-[var(--line-height-copy)] text-[#4A4A4A]">
-                {item.referenceLabel || item.frame} · {item.calculationReference}
+                {item.referenceLabel || item.frame} - {item.calculationReference}
               </p>
             </div>
           ))}
@@ -168,6 +212,29 @@ function EvidenceList({
       ) : (
         <p className="mt-2 text-[0.78rem] text-[#4A4A4A]">No evidence token available.</p>
       )}
+    </details>
+  );
+}
+
+function ContradictionList({
+  flags,
+}: Readonly<{
+  flags: string[];
+}>) {
+  if (!flags.length) {
+    return null;
+  }
+
+  return (
+    <details className="rounded-[1rem] border border-[#E9DFC9] bg-white px-3 py-2">
+      <summary className="cursor-pointer rounded-[0.6rem] text-[0.74rem] font-semibold uppercase tracking-[0.08em] text-[#8A641F] outline-none focus-visible:ring-2 focus-visible:ring-[#B88943] focus-visible:ring-offset-2">
+        Contradiction notices ({flags.length})
+      </summary>
+      <ul className="mt-3 space-y-1 text-[0.82rem] leading-[var(--line-height-copy)] text-[#333333]">
+        {flags.map((flag) => (
+          <li key={flag}>{flag}</li>
+        ))}
+      </ul>
     </details>
   );
 }
@@ -209,6 +276,10 @@ export function PremiumDailyHoroscopePanel({
     () => records.find((record) => record.id === selectedId) ?? null,
     [records, selectedId]
   );
+
+  function resetGeneratedResult() {
+    setState({ status: "idle" });
+  }
 
   useEffect(() => {
     const nextLocation = toLocationFromRecord(selectedRecord);
@@ -289,6 +360,7 @@ export function PremiumDailyHoroscopePanel({
       }
 
       setCalculationLocation(toLocationFromCanonical(payload.resolved));
+      resetGeneratedResult();
       setLocationState("confirmed");
       setLocationMessage("Calculation place and timezone are confirmed.");
     } catch (error) {
@@ -327,6 +399,7 @@ export function PremiumDailyHoroscopePanel({
           }
 
           setCalculationLocation(toLocationFromCanonical(payload.resolved));
+          resetGeneratedResult();
           setLocationState("confirmed");
           setLocationMessage("Current location is confirmed for daily calculation.");
         } catch (error) {
@@ -378,6 +451,7 @@ export function PremiumDailyHoroscopePanel({
       }
 
       setCalculationLocation(toLocationFromCanonical(payload.resolved));
+      resetGeneratedResult();
       setLocationState("confirmed");
       setLocationMessage("Manual calculation place is confirmed.");
     } catch (error) {
@@ -495,8 +569,11 @@ export function PremiumDailyHoroscopePanel({
               <input
                 type="date"
                 value={localDate}
-                onChange={(event) => setLocalDate(event.currentTarget.value)}
-                className="min-h-11 rounded-[1rem] border border-[#E9DFC9] bg-white px-3 text-[0.92rem] text-[#111111] shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_8px_20px_rgba(17,17,17,0.045)]"
+                onChange={(event) => {
+                  setLocalDate(event.currentTarget.value);
+                  resetGeneratedResult();
+                }}
+                className="min-h-11 rounded-[1rem] border border-[#D9BE75] bg-white px-3 text-[0.92rem] text-[#111111] shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_8px_20px_rgba(17,17,17,0.045)] outline-none focus-visible:ring-2 focus-visible:ring-[#B88943] focus-visible:ring-offset-2"
               />
             </label>
           </div>
@@ -548,7 +625,7 @@ export function PremiumDailyHoroscopePanel({
                 value={query}
                 onChange={(event) => setQuery(event.currentTarget.value)}
                 placeholder="Search calculation place"
-                className="min-h-11 min-w-0 flex-1 rounded-[1rem] border border-[#E9DFC9] bg-white px-3 text-[0.92rem] text-[#111111]"
+                className="min-h-11 min-w-0 flex-1 rounded-[1rem] border border-[#D9BE75] bg-white px-3 text-[0.92rem] text-[#111111] outline-none focus-visible:ring-2 focus-visible:ring-[#B88943] focus-visible:ring-offset-2"
               />
               <button
                 type="button"
@@ -582,7 +659,7 @@ export function PremiumDailyHoroscopePanel({
             ) : null}
 
             <details className="rounded-[1rem] border border-[#E9DFC9] bg-white px-3 py-3">
-              <summary className="cursor-pointer text-[0.72rem] font-semibold uppercase tracking-[var(--tracking-label)] text-[#B88943]">
+              <summary className="cursor-pointer rounded-[0.6rem] text-[0.74rem] font-semibold uppercase tracking-[0.08em] text-[#8A641F] outline-none focus-visible:ring-2 focus-visible:ring-[#B88943] focus-visible:ring-offset-2">
                 Manual fallback
               </summary>
               <div className="mt-3 grid gap-2 sm:grid-cols-2">
@@ -592,7 +669,7 @@ export function PremiumDailyHoroscopePanel({
                     setManual((current) => ({ ...current, displayName: event.currentTarget.value }))
                   }
                   placeholder="Place label"
-                  className="min-h-10 rounded-[0.85rem] border border-[#E9DFC9] px-3 text-[0.88rem]"
+                  className="min-h-10 rounded-[0.85rem] border border-[#D9BE75] px-3 text-[0.88rem] outline-none focus-visible:ring-2 focus-visible:ring-[#B88943] focus-visible:ring-offset-2"
                 />
                 <input
                   value={manual.timezone}
@@ -600,7 +677,7 @@ export function PremiumDailyHoroscopePanel({
                     setManual((current) => ({ ...current, timezone: event.currentTarget.value }))
                   }
                   placeholder="Timezone, e.g. Asia/Kolkata"
-                  className="min-h-10 rounded-[0.85rem] border border-[#E9DFC9] px-3 text-[0.88rem]"
+                  className="min-h-10 rounded-[0.85rem] border border-[#D9BE75] px-3 text-[0.88rem] outline-none focus-visible:ring-2 focus-visible:ring-[#B88943] focus-visible:ring-offset-2"
                 />
                 <input
                   value={manual.latitude}
@@ -608,7 +685,7 @@ export function PremiumDailyHoroscopePanel({
                     setManual((current) => ({ ...current, latitude: event.currentTarget.value }))
                   }
                   placeholder="Latitude"
-                  className="min-h-10 rounded-[0.85rem] border border-[#E9DFC9] px-3 text-[0.88rem]"
+                  className="min-h-10 rounded-[0.85rem] border border-[#D9BE75] px-3 text-[0.88rem] outline-none focus-visible:ring-2 focus-visible:ring-[#B88943] focus-visible:ring-offset-2"
                 />
                 <input
                   value={manual.longitude}
@@ -616,7 +693,7 @@ export function PremiumDailyHoroscopePanel({
                     setManual((current) => ({ ...current, longitude: event.currentTarget.value }))
                   }
                   placeholder="Longitude"
-                  className="min-h-10 rounded-[0.85rem] border border-[#E9DFC9] px-3 text-[0.88rem]"
+                  className="min-h-10 rounded-[0.85rem] border border-[#D9BE75] px-3 text-[0.88rem] outline-none focus-visible:ring-2 focus-visible:ring-[#B88943] focus-visible:ring-offset-2"
                 />
                 <button
                   type="button"
@@ -672,7 +749,7 @@ export function PremiumDailyHoroscopePanel({
                   Context header
                 </p>
                 <h3 className="mt-1 break-words text-[length:var(--font-size-title-sm)] text-[#111111]">
-                  {readyData.selectedKundli.label} · {readyData.localDate}
+                  {readyData.selectedKundli.label} - {readyData.localDate}
                 </h3>
                 <p className="mt-2 break-words text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[#4A4A4A]">
                   Calculation place: {readyData.calculationLocation.displayName}
@@ -683,21 +760,54 @@ export function PremiumDailyHoroscopePanel({
               </Badge>
             </div>
             <div className="mt-4 grid gap-3 sm:grid-cols-3">
-              <ResultFact
-                label="General day quality"
-                value={formatRating(readyData.generalDayQuality?.ratingBand ?? null)}
-              />
-              <ResultFact
-                label="Confidence"
-                value={formatConfidence(readyData.confidence.level)}
-              />
+              <ResultFact label="Query time" value={formatQueryInstant(readyData.queryInstant, readyData.timezone)} />
+              <ResultFact label="Local date" value={readyData.localDate} />
               <ResultFact label="Timezone" value={readyData.timezone ?? "Unavailable"} />
             </div>
           </Card>
 
+          <Card className="space-y-3 border-[#E9DFC9] bg-white p-4 shadow-[0_14px_34px_rgba(17,17,17,0.045)] before:opacity-0 sm:p-5">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-[#8A641F]">
+                  General Day Quality
+                </p>
+                <p className="mt-1 text-[length:var(--font-size-body-md)] text-[#111111]">
+                  {formatRating(readyData.generalDayQuality?.ratingBand ?? null)}
+                </p>
+              </div>
+              <Badge tone={readyData.generalDayQuality?.status === "available" ? "accent" : "neutral"}>
+                {readyData.generalDayQuality?.status ?? "unavailable"}
+              </Badge>
+            </div>
+            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[#333333]">
+              {formatConfidence(readyData.generalDayQuality?.confidence.level ?? readyData.confidence.level)}
+              {readyData.generalDayQuality?.unavailableReason
+                ? ` - ${readyData.generalDayQuality.unavailableReason}`
+                : ""}
+            </p>
+            {readyData.generalDayQuality ? (
+              <div className="grid gap-2">
+                <ContradictionList flags={readyData.generalDayQuality.contradictionFlags} />
+                <EvidenceList
+                  title="Supportive evidence"
+                  items={readyData.generalDayQuality.supportiveEvidence}
+                />
+                <EvidenceList
+                  title="Caution evidence"
+                  items={readyData.generalDayQuality.cautionEvidence}
+                />
+                <EvidenceList
+                  title="Neutral evidence"
+                  items={readyData.generalDayQuality.neutralEvidence}
+                />
+              </div>
+            ) : null}
+          </Card>
+
           <section className="space-y-3">
             <div>
-              <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[#B88943]">
+              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-[#8A641F]">
                 Seven categories
               </p>
               <h3 className="mt-1 text-[length:var(--font-size-title-sm)] text-[#111111]">
@@ -725,9 +835,10 @@ export function PremiumDailyHoroscopePanel({
                   </div>
                   <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[#4A4A4A]">
                     {formatConfidence(category.confidence.level)}
-                    {category.unavailableReason ? ` · ${category.unavailableReason}` : ""}
+                    {category.unavailableReason ? ` - ${category.unavailableReason}` : ""}
                   </p>
                   <div className="grid gap-2">
+                    <ContradictionList flags={category.contradictionFlags} />
                     <EvidenceList title="Supportive evidence" items={category.supportiveEvidence} />
                     <EvidenceList title="Caution evidence" items={category.cautionEvidence} />
                     <EvidenceList title="Neutral evidence" items={category.neutralEvidence} />
@@ -747,7 +858,7 @@ export function PremiumDailyHoroscopePanel({
                   readyData.timeWindows.map((window) => (
                     <ResultFact
                       key={`${window.label}-${window.startUtc}`}
-                      label={`${window.label} · ${window.kind}`}
+                      label={`${window.label} - ${window.kind}`}
                       value={`${window.startLocal} - ${window.endLocal}`}
                     />
                   ))
@@ -765,10 +876,12 @@ export function PremiumDailyHoroscopePanel({
               </p>
               {readyData.dashaContext ? (
                 <div className="mt-3 grid gap-2">
-                  <ResultFact label="Maha" value={readyData.dashaContext.mahadasha} />
-                  <ResultFact label="Antar" value={readyData.dashaContext.antardasha} />
-                  <ResultFact label="Pratyantar" value={readyData.dashaContext.pratyantardasha} />
-                  <ResultFact label="Lineage" value={readyData.dashaContext.lineagePath} />
+                  <ResultFact label="Mahadasha" value={readyData.dashaContext.mahadasha} />
+                  <ResultFact label="Antardasha" value={readyData.dashaContext.antardasha} />
+                  <ResultFact label="Pratyantardasha" value={readyData.dashaContext.pratyantardasha} />
+                  <ResultFact label="Sookshma" value={readyData.dashaContext.sookshma} />
+                  <ResultFact label="Prana" value={readyData.dashaContext.prana} />
+                  <ResultFact label="Lineage path" value={readyData.dashaContext.lineagePath} />
                 </div>
               ) : (
                 <p className="mt-3 text-[length:var(--font-size-body-sm)] text-[#4A4A4A]">
@@ -799,27 +912,22 @@ export function PremiumDailyHoroscopePanel({
               )}
             </Card>
 
-            <Card className="border-[#E9DFC9] bg-white p-4 shadow-[0_14px_34px_rgba(17,17,17,0.045)] before:opacity-0">
-              <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[#B88943]">
-                Data quality
-              </p>
-              <div className="mt-3 grid gap-2">
+            <TechnicalDisclosure title="Source readiness">
+              <div className="grid gap-2">
                 {Object.entries(readyData.sourceSystems).map(([key, value]) => (
                   <ResultFact key={key} label={formatSourceKey(key)} value={value} />
                 ))}
               </div>
-            </Card>
+            </TechnicalDisclosure>
           </div>
 
-          <Card className="border-[#E9DFC9] bg-white p-4 shadow-[0_14px_34px_rgba(17,17,17,0.045)] before:opacity-0 sm:p-5">
-            <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[#B88943]">
-              Calculation details
-            </p>
+          <TechnicalDisclosure title="Calculation details">
             <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               <ResultFact label="Contract" value={readyData.contractVersion} />
               <ResultFact label="Ayanamsha" value={readyData.conventions.ayanamsa} />
               <ResultFact label="House system" value={readyData.conventions.houseSystem} />
-              <ResultFact label="Query instant" value={readyData.queryInstant ?? "Unavailable"} />
+              <ResultFact label="Query time" value={formatQueryInstant(readyData.queryInstant, readyData.timezone)} />
+              <ResultFact label="Raw query instant" value={readyData.queryInstant ?? "Unavailable"} />
             </div>
             {readyData.unavailableReasons.length ? (
               <div className="mt-4 rounded-[1rem] border border-[#E9DFC9] bg-[#FFFDF8] px-4 py-3">
@@ -835,6 +943,12 @@ export function PremiumDailyHoroscopePanel({
                 </ul>
               </div>
             ) : null}
+          </TechnicalDisclosure>
+
+          <Card className="border-[#E9DFC9] bg-white p-4 shadow-[0_14px_34px_rgba(17,17,17,0.045)] before:opacity-0 sm:p-5">
+            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-[#8A641F]">
+              Disclaimer
+            </p>
             <p className="mt-4 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[#4A4A4A]">
               {readyData.disclaimer}
             </p>

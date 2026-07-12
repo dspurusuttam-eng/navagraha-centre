@@ -129,13 +129,13 @@ type DailyHoroscopeServiceFailure = Extract<
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 const categoryLabels: Record<HoroscopeCategoryKey, string> = {
-  general_day_quality: "General day quality",
-  career_work: "Career / work",
-  finance_resources: "Finance / resources",
+  general_day_quality: "General Day Quality",
+  career_work: "Career & Work",
+  finance_resources: "Finance & Resources",
   relationships: "Relationships",
-  health_routine: "Health / routine",
-  study_planning: "Study / planning",
-  travel_mobility: "Travel / mobility",
+  health_routine: "Health & Routine",
+  study_planning: "Study & Planning",
+  travel_mobility: "Travel & Mobility",
 };
 
 function toNumber(value: Prisma.Decimal | null) {
