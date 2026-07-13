@@ -17,7 +17,7 @@ import {
   saveBirthChartForUser,
 } from "@/modules/astrology/chart-persistence";
 
-type ChartContractErrorCode =
+export type ChartContractErrorCode =
   | "MISSING_BIRTH_PROFILE"
   | "INVALID_BIRTH_INPUT"
   | "INVALID_BIRTH_TIMEZONE"
@@ -29,7 +29,7 @@ type ChartContractErrorCode =
   | "CHART_PERSISTENCE_FAILED"
   | "INTERNAL_ERROR";
 
-type BirthProfileRecord = {
+export type BirthProfileRecord = {
   birthDate: string;
   birthTime: string | null;
   timezone: string;
@@ -184,7 +184,7 @@ function normalizeCountryCode(country: string) {
   return "UN";
 }
 
-function buildBirthContextFromProfile(
+export function buildBirthContextFromProfile(
   profile: BirthProfileRecord
 ): UserChartContractFailure | { success: true; data: AstronomyReadyBirthContext } {
   const latitude = toNumber(profile.latitude);

@@ -19,6 +19,7 @@ export type SecurityRateLimitPolicyKey =
   | "saved-kundli-read"
   | "saved-kundli-create"
   | "saved-kundli-mutate"
+  | "daily-horoscope-read"
   | "decision-desk-read"
   | "decision-desk-create"
   | "decision-desk-mutate"
@@ -249,6 +250,13 @@ function buildRateLimitPolicies(): Record<
       limit: readPositiveInt("SAVED_KUNDLI_MUTATE_RATE_LIMIT", 20),
       windowMs: readPositiveInt(
         "SAVED_KUNDLI_MUTATE_RATE_WINDOW_MS",
+        10 * 60 * 1_000
+      ),
+    },
+    "daily-horoscope-read": {
+      limit: readPositiveInt("DAILY_HOROSCOPE_READ_RATE_LIMIT", 30),
+      windowMs: readPositiveInt(
+        "DAILY_HOROSCOPE_READ_RATE_WINDOW_MS",
         10 * 60 * 1_000
       ),
     },
