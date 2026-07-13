@@ -53,6 +53,7 @@
     "debug:transit:qa": "tsx scripts/debug-transit-qa.ts",
     "debug:transit:personalized:qa": "tsx scripts/debug-transit-personalized-qa.ts",
     "debug:panchang:qa": "tsx scripts/debug-panchang-qa.ts",
+    "debug:panchang:premium-adapter:qa": "tsx scripts/debug-panchang-premium-adapter-qa.ts",
     "debug:panchang:premium:qa": "tsx scripts/debug-panchang-premium-qa.ts",
     "debug:panchang:premium:integration:qa": "tsx scripts/debug-panchang-premium-integration-qa.ts",
     "debug:muhurat:qa": "tsx scripts/debug-muhurat-intelligence-qa.ts",

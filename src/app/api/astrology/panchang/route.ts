@@ -16,14 +16,32 @@ import {
   guardTrustedOrigin,
   securityConfig,
 } from "@/lib/security";
-import { calculateDailyPanchangContext } from "@/modules/panchang";
+import {
+  calculateDailyPanchangContext,
+  type PanchangContextOutput,
+} from "@/modules/panchang";
+import {
+  buildPremiumPanchangAdapterSnapshot,
+  isPremiumPanchangAdapterRequested,
+  type PremiumPanchangAdapterPayload,
+} from "@/modules/panchang/premium/server-adapter";
 
 export const dynamic = "force-dynamic";
 
 type PanchangPayload = {
   date?: unknown;
   place?: unknown;
+  premium?: unknown;
   [key: string]: unknown;
+};
+
+type PanchangResponsePayload = {
+  data: PanchangContextOutput;
+  accuracy: {
+    isComplete: true;
+    missingFields: [];
+  };
+  premium?: PremiumPanchangAdapterPayload;
 };
 
 function readText(value: unknown) {
@@ -223,16 +241,38 @@ export async function POST(request: Request) {
     });
   }
 
-  return Response.json(
-    {
-      data: panchang.data,
-      accuracy: {
-        isComplete: true,
-        missingFields: [],
-      },
+  const responseBody: PanchangResponsePayload = {
+    data: panchang.data,
+    accuracy: {
+      isComplete: true,
+      missingFields: [],
     },
-    {
-      headers: rateLimit.headers,
+  };
+
+  if (isPremiumPanchangAdapterRequested(payload.premium)) {
+    const premium = buildPremiumPanchangAdapterSnapshot({
+      localDate: normalized.data.date_local_normalized,
+      queryInstant: resolved.data.birth_utc,
+      location: {
+        latitude: resolved.data.normalized_place.latitude,
+        longitude: resolved.data.normalized_place.longitude,
+        timezoneIana: resolved.data.timezone.iana,
+      },
+    });
+
+    if (!premium.success) {
+      return apiErrorResponse({
+        statusCode: premium.error.statusCode,
+        code: premium.error.code,
+        message: premium.error.message,
+        headers: rateLimit.headers,
+      });
     }
-  );
+
+    responseBody.premium = premium.payload;
+  }
+
+  return Response.json(responseBody, {
+    headers: rateLimit.headers,
+  });
 }
