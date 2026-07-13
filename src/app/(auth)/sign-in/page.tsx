@@ -5,7 +5,7 @@ import { SignInForm } from "@/modules/auth/components/sign-in-form";
 export const metadata = buildPageMetadata({
   title: "Account Access",
   description:
-    "Sign in to access your NAVAGRAHA CENTRE account, saved guidance, reports, and consultation support.",
+    "Sign in to access your NAVAGRAHA CENTRE account, saved Kundli, and consultation support.",
   path: "/sign-in",
   keywords: [
     "NAVAGRAHA CENTRE account access",
@@ -49,12 +49,12 @@ export default async function SignInPage({
     <AuthFormShell
       eyebrow="Protected Access"
       title="Account Access"
-      description="Sign in to access your NAVAGRAHA CENTRE account, saved guidance, reports, and consultation support."
+      description="Sign in to access your NAVAGRAHA CENTRE account, saved Kundli, and consultation support."
       highlights={[
-        "Saved Reports",
-        "Consultation Support",
-        "Learning Access",
-        "Secure Account Entry",
+        "Account",
+        "Consultation",
+        "Saved Kundli",
+        "Secure entry",
       ]}
       alternateHref={signUpHref}
       alternateLabel="Create an account"
@@ -63,14 +63,13 @@ export default async function SignInPage({
         callbackUrl={callbackUrl}
         signUpHref={signUpHref}
         title="Secure Account Entry"
-        description="Use your email and password to continue to the protected account area. Your account area is protected, and personal details, saved reports, and dashboard features should only be accessed after secure sign-in."
-        safetyNote="Your account area is protected. Personal details, saved reports, and dashboard features should only be accessed after secure sign-in."
+        description="Use email and password to continue to the protected account area."
+        safetyNote="Your account area is protected. Personal details, saved Kundli, and consultation access stay behind secure sign-in."
         supportLinks={[
-          { label: "Ask NI", href: "/ai" },
           { label: "Home", href: "/" },
+          { label: "Desk", href: "/from-the-desk" },
           { label: "Consultation", href: "/consultation" },
-          { label: "Reports", href: "/reports" },
-          { label: "Learn", href: "/learn" },
+          { label: "Support", href: "/support" },
         ]}
       />
     </AuthFormShell>

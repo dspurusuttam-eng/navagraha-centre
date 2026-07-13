@@ -61,21 +61,19 @@ export const seoConfig = {
   supportedLocales: getEnabledLocales().map((locale) => locale.code),
   primaryLocales: ["as", "hi", "en"] as const,
   defaultTitle:
-    "NAVAGRAHA CENTRE | Vedic Astrology, Kundli, Rashifal & Panchang",
+    "NAVAGRAHA CENTRE | Vedic Astrology Consultation & Desk Guidance",
   titleTemplate: "%s | NAVAGRAHA CENTRE",
   defaultDescription:
-    "Discover AI-powered Vedic astrology with Kundli, Rashifal, Panchang, Numerology, Compatibility, Reports and expert guidance from NAVAGRAHA CENTRE.",
+    "Consultation-first Vedic astrology guidance, Desk articles, methodology and support from NAVAGRAHA CENTRE.",
   defaultOpenGraphImage: "/brand/navagraha-centre-logo-1024.png",
   twitterHandle: process.env.NEXT_PUBLIC_TWITTER_HANDLE ?? "@navagrahacentre",
   brandKeywords: [
     "NAVAGRAHA CENTRE",
     "Vedic Astrology",
-    "Kundli",
-    "Rashifal",
-    "Panchang",
-    "Numerology",
-    "Marriage Compatibility",
     "Astrology Consultation",
+    "From the Desk",
+    "Vedic Methodology",
+    "Acharya Guidance",
     "J P Sarmah",
   ] as const,
   organization: {
@@ -88,14 +86,11 @@ export const seoConfig = {
     logoPath: "/brand/navagraha-centre-logo-512.png",
     serviceArea: ["Assam", "India", "Worldwide (Online)"] as const,
     serviceTypes: [
-      "Kundli Analysis",
-      "Daily Rashifal",
-      "Panchang",
-      "Marriage Compatibility",
-      "Numerology",
-      "Astrology Reports",
       "Astrology Consultation",
-      "Gemstone Guidance",
+      "Vedic Astrology Guidance",
+      "Desk Articles",
+      "Methodology Notes",
+      "Consultation Support",
     ] as const,
     location: {
       locality: "North Lakhimpur",
@@ -119,9 +114,9 @@ const coreSeoCopyByLocale: Record<
   en: {
     home: {
       title:
-        "NAVAGRAHA CENTRE | Vedic Astrology, Kundli, Rashifal & Panchang",
+        "NAVAGRAHA CENTRE | Vedic Astrology Consultation & Desk Guidance",
       description:
-        "Discover AI-powered Vedic astrology with Kundli, Rashifal, Panchang, Numerology, Compatibility, Reports and expert guidance from NAVAGRAHA CENTRE.",
+        "Consultation-first Vedic astrology guidance, Desk articles, methodology and support from NAVAGRAHA CENTRE.",
     },
     kundli: {
       title: "Kundli Birth Chart Guidance | NAVAGRAHA CENTRE",
@@ -178,9 +173,9 @@ const coreSeoCopyByLocale: Record<
   as: {
     home: {
       title:
-        "NAVAGRAHA CENTRE | বৈদিক জ্যোতিষ, জন্মকুণ্ডলী, ৰাশিফল আৰু পঞ্চাংগ",
+        "NAVAGRAHA CENTRE | বৈদিক জ্যোতিষ পৰামৰ্শ আৰু ডেস্ক পথনির্দেশ",
       description:
-        "NAVAGRAHA CENTRE-ত AI-সহায়ক বৈদিক জ্যোতিষ অভিজ্ঞতা লাভ কৰক। জন্মকুণ্ডলী, ৰাশিফল, পঞ্চাংগ, সংখ্যাতত্ত্ব, মিলন বিশ্লেষণ, প্ৰতিবেদন আৰু বিশেষজ্ঞ পথনির্দেশ একে ঠাইতে।",
+        "NAVAGRAHA CENTRE-ত পৰামৰ্শ-প্ৰথম বৈদিক জ্যোতিষ পথনির্দেশ, ডেস্ক প্ৰবন্ধ, পদ্ধতি আৰু সহায়তা।",
     },
     kundli: {
       title: "বিনামূলীয়া জন্মকুণ্ডলী আৰু AI জন্মচক্ৰ বিশ্লেষণ | NAVAGRAHA CENTRE",
@@ -236,9 +231,9 @@ const coreSeoCopyByLocale: Record<
   hi: {
     home: {
       title:
-        "NAVAGRAHA CENTRE | वैदिक ज्योतिष, कुंडली, राशिफल और पंचांग",
+        "NAVAGRAHA CENTRE | वैदिक ज्योतिष परामर्श और डेस्क मार्गदर्शन",
       description:
-        "NAVAGRAHA CENTRE पर AI-संचालित वैदिक ज्योतिष अनुभव प्राप्त करें। कुंडली, राशिफल, पंचांग, न्यूमरोलॉजी, मैचिंग, रिपोर्ट और विशेषज्ञ मार्गदर्शन एक ही जगह।",
+        "NAVAGRAHA CENTRE पर परामर्श-प्रथम वैदिक ज्योतिष मार्गदर्शन, डेस्क लेख, पद्धति और सहायता।",
     },
     kundli: {
       title: "फ्री कुंडली और AI जन्म कुंडली विश्लेषण | NAVAGRAHA CENTRE",

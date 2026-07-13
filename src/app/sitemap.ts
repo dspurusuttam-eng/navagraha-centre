@@ -2,17 +2,11 @@ import type { MetadataRoute } from "next";
 import { siteConfig } from "@/config/site";
 import { getContentAdapter } from "@/modules/content";
 import {
-  insightsCategories,
-  insightsSeoLandings,
-} from "@/modules/content/insights-authority";
-import {
   defaultLocale,
   getLiveLocales,
   getLocalizedPath,
   type SupportedLocale,
 } from "@/modules/localization/config";
-import { rashifalSigns } from "@/modules/rashifal/content";
-import { listShopProducts } from "@/modules/shop";
 
 type SitemapEntry = MetadataRoute.Sitemap[number];
 type ChangeFrequency = NonNullable<SitemapEntry["changeFrequency"]>;
@@ -86,43 +80,18 @@ function buildLocalizedStaticEntries(
 
 const staticRoutes: readonly StaticRouteDefinition[] = [
   { path: "/", changeFrequency: "weekly", priority: 1 },
-  { path: "/kundli", changeFrequency: "weekly", priority: 0.9 },
-  { path: "/matchmaking", changeFrequency: "weekly", priority: 0.9 },
-  { path: "/rashifal", changeFrequency: "daily", priority: 0.9 },
-  { path: "/panchang", changeFrequency: "daily", priority: 0.9 },
-  { path: "/dasha", changeFrequency: "weekly", priority: 0.85 },
-  { path: "/transit", changeFrequency: "weekly", priority: 0.85 },
-  { path: "/numerology", changeFrequency: "weekly", priority: 0.9 },
-  { path: "/reports", changeFrequency: "weekly", priority: 0.9 },
   { path: "/consultation", changeFrequency: "weekly", priority: 0.9 },
-  { path: "/dosha-yoga", changeFrequency: "weekly", priority: 0.85 },
-  { path: "/remedies", changeFrequency: "weekly", priority: 0.85 },
-  { path: "/shop", changeFrequency: "weekly", priority: 0.7 },
+  { path: "/joy-prakash-sarmah", changeFrequency: "monthly", priority: 0.82 },
   { path: "/from-the-desk", changeFrequency: "daily", priority: 0.8 },
-  { path: "/articles", changeFrequency: "daily", priority: 0.8 },
-  { path: "/insights", changeFrequency: "daily", priority: 0.8 },
-  { path: "/tools", changeFrequency: "weekly", priority: 0.7 },
-  { path: "/calculators", changeFrequency: "weekly", priority: 0.7 },
-  { path: "/muhurat", changeFrequency: "weekly", priority: 0.7 },
-  { path: "/ai", changeFrequency: "weekly", priority: 0.9 },
-  { path: "/services", changeFrequency: "monthly", priority: 0.6 },
-  { path: "/pricing", changeFrequency: "monthly", priority: 0.6 },
-  { path: "/about", changeFrequency: "monthly", priority: 0.6 },
+  { path: "/learn", changeFrequency: "weekly", priority: 0.65 },
+  { path: "/methodology", changeFrequency: "monthly", priority: 0.6 },
+  { path: "/support", changeFrequency: "monthly", priority: 0.6 },
   { path: "/contact", changeFrequency: "monthly", priority: 0.6 },
   { path: "/privacy", changeFrequency: "yearly", priority: 0.4 },
   { path: "/terms", changeFrequency: "yearly", priority: 0.4 },
   { path: "/disclaimer", changeFrequency: "yearly", priority: 0.4 },
-  { path: "/refund-cancellation", changeFrequency: "yearly", priority: 0.4 },
-  ...insightsCategories.map((category) => ({
-    path: category.path,
-    changeFrequency: "weekly" as const,
-    priority: 0.6,
-  })),
-  ...insightsSeoLandings.map((landing) => ({
-    path: landing.path,
-    changeFrequency: "weekly" as const,
-    priority: 0.6,
-  })),
+  { path: "/refund", changeFrequency: "yearly", priority: 0.4 },
+  { path: "/refund-cancellation", changeFrequency: "yearly", priority: 0.2 },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -141,39 +110,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   for (const route of staticRoutes) {
     entries.push(...buildLocalizedStaticEntries(route, now));
-  }
-
-  for (const sign of rashifalSigns) {
-    const path = `/rashifal/${sign.slug}`;
-    const alternates = buildAlternatesForSharedPath(path);
-
-    entries.push(
-      ...getLiveLocales().map((locale) => ({
-        url: buildLocalizedAbsolutePath(locale.code, path, true),
-        lastModified: now,
-        changeFrequency: "daily" as const,
-        priority: 0.72,
-        alternates: {
-          languages: alternates,
-        },
-      }))
-    );
-  }
-
-  for (const product of listShopProducts()) {
-    const alternates = buildAlternatesForSharedPath(product.href);
-
-    entries.push(
-      ...getLiveLocales().map((locale) => ({
-        url: buildLocalizedAbsolutePath(locale.code, product.href, true),
-        lastModified: now,
-        changeFrequency: "weekly" as const,
-        priority: 0.7,
-        alternates: {
-          languages: alternates,
-        },
-      }))
-    );
   }
 
   const contentAdapter = getContentAdapter();

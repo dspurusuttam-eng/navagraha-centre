@@ -84,14 +84,13 @@ export function PublicInquiryForm({
     <Card className="space-y-5">
       <div className="space-y-2">
         <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-          Lead Capture
+          Inquiry
         </p>
         <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[color:var(--color-foreground)]">
-          Share your inquiry in one clear step
+          Contact form
         </h2>
         <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-          This form records your inquiry securely so the team can review context
-          and guide your next step without pressure.
+          Existing inquiry route.
         </p>
       </div>
 
@@ -206,13 +205,13 @@ export function PublicInquiryForm({
               htmlFor="inquiry-message"
               className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]"
             >
-              Inquiry Context
+              Message
             </label>
             <Textarea
               id="inquiry-message"
               name="message"
               rows={5}
-              placeholder="Share your context and what guidance you are looking for."
+              placeholder="Briefly share the request."
               required
             />
           </div>
@@ -245,7 +244,7 @@ export function PublicInquiryForm({
 
         <div className="flex justify-end">
           <Button type="submit" size="lg" disabled={isPending}>
-            {isPending ? "Submitting Inquiry..." : "Submit Inquiry"}
+            {isPending ? "Submitting..." : "Submit"}
           </Button>
         </div>
       </form>

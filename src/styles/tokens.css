@@ -1,15 +1,70 @@
 :root {
+  /* UI-01 shared visual foundation */
+  --ui-color-white: #ffffff;
+  --ui-color-black: #050505;
+  --ui-color-black-soft: #111111;
+  --ui-color-gold: #b98b46;
+  --ui-color-gold-strong: #7a5420;
+  --ui-color-gold-soft: #f6eddb;
+  --ui-color-green: #10845f;
+  --ui-color-green-strong: #0b6548;
+  --ui-color-green-soft: #e8f4ee;
+
+  --ui-color-text-primary: var(--ui-color-black);
+  --ui-color-text-secondary: #2f2a24;
+  --ui-color-text-muted: #4d463d;
+  --ui-color-text-inverse: var(--ui-color-white);
+  --ui-color-border-subtle: rgba(5, 5, 5, 0.1);
+  --ui-color-border-strong: rgba(5, 5, 5, 0.2);
+  --ui-color-border-gold: rgba(185, 139, 70, 0.34);
+  --ui-color-border-green: rgba(16, 132, 95, 0.34);
+  --ui-color-focus: var(--ui-color-green);
+  --ui-color-focus-outer: rgba(16, 132, 95, 0.2);
+
+  --ui-space-0: 0;
+  --ui-space-1: 0.25rem;
+  --ui-space-2: 0.5rem;
+  --ui-space-3: 0.75rem;
+  --ui-space-4: 1rem;
+  --ui-space-5: 1.25rem;
+  --ui-space-6: 1.5rem;
+  --ui-space-8: 2rem;
+  --ui-space-10: 2.5rem;
+  --ui-space-12: 3rem;
+  --ui-space-16: 4rem;
+  --ui-space-20: 5rem;
+
+  --ui-radius-xs: 0.375rem;
+  --ui-radius-sm: 0.5rem;
+  --ui-radius-md: 0.75rem;
+  --ui-radius-lg: 1rem;
+  --ui-radius-xl: 1.25rem;
+  --ui-radius-2xl: 1.75rem;
+  --ui-radius-pill: 999px;
+
+  --ui-shadow-hairline: inset 0 0 0 1px rgba(5, 5, 5, 0.08);
+  --ui-shadow-embossed: inset 0 1px 0 rgba(255, 255, 255, 0.78);
+  --ui-shadow-sm: 0 6px 16px rgba(17, 17, 17, 0.06);
+  --ui-shadow-md: 0 10px 26px rgba(17, 17, 17, 0.08);
+  --ui-shadow-focus: 0 0 0 3px var(--ui-color-focus-outer);
+
+  --ui-motion-fast: 160ms;
+  --ui-motion-base: 240ms;
+  --ui-motion-slow: 420ms;
+  --ui-ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ui-ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
+
   /* Launch semantic colour identity */
-  --color-background: #ffffff;
-  --color-text: #050505;
-  --color-text-strong: #0b0b0b;
-  --color-text-muted-launch: #4d463d;
+  --color-background: var(--ui-color-white);
+  --color-text: var(--ui-color-black);
+  --color-text-strong: var(--ui-color-black-soft);
+  --color-text-muted-launch: var(--ui-color-text-muted);
   --color-border-launch: rgba(5, 5, 5, 0.12);
-  --color-antique-gold: #b98b46;
-  --color-antique-gold-dark: #7a5420;
+  --color-antique-gold: var(--ui-color-gold);
+  --color-antique-gold-dark: var(--ui-color-gold-strong);
   --color-ni-cyan: #00d7ff;
   --color-ni-blue: #006dff;
-  --color-emerald: #10845f;
+  --color-emerald: var(--ui-color-green);
   --color-yellow-sapphire: #e0ad1f;
   --color-ruby-maroon: #7a1022;
   --color-pearl: #fffdf7;
@@ -124,15 +179,15 @@
   --color-divider-gold: rgba(184, 137, 67, 0.42);
 
   /* Typography foundation */
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.25rem;
-  --space-6: 1.5rem;
-  --space-8: 2rem;
-  --space-10: 2.5rem;
-  --space-12: 4rem;
+  --space-1: var(--ui-space-1);
+  --space-2: var(--ui-space-2);
+  --space-3: var(--ui-space-3);
+  --space-4: var(--ui-space-4);
+  --space-5: var(--ui-space-5);
+  --space-6: var(--ui-space-6);
+  --space-8: var(--ui-space-8);
+  --space-10: var(--ui-space-10);
+  --space-12: var(--ui-space-16);
   --space-14: 5.5rem;
   --space-16: 6.75rem;
   --space-section-y-mobile: 2.75rem;
@@ -143,22 +198,22 @@
   --space-hero-gap: 2.25rem;
   --space-cta-gap: 0.875rem;
 
-  --radius-sm: 0.75rem;
-  --radius-md: 1rem;
-  --radius-lg: 1.25rem;
-  --radius-xl: 1.75rem;
+  --radius-sm: var(--ui-radius-md);
+  --radius-md: var(--ui-radius-lg);
+  --radius-lg: var(--ui-radius-xl);
+  --radius-xl: var(--ui-radius-2xl);
   --radius-2xl: 2.25rem;
   --radius-3xl: 3rem;
-  --radius-pill: 999px;
+  --radius-pill: var(--ui-radius-pill);
   --radius-card: 1.5rem;
 
-  --shadow-xs: inset 0 1px 0 rgba(255, 255, 255, 0.72);
-  --shadow-sm: 0 10px 30px rgba(94, 72, 43, 0.11);
-  --shadow-md: 0 16px 46px rgba(94, 72, 43, 0.15);
-  --shadow-lg: 0 24px 70px rgba(94, 72, 43, 0.2);
-  --shadow-glow: 0 14px 40px rgba(185, 139, 70, 0.24);
-  --shadow-card-soft: 0 14px 34px rgba(96, 76, 48, 0.14);
-  --shadow-card-hover: 0 20px 48px rgba(96, 76, 48, 0.18);
+  --shadow-xs: var(--ui-shadow-embossed);
+  --shadow-sm: var(--ui-shadow-sm);
+  --shadow-md: var(--ui-shadow-md);
+  --shadow-lg: 0 14px 34px rgba(17, 17, 17, 0.1);
+  --shadow-glow: 0 8px 20px rgba(185, 139, 70, 0.12);
+  --shadow-card-soft: var(--ui-shadow-md);
+  --shadow-card-hover: 0 12px 30px rgba(17, 17, 17, 0.1);
 
   --font-size-display-xl: clamp(3.5rem, 8vw, 6.75rem);
   --font-size-display-lg: clamp(2.85rem, 6vw, 5rem);
@@ -178,14 +233,21 @@
   --tracking-display: -0.045em;
   --tracking-label: 0.24em;
   --tracking-heading: -0.02em;
-  --font-family-display: var(--font-display), serif;
-  --font-family-ui: var(--font-sans), sans-serif;
+  --font-family-ui-base: var(--font-ui), system-ui, sans-serif;
+  --font-family-editorial-base: var(--font-editorial), Georgia, serif;
+  --font-family-ui: var(--font-family-ui-base);
+  --font-family-editorial: var(--font-family-editorial-base);
+  --font-family-display: var(--font-family-editorial);
+  --font-family-assamese-ui: var(--font-assamese-sans), var(--font-family-ui-base);
+  --font-family-assamese-editorial: var(--font-assamese-serif), var(--font-family-editorial-base);
+  --font-family-hindi-ui: var(--font-hindi-sans), var(--font-family-ui-base);
+  --font-family-hindi-editorial: var(--font-hindi-serif), var(--font-family-editorial-base);
 
-  --motion-duration-fast: 180ms;
-  --motion-duration-base: 260ms;
-  --motion-duration-slow: 520ms;
-  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-duration-fast: var(--ui-motion-fast);
+  --motion-duration-base: var(--ui-motion-base);
+  --motion-duration-slow: var(--ui-motion-slow);
+  --ease-standard: var(--ui-ease-standard);
+  --ease-emphasized: var(--ui-ease-emphasized);
 
   --container-max: 78rem;
 

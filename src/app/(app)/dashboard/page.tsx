@@ -430,9 +430,9 @@ export default async function DashboardPage() {
 
   return (
     <Section
-      eyebrow="Dashboard"
-      title="Your private chart workspace is taking shape."
-      description="The protected dashboard now carries account persistence, birth-profile onboarding, and a structured first-chart destination inside the same member shell."
+      eyebrow="Account"
+      title="Account"
+      description="Protected account entry for saved Kundli, chart details, and consultation access."
       tone="transparent"
       className="pt-0"
     >
@@ -763,13 +763,14 @@ export default async function DashboardPage() {
                     Advanced Timing
                   </p>
                   <p className="mt-2 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                    This deeper timing layer is currently free under limited launch access. Continue with timing summaries and deeper analysis while access is open.
+                    This deeper timing layer is shown only when it is available.
+                    Continue with timing summaries inside the protected account.
                   </p>
                   <Link
                     href="/dashboard/chart"
                     className={buttonStyles({ size: "sm", tone: "secondary", className: "mt-4" })}
                   >
-                    Start Free Analysis
+                    Open Timing
                   </Link>
                 </div>
               )}

@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { NavagrahaLogo } from "@/components/brand/navagraha-logo";
-import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
+import { PremiumPageShell, PremiumStatusBadge } from "@/components/ui/premium";
 
 type AuthFormShellProps = {
   eyebrow: string;
@@ -24,9 +24,11 @@ export function AuthFormShell({
   children,
 }: Readonly<AuthFormShellProps>) {
   return (
-    <div className="relative min-h-screen overflow-hidden py-[var(--space-12)]">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(205,176,124,0.16),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(205,176,124,0.08),transparent_24%)]" />
-      <Container className="relative grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(360px,0.9fr)] lg:items-center">
+    <PremiumPageShell
+      className="py-[var(--space-8)] sm:py-[var(--space-12)]"
+      tone="soft"
+    >
+      <Container className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(360px,0.9fr)] lg:items-center">
         <div className="space-y-7">
           <Link
             href="/"
@@ -37,7 +39,7 @@ export function AuthFormShell({
           </Link>
 
           <div className="space-y-4">
-            <Badge tone="accent">{eyebrow}</Badge>
+            <PremiumStatusBadge status="LIVE">{eyebrow}</PremiumStatusBadge>
             <h1
               className="max-w-3xl font-[family-name:var(--font-display)] text-[length:var(--font-size-display-md)] text-[color:var(--color-foreground)] sm:text-[length:var(--font-size-display-lg)]"
               style={{
@@ -82,6 +84,6 @@ export function AuthFormShell({
           </p>
         </Card>
       </Container>
-    </div>
+    </PremiumPageShell>
   );
 }

@@ -1,190 +1,297 @@
+import Image from "next/image";
 import Link from "next/link";
-import { EditorialPlaceholder } from "@/components/site/editorial-placeholder";
-import { PageHero } from "@/components/site/page-hero";
-import { Badge } from "@/components/ui/badge";
+import { PageViewTracker } from "@/components/analytics/page-view-tracker";
+import { TrackedLink } from "@/components/analytics/tracked-link";
+import { JsonLd } from "@/components/seo/json-ld";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Section } from "@/components/ui/section";
-import { buildPageMetadata } from "@/lib/metadata";
-import { recommendConsultationNextAction } from "@/modules/consultations";
 import {
-  AstrologerAuthoritySection,
-  CredibilityMarkersSection,
-  ExpectationSettingSection,
-} from "@/modules/marketing/components/trust-conversion-sections";
+  PremiumBentoGrid,
+  PremiumBentoSection,
+  PremiumPageShell,
+  PremiumSectionHeading,
+  PremiumStatusBadge,
+} from "@/components/ui/premium";
+import { createToolMetadata } from "@/lib/seo/metadata";
+import {
+  createBreadcrumbSchema,
+  createPersonSchema,
+} from "@/lib/seo/schema";
+import {
+  consultationHost,
+  consultationPackages,
+} from "@/modules/consultations/catalog";
+import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
+import {
+  getRequestLocale,
+  hasExplicitLocalePrefixInRequest,
+} from "@/modules/localization/request";
 import { astrologerPage } from "@/modules/marketing/content";
 
-export const metadata = buildPageMetadata({
-  ...astrologerPage.metadata,
-});
+const profileIconPath = "/icons/navagraha/Consult.png";
+const availabilityStatus = "Slots shown after sign-in";
+const consultationMethod = "Account booking";
+const languageStatus = "Selected during booking";
 
-export default async function JoyPrakashSarmahPage({
-  searchParams,
-}: Readonly<{
-  searchParams: Promise<{
-    intent?: string;
-  }>;
-}>) {
-  const resolvedSearchParams = await searchParams;
-  const conversion = recommendConsultationNextAction({
-    surface: "astrologer-profile",
-    explicitIntent: resolvedSearchParams.intent,
-    contextHint: "astrologer profile review",
+const verifiedDetails = [
+  {
+    label: "Name",
+    value: consultationHost.astrologerName,
+  },
+  {
+    label: "Experience",
+    value: "Consultation-led Vedic astrology practice",
+  },
+  {
+    label: "Lineage",
+    value: "NAVAGRAHA CENTRE legacy",
+  },
+  {
+    label: "History",
+    value: "Since 1950",
+  },
+  {
+    label: "Languages",
+    value: languageStatus,
+  },
+  {
+    label: "Method",
+    value: consultationMethod,
+  },
+  {
+    label: "Availability",
+    value: availabilityStatus,
+  },
+] as const;
+
+const policyItems = [
+  "Booking access is handled through the protected account flow.",
+  "If no slot is visible after sign-in, use the contact path.",
+  "Consultation is guidance and does not guarantee outcomes.",
+] as const;
+
+export async function generateMetadata() {
+  const locale = await getRequestLocale();
+  const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
+
+  return createToolMetadata({
+    ...astrologerPage.metadata,
+    locale,
+    explicitLocalePrefix: hasExplicitLocalePrefix,
   });
+}
+export const revalidate = 3600;
+
+function toBookingHref(packageSlug: string) {
+  return `/dashboard/consultations/book?package=${packageSlug}`;
+}
+
+export default async function JoyPrakashSarmahPage() {
+  const locale = await getRequestLocale();
+  const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
+  const localizeHref = (href: string) =>
+    getLocalizedPath(locale, href, {
+      forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
+    });
+  const pageSchemas = [
+    createBreadcrumbSchema({
+      locale,
+      explicitLocalePrefix: hasExplicitLocalePrefix,
+      items: [
+        { name: "Home", path: "/" },
+        { name: "Consultation", path: "/consultation" },
+        { name: consultationHost.astrologerName, path: "/joy-prakash-sarmah" },
+      ],
+    }),
+    createPersonSchema({
+      locale,
+      path: "/joy-prakash-sarmah",
+    }),
+  ];
 
   return (
     <>
-      <PageHero
-        {...astrologerPage.hero}
-        note={`${astrologerPage.hero.note} Recommended path: ${conversion.intentLabel}.`}
-        primaryAction={{
-          href: conversion.bestNextAction.href,
-          label: conversion.bestNextAction.label,
-        }}
-        secondaryAction={{
-          href: conversion.alternateAction.href,
-          label: conversion.alternateAction.label,
-          tone: "secondary",
-        }}
+      <JsonLd id="acharya-profile-schema" data={pageSchemas} />
+      <PageViewTracker
+        page="/joy-prakash-sarmah"
+        feature="acharya-profile-page"
       />
 
-      <Section
-        description="This public profile is designed to establish trust through tone, presence, and approach rather than invented biography details or exaggerated claims."
-        eyebrow="Profile"
-        title="A visible consultation authority at the center of the brand"
+      <PremiumPageShell
+        className="pb-[calc(6rem+env(safe-area-inset-bottom))] xl:pb-12"
+        tone="soft"
       >
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-start">
-          <EditorialPlaceholder
-            annotations={[
-              "Lead consulting presence",
-              "Measured interpretation style",
-              "Premium public-facing trust",
-            ]}
-            description="A refined visual treatment supports the profile while keeping the emphasis on tone, presence, and approach."
-            eyebrow="Profile Portrait"
-            title="Joy Prakash Sarmah"
-          />
+        <PremiumBentoSection className="pt-5 sm:pt-8">
+          <nav
+            aria-label="Breadcrumb"
+            className="mb-4 flex flex-wrap items-center gap-2 text-[0.72rem] font-medium uppercase tracking-[var(--tracking-label)] text-[color:var(--ui-color-text-muted)]"
+          >
+            <Link href={localizeHref("/")}>Home</Link>
+            <span aria-hidden="true">/</span>
+            <Link href={localizeHref("/consultation")}>Consult</Link>
+            <span aria-hidden="true">/</span>
+            <span className="text-[color:var(--ui-color-text-primary)]">
+              Acharya
+            </span>
+          </nav>
 
-          <div className="grid gap-4">
-            {astrologerPage.profileCards.map((item) => (
-              <Card key={item.title} className="space-y-3">
-                <Badge tone="neutral">Profile Detail</Badge>
-                <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[color:var(--color-foreground)]">
-                  {item.title}
-                </h2>
-                <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                  {item.description}
+          <div className="grid gap-5 rounded-[var(--ui-radius-2xl)] border border-[color:var(--ui-color-border-gold)] bg-white px-5 py-6 shadow-[var(--ui-shadow-md)] sm:px-6 sm:py-8 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-center">
+            <div className="min-w-0">
+              <div className="flex flex-wrap gap-2">
+                <PremiumStatusBadge status="LIVE">Acharya</PremiumStatusBadge>
+                <PremiumStatusBadge status="NEUTRAL">
+                  {availabilityStatus}
+                </PremiumStatusBadge>
+              </div>
+              <h1 className="mt-4 font-[family-name:var(--font-family-editorial)] text-[length:var(--font-size-title-lg)] leading-[var(--line-height-heading)] text-[color:var(--ui-color-text-primary)]">
+                {consultationHost.astrologerName}
+              </h1>
+              <div className="mt-5 flex flex-wrap gap-3">
+                <TrackedLink
+                  className={buttonStyles({ size: "lg" })}
+                  eventName="consultation_cta_click"
+                  eventPayload={{
+                    feature: "acharya-booking",
+                    page: "/joy-prakash-sarmah",
+                    route: "/dashboard/consultations/book",
+                  }}
+                  href={localizeHref("/dashboard/consultations/book")}
+                >
+                  Consult
+                </TrackedLink>
+                <Link
+                  className={buttonStyles({ size: "lg", tone: "secondary" })}
+                  href={localizeHref("/consultation")}
+                >
+                  Return to Consult
+                </Link>
+              </div>
+            </div>
+
+            <figure className="mx-auto flex w-full max-w-72 flex-col items-center gap-3 rounded-[var(--ui-radius-2xl)] border border-[color:var(--ui-color-border-subtle)] bg-[color:var(--ui-color-surface-soft)] p-5 text-center shadow-[var(--ui-shadow-sm)]">
+              <span className="flex aspect-square w-full max-w-40 items-center justify-center rounded-[var(--ui-radius-xl)] border border-[color:var(--ui-color-border-gold)] bg-white">
+                <Image
+                  alt="Joy Prakash Sarmah profile mark"
+                  className="h-24 w-24 object-contain"
+                  height={96}
+                  priority
+                  src={profileIconPath}
+                  width={96}
+                />
+              </span>
+              <figcaption className="text-xs font-medium uppercase tracking-[var(--tracking-label)] text-[color:var(--ui-color-text-muted)]">
+                Profile visual
+              </figcaption>
+            </figure>
+          </div>
+        </PremiumBentoSection>
+
+        <PremiumBentoSection label="Verified Profile" className="pt-0">
+          <PremiumBentoGrid className="sm:grid-cols-2 lg:grid-cols-4">
+            {verifiedDetails.map((item) => (
+              <Card className="space-y-2" key={item.label}>
+                <p className="text-xs font-medium uppercase tracking-[var(--tracking-label)] text-[color:var(--ui-color-text-muted)]">
+                  {item.label}
+                </p>
+                <p className="text-sm font-semibold leading-6 text-[color:var(--ui-color-text-primary)]">
+                  {item.value}
                 </p>
               </Card>
             ))}
-          </div>
-        </div>
-      </Section>
+          </PremiumBentoGrid>
+        </PremiumBentoSection>
 
-      <Section
-        tone="muted"
-        description="The profile should help visitors understand the kinds of conversations Joy Prakash Sarmah is best positioned to lead."
-        eyebrow="Areas Of Guidance"
-        title="Focus areas presented with restraint and clarity"
-      >
-        <div className="grid gap-4 md:grid-cols-3">
-          {astrologerPage.focusAreas.map((area) => (
-            <Card
-              key={area.title}
-              interactive
-              className="flex h-full flex-col gap-4"
-            >
-              <Badge tone="outline">Focus</Badge>
-              <h3 className="text-[length:var(--font-size-body-lg)] font-medium text-[color:var(--color-foreground)]">
-                {area.title}
-              </h3>
-              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                {area.description}
-              </p>
+        <PremiumBentoSection label="Specialisations" className="pt-0">
+          <PremiumBentoGrid className="sm:grid-cols-2 lg:grid-cols-3">
+            {consultationPackages.map((item) => (
+              <Card
+                className="flex min-h-full flex-col justify-between gap-4"
+                key={item.slug}
+                tone={item.isFeatured ? "accent" : "muted"}
+              >
+                <div className="space-y-3">
+                  <PremiumStatusBadge status="LIVE">
+                    {item.durationMinutes} min
+                  </PremiumStatusBadge>
+                  <h2 className="text-base font-semibold leading-tight text-[color:var(--ui-color-text-primary)]">
+                    {item.title}
+                  </h2>
+                </div>
+                <TrackedLink
+                  className={buttonStyles({ className: "w-full", size: "md" })}
+                  eventName="consultation_cta_click"
+                  eventPayload={{
+                    feature: `acharya-${item.slug}`,
+                    page: "/joy-prakash-sarmah",
+                    route: toBookingHref(item.slug),
+                  }}
+                  href={localizeHref(toBookingHref(item.slug))}
+                >
+                  Consult
+                </TrackedLink>
+              </Card>
+            ))}
+          </PremiumBentoGrid>
+        </PremiumBentoSection>
+
+        <PremiumBentoSection label="Consultation Access" className="pt-0">
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+            <Card className="space-y-4">
+              <PremiumSectionHeading label="Methods" className="mb-0" />
+              <dl className="grid gap-3 text-sm">
+                <div className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-3">
+                  <dt className="font-medium text-[color:var(--ui-color-text-muted)]">
+                    Booking
+                  </dt>
+                  <dd className="font-semibold text-[color:var(--ui-color-text-primary)]">
+                    {consultationMethod}
+                  </dd>
+                </div>
+                <div className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-3">
+                  <dt className="font-medium text-[color:var(--ui-color-text-muted)]">
+                    Timezone
+                  </dt>
+                  <dd className="font-semibold text-[color:var(--ui-color-text-primary)]">
+                    {consultationHost.timezoneLabel}
+                  </dd>
+                </div>
+                <div className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-3">
+                  <dt className="font-medium text-[color:var(--ui-color-text-muted)]">
+                    Language
+                  </dt>
+                  <dd className="font-semibold text-[color:var(--ui-color-text-primary)]">
+                    {languageStatus}
+                  </dd>
+                </div>
+              </dl>
             </Card>
-          ))}
-        </div>
-      </Section>
 
-      <Section
-        tone="transparent"
-        eyebrow="Methodology"
-        title="How the guidance system is positioned"
-        description="Authority comes from a clear methodology, transparent boundaries, and consistent consultation handling rather than exaggerated claims."
-      >
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          <Card className="space-y-3">
-            <Badge tone="outline">Vedic Foundation</Badge>
-            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              Chart context is built from Vedic sidereal structure with Lahiri ayanamsha alignment.
-            </p>
-          </Card>
-          <Card className="space-y-3">
-            <Badge tone="outline">Interpretation Model</Badge>
-            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              NAVAGRAHA Intelligence supports structured interpretation, while Joy Prakash Sarmah leads high-context human consultation.
-            </p>
-          </Card>
-          <Card className="space-y-3">
-            <Badge tone="outline">Trust Boundaries</Badge>
-            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              Guidance remains calm and non-deterministic, with remedies presented as optional support rather than pressure.
-            </p>
-          </Card>
-        </div>
-      </Section>
-
-      <AstrologerAuthoritySection pagePath="/joy-prakash-sarmah" tone="light" />
-
-      <ExpectationSettingSection tone="transparent" />
-
-      <CredibilityMarkersSection
-        pagePath="/joy-prakash-sarmah"
-        publishedOn="April 22, 2026"
-        updatedOn="April 22, 2026"
-        tone="transparent"
-      />
-
-      <Section className="pt-0" tone="transparent">
-        <Card
-          tone="accent"
-          className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
-        >
-          <div className="space-y-4">
-            <Badge tone="accent">Contact</Badge>
-            <h2
-              className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-lg)] text-[color:var(--color-foreground)]"
-              style={{
-                letterSpacing: "var(--tracking-display)",
-                lineHeight: "var(--line-height-tight)",
-              }}
-            >
-              Continue to inquiry when the fit feels right.
-            </h2>
-            <p className="max-w-2xl text-[length:var(--font-size-body-lg)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              {conversion.guidanceLine}
-            </p>
-            <p className="max-w-2xl text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              {conversion.bestNextAction.description}
-            </p>
+            <Card className="space-y-4">
+              <PremiumSectionHeading label="Policies" className="mb-0" />
+              <ul className="grid gap-3 text-sm font-medium leading-6 text-[color:var(--ui-color-text-secondary)]">
+                {policyItems.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </Card>
           </div>
+        </PremiumBentoSection>
 
-          <div className="flex flex-wrap gap-3">
+        <PremiumBentoSection className="pt-0">
+          <Card className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+            <p className="text-sm font-medium leading-6 text-[color:var(--ui-color-text-secondary)]">
+              If account booking is unavailable, use the consultation contact
+              path.
+            </p>
             <Link
-              href={conversion.bestNextAction.href}
-              className={buttonStyles({ size: "lg" })}
+              className={buttonStyles({ size: "sm", tone: "secondary" })}
+              href={localizeHref("/contact?intent=consultation")}
             >
-              {conversion.bestNextAction.label}
+              Contact
             </Link>
-            <Link
-              href={conversion.alternateAction.href}
-              className={buttonStyles({ size: "lg", tone: "secondary" })}
-            >
-              {conversion.alternateAction.label}
-            </Link>
-          </div>
-        </Card>
-      </Section>
+          </Card>
+        </PremiumBentoSection>
+      </PremiumPageShell>
     </>
   );
 }

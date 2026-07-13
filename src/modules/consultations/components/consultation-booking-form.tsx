@@ -61,13 +61,13 @@ export function ConsultationBookingForm({
         <Card className="space-y-6">
           <div className="space-y-2">
             <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-              Consultation Package
+              Consultation
             </p>
             <h2
               className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-md)] text-[color:var(--color-foreground)]"
               style={{ letterSpacing: "var(--tracking-display)" }}
             >
-              Choose the format that best fits the depth of the conversation.
+              Choose format.
             </h2>
           </div>
 
@@ -116,13 +116,13 @@ export function ConsultationBookingForm({
         <Card className="space-y-6">
           <div className="space-y-2">
             <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-              Timezone And Slot
+              Time
             </p>
             <h2
               className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
               style={{ letterSpacing: "var(--tracking-display)" }}
             >
-              Keep the calendar explicit from the start.
+              Choose timezone and slot.
             </h2>
           </div>
 
@@ -211,9 +211,7 @@ export function ConsultationBookingForm({
           ) : (
             <div className="rounded-[var(--radius-2xl)] border border-[color:var(--color-border)] bg-[rgba(255,255,255,0.02)] px-5 py-5">
               <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                Joy Prakash Sarmah&apos;s next consultation windows are not open
-                right now. Please check again shortly for the next release of
-                availability.
+                Consultation slots are not available right now.
               </p>
             </div>
           )}
@@ -228,7 +226,7 @@ export function ConsultationBookingForm({
               className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-sm)] text-[color:var(--color-foreground)]"
               style={{ letterSpacing: "var(--tracking-display)" }}
             >
-              Enough context to prepare the consultation well.
+              Share context.
             </h2>
           </div>
 
@@ -301,7 +299,7 @@ export function ConsultationBookingForm({
               <Input
                 id="booking-topic-focus"
                 name="topicFocus"
-                placeholder="For example: career transition, relationship clarity, remedy review"
+                placeholder="Career, relationship, timing, or planning"
                 required
               />
             </div>
@@ -316,7 +314,7 @@ export function ConsultationBookingForm({
               <Textarea
                 id="booking-intake-summary"
                 name="intakeSummary"
-                placeholder="Share the context Joy Prakash Sarmah should understand before the consultation."
+                placeholder="Share the context for the consultation."
                 required
               />
             </div>
@@ -343,11 +341,11 @@ export function ConsultationBookingForm({
 
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              Booking keeps the schedule explicit in both your timezone and Joy
-              Prakash Sarmah&apos;s calendar timezone.
+              Schedule is shown in your timezone and Joy Prakash Sarmah&apos;s
+              calendar timezone.
             </p>
             <Button type="submit" size="lg" disabled={isPending || !hasSlots}>
-              {isPending ? "Reserving Slot..." : "Confirm Free Consultation"}
+              {isPending ? "Confirming..." : "Confirm Consultation"}
             </Button>
           </div>
         </Card>
@@ -410,7 +408,7 @@ export function ConsultationBookingForm({
 
         <Card className="space-y-4">
           <p className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[color:var(--color-accent)]">
-            Before You Confirm
+            Before Confirming
           </p>
           <div className="space-y-3 text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
             <p>

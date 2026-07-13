@@ -1,11 +1,17 @@
 import Link from "next/link";
-import { TrackedLink } from "@/components/analytics/tracked-link";
-import { NavagrahaLogo } from "@/components/brand/navagraha-logo";
-import { LanguageSwitcher } from "@/components/site/language-switcher";
 import { NavigationLink } from "@/components/site/navigation-link";
-import { ToolsMegaMenu } from "@/components/site/tools-mega-menu";
-import { buildLocalizedToolsNavigation } from "@/components/site/tools-navigation-data";
+import {
+  SiteDrawer,
+  type SiteDrawerGroup,
+  type SiteDrawerItem,
+} from "@/components/site/site-drawer";
 import { Container } from "@/components/ui/container";
+import type { NavagrahaIconRegistryKey } from "@/components/icons/navagraha-icon-registry";
+import {
+  featureStatusRegistry,
+  primaryNavigationFeatures,
+  type FeatureStatusRegistryEntry,
+} from "@/config/feature-status-registry";
 import { defaultLocale } from "@/modules/localization/config";
 import { getGlobalCopyBundleForLocale } from "@/modules/localization/copy";
 import {
@@ -19,6 +25,49 @@ type NavigationItem = {
   label: string;
 };
 
+function getFeature(featureKey: string) {
+  return featureStatusRegistry.find(
+    (feature) => feature.featureKey === featureKey
+  );
+}
+
+function getFeatureRoute(featureKey: string) {
+  return getFeature(featureKey)?.route ?? "/";
+}
+
+function toDrawerItem(
+  feature: FeatureStatusRegistryEntry,
+  localizeHref: (href: string) => string
+): SiteDrawerItem | null {
+  if (feature.visibility !== "LIVE" || !feature.runtimeEnabled) {
+    return null;
+  }
+
+  return {
+    href: localizeHref(feature.route),
+    iconName:
+      feature.iconKey === "text-fallback"
+        ? null
+        : (feature.iconKey as NavagrahaIconRegistryKey),
+    label: feature.label,
+  };
+}
+
+function getDrawerItems(
+  featureKeys: readonly string[],
+  localizeHref: (href: string) => string,
+  labelOverrides?: Partial<Record<string, string>>
+) {
+  return featureKeys.flatMap((featureKey) => {
+    const feature = getFeature(featureKey);
+    const item = feature ? toDrawerItem(feature, localizeHref) : null;
+
+    return item
+      ? [{ ...item, label: labelOverrides?.[featureKey] ?? item.label }]
+      : [];
+  });
+}
+
 export async function Header() {
   const requestLocale = await getRequestLocale();
   const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
@@ -29,30 +78,46 @@ export async function Header() {
       forcePrefix: hasExplicitLocalePrefix || requestLocale !== defaultLocale,
     });
 
-  const desktopNavigationPrimary: readonly NavigationItem[] = [
-    { href: localizeHref("/"), label: "Home" },
-    { href: localizeHref("/kundli"), label: "Kundli" },
-    { href: localizeHref("/rashifal"), label: "Daily Guidance" },
-    { href: localizeHref("/tools"), label: "Tools" },
-    { href: localizeHref("/reports"), label: "Reports" },
-    { href: localizeHref("/consultation"), label: "Consultation" },
-    { href: localizeHref("/learn"), label: "Learn" },
-    { href: localizeHref("/sign-in"), label: "Account" },
-  ] as const;
+  const desktopNavigationPrimary: readonly NavigationItem[] =
+    primaryNavigationFeatures
+      .filter((feature) => ["desk", "consult"].includes(feature.featureKey))
+      .map((feature) => ({
+        href: localizeHref(feature.route),
+        label: feature.label,
+      }));
 
-  const toolsNavigation = buildLocalizedToolsNavigation(localizeHref);
+  const drawerGroups: readonly SiteDrawerGroup[] = [
+    {
+      title: "MAIN",
+      items: getDrawerItems(
+        ["home", "desk", "consult", "acharya"],
+        localizeHref
+      ),
+    },
+    {
+      title: "DISCOVER",
+      items: getDrawerItems(
+        ["search", "learn", "methodology"],
+        localizeHref,
+        { methodology: "Methodology" }
+      ),
+    },
+    {
+      title: "SUPPORT",
+      items: getDrawerItems(["support", "contact"], localizeHref),
+    },
+    {
+      title: "LEGAL",
+      items: getDrawerItems(
+        ["privacy", "terms", "disclaimer", "refund-cancellation"],
+        localizeHref
+      ),
+    },
+  ];
+  const drawerAccountItems = getDrawerItems(["account"], localizeHref);
 
-  const mobileMenuItems: readonly NavigationItem[] = [
-    { href: localizeHref("/panchang"), label: "Panchang" },
-    { href: localizeHref("/rashifal"), label: "Rashifal" },
-    { href: localizeHref("/reports"), label: "Reports" },
-    { href: localizeHref("/learn"), label: "Learn" },
-    { href: localizeHref("/shop"), label: "Vedic Shop" },
-    { href: localizeHref("/tools"), label: "Tools" },
-    { href: localizeHref("/privacy"), label: "Privacy" },
-    { href: localizeHref("/terms"), label: "Terms" },
-    { href: localizeHref("/contact"), label: "Contact" },
-  ] as const;
+  const searchHref = localizeHref(getFeatureRoute("search"));
+  const accountHref = localizeHref(getFeatureRoute("account"));
 
   return (
     <header
@@ -61,58 +126,28 @@ export async function Header() {
     >
       <div className="fixed inset-x-0 top-0 z-50 border-b border-[rgba(185,139,70,0.16)] bg-white shadow-[0_1px_0_rgba(17,17,17,0.05),0_8px_20px_rgba(17,17,17,0.06)] xl:hidden">
         <Container className="!px-[10px] py-1.5 min-[390px]:!px-3 sm:!px-8">
-          <div className="flex min-h-[3rem] w-full items-center justify-between gap-1.5 min-[390px]:gap-2">
+          <div className="flex min-h-[3.5rem] w-full items-center justify-between gap-1.5 min-[390px]:gap-2">
             <div className="flex min-w-0 flex-1 items-center gap-1.5 min-[390px]:gap-2">
-              <details className="group relative shrink-0">
-                <summary
-                  aria-label={copy.navigation.menu}
-                  className="flex h-9 w-9 cursor-pointer list-none items-center justify-center rounded-full border border-[rgba(17,17,17,0.08)] bg-white text-[#111111] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_2px_8px_rgba(17,17,17,0.06)] marker:content-none [-webkit-tap-highlight-color:transparent] [&::-webkit-details-marker]:hidden"
-                >
+              <SiteDrawer
+                accountItems={drawerAccountItems}
+                currentLocale={requestLocale}
+                groups={drawerGroups}
+                triggerClassName="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[rgba(17,17,17,0.08)] bg-white text-[#111111] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_2px_8px_rgba(17,17,17,0.06)] transition hover:border-[rgba(185,139,70,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
+                triggerContent={
                   <span
                     aria-hidden="true"
                     className="text-[1.4rem] leading-none text-[#111111]"
                   >
                     {"\u2630"}
                   </span>
-                </summary>
-                <div className="absolute top-[calc(100%+0.55rem)] z-30 max-h-[calc(100vh-5.5rem)] w-[min(calc(100vw-1.5rem),23rem)] overflow-y-auto rounded-[var(--radius-xl)] border border-[rgba(185,139,70,0.18)] bg-white p-3 shadow-[0_16px_34px_rgba(5,5,5,0.07)] [inset-inline-start:0]">
-                  <nav aria-label="Mobile navigation" className="grid gap-4">
-                    <div className="grid gap-2">
-                      <p className="px-3 text-[0.64rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-antique-gold-dark)]">
-                        Menu
-                      </p>
-                      <div className="grid gap-1">
-                        {mobileMenuItems.map((item) => (
-                          <NavigationLink
-                            key={`mobile-nav-${item.href}`}
-                            href={item.href}
-                            tone="ghost"
-                            className="w-full justify-start border border-[rgba(185,139,70,0.2)] bg-white !text-[color:var(--color-ink-strong)] hover:border-[rgba(185,139,70,0.38)]"
-                          >
-                            {item.label}
-                          </NavigationLink>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="mt-1 border-t border-[rgba(185,139,70,0.24)] pt-3">
-                      <p className="px-3 pb-2 text-[0.64rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-antique-gold-dark)]">
-                        Language
-                      </p>
-                      <LanguageSwitcher variant="compact" />
-                    </div>
-                  </nav>
-                </div>
-              </details>
+                }
+                triggerLabel={copy.navigation.menu}
+              />
 
               <Link
                 href={localizeHref("/")}
-                className="flex min-w-0 flex-1 items-center gap-1.5 transition [transition-duration:var(--motion-duration-base)] hover:opacity-90"
+                className="flex min-h-11 min-w-0 flex-1 items-center gap-1.5 transition [transition-duration:var(--motion-duration-base)] hover:opacity-90"
               >
-                <NavagrahaLogo
-                  variant="mobile"
-                  displaySize={32}
-                  priority
-                />
                 <span className="block min-w-0 truncate whitespace-nowrap text-[13px] font-bold uppercase leading-none tracking-[0.02em] text-[#111111] min-[390px]:text-[14px] min-[430px]:text-[15px] min-[430px]:tracking-[0.04em] sm:text-[16px] sm:tracking-[0.06em]">
                   NAVAGRAHA
                 </span>
@@ -120,75 +155,47 @@ export async function Header() {
             </div>
 
             <div className="flex shrink-0 items-center gap-1">
-              <TrackedLink
-                href="/ai"
-                eventName="premium_ai_cta_click"
-                eventPayload={{
-                  page: "global-header-mobile",
-                  feature: "header-ask-ni",
-                }}
-                className="inline-flex h-9 shrink-0 items-center justify-center whitespace-nowrap rounded-full border border-[rgba(56,189,248,0.22)] bg-white px-2.5 text-[13px] font-bold tracking-[0.01em] text-[#111111] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_4px_12px_rgba(17,17,17,0.08),0_0_10px_rgba(56,189,248,0.10)] transition hover:border-[rgba(56,189,248,0.34)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] min-[390px]:px-3 min-[430px]:text-[14px]"
+              <Link
+                href={searchHref}
+                aria-label="Search"
+                className="inline-flex h-11 shrink-0 items-center justify-center whitespace-nowrap rounded-full border border-[rgba(185,139,70,0.22)] bg-white px-2.5 text-[12px] font-bold uppercase tracking-[0.02em] text-[#111111] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_4px_12px_rgba(17,17,17,0.07)] transition hover:border-[rgba(185,139,70,0.38)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] min-[390px]:px-3 min-[430px]:text-[13px]"
               >
-                <span>Ask NI</span>
-              </TrackedLink>
+                Search
+              </Link>
 
-              <TrackedLink
-                href={localizeHref("/reports")}
-                eventName="cta_click"
-                eventPayload={{
-                  page: "global-header-mobile",
-                  feature: "header-bell",
-                  route: "/reports",
-                }}
-                aria-label="Notifications"
-                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[rgba(184,134,11,0.18)] bg-white text-[#B8860B] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_4px_10px_rgba(17,17,17,0.07)] transition hover:border-[rgba(184,134,11,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
+              <Link
+                href={accountHref}
+                aria-label="Account"
+                className="inline-flex h-11 shrink-0 items-center justify-center whitespace-nowrap rounded-full border border-[rgba(76,187,23,0.24)] bg-white px-2.5 text-[12px] font-bold uppercase tracking-[0.02em] text-[#111111] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_4px_12px_rgba(17,17,17,0.07)] transition hover:border-[rgba(76,187,23,0.38)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] min-[390px]:px-3 min-[430px]:text-[13px]"
               >
-                <svg
-                  aria-hidden="true"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.7"
-                  className="h-5 w-5"
-                >
-                  <path d="M15 17H9" />
-                  <path d="M18 16H6a1 1 0 0 1-.8-1.6l1.3-1.7A3 3 0 0 0 7 11V9a5 5 0 1 1 10 0v2a3 3 0 0 0 .5 1.6l1.3 1.8A1 1 0 0 1 18 16Z" />
-                  <path d="M10.5 19a1.5 1.5 0 0 0 3 0" />
-                </svg>
-              </TrackedLink>
-
-              <div className="relative z-10 h-9 w-10 shrink-0 [&_details]:h-9 [&_details]:w-10 [&_summary]:flex [&_summary]:h-9 [&_summary]:w-10 [&_summary]:max-w-none [&_summary]:cursor-pointer [&_summary]:items-center [&_summary]:justify-center [&_summary]:overflow-hidden [&_summary]:rounded-[13px] [&_summary]:border [&_summary]:border-[rgba(76,187,23,0.22)] [&_summary]:bg-white [&_summary]:p-0 [&_summary]:text-[0px] [&_summary]:text-transparent [&_summary]:shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_4px_12px_rgba(17,17,17,0.07),0_0_8px_rgba(76,187,23,0.08)] [&_summary]:marker:content-none [&_summary]:[-webkit-tap-highlight-color:transparent] [&_summary::-webkit-details-marker]:hidden min-[390px]:w-11 [&_details]:min-w-0 [&_summary]:min-w-0">
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center whitespace-nowrap text-[13px] font-bold uppercase tracking-[0.04em] text-[#4CBB17] min-[430px]:text-[14px]"
-                >
-                  {requestLocale.toUpperCase()}
-                </span>
-                <LanguageSwitcher variant="compact" />
-              </div>
+                Account
+              </Link>
             </div>
           </div>
         </Container>
       </div>
 
-      <div className="h-[3.25rem] xl:hidden" aria-hidden="true" />
+      <div className="h-[3.75rem] xl:hidden" aria-hidden="true" />
 
       <Container className="!px-3 py-2 sm:!px-8 lg:!px-10 xl:pb-4 xl:pt-2">
         <div className="hidden xl:flex">
           <div className="flex w-full items-center justify-between gap-5 rounded-[1.7rem] border border-[rgba(185,139,70,0.18)] bg-white px-5 py-3.5 shadow-[0_1px_0_rgba(17,17,17,0.04),0_14px_30px_rgba(17,17,17,0.055)] 2xl:px-6">
+            <SiteDrawer
+              accountItems={drawerAccountItems}
+              currentLocale={requestLocale}
+              groups={drawerGroups}
+              triggerClassName="inline-flex min-h-11 shrink-0 items-center justify-center rounded-full border border-[rgba(185,139,70,0.22)] bg-white px-4 text-[0.66rem] font-semibold uppercase tracking-[0.1em] text-[color:var(--color-ink-strong)] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_4px_12px_rgba(17,17,17,0.05)] transition hover:border-[rgba(185,139,70,0.38)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
+              triggerContent="Menu"
+              triggerLabel={copy.navigation.menu}
+            />
+
             <Link
               href={localizeHref("/")}
-              className="flex min-w-0 shrink-0 items-center gap-3 pr-4 transition [transition-duration:var(--motion-duration-base)] hover:opacity-90"
+              className="flex min-h-11 min-w-0 shrink-0 items-center gap-3 pr-4 transition [transition-duration:var(--motion-duration-base)] hover:opacity-90"
             >
-              <NavagrahaLogo variant="header" priority />
               <span className="block min-w-0 whitespace-nowrap">
                 <span className="block text-[1.05rem] font-bold uppercase leading-none tracking-[0.2em] text-[#050505] xl:text-[1.08rem] 2xl:text-[1.14rem]">
                   NAVAGRAHA CENTRE
-                </span>
-                <span className="mt-1.5 block text-[0.5rem] font-semibold uppercase leading-none tracking-[0.3em] text-[var(--color-antique-gold-dark)] xl:text-[0.52rem] 2xl:text-[0.56rem]">
-                  Vedic Astrology • Ask NI
                 </span>
               </span>
             </Link>
@@ -197,20 +204,30 @@ export async function Header() {
               aria-label="Primary navigation"
               className="flex min-w-0 flex-1 items-center justify-end gap-1.5 2xl:gap-2"
             >
-              {desktopNavigationPrimary.map((item) =>
-                item.label === "Tools" ? (
-                  <ToolsMegaMenu key={item.href} navigation={toolsNavigation} />
-                ) : (
-                  <NavigationLink
-                    key={item.href}
-                    href={item.href}
-                    className="min-h-10 rounded-full border border-transparent bg-transparent px-2.5 text-[0.64rem] font-semibold tracking-[0.08em] !text-[color:var(--color-ink-strong)] shadow-none hover:border-[rgba(185,139,70,0.22)] hover:bg-[rgba(185,139,70,0.06)] hover:!text-black 2xl:px-3"
-                    activeClassName="rounded-full border-[rgba(185,139,70,0.28)] bg-white !text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_4px_12px_rgba(17,17,17,0.06)]"
-                  >
-                    {item.label}
-                  </NavigationLink>
-                )
-              )}
+              {desktopNavigationPrimary.map((item) => (
+                <NavigationLink
+                  key={item.href}
+                  href={item.href}
+                  className="min-h-11 rounded-full border border-transparent bg-transparent px-3 text-[0.68rem] font-semibold tracking-[0.08em] !text-[color:var(--color-ink-strong)] shadow-none hover:border-[rgba(185,139,70,0.22)] hover:bg-[rgba(185,139,70,0.06)] hover:!text-black 2xl:px-4"
+                  activeClassName="rounded-full border-[rgba(185,139,70,0.28)] bg-white !text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_4px_12px_rgba(17,17,17,0.06)]"
+                >
+                  {item.label}
+                </NavigationLink>
+              ))}
+              <Link
+                href={searchHref}
+                aria-label="Search"
+                className="inline-flex min-h-11 items-center rounded-full border border-transparent bg-transparent px-3 text-[0.68rem] font-semibold tracking-[0.08em] !text-[color:var(--color-ink-strong)] shadow-none transition hover:border-[rgba(185,139,70,0.22)] hover:bg-[rgba(185,139,70,0.06)] hover:!text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] 2xl:px-4"
+              >
+                Search
+              </Link>
+              <NavigationLink
+                href={accountHref}
+                className="min-h-11 rounded-full border border-[rgba(76,187,23,0.22)] bg-white px-3 text-[0.68rem] font-semibold tracking-[0.08em] !text-[color:var(--color-ink-strong)] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_4px_12px_rgba(17,17,17,0.05)] hover:border-[rgba(76,187,23,0.38)] hover:!text-black 2xl:px-4"
+                activeClassName="rounded-full border-[rgba(76,187,23,0.38)] bg-white !text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_4px_12px_rgba(17,17,17,0.06)]"
+              >
+                Account
+              </NavigationLink>
             </nav>
           </div>
         </div>

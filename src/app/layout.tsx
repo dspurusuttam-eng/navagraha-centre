@@ -1,5 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Manrope } from "next/font/google";
+import {
+  Manrope,
+  Noto_Sans_Bengali,
+  Noto_Sans_Devanagari,
+  Noto_Serif_Bengali,
+  Noto_Serif_Devanagari,
+  Source_Serif_4,
+} from "next/font/google";
 import { WebVitalsReporter } from "@/components/analytics/web-vitals-reporter";
 import { AdSenseScript } from "@/components/monetization/AdSenseScript";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -19,15 +26,50 @@ import {
 } from "@/modules/localization/request";
 import "./globals.css";
 
-const displayFont = Cormorant_Garamond({
+const editorialFont = Source_Serif_4({
   subsets: ["latin"],
-  variable: "--font-display",
+  variable: "--font-editorial",
   weight: ["400", "500", "600", "700"],
+  display: "swap",
+  preload: false,
 });
 
-const sansFont = Manrope({
+const uiFont = Manrope({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-ui",
+  display: "swap",
+});
+
+const assameseSansFont = Noto_Sans_Bengali({
+  subsets: ["bengali", "latin"],
+  variable: "--font-assamese-sans",
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+  preload: false,
+});
+
+const assameseSerifFont = Noto_Serif_Bengali({
+  subsets: ["bengali", "latin"],
+  variable: "--font-assamese-serif",
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+  preload: false,
+});
+
+const hindiSansFont = Noto_Sans_Devanagari({
+  subsets: ["devanagari", "latin"],
+  variable: "--font-hindi-sans",
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+  preload: false,
+});
+
+const hindiSerifFont = Noto_Serif_Devanagari({
+  subsets: ["devanagari", "latin"],
+  variable: "--font-hindi-serif",
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+  preload: false,
 });
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -74,7 +116,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#fffdf8",
+  themeColor: "#FFFFFF",
 };
 
 export default async function RootLayout({
@@ -93,7 +135,14 @@ export default async function RootLayout({
     <html
       lang={locale ?? defaultLocale}
       dir={getLocaleDirection(locale ?? defaultLocale)}
-      className={`${displayFont.variable} ${sansFont.variable}`}
+      className={[
+        uiFont.variable,
+        editorialFont.variable,
+        assameseSansFont.variable,
+        assameseSerifFont.variable,
+        hindiSansFont.variable,
+        hindiSerifFont.variable,
+      ].join(" ")}
     >
       <body className="flex min-h-screen flex-col antialiased">
         <JsonLd id="global-seo-schema" data={globalSchemas} />

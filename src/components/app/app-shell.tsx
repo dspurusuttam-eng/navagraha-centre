@@ -3,10 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SignOutButton } from "@/modules/auth/components/sign-out-button";
-import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
-import { siteConfig } from "@/config/site";
+import { PremiumStatusBadge } from "@/components/ui/premium";
 import { cn } from "@/lib/cn";
 
 type AppShellProps = {
@@ -14,6 +13,13 @@ type AppShellProps = {
   userEmail: string;
   children: React.ReactNode;
 };
+
+const accountNav = [
+  { href: "/", label: "Home" },
+  { href: "/from-the-desk", label: "Desk" },
+  { href: "/consultation", label: "Consult" },
+  { href: "/dashboard", label: "Account" },
+] as const;
 
 export function AppShell({
   userName,
@@ -26,16 +32,16 @@ export function AppShell({
     <Container className="space-y-8 py-[var(--space-8)] sm:py-[var(--space-10)]">
       <Card className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
         <div className="space-y-4">
-          <Badge tone="accent">Protected App Shell</Badge>
+          <PremiumStatusBadge status="LIVE">Account</PremiumStatusBadge>
           <div className="space-y-2">
             <h1
               className="font-[family-name:var(--font-display)] text-[length:var(--font-size-title-lg)] text-[color:var(--color-foreground)]"
               style={{ letterSpacing: "var(--tracking-display)" }}
             >
-              Welcome back, {userName}
+              Account
             </h1>
-            <p className="text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              {userEmail}
+            <p className="break-words text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
+              {userName} / {userEmail}
             </p>
           </div>
         </div>
@@ -45,7 +51,7 @@ export function AppShell({
             aria-label="App navigation"
             className="flex flex-wrap items-center gap-2"
           >
-            {siteConfig.appNav.map((item) => {
+            {accountNav.map((item) => {
               const isActive =
                 pathname === item.href ||
                 (item.href !== "/dashboard" &&

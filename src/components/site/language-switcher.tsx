@@ -7,25 +7,30 @@ import { buttonStyles } from "@/components/ui/button";
 import {
   defaultLocale,
   detectLocaleFromPathname,
-  getIndianLocales,
-  getInternationalLocales,
-  getLocaleDefinition,
-  isLocaleSelectable,
   stripLocaleFromPathname,
 } from "@/modules/localization/config";
 import { globalFooterCopy, globalLocaleCopy } from "@/modules/localization/copy";
 import {
   getLocalizedRoutePath,
   getLocaleRouteDescriptor,
-  getPrimaryRouteLocales,
 } from "@/modules/localization/routes";
 import { trackLanguageSwitch } from "@/lib/analytics/conversion-events";
 
 type LanguageSwitcherProps = {
   currentLocale?: string;
-  variant?: "panel" | "compact";
+  variant?: "panel" | "compact" | "inline";
   className?: string;
 };
+
+const visibleLanguageCodes = ["en", "as", "hi"] as const;
+
+function getVisibleLocales() {
+  return visibleLanguageCodes.map((locale) => getLocaleRouteDescriptor(locale));
+}
+
+function getLanguageLabel(locale: string) {
+  return locale.toUpperCase();
+}
 
 function localizePath(
   locale: string,
@@ -40,19 +45,6 @@ function localizePath(
   return search ? `${localizedPath}?${search}` : localizedPath;
 }
 
-function groupLocales(currentLocale: string) {
-  const primaryLocales = getPrimaryRouteLocales();
-  const primaryCodes = new Set(primaryLocales.map((locale) => locale.code));
-  const indianLocales = getIndianLocales().filter(
-    (locale) => locale.code !== currentLocale && !primaryCodes.has(locale.code)
-  );
-  const internationalLocales = getInternationalLocales().filter(
-    (locale) => locale.code !== currentLocale
-  );
-
-  return { primaryLocales, indianLocales, internationalLocales };
-}
-
 function getLocaleAvailabilityLabel(isLive: boolean) {
   return isLive ? globalLocaleCopy.live : globalLocaleCopy.planned;
 }
@@ -65,16 +57,12 @@ function LanguageSwitcherCompact({
   targetPathResolver: (locale: string) => string;
 }) {
   const [open, setOpen] = useState(false);
-  const { primaryLocales, indianLocales, internationalLocales } = useMemo(
-    () => groupLocales(activeLocale),
-    [activeLocale]
-  );
-  const allLocales = [...primaryLocales, ...indianLocales, ...internationalLocales];
+  const locales = useMemo(() => getVisibleLocales(), []);
   const activeDefinition = getLocaleRouteDescriptor(activeLocale);
 
   return (
     <details
-      className="relative inline-flex h-[36px] w-[36px] shrink-0 sm:h-10 sm:w-10"
+      className="relative inline-flex h-11 w-11 shrink-0"
       open={open}
       onToggle={(event) => setOpen((event.target as HTMLDetailsElement).open)}
     >
@@ -84,51 +72,46 @@ function LanguageSwitcherCompact({
           tone: "tertiary",
           size: "sm",
           className:
-            "h-[36px] min-h-[36px] w-[36px] min-w-[36px] max-w-[7.5rem] cursor-pointer list-none overflow-hidden text-ellipsis px-2 pr-2 marker:content-none sm:h-10 sm:min-h-10 sm:w-10 sm:min-w-10 sm:max-w-[10.5rem] sm:pr-3 [&::-webkit-details-marker]:hidden",
+            "h-11 min-h-11 w-11 min-w-11 cursor-pointer list-none px-2 marker:content-none [&::-webkit-details-marker]:hidden",
         })}
         dir={activeDefinition.dir}
         lang={activeDefinition.code}
       >
-        {activeDefinition.nativeLabel}
+        {getLanguageLabel(activeDefinition.code)}
       </summary>
-      <div className="absolute top-[calc(100%+0.5rem)] z-30 max-h-[min(72vh,26rem)] w-[min(calc(100vw-1rem),18rem)] overflow-y-auto rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-[rgba(255,254,250,0.98)] p-2.5 shadow-[var(--shadow-md)] [inset-inline-end:0] sm:max-h-[min(72vh,28rem)] sm:w-[min(calc(100vw-2rem),20rem)] sm:p-3">
-        <div className="grid gap-1.5 sm:gap-2">
-          {allLocales.map((locale) => {
-            const selectable = isLocaleSelectable(locale.code);
+      <div className="absolute top-[calc(100%+0.5rem)] z-30 w-[11rem] rounded-[var(--radius-xl)] border border-[color:var(--color-border)] bg-white p-2 shadow-[var(--shadow-md)] [inset-inline-end:0]">
+        <div className="grid gap-1.5">
+          {locales.map((locale) => {
+            const isActive = locale.code === activeLocale;
             const availabilityLabel = getLocaleAvailabilityLabel(
               locale.availability === "live"
             );
-            const isActive = locale.code === activeLocale;
 
             return isActive ? (
               <span
                 key={locale.code}
-                className={buttonStyles({
-                  tone: locale.code === "en" ? "secondary" : "ghost",
-                  size: "sm",
-                  className: "w-full cursor-default justify-start text-start",
-                })}
                 aria-current="true"
+                className={buttonStyles({
+                  tone: "secondary",
+                  size: "sm",
+                  className: "w-full cursor-default justify-between px-3",
+                })}
                 dir={locale.dir}
                 lang={locale.code}
               >
-                <span className="min-w-0 flex-1 overflow-hidden text-ellipsis">
-                  {locale.code === "en"
-                    ? `${locale.nativeLabel} (Default)`
-                    : locale.nativeLabel}
-                </span>
-                <span className="shrink-0 text-[0.62rem] text-[var(--color-ink-muted)] [margin-inline-start:auto]">
+                {getLanguageLabel(locale.code)}
+                <span className="text-[0.62rem] text-[var(--color-ink-muted)]">
                   Active
                 </span>
               </span>
-            ) : selectable ? (
+            ) : (
               <Link
                 key={locale.code}
                 href={targetPathResolver(locale.code)}
                 className={buttonStyles({
-                  tone: locale.code === "en" ? "secondary" : "ghost",
+                  tone: "ghost",
                   size: "sm",
-                  className: "w-full justify-start text-start",
+                  className: "w-full justify-between px-3",
                 })}
                 dir={locale.dir}
                 lang={locale.code}
@@ -142,39 +125,76 @@ function LanguageSwitcherCompact({
                   setOpen(false);
                 }}
               >
-                <span className="min-w-0 flex-1 overflow-hidden text-ellipsis">
-                  {locale.code === "en" ? `${locale.nativeLabel} (Default)` : locale.nativeLabel}
-                </span>
-                <span className="shrink-0 text-[0.62rem] text-[var(--color-ink-muted)] [margin-inline-start:auto]">
+                {getLanguageLabel(locale.code)}
+                <span className="text-[0.62rem] text-[var(--color-ink-muted)]">
                   {availabilityLabel}
                 </span>
               </Link>
-            ) : (
-              <span
-                key={locale.code}
-                className={buttonStyles({
-                  tone: "ghost",
-                  size: "sm",
-                  className:
-                    "w-full cursor-not-allowed justify-start text-start text-[var(--color-ink-muted)]",
-                })}
-                aria-disabled="true"
-                dir={locale.dir}
-                lang={locale.code}
-                title={globalLocaleCopy.planned}
-              >
-                <span className="min-w-0 flex-1 overflow-hidden text-ellipsis">
-                  {locale.nativeLabel}
-                </span>
-                <span className="shrink-0 text-[0.62rem] text-[var(--color-ink-muted)] [margin-inline-start:auto]">
-                  {availabilityLabel}
-                </span>
-              </span>
             );
           })}
         </div>
       </div>
     </details>
+  );
+}
+
+function LanguageSwitcherInline({
+  activeLocale,
+  className,
+  targetPathResolver,
+}: {
+  activeLocale: string;
+  className?: string;
+  targetPathResolver: (locale: string) => string;
+}) {
+  const locales = useMemo(() => getVisibleLocales(), []);
+
+  return (
+    <div className={`grid grid-cols-3 gap-2 ${className ?? ""}`.trim()}>
+      {locales.map((locale) => {
+        const isActive = locale.code === activeLocale;
+        const label = getLanguageLabel(locale.code);
+
+        return isActive ? (
+          <span
+            key={locale.code}
+            aria-current="true"
+            className={buttonStyles({
+              tone: "secondary",
+              size: "sm",
+              className: "cursor-default px-3",
+            })}
+            dir={locale.dir}
+            lang={locale.code}
+          >
+            {label}
+          </span>
+        ) : (
+          <Link
+            key={locale.code}
+            href={targetPathResolver(locale.code)}
+            className={buttonStyles({
+              tone: "ghost",
+              size: "sm",
+              className:
+                "border border-[rgba(185,139,70,0.22)] bg-white px-3 text-[color:var(--color-ink-strong)] hover:border-[rgba(185,139,70,0.38)]",
+            })}
+            dir={locale.dir}
+            lang={locale.code}
+            onClick={() => {
+              trackLanguageSwitch({
+                route: targetPathResolver(locale.code),
+                locale: locale.code,
+                source: "inline-language-switcher",
+                section: "drawer",
+              });
+            }}
+          >
+            {label}
+          </Link>
+        );
+      })}
+    </div>
   );
 }
 
@@ -187,11 +207,12 @@ export function LanguageSwitcher({
   const searchParams = useSearchParams();
   const localeFromPath = detectLocaleFromPathname(pathname ?? "/");
   const activeLocale = localeFromPath ?? currentLocale;
-  const activeDefinition = getLocaleDefinition(activeLocale);
+  const activeDefinition = getLocaleRouteDescriptor(activeLocale);
+  const locales = useMemo(() => getVisibleLocales(), []);
   const search = searchParams.toString();
-  const { primaryLocales, indianLocales, internationalLocales } = groupLocales(activeLocale);
 
-  const targetPathResolver = (locale: string) => localizePath(locale, pathname, search);
+  const targetPathResolver = (locale: string) =>
+    localizePath(locale, pathname, search);
 
   if (variant === "compact") {
     return (
@@ -202,29 +223,36 @@ export function LanguageSwitcher({
     );
   }
 
+  if (variant === "inline") {
+    return (
+      <LanguageSwitcherInline
+        activeLocale={activeLocale}
+        className={className}
+        targetPathResolver={targetPathResolver}
+      />
+    );
+  }
+
   return (
     <section
       aria-label={globalFooterCopy.languageLabel}
-      className={`rounded-[var(--radius-2xl)] border border-[color:var(--color-border)] bg-[rgba(255,253,247,0.88)] p-5 shadow-[var(--shadow-sm)] ${className ?? ""}`.trim()}
+      className={`rounded-[var(--radius-2xl)] border border-[color:var(--color-border)] bg-white p-5 shadow-[var(--shadow-sm)] ${className ?? ""}`.trim()}
     >
       <div className="flex flex-wrap items-center gap-3">
         <span className="text-[0.72rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
           {globalFooterCopy.languageLabel}
         </span>
         <span
+          aria-current="true"
           className={buttonStyles({
             tone: "secondary",
             size: "sm",
-            className:
-              "cursor-default border-[rgba(185,139,70,0.4)] pr-3 text-start",
+            className: "cursor-default border-[rgba(185,139,70,0.4)] px-3",
           })}
-          aria-current="true"
           dir={activeDefinition.dir}
           lang={activeDefinition.code}
         >
-          <span className="min-w-0 max-w-full overflow-hidden text-ellipsis">
-            {activeDefinition.nativeLabel}
-          </span>
+          {getLanguageLabel(activeDefinition.code)}
           <span className="shrink-0 rounded-full bg-[rgba(185,139,70,0.14)] px-2 py-1 text-[0.62rem] text-[var(--color-accent-strong)]">
             {globalLocaleCopy.live}
           </span>
@@ -235,230 +263,58 @@ export function LanguageSwitcher({
         {globalFooterCopy.languageHelper}
       </p>
 
-      <div className="mt-4 space-y-3">
-        <div>
-          <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
-            Primary Languages
-          </p>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {primaryLocales.map((locale) => {
-              const selectable = isLocaleSelectable(locale.code);
-              const availabilityLabel = getLocaleAvailabilityLabel(
-                locale.availability === "live"
-              );
-              const isActive = locale.code === activeLocale;
+      <div className="mt-4 flex flex-wrap gap-2">
+        {locales.map((locale) => {
+          const isActive = locale.code === activeLocale;
+          const availabilityLabel = getLocaleAvailabilityLabel(
+            locale.availability === "live"
+          );
 
-              if (isActive) {
-                return (
-                  <span
-                    key={locale.code}
-                    className={buttonStyles({
-                      tone: locale.code === "en" ? "secondary" : "tertiary",
-                      size: "sm",
-                      className:
-                        "cursor-default border-[rgba(185,139,70,0.34)] bg-[rgba(255,252,246,0.92)] text-start text-[var(--color-ink-body)]",
-                    })}
-                    aria-current="true"
-                    dir={locale.dir}
-                    lang={locale.code}
-                  >
-                    <span className="min-w-0 max-w-full overflow-hidden text-ellipsis">
-                      {locale.code === "en"
-                        ? `${locale.nativeLabel} (Default)`
-                        : locale.nativeLabel}
-                    </span>
-                    <span className="shrink-0 rounded-full bg-[rgba(185,139,70,0.14)] px-2 py-1 text-[0.62rem] text-[var(--color-accent-strong)]">
-                      Active
-                    </span>
-                  </span>
-                );
-              }
-
-              return selectable ? (
-                <Link
-                  key={locale.code}
-                  href={targetPathResolver(locale.code)}
-                  className={buttonStyles({
-                    tone: locale.code === "en" ? "secondary" : "tertiary",
-                    size: "sm",
-                    className:
-                      "border-[rgba(185,139,70,0.34)] bg-[rgba(255,252,246,0.92)] text-start text-[var(--color-ink-body)]",
-                  })}
-                  dir={locale.dir}
-                  lang={locale.code}
-                  onClick={() => {
-                    trackLanguageSwitch({
-                      route: targetPathResolver(locale.code),
-                      locale: locale.code,
-                      source: "language-switcher",
-                      section: "primary",
-                    });
-                  }}
-                >
-                  <span className="min-w-0 max-w-full overflow-hidden text-ellipsis">
-                    {locale.code === "en"
-                      ? `${locale.nativeLabel} (Default)`
-                      : locale.nativeLabel}
-                  </span>
-                  <span className="shrink-0 text-[0.62rem] text-[var(--color-ink-muted)]">
-                    {availabilityLabel}
-                  </span>
-                </Link>
-              ) : (
-                <span
-                  key={locale.code}
-                  className={buttonStyles({
-                    tone: "tertiary",
-                    size: "sm",
-                    className:
-                      "cursor-not-allowed border-[rgba(185,139,70,0.34)] bg-[rgba(255,252,246,0.92)] text-start text-[var(--color-ink-body)]",
-                  })}
-                  aria-disabled="true"
-                  dir={locale.dir}
-                  lang={locale.code}
-                  title={globalLocaleCopy.planned}
-                >
-                  <span className="min-w-0 max-w-full overflow-hidden text-ellipsis">
-                    {locale.nativeLabel}
-                  </span>
-                  <span className="shrink-0 text-[0.62rem] text-[var(--color-ink-muted)]">
-                    {availabilityLabel}
-                  </span>
-                </span>
-              );
-            })}
-          </div>
-        </div>
-
-        <div>
-          <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
-            Indian Languages
-          </p>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {indianLocales.map((locale) => {
-              const selectable = isLocaleSelectable(locale.code);
-              const availabilityLabel = getLocaleAvailabilityLabel(
-                locale.availability === "live"
-              );
-
-              return selectable ? (
-                <Link
-                  key={locale.code}
-                  href={targetPathResolver(locale.code)}
-                  className={buttonStyles({
-                    tone: "tertiary",
-                    size: "sm",
-                    className:
-                      "border-[rgba(185,139,70,0.34)] bg-[rgba(255,252,246,0.92)] text-start text-[var(--color-ink-body)]",
-                  })}
-                  dir={locale.dir}
-                  lang={locale.code}
-                  onClick={() => {
-                    trackLanguageSwitch({
-                      route: targetPathResolver(locale.code),
-                      locale: locale.code,
-                      source: "language-switcher",
-                      section: "indian",
-                    });
-                  }}
-                >
-                  <span className="min-w-0 max-w-full overflow-hidden text-ellipsis">
-                    {locale.nativeLabel}
-                  </span>
-                  <span className="shrink-0 text-[0.62rem] text-[var(--color-ink-muted)]">
-                    {availabilityLabel}
-                  </span>
-                </Link>
-              ) : (
-                <span
-                  key={locale.code}
-                  className={buttonStyles({
-                    tone: "tertiary",
-                    size: "sm",
-                    className:
-                      "cursor-not-allowed border-[rgba(185,139,70,0.34)] bg-[rgba(255,252,246,0.92)] text-start text-[var(--color-ink-body)]",
-                  })}
-                  aria-disabled="true"
-                  dir={locale.dir}
-                  lang={locale.code}
-                  title={globalLocaleCopy.planned}
-                >
-                  <span className="min-w-0 max-w-full overflow-hidden text-ellipsis">
-                    {locale.nativeLabel}
-                  </span>
-                  <span className="shrink-0 text-[0.62rem] text-[var(--color-ink-muted)]">
-                    {availabilityLabel}
-                  </span>
-                </span>
-              );
-            })}
-          </div>
-        </div>
-
-        <div>
-          <p className="text-[0.68rem] uppercase tracking-[var(--tracking-label)] text-[var(--color-trust-text)]">
-            International Languages
-          </p>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {internationalLocales.map((locale) => {
-              const selectable = isLocaleSelectable(locale.code);
-              const availabilityLabel = getLocaleAvailabilityLabel(
-                locale.availability === "live"
-              );
-
-              return selectable ? (
-                <Link
-                  key={locale.code}
-                  href={targetPathResolver(locale.code)}
-                  className={buttonStyles({
-                    tone: "tertiary",
-                    size: "sm",
-                    className:
-                      "border-dashed border-[rgba(185,139,70,0.24)] bg-[rgba(255,252,245,0.9)] text-start text-[var(--color-ink-muted)]",
-                  })}
-                  dir={locale.dir}
-                  lang={locale.code}
-                  onClick={() => {
-                    trackLanguageSwitch({
-                      route: targetPathResolver(locale.code),
-                      locale: locale.code,
-                      source: "language-switcher",
-                      section: "international",
-                    });
-                  }}
-                >
-                  <span className="min-w-0 max-w-full overflow-hidden text-ellipsis">
-                    {locale.nativeLabel}
-                  </span>
-                  <span className="shrink-0 text-[0.62rem] text-[var(--color-ink-muted)]">
-                    {availabilityLabel}
-                  </span>
-                </Link>
-              ) : (
-                <span
-                  key={locale.code}
-                  className={buttonStyles({
-                    tone: "tertiary",
-                    size: "sm",
-                    className:
-                      "cursor-not-allowed border-dashed border-[rgba(185,139,70,0.24)] bg-[rgba(255,252,245,0.9)] text-start text-[var(--color-ink-muted)]",
-                  })}
-                  aria-disabled="true"
-                  dir={locale.dir}
-                  lang={locale.code}
-                  title={globalLocaleCopy.planned}
-                >
-                  <span className="min-w-0 max-w-full overflow-hidden text-ellipsis">
-                    {locale.nativeLabel}
-                  </span>
-                  <span className="shrink-0 text-[0.62rem] text-[var(--color-ink-muted)]">
-                    {availabilityLabel}
-                  </span>
-                </span>
-              );
-            })}
-          </div>
-        </div>
+          return isActive ? (
+            <span
+              key={locale.code}
+              aria-current="true"
+              className={buttonStyles({
+                tone: "secondary",
+                size: "sm",
+                className: "cursor-default px-3",
+              })}
+              dir={locale.dir}
+              lang={locale.code}
+            >
+              {getLanguageLabel(locale.code)}
+              <span className="shrink-0 rounded-full bg-[rgba(185,139,70,0.14)] px-2 py-1 text-[0.62rem] text-[var(--color-accent-strong)]">
+                Active
+              </span>
+            </span>
+          ) : (
+            <Link
+              key={locale.code}
+              href={targetPathResolver(locale.code)}
+              className={buttonStyles({
+                tone: "tertiary",
+                size: "sm",
+                className:
+                  "border-[rgba(185,139,70,0.34)] bg-white px-3 text-[var(--color-ink-body)]",
+              })}
+              dir={locale.dir}
+              lang={locale.code}
+              onClick={() => {
+                trackLanguageSwitch({
+                  route: targetPathResolver(locale.code),
+                  locale: locale.code,
+                  source: "language-switcher",
+                  section: "primary",
+                });
+              }}
+            >
+              {getLanguageLabel(locale.code)}
+              <span className="shrink-0 text-[0.62rem] text-[var(--color-ink-muted)]">
+                {availabilityLabel}
+              </span>
+            </Link>
+          );
+        })}
       </div>
     </section>
   );

@@ -6,12 +6,12 @@ export default function manifest(): MetadataRoute.Manifest {
     name: siteConfig.name,
     short_name: "NAVAGRAHA",
     description:
-      "AI-powered Vedic astrology, Kundli, Rashifal, Panchang, reports and guidance",
+      "Consultation-first Vedic astrology guidance, Desk articles and support from NAVAGRAHA CENTRE.",
     start_url: "/",
     scope: "/",
     display: "standalone",
     background_color: "#FFFFFF",
-    theme_color: "#fffdf8",
+    theme_color: "#FFFFFF",
     orientation: "portrait-primary",
     lang: "en",
     icons: [

@@ -1,21 +1,62 @@
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
+import { PageViewTracker } from "@/components/analytics/page-view-tracker";
+import { JsonLd } from "@/components/seo/json-ld";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Section } from "@/components/ui/section";
-import { EditorialPlaceholder } from "@/components/site/editorial-placeholder";
-import { PageHero } from "@/components/site/page-hero";
-import { buildPageMetadata } from "@/lib/metadata";
+import {
+  PremiumBentoGrid,
+  PremiumBentoSection,
+  PremiumPageShell,
+  PremiumRouteTile,
+  PremiumStatusBadge,
+} from "@/components/ui/premium";
+import {
+  getFeatureStatus,
+  type FeatureStatusRecord,
+} from "@/config/feature-status-registry";
+import { createPageMetadata } from "@/lib/seo/metadata";
+import {
+  createBreadcrumbSchema,
+  createWebPageSchema,
+} from "@/lib/seo/schema";
 import {
   getDefaultDesiredServiceForInquiryType,
   mapIntentToInquiryType,
 } from "@/modules/consultations/inquiry-lifecycle";
 import { PublicInquiryForm } from "@/modules/consultations/components/public-inquiry-form";
-import { contactPage } from "@/modules/marketing/content";
+import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
+import {
+  getRequestLocale,
+  hasExplicitLocalePrefixInRequest,
+} from "@/modules/localization/request";
 
-export const metadata = buildPageMetadata({
-  ...contactPage.metadata,
-});
+const contactActions = [
+  { featureKey: "consult" },
+  { featureKey: "support" },
+  { featureKey: "privacy" },
+  { featureKey: "refund-cancellation" },
+] as const satisfies ReadonlyArray<{
+  featureKey: FeatureStatusRecord["featureKey"];
+}>;
+
+const unavailableActions = ["Live chat", "WhatsApp", "Ticket number"] as const;
+
+export async function generateMetadata() {
+  const locale = await getRequestLocale();
+  const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
+
+  return createPageMetadata({
+    title: "Contact",
+    description:
+      "Contact NAVAGRAHA CENTRE through the existing inquiry form, consultation route, support route, privacy access, and refund policy.",
+    path: "/contact",
+    locale,
+    explicitLocalePrefix: hasExplicitLocalePrefix,
+    keywords: ["contact", "support", "consultation inquiry"],
+  });
+}
+
+export const revalidate = 3600;
 
 export default async function ContactPage({
   searchParams,
@@ -24,121 +65,160 @@ export default async function ContactPage({
     intent?: string;
   }>;
 }>) {
+  const locale = await getRequestLocale();
+  const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
+  const localizeHref = (href: string) =>
+    getLocalizedPath(locale, href, {
+      forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
+    });
   const resolvedSearchParams = await searchParams;
   const inquiryType = mapIntentToInquiryType(resolvedSearchParams.intent);
   const desiredServiceSlug = getDefaultDesiredServiceForInquiryType(inquiryType);
+  const pageSchemas = [
+    createBreadcrumbSchema({
+      locale,
+      explicitLocalePrefix: hasExplicitLocalePrefix,
+      items: [
+        { name: "Home", path: "/" },
+        { name: "Contact", path: "/contact" },
+      ],
+    }),
+    createWebPageSchema({
+      title: "Contact",
+      description:
+        "Contact surface for NAVAGRAHA CENTRE inquiry, support, consultation, privacy, and refund access.",
+      path: "/contact",
+      locale,
+      explicitLocalePrefix: hasExplicitLocalePrefix,
+    }),
+  ];
 
   return (
     <>
-      <PageHero {...contactPage.hero} />
+      <JsonLd id="contact-page-schema" data={pageSchemas} />
+      <PageViewTracker page="/contact" feature="contact-page" />
 
-      <Section
-        description="The contact page should feel welcoming and premium while making the next step clear."
-        eyebrow="Inquiry Types"
-        title="The kinds of conversations this route is designed for"
+      <PremiumPageShell
+        className="pb-[calc(6rem+env(safe-area-inset-bottom))] xl:pb-12"
+        tone="soft"
       >
-        <div className="grid gap-4 md:grid-cols-3">
-          {contactPage.inquiryCards.map((item) => (
-            <Card
-              key={item.title}
-              interactive
-              className="flex h-full flex-col gap-4"
-            >
-              <Badge tone="neutral">Inquiry</Badge>
-              <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[color:var(--color-foreground)]">
-                {item.title}
-              </h2>
-              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                {item.description}
-              </p>
-            </Card>
-          ))}
-        </div>
-      </Section>
+        <PremiumBentoSection className="pt-5 sm:pt-8">
+          <nav
+            aria-label="Breadcrumb"
+            className="mb-4 flex flex-wrap items-center gap-2 text-[0.72rem] font-medium uppercase tracking-[var(--tracking-label)] text-[color:var(--ui-color-text-muted)]"
+          >
+            <Link href={localizeHref("/")}>Home</Link>
+            <span aria-hidden="true">/</span>
+            <span className="text-[color:var(--ui-color-text-primary)]">
+              Contact
+            </span>
+          </nav>
 
-      <Section
-        tone="muted"
-        description="The centre handles inquiries through careful review, clear next steps, and a human-led tone."
-        eyebrow="Contact Path"
-        title="Choose the most direct route"
-      >
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)]">
-          <div className="grid gap-6">
-            <PublicInquiryForm
-              defaultInquiryType={inquiryType}
-              defaultDesiredServiceSlug={desiredServiceSlug}
-              sourcePath="/contact"
-            />
-
-            <Card className="space-y-5">
-              <div className="space-y-2">
-                <Badge tone="accent">Consultation Route</Badge>
-                <p className="text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                  For private consultations, the clearest next step is to review
-                  the service format and move into the secure booking path.
-                </p>
-              </div>
-
-              <div className="flex flex-wrap gap-3">
-                <Link href="/consultation" className={buttonStyles({ size: "lg" })}>
-                  Review Consultations
-                </Link>
-                <Link
-                  href="/services"
-                  className={buttonStyles({ tone: "secondary", size: "lg" })}
-                >
-                  View Services
-                </Link>
-              </div>
-            </Card>
-
-            <Card className="space-y-5">
-              <div className="space-y-2">
-                <Badge tone="outline">Product And Remedy Questions</Badge>
-                <p className="text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                  Questions about products, remedy framing, or editorial guidance
-                  are best understood in context. The public shop and insights
-                  library help visitors orient themselves before they proceed.
-                </p>
-              </div>
-
-              <div className="flex flex-wrap gap-3">
-                <Link href="/shop" className={buttonStyles({ size: "lg" })}>
-                  Visit Shop
-                </Link>
-                <Link
-                  href="/insights"
-                  className={buttonStyles({ tone: "secondary", size: "lg" })}
-                >
-                  Read Insights
-                </Link>
-              </div>
-            </Card>
+          <div className="rounded-[var(--ui-radius-2xl)] border border-[color:var(--ui-color-border-gold)] bg-white px-5 py-6 shadow-[var(--ui-shadow-md)] sm:px-6 sm:py-8">
+            <div className="flex flex-wrap gap-2">
+              <PremiumStatusBadge status="LIVE">Inquiry</PremiumStatusBadge>
+              <PremiumStatusBadge status="NEUTRAL">Public</PremiumStatusBadge>
+            </div>
+            <h1 className="mt-4 font-[family-name:var(--font-family-editorial)] text-[length:var(--font-size-title-lg)] leading-[var(--line-height-heading)] text-[color:var(--ui-color-text-primary)]">
+              Contact
+            </h1>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link
+                className={buttonStyles({ size: "lg" })}
+                href="#contact-form"
+              >
+                Inquiry form
+              </Link>
+              <Link
+                className={buttonStyles({ size: "lg", tone: "secondary" })}
+                href={localizeHref("/consultation")}
+              >
+                Consult
+              </Link>
+            </div>
           </div>
+        </PremiumBentoSection>
 
-          <div className="grid gap-6">
-            <EditorialPlaceholder
-              annotations={[
-                "Private handling",
-                "Premium inquiry tone",
-                "Clear next steps",
-              ]}
-              description="A composed contact surface can feel reassuring without pretending to be a generic support queue."
-              eyebrow="Contact Atmosphere"
-              title="Every inquiry should feel clear, discreet, and well framed"
-              tone="midnight"
-            />
+        <PremiumBentoSection label="Actions" className="pt-0">
+          <PremiumBentoGrid className="sm:grid-cols-2 lg:grid-cols-4">
+            {contactActions.map(({ featureKey }) => {
+              const feature = getFeatureStatus(featureKey);
 
-            <Card className="space-y-4">
-              <Badge tone="outline">Response Expectations</Badge>
-              <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-                NAVAGRAHA CENTRE favors careful review, measured follow-up, and
-                a consultation path that feels personal rather than rushed.
-              </p>
-            </Card>
+              return (
+                <PremiumRouteTile
+                  access={feature.access}
+                  href={localizeHref(feature.route)}
+                  iconKey={feature.iconKey}
+                  key={feature.featureKey}
+                  label={feature.label}
+                  showMeta={false}
+                  status={feature.visibility}
+                />
+              );
+            })}
+          </PremiumBentoGrid>
+        </PremiumBentoSection>
+
+        <PremiumBentoSection className="pt-0">
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)]">
+            <div id="contact-form" className="scroll-mt-24">
+              <PublicInquiryForm
+                defaultInquiryType={inquiryType}
+                defaultDesiredServiceSlug={desiredServiceSlug}
+                sourcePath="/contact"
+              />
+            </div>
+
+            <div className="grid gap-5">
+              <Card className="space-y-4">
+                <div className="flex flex-wrap gap-2">
+                  <PremiumStatusBadge status="LIVE">Legal</PremiumStatusBadge>
+                  <PremiumStatusBadge status="NEUTRAL">
+                    Access
+                  </PremiumStatusBadge>
+                </div>
+                <div className="grid gap-3">
+                  {[
+                    { label: "Privacy", href: "/privacy" },
+                    { label: "Terms", href: "/terms" },
+                    { label: "Disclaimer", href: "/disclaimer" },
+                    { label: "Refund", href: "/refund" },
+                  ].map((item) => (
+                    <Link
+                      className="rounded-[var(--ui-radius-lg)] border border-[color:var(--ui-color-border-subtle)] px-4 py-3 text-sm font-semibold text-[color:var(--ui-color-text-primary)] transition hover:border-[color:var(--ui-color-border-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ui-color-focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                      href={localizeHref(item.href)}
+                      key={item.href}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              </Card>
+
+              <Card className="space-y-4" tone="muted">
+                <PremiumStatusBadge status="NEUTRAL">
+                  Unavailable
+                </PremiumStatusBadge>
+                <ul className="grid gap-3">
+                  {unavailableActions.map((item) => (
+                    <li
+                      className="flex items-center justify-between gap-3 rounded-[var(--ui-radius-lg)] border border-[color:var(--ui-color-border-subtle)] bg-white px-4 py-3"
+                      key={item}
+                    >
+                      <span className="text-sm font-semibold text-[color:var(--ui-color-text-primary)]">
+                        {item}
+                      </span>
+                      <PremiumStatusBadge status="NEUTRAL">
+                        Unavailable
+                      </PremiumStatusBadge>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            </div>
           </div>
-        </div>
-      </Section>
+        </PremiumBentoSection>
+      </PremiumPageShell>
     </>
   );
 }
