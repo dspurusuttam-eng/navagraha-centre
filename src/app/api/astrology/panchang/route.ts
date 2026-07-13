@@ -36,10 +36,10 @@ type PanchangPayload = {
 };
 
 type PanchangResponsePayload = {
-  data: PanchangContextOutput;
+  data?: PanchangContextOutput;
   accuracy: {
-    isComplete: true;
-    missingFields: [];
+    isComplete: boolean;
+    missingFields: string[];
   };
   premium?: PremiumPanchangAdapterPayload;
 };
@@ -206,6 +206,28 @@ export async function POST(request: Request) {
     });
   }
 
+  const premiumRequested = isPremiumPanchangAdapterRequested(payload.premium);
+  const premium = premiumRequested
+    ? buildPremiumPanchangAdapterSnapshot({
+        localDate: normalized.data.date_local_normalized,
+        queryInstant: resolved.data.birth_utc,
+        location: {
+          latitude: resolved.data.normalized_place.latitude,
+          longitude: resolved.data.normalized_place.longitude,
+          timezoneIana: resolved.data.timezone.iana,
+        },
+      })
+    : null;
+
+  if (premium && !premium.success) {
+    return apiErrorResponse({
+      statusCode: premium.error.statusCode,
+      code: premium.error.code,
+      message: premium.error.message,
+      headers: rateLimit.headers,
+    });
+  }
+
   const panchang = calculateDailyPanchangContext({
     dateLocal: normalized.data.date_local_normalized,
     location: {
@@ -221,6 +243,21 @@ export async function POST(request: Request) {
   });
 
   if (!panchang.success) {
+    if (premium?.success) {
+      return Response.json(
+        {
+          accuracy: {
+            isComplete: false,
+            missingFields: ["legacy_panchang"],
+          },
+          premium: premium.payload,
+        } satisfies PanchangResponsePayload,
+        {
+          headers: rateLimit.headers,
+        }
+      );
+    }
+
     return apiErrorResponse({
       statusCode: getPanchangErrorStatus(panchang.error.code),
       code: panchang.error.code,
@@ -231,6 +268,21 @@ export async function POST(request: Request) {
   const completeness = validatePanchangOutputCompleteness(panchang.data);
 
   if (!completeness.isComplete) {
+    if (premium?.success) {
+      return Response.json(
+        {
+          accuracy: {
+            isComplete: false,
+            missingFields: ["legacy_panchang"],
+          },
+          premium: premium.payload,
+        } satisfies PanchangResponsePayload,
+        {
+          headers: rateLimit.headers,
+        }
+      );
+    }
+
     return apiErrorResponse({
       statusCode: 422,
       code: "INCOMPLETE_PANCHANG_DATA",
@@ -249,26 +301,7 @@ export async function POST(request: Request) {
     },
   };
 
-  if (isPremiumPanchangAdapterRequested(payload.premium)) {
-    const premium = buildPremiumPanchangAdapterSnapshot({
-      localDate: normalized.data.date_local_normalized,
-      queryInstant: resolved.data.birth_utc,
-      location: {
-        latitude: resolved.data.normalized_place.latitude,
-        longitude: resolved.data.normalized_place.longitude,
-        timezoneIana: resolved.data.timezone.iana,
-      },
-    });
-
-    if (!premium.success) {
-      return apiErrorResponse({
-        statusCode: premium.error.statusCode,
-        code: premium.error.code,
-        message: premium.error.message,
-        headers: rateLimit.headers,
-      });
-    }
-
+  if (premium?.success) {
     responseBody.premium = premium.payload;
   }
 

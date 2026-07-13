@@ -47,8 +47,9 @@ type PanchangApiSuccessPayload = {
 };
 
 type PanchangResultState = {
-  legacy: PanchangContextOutput;
+  legacy?: PanchangContextOutput;
   premium: PremiumPanchangSnapshot;
+  displayName: string;
 };
 
 type PanchangTab = "panchang" | "hora" | "choghadiya" | "periods";
@@ -457,7 +458,7 @@ function PanchangPremiumResult({
               <Badge tone={statusTone(premium.status)}>{premium.status}</Badge>
             </div>
             <h3 className="break-words text-[length:var(--font-size-title-sm)] font-semibold text-[var(--color-ink-strong)]">
-              {result.legacy.location.display_name}
+              {result.legacy?.location.display_name ?? result.displayName}
             </h3>
             <div className="flex flex-wrap gap-2">
               <span className={chipClass}>Date {premium.localDate}</span>
@@ -752,7 +753,7 @@ async function fetchPanchang(input: PanchangFormState) {
     };
   }
 
-  if (!payload?.data || !payload.premium?.data) {
+  if (!payload?.premium?.data) {
     return {
       success: false as const,
       message:
@@ -765,6 +766,7 @@ async function fetchPanchang(input: PanchangFormState) {
     data: {
       legacy: payload.data,
       premium: payload.premium.data,
+      displayName: input.place,
     },
   };
 }
