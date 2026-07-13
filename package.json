@@ -57,6 +57,7 @@
     "debug:panchang:premium:qa": "tsx scripts/debug-panchang-premium-qa.ts",
     "debug:panchang:premium:integration:qa": "tsx scripts/debug-panchang-premium-integration-qa.ts",
     "debug:muhurat:qa": "tsx scripts/debug-muhurat-intelligence-qa.ts",
+    "debug:muhurat:premium:qa": "tsx scripts/debug-muhurat-premium-qa.ts",
     "debug:panchang:muhurat:qa": "tsx scripts/debug-panchang-muhurat-qa.ts",
     "debug:matchmaking:qa": "tsx scripts/debug-matchmaking-qa.ts",
     "debug:matchmaking:compatibility:qa": "tsx scripts/debug-matchmaking-compatibility-qa.ts",
