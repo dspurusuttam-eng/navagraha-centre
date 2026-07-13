@@ -19,6 +19,24 @@ html {
   overflow-x: hidden;
 }
 
+html[lang="as"] {
+  --font-family-ui: var(--font-family-assamese-ui);
+  --font-family-editorial: var(--font-family-assamese-editorial);
+  --font-family-display: var(--font-family-editorial);
+}
+
+html[lang="hi"] {
+  --font-family-ui: var(--font-family-hindi-ui);
+  --font-family-editorial: var(--font-family-hindi-editorial);
+  --font-family-display: var(--font-family-editorial);
+}
+
+html[lang="as"] :where(h1, h2, h3, h4, p, li, a, button, label, span),
+html[lang="hi"] :where(h1, h2, h3, h4, p, li, a, button, label, span) {
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
 body {
   position: relative;
   margin: 0;
@@ -71,11 +89,26 @@ button {
   touch-action: manipulation;
 }
 
+:is(
+  a,
+  button,
+  input,
+  textarea,
+  select,
+  summary,
+  [tabindex]:not([tabindex="-1"])
+):focus-visible {
+  outline: 2px solid var(--ui-color-focus) !important;
+  outline-offset: 3px;
+  box-shadow: var(--ui-shadow-focus) !important;
+}
+
 button,
 input,
 textarea,
 select {
   font: inherit;
+  font-family: var(--font-family-ui);
 }
 
 ::selection {
@@ -140,6 +173,28 @@ select {
   color: var(--color-text-primary);
 }
 
+.font-ui,
+.type-ui {
+  font-family: var(--font-family-ui);
+}
+
+.font-editorial,
+.type-editorial {
+  font-family: var(--font-family-editorial);
+}
+
+.font-numeric,
+.type-number {
+  font-family: var(--font-ui), system-ui, sans-serif;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.type-desk,
+.desk-content {
+  font-family: var(--font-family-editorial);
+  line-height: var(--line-height-copy);
+}
+
 .meta-text {
   font-size: var(--font-size-body-sm);
   color: var(--color-text-secondary);
@@ -155,6 +210,28 @@ select {
   min-width: 0;
   flex-wrap: wrap;
   gap: 0.75rem;
+}
+
+.surface-bento {
+  border: 1px solid var(--ui-color-border-subtle);
+  border-radius: var(--ui-radius-xl);
+  background: var(--ui-color-white);
+  box-shadow: var(--ui-shadow-sm), var(--ui-shadow-embossed);
+}
+
+.surface-sacred-embossed {
+  border: 1px solid var(--ui-color-border-gold);
+  border-radius: var(--ui-radius-xl);
+  background: var(--ui-color-white);
+  box-shadow: var(--ui-shadow-hairline), var(--ui-shadow-embossed);
+}
+
+.text-semantic-green {
+  color: var(--ui-color-green-strong);
+}
+
+.border-semantic-green {
+  border-color: var(--ui-color-border-green);
 }
 
 @media (max-width: 420px) {
@@ -402,20 +479,20 @@ select {
 }
 
 .type-display {
-  font-family: var(--font-display), serif;
+  font-family: var(--font-family-display);
   letter-spacing: var(--tracking-display);
   line-height: var(--line-height-tight);
   color: var(--color-ink-black);
 }
 
 .type-heading {
-  font-family: var(--font-display), serif;
+  font-family: var(--font-family-display);
   letter-spacing: var(--tracking-heading);
   line-height: var(--line-height-heading);
 }
 
 .type-body {
-  font-family: var(--font-sans), sans-serif;
+  font-family: var(--font-family-ui);
   line-height: var(--line-height-copy);
 }
 
@@ -601,6 +678,7 @@ select {
 }
 
 .content-body {
+  font-family: var(--font-family-editorial);
   color: var(--color-ink-body);
   font-size: var(--font-size-body-sm);
   line-height: var(--line-height-copy);

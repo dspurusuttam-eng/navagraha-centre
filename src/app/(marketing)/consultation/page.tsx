@@ -1,9 +1,16 @@
+import Link from "next/link";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import { TrackedLink } from "@/components/analytics/tracked-link";
+import { JsonLd } from "@/components/seo/json-ld";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Container } from "@/components/ui/container";
-import { JsonLd } from "@/components/seo/json-ld";
+import {
+  PremiumBentoGrid,
+  PremiumBentoSection,
+  PremiumPageShell,
+  PremiumSectionHeading,
+  PremiumStatusBadge,
+} from "@/components/ui/premium";
 import { createToolMetadata } from "@/lib/seo/metadata";
 import {
   createBreadcrumbSchema,
@@ -11,27 +18,18 @@ import {
   createServiceSchema,
 } from "@/lib/seo/schema";
 import {
+  consultationHost,
+  consultationPackages,
+} from "@/modules/consultations/catalog";
+import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
+import {
   getRequestLocale,
   hasExplicitLocalePrefixInRequest,
 } from "@/modules/localization/request";
 
-const concernCards = [
-  "Kundli Reading",
-  "Career / Work",
-  "Marriage / Relationship",
-  "Dasha / Transit",
-  "Remedies / Dosha",
-  "Report Review",
-] as const;
-
-const preparationChecklist = [
-  "Full name",
-  "Date of birth",
-  "Exact birth time",
-  "Birth place",
-  "Main concern",
-  "Existing report, if any",
-] as const;
+const consultationMethod = "Account booking";
+const languageStatus = "Selected during booking";
+const availabilityStatus = "Slots shown after sign-in";
 
 export async function generateMetadata() {
   const locale = await getRequestLocale();
@@ -40,13 +38,12 @@ export async function generateMetadata() {
   return createToolMetadata({
     title: "Consultation Guidance",
     description:
-      "Calm Vedic consultation preparation for Kundli reading, career, marriage, Dasha, remedies, and report review.",
+      "Calm Vedic consultation preparation with Acharya guidance, availability details and account booking access.",
     path: "/consultation",
     locale,
     explicitLocalePrefix: hasExplicitLocalePrefix,
     keywords: [
       "astrology consultation",
-      "kundli reading",
       "vedic consultation",
       "consult acharya",
     ],
@@ -55,9 +52,29 @@ export async function generateMetadata() {
 
 export const revalidate = 3600;
 
+function formatPriceFrom(minorUnits: number) {
+  if (minorUnits <= 0) {
+    return null;
+  }
+
+  return new Intl.NumberFormat("en-IN", {
+    currency: "INR",
+    maximumFractionDigits: 0,
+    style: "currency",
+  }).format(minorUnits / 100);
+}
+
+function toBookingHref(packageSlug: string) {
+  return `/dashboard/consultations/book?package=${packageSlug}`;
+}
+
 export default async function ConsultationPage() {
   const locale = await getRequestLocale();
   const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
+  const localizeHref = (href: string) =>
+    getLocalizedPath(locale, href, {
+      forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
+    });
   const consultationSchemas = [
     createBreadcrumbSchema({
       locale,
@@ -89,161 +106,179 @@ export default async function ConsultationPage() {
         feature="consultation-guidance-page"
       />
 
-      <main className="launch-page launch-page-consultation min-w-0 overflow-hidden bg-white pb-[calc(7rem+env(safe-area-inset-bottom))] text-[#111111] xl:pb-12">
-        <section className="border-b border-black/8 bg-white">
-          <Container className="grid gap-4 py-4 sm:py-7 lg:grid-cols-[minmax(0,0.88fr)_minmax(18rem,0.5fr)] lg:items-center">
-            <Card
-              tone="default"
-              className="min-w-0 border-[rgba(184,137,67,0.24)] bg-white p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.98),inset_0_-8px_16px_rgba(184,137,67,0.035),0_16px_30px_rgba(17,17,17,0.065)] before:opacity-0 sm:p-6"
-            >
-              <p className="text-[0.68rem] font-extrabold uppercase tracking-[0.16em] text-[color:var(--color-accent-strong)]">
-                Human guidance
-              </p>
-              <h1
-                className="mt-2 font-[family-name:var(--font-display)] text-[2.25rem] font-semibold text-[#111111] sm:text-[3.6rem]"
-                style={{ lineHeight: "0.96" }}
-              >
-                Consultation Guidance
-              </h1>
-              <p className="mt-3 max-w-2xl text-[1rem] font-semibold leading-6 text-[#111111]">
-                Bring your Kundli, birth details, and main concern into a calm
-                human review. No marketplace rush, no fear-based pressure.
-              </p>
-              <div className="mt-5 grid gap-3 min-[430px]:grid-cols-2 sm:flex sm:flex-wrap">
-                <TrackedLink
-                  href="/kundli"
-                  eventName="cta_click"
-                  eventPayload={{
-                    page: "/consultation",
-                    feature: "consultation-generate-kundli",
-                  }}
-                  className={buttonStyles({
-                    tone: "accent",
-                    size: "lg",
-                    className:
-                      "w-full justify-center rounded-[var(--radius-pill)] sm:w-auto",
-                  })}
-                >
-                  Generate Kundli
-                </TrackedLink>
-                <TrackedLink
-                  href="/contact?intent=consultation"
-                  eventName="consultation_cta_click"
-                  eventPayload={{
-                    page: "/consultation",
-                    feature: "consultation-contact",
-                  }}
-                  className={buttonStyles({
-                    tone: "secondary",
-                    size: "lg",
-                    className:
-                      "w-full justify-center rounded-[var(--radius-pill)] border-[rgba(76,187,23,0.34)] sm:w-auto",
-                  })}
-                >
-                  Contact / Book
-                </TrackedLink>
-              </div>
-            </Card>
+      <PremiumPageShell
+        className="pb-[calc(6rem+env(safe-area-inset-bottom))] xl:pb-12"
+        tone="soft"
+      >
+        <PremiumBentoSection className="pt-5 sm:pt-8">
+          <nav
+            aria-label="Breadcrumb"
+            className="mb-4 flex flex-wrap items-center gap-2 text-[0.72rem] font-medium uppercase tracking-[var(--tracking-label)] text-[color:var(--ui-color-text-muted)]"
+          >
+            <Link href={localizeHref("/")}>Home</Link>
+            <span aria-hidden="true">/</span>
+            <span className="text-[color:var(--ui-color-text-primary)]">
+              Consult
+            </span>
+          </nav>
 
-            <div className="rounded-[1.55rem] border border-[rgba(76,187,23,0.24)] bg-white p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.98),0_12px_24px_rgba(17,17,17,0.06)]">
-              <p className="text-[0.68rem] font-extrabold uppercase tracking-[0.16em] text-[#2f7e16]">
-                Preparation note
-              </p>
-              <p className="mt-3 text-[1.15rem] font-extrabold leading-6 text-[#111111]">
-                Exact birth context and one clear question make consultation
-                more useful.
-              </p>
+          <div className="rounded-[var(--ui-radius-2xl)] border border-[color:var(--ui-color-border-gold)] bg-white px-5 py-6 shadow-[var(--ui-shadow-md)] sm:px-6 sm:py-8">
+            <div className="flex flex-wrap gap-2">
+              <PremiumStatusBadge status="LIVE">Consult</PremiumStatusBadge>
+              <PremiumStatusBadge status="NEUTRAL">
+                {availabilityStatus}
+              </PremiumStatusBadge>
             </div>
-          </Container>
-        </section>
-
-        <section className="bg-white">
-          <Container className="space-y-3 py-4 sm:py-7">
-            <p className="text-[0.68rem] font-extrabold uppercase tracking-[0.14em] text-[color:var(--color-accent-strong)]">
-              Concern cards
-            </p>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {concernCards.map((card) => (
-                <Card
-                  key={card}
-                  tone="default"
-                  className="min-h-24 border-[rgba(184,137,67,0.22)] bg-white p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.98),0_10px_18px_rgba(17,17,17,0.05)] before:opacity-0"
-                >
-                  <h2 className="text-[1rem] font-extrabold leading-tight text-[#111111]">
-                    {card}
-                  </h2>
-                  <p className="mt-2 text-[0.82rem] font-semibold leading-5 text-[#111111]/80">
-                    Prepare the question, then review it with Kundli context.
-                  </p>
-                </Card>
-              ))}
-            </div>
-          </Container>
-        </section>
-
-        <section className="border-y border-[rgba(184,137,67,0.18)] bg-white">
-          <Container className="grid gap-4 py-4 sm:py-7 lg:grid-cols-[0.45fr_0.55fr]">
-            <Card
-              tone="default"
-              className="border-[rgba(184,137,67,0.22)] bg-white p-4 before:opacity-0 sm:p-5"
-            >
-              <p className="text-[0.68rem] font-extrabold uppercase tracking-[0.14em] text-[color:var(--color-accent-strong)]">
-                Preparation checklist
-              </p>
-              <p className="mt-2 text-[1.05rem] font-extrabold leading-6 text-[#111111]">
-                Keep the session focused and respectful of your privacy.
-              </p>
-            </Card>
-            <div className="grid gap-2 sm:grid-cols-2">
-              {preparationChecklist.map((item) => (
-                <div
-                  key={item}
-                  className="flex min-h-12 items-center gap-3 rounded-[1rem] border border-[rgba(184,137,67,0.2)] bg-white px-3 py-2 text-[0.86rem] font-bold text-[#111111] shadow-[0_7px_13px_rgba(17,17,17,0.045)]"
-                >
-                  <span className="h-2 w-2 rounded-full bg-[#4CBB17]" />
-                  {item}
-                </div>
-              ))}
-            </div>
-          </Container>
-        </section>
-
-        <section className="bg-white">
-          <Container className="py-4 sm:py-7">
-            <Card
-              tone="default"
-              className="grid gap-4 border-[rgba(76,187,23,0.24)] bg-white p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.98),0_12px_22px_rgba(17,17,17,0.055)] before:opacity-0 sm:p-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
-            >
-              <div>
-                <p className="text-[0.68rem] font-extrabold uppercase tracking-[0.14em] text-[#2f7e16]">
-                  Safety note
-                </p>
-                <p className="mt-2 text-[0.92rem] font-semibold leading-6 text-[#111111]">
-                  Astrology guidance is educational and spiritual. It is not a
-                  guaranteed outcome and is not a substitute for licensed
-                  medical, legal, or financial advice.
-                </p>
-              </div>
+            <h1 className="mt-4 font-[family-name:var(--font-family-editorial)] text-[length:var(--font-size-title-lg)] leading-[var(--line-height-heading)] text-[color:var(--ui-color-text-primary)]">
+              Consultation
+            </h1>
+            <div className="mt-5 flex flex-wrap gap-3">
               <TrackedLink
-                href="/ai"
-                eventName="premium_ai_cta_click"
+                className={buttonStyles({ size: "lg" })}
+                eventName="consultation_cta_click"
                 eventPayload={{
+                  feature: "consultation-booking",
                   page: "/consultation",
-                  feature: "consultation-ask-ni",
+                  route: "/dashboard/consultations/book",
                 }}
-                className={buttonStyles({
-                  tone: "secondary",
-                  size: "lg",
-                  className:
-                    "w-full justify-center rounded-[var(--radius-pill)] lg:w-auto",
-                })}
+                href={localizeHref("/dashboard/consultations/book")}
               >
-                Ask NI
+                Book from Account
               </TrackedLink>
-            </Card>
-          </Container>
-        </section>
-      </main>
+              <TrackedLink
+                className={buttonStyles({ size: "lg", tone: "secondary" })}
+                eventName="consultation_cta_click"
+                eventPayload={{
+                  feature: "consultation-contact",
+                  page: "/consultation",
+                  route: "/contact?intent=consultation",
+                }}
+                href={localizeHref("/contact?intent=consultation")}
+              >
+                Contact
+              </TrackedLink>
+            </div>
+          </div>
+        </PremiumBentoSection>
+
+        <PremiumBentoSection label="Acharya" className="pt-0">
+          <Card className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+            <div className="min-w-0">
+              <h2 className="text-base font-semibold text-[color:var(--ui-color-text-primary)]">
+                {consultationHost.astrologerName}
+              </h2>
+              <p className="mt-2 text-sm font-medium text-[color:var(--ui-color-text-muted)]">
+                {consultationHost.timezoneLabel}
+              </p>
+            </div>
+            <Link
+              className={buttonStyles({ size: "sm", tone: "secondary" })}
+              href={localizeHref("/joy-prakash-sarmah")}
+            >
+              Acharya
+            </Link>
+          </Card>
+        </PremiumBentoSection>
+
+        <PremiumBentoSection label="Consultation Types" className="pt-0">
+          <PremiumBentoGrid className="sm:grid-cols-2 lg:grid-cols-3">
+            {consultationPackages.map((item) => {
+              const price = formatPriceFrom(item.priceFromMinor);
+              const bookingHref = toBookingHref(item.slug);
+
+              return (
+                <Card
+                  className="flex min-h-full flex-col justify-between gap-5"
+                  key={item.slug}
+                  tone={item.isFeatured ? "accent" : "muted"}
+                >
+                  <div className="space-y-4">
+                    <div className="flex flex-wrap gap-2">
+                      <PremiumStatusBadge status="LIVE">
+                        {availabilityStatus}
+                      </PremiumStatusBadge>
+                      {item.isFeatured ? (
+                        <PremiumStatusBadge status="NEUTRAL">
+                          Featured
+                        </PremiumStatusBadge>
+                      ) : null}
+                    </div>
+                    <h2 className="text-base font-semibold leading-tight text-[color:var(--ui-color-text-primary)]">
+                      {item.title}
+                    </h2>
+                    <dl className="grid gap-3 text-sm">
+                      <div className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-3">
+                        <dt className="font-medium text-[color:var(--ui-color-text-muted)]">
+                          Duration
+                        </dt>
+                        <dd className="font-semibold text-[color:var(--ui-color-text-primary)]">
+                          {item.durationMinutes} min
+                        </dd>
+                      </div>
+                      {price ? (
+                        <div className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-3">
+                          <dt className="font-medium text-[color:var(--ui-color-text-muted)]">
+                            Price
+                          </dt>
+                          <dd className="font-semibold text-[color:var(--ui-color-text-primary)]">
+                            From {price}
+                          </dd>
+                        </div>
+                      ) : null}
+                      <div className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-3">
+                        <dt className="font-medium text-[color:var(--ui-color-text-muted)]">
+                          Language
+                        </dt>
+                        <dd className="font-semibold text-[color:var(--ui-color-text-primary)]">
+                          {languageStatus}
+                        </dd>
+                      </div>
+                      <div className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-3">
+                        <dt className="font-medium text-[color:var(--ui-color-text-muted)]">
+                          Method
+                        </dt>
+                        <dd className="font-semibold text-[color:var(--ui-color-text-primary)]">
+                          {consultationMethod}
+                        </dd>
+                      </div>
+                    </dl>
+                  </div>
+                  <TrackedLink
+                    className={buttonStyles({
+                      className: "w-full",
+                      size: "md",
+                    })}
+                    eventName="consultation_cta_click"
+                    eventPayload={{
+                      feature: `consultation-${item.slug}`,
+                      page: "/consultation",
+                      route: bookingHref,
+                    }}
+                    href={localizeHref(bookingHref)}
+                  >
+                    Book
+                  </TrackedLink>
+                </Card>
+              );
+            })}
+          </PremiumBentoGrid>
+        </PremiumBentoSection>
+
+        <PremiumBentoSection className="pt-0">
+          <PremiumSectionHeading label="Availability" />
+          <Card className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+            <p className="text-sm font-medium leading-6 text-[color:var(--ui-color-text-secondary)]">
+              If no booking slot is visible after sign-in, use the contact path.
+            </p>
+            <Link
+              className={buttonStyles({ size: "sm", tone: "secondary" })}
+              href={localizeHref("/contact?intent=consultation")}
+            >
+              Contact
+            </Link>
+          </Card>
+        </PremiumBentoSection>
+      </PremiumPageShell>
     </>
   );
 }

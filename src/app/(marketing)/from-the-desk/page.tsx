@@ -2,92 +2,49 @@ import Link from "next/link";
 import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import { JsonLd } from "@/components/seo/json-ld";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  PremiumArticleCard,
+  PremiumBentoGrid,
+  PremiumBentoSection,
+  PremiumPageShell,
+  PremiumSectionHeading,
+  PremiumStatePanel,
+  PremiumStatusBadge,
+} from "@/components/ui/premium";
 import { createPageMetadata } from "@/lib/seo/metadata";
 import {
   createBreadcrumbSchema,
   createPersonSchema,
 } from "@/lib/seo/schema";
-import { getLocalizedPath } from "@/modules/localization/config";
+import { getContentAdapter, type ContentEntry } from "@/modules/content";
+import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
 import {
   getRequestLocale,
   hasExplicitLocalePrefixInRequest,
 } from "@/modules/localization/request";
 
-const guidancePillars = [
-  {
-    title: "Daily Rashifal Authority",
-    description: "Safe daily guidance with no guarantee language.",
-    href: "/rashifal",
-  },
-  {
-    title: "Panchang & Vedic Timing",
-    description: "Tithi, nakshatra, and timing context for public learning.",
-    href: "/panchang",
-  },
-  {
-    title: "Kundli Learning",
-    description: "Chart basics, houses, and interpretation discipline.",
-    href: "/kundli",
-  },
-  {
-    title: "Dasha & Transit",
-    description: "Life-phase timing and gochar context without certainty claims.",
-    href: "/dasha",
-  },
-  {
-    title: "Remedies Safety",
-    description: "Careful remedy guidance that avoids fear and cure language.",
-    href: "/remedies",
-  },
-  {
-    title: "Gemstone Caution",
-    description: "Gemstone topics handled with review, context, and caution.",
-    href: "/shop",
-  },
-  {
-    title: "Puja and Yagya Education",
-    description: "Educational ritual guidance, not instant booking or guarantee language.",
-    href: "/consultation",
-  },
-  {
-    title: "Assamese Astrology Notes",
-    description: "Regional notes and Assamese context for public learning.",
-    href: "/articles",
-  },
-  {
-    title: "Ask NI Support",
-    description: "Support-first explanation and prep through /ai.",
-    href: "/ai",
-  },
-] as const;
+type FromTheDeskPageProps = {
+  searchParams?: Promise<{
+    category?: string;
+    q?: string;
+  }>;
+};
 
-const guidanceFlow = [
-  "Understand the chart",
-  "Study timing and context",
-  "Recommend carefully",
-  "Follow ethics and discipline",
-];
-
-const safetyPoints = [
-  "No guaranteed outcome claims.",
-  "No cure claims.",
-  "No fear-based remedies.",
-  "Spiritual and astrological guidance should not replace medical, legal, financial, or emergency advice.",
-];
-
-const learningBridgeLinks = [
-  { label: "Articles", href: "/articles" },
-  { label: "Rashifal", href: "/rashifal" },
-  { label: "Panchang", href: "/panchang" },
-  { label: "Kundli", href: "/kundli" },
-  { label: "Dasha", href: "/dasha" },
-  { label: "Transit", href: "/transit" },
-  { label: "Remedies", href: "/remedies" },
-  { label: "Reports", href: "/reports" },
-  { label: "Shop", href: "/shop" },
-  { label: "Tools", href: "/tools" },
-  { label: "Consultation", href: "/consultation" },
-  { label: "Ask NI", href: "/ai" },
+const monthLabels = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
 ] as const;
 
 export async function generateMetadata() {
@@ -115,14 +72,76 @@ export async function generateMetadata() {
 
 export const revalidate = 900;
 
-export default async function FromTheDeskPage() {
+function formatDeskDate(value: string) {
+  const [year, month, day] = value.slice(0, 10).split("-").map(Number);
+
+  if (!year || !month || !day) {
+    return value.slice(0, 10);
+  }
+
+  return `${day} ${monthLabels[month - 1]} ${year}`;
+}
+
+function normalizeQuery(value?: string) {
+  return (value ?? "").trim();
+}
+
+function matchesQuery(entry: ContentEntry, query: string) {
+  if (!query) {
+    return true;
+  }
+
+  const haystack = [
+    entry.title,
+    entry.category,
+    entry.authorName,
+    ...entry.tags,
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  return haystack.includes(query.toLowerCase());
+}
+
+function toDeskHref(params: { category?: string; q?: string }) {
+  const search = new URLSearchParams();
+
+  if (params.category) {
+    search.set("category", params.category);
+  }
+
+  if (params.q) {
+    search.set("q", params.q);
+  }
+
+  const suffix = search.toString();
+
+  return suffix ? `/from-the-desk?${suffix}` : "/from-the-desk";
+}
+
+export default async function FromTheDeskPage({
+  searchParams,
+}: Readonly<FromTheDeskPageProps>) {
   const locale = await getRequestLocale();
   const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
+  const params = (await searchParams) ?? {};
+  const activeCategory = normalizeQuery(params.category);
+  const query = normalizeQuery(params.q);
   const localizeHref = (href: string) =>
     getLocalizedPath(locale, href, {
-      forcePrefix: hasExplicitLocalePrefix,
+      forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
     });
-
+  const entries = await getContentAdapter().listPublishedEntriesByLocale(locale);
+  const categories = [...new Set(entries.map((entry) => entry.category))].sort();
+  const filteredEntries = entries.filter(
+    (entry) =>
+      (!activeCategory || entry.category === activeCategory) &&
+      matchesQuery(entry, query)
+  );
+  const resultLabel =
+    filteredEntries.length === 1
+      ? "1 result"
+      : `${filteredEntries.length} results`;
   const deskSchemas = [
     createPersonSchema({
       locale,
@@ -147,183 +166,115 @@ export default async function FromTheDeskPage() {
       />
       <JsonLd id="from-the-desk-schema" data={deskSchemas} />
 
-      <main className="bg-white text-[#111111]">
-        <section className="mx-auto w-full max-w-6xl px-4 pb-10 pt-5 sm:px-6 lg:px-8">
-          <div className="grid gap-6 rounded-[1.75rem] border border-[#111111] bg-white p-5 shadow-[0_20px_50px_rgba(5,5,5,0.06)] sm:p-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)] lg:items-end">
-            <div className="space-y-5">
-              <p className="w-fit rounded-full border border-[#d8c47a] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-[#111111]">
-                J P Sarmah Desk
-              </p>
-              <div className="space-y-3">
-                <h1 className="max-w-3xl text-4xl font-semibold leading-tight text-[#050505] sm:text-5xl">
-                  J P Sarmah Desk
-                </h1>
-                <p className="max-w-2xl text-base leading-7 text-[#111111] sm:text-lg">
-                  Authority notes, Vedic guidance, and careful astrology
-                  learning from NAVAGRAHA CENTRE.
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-3">
-                <Link
-                  href={localizeHref("/consultation")}
-                  className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#111111] bg-white px-5 py-2 text-sm font-semibold text-[#111111] transition hover:bg-[#111111] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c7a95d]"
-                >
-                  Consult J P Sarmah
-                </Link>
-                <Link
-                  href={localizeHref("/ai")}
-                  className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#d8c47a] bg-white px-5 py-2 text-sm font-semibold text-[#111111] transition hover:border-[#111111] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c7a95d]"
-                >
-                  Ask NI
-                </Link>
-              </div>
-            </div>
+      <PremiumPageShell
+        className="pb-[calc(6rem+env(safe-area-inset-bottom))] xl:pb-12"
+        tone="soft"
+      >
+        <PremiumBentoSection className="pt-5 sm:pt-8">
+          <nav
+            aria-label="Breadcrumb"
+            className="mb-4 flex flex-wrap items-center gap-2 text-[0.72rem] font-medium uppercase tracking-[var(--tracking-label)] text-[color:var(--ui-color-text-muted)]"
+          >
+            <Link href={localizeHref("/")}>Home</Link>
+            <span aria-hidden="true">/</span>
+            <span className="text-[color:var(--ui-color-text-primary)]">
+              Desk
+            </span>
+          </nav>
 
-            <div className="rounded-[1.4rem] border border-[#111111] bg-white p-5">
-              <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#111111]">
-                Human Authority Identity
-              </p>
-              <h2 className="mt-3 text-2xl font-semibold leading-tight text-[#050505]">
-                Joy Prakash Sarmah
-              </h2>
-              <p className="mt-3 text-base leading-7 text-[#111111]">
-                J P Sarmah is the human authority identity of NAVAGRAHA
-                CENTRE. The desk exists to present careful Vedic guidance,
-                learning, and consultation direction without turning astrology
-                into a biography, testimonial, or guarantee page.
-              </p>
+          <div className="rounded-[var(--ui-radius-2xl)] border border-[color:var(--ui-color-border-gold)] bg-white px-5 py-6 shadow-[var(--ui-shadow-md)] sm:px-6 sm:py-8">
+            <div className="flex flex-wrap gap-2">
+              <PremiumStatusBadge status="LIVE">Desk</PremiumStatusBadge>
+              <PremiumStatusBadge status="NEUTRAL">Search</PremiumStatusBadge>
             </div>
+            <h1 className="font-[family-name:var(--font-family-editorial)] text-[length:var(--font-size-title-lg)] leading-[var(--line-height-heading)] text-[color:var(--ui-color-text-primary)]">
+              J P Sarmah Desk
+            </h1>
           </div>
-        </section>
+        </PremiumBentoSection>
 
-        <section className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {guidancePillars.map((pillar) => (
+        <PremiumBentoSection label="Categories" className="pt-0">
+          <div className="flex min-w-0 flex-wrap gap-2">
+            <Link href={localizeHref(toDeskHref({ q: query }))}>
+              <PremiumStatusBadge status={!activeCategory ? "LIVE" : "NEUTRAL"}>
+                All
+              </PremiumStatusBadge>
+            </Link>
+            {categories.map((category) => (
               <Link
-                key={pillar.title}
-                href={localizeHref(pillar.href)}
-                className="rounded-[1.1rem] border border-[#111111] bg-white px-4 py-4 text-left text-sm font-semibold text-[#111111] shadow-[0_10px_24px_rgba(5,5,5,0.04)] transition hover:border-[#d8c47a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c7a95d]"
+                key={category}
+                href={localizeHref(toDeskHref({ category, q: query }))}
               >
-                <span className="block text-[0.9rem]">{pillar.title}</span>
-                <span className="mt-2 block text-xs font-normal leading-6 text-[#111111]">
-                  {pillar.description}
-                </span>
+                <PremiumStatusBadge
+                  status={activeCategory === category ? "LIVE" : "NEUTRAL"}
+                >
+                  {category}
+                </PremiumStatusBadge>
               </Link>
             ))}
           </div>
-        </section>
+        </PremiumBentoSection>
 
-        <section className="mx-auto grid w-full max-w-6xl gap-5 px-4 py-8 sm:px-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:px-8">
-          <div className="rounded-[1.4rem] border border-[#111111] bg-white p-5 sm:p-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#5f8f4d]">
-              How Guidance Works
-            </p>
-            <h2 className="mt-3 text-2xl font-semibold leading-tight text-[#050505]">
-              Careful guidance follows a simple sequence.
-            </h2>
-            <div className="mt-5 space-y-3">
-              {guidanceFlow.map((step, index) => (
-                <div
-                  key={step}
-                  className="flex items-start gap-3 rounded-[1rem] border border-[#d8c47a] bg-white px-4 py-3"
-                >
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#111111] text-xs font-semibold text-[#111111]">
-                    {index + 1}
-                  </span>
-                  <p className="text-sm leading-6 text-[#111111]">{step}</p>
-                </div>
-              ))}
+        <PremiumBentoSection label="Search" className="pt-0">
+          <form
+            action={localizeHref("/from-the-desk")}
+            className="grid gap-3 rounded-[var(--ui-radius-xl)] border border-[color:var(--ui-color-border-subtle)] bg-white p-4 shadow-[var(--ui-shadow-sm)] sm:grid-cols-[minmax(0,1fr)_auto]"
+          >
+            {activeCategory ? (
+              <input name="category" type="hidden" value={activeCategory} />
+            ) : null}
+            <label className="sr-only" htmlFor="desk-search">
+              Search Desk
+            </label>
+            <Input
+              defaultValue={query}
+              id="desk-search"
+              name="q"
+              placeholder="Search Desk"
+            />
+            <Button type="submit">Search</Button>
+          </form>
+        </PremiumBentoSection>
+
+        <PremiumBentoSection className="pt-0">
+          <div className="mb-5 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
+            <div>
+              <PremiumSectionHeading className="mb-2" label="Results" />
+              <p className="text-sm font-medium leading-6 text-[color:var(--ui-color-text-secondary)]">
+                {query ? `Query: ${query}` : "Query: All"}
+                {activeCategory ? ` / Category: ${activeCategory}` : ""}
+              </p>
             </div>
+            <PremiumStatusBadge status="NEUTRAL">{resultLabel}</PremiumStatusBadge>
           </div>
-
-          <div className="space-y-5">
-            <div className="rounded-[1.4rem] border border-[#111111] bg-white p-5 sm:p-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#111111]">
-                Ask NI Support
-              </p>
-              <h2 className="mt-3 text-2xl font-semibold leading-tight text-[#050505]">
-                Ask NI for explanations
-              </h2>
-              <p className="mt-3 text-base leading-7 text-[#111111]">
-                Use Ask NI to understand astrology concepts, terms, and
-                guidance before taking decisions. It supports learning and does
-                not replace human guidance.
-              </p>
-              <Link
-                href={localizeHref("/ai")}
-                className="mt-5 inline-flex min-h-11 items-center justify-center rounded-full border border-[#d8c47a] bg-white px-5 py-2 text-sm font-semibold text-[#111111] transition hover:border-[#111111] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c7a95d]"
-              >
-                Ask NI
-              </Link>
-            </div>
-
-            <div className="rounded-[1.4rem] border border-[#111111] bg-white p-5 sm:p-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#111111]">
-                Need Personal Guidance?
-              </p>
-              <h2 className="mt-3 text-2xl font-semibold leading-tight text-[#050505]">
-                Consult J P Sarmah
-              </h2>
-              <p className="mt-3 text-base leading-7 text-[#111111]">
-                For personal interpretation, use the consultation path. There
-                are no booking slots, availability, pricing, or instant
-                consultation claims here.
-              </p>
-            <div className="mt-5 flex flex-wrap gap-3">
-              <Link
-                href={localizeHref("/consultation")}
-                  className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#111111] bg-white px-5 py-2 text-sm font-semibold text-[#111111] transition hover:bg-[#111111] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c7a95d]"
-                >
-                  Consult J P Sarmah
-                </Link>
+          {filteredEntries.length ? (
+            <PremiumBentoGrid className="sm:grid-cols-2 lg:grid-cols-3">
+              {filteredEntries.map((entry) => (
+                <PremiumArticleCard
+                  key={`${entry.locale ?? defaultLocale}-${entry.slug}`}
+                  category={entry.category}
+                  date={formatDeskDate(entry.publishedAt)}
+                  href={localizeHref(entry.path)}
+                  title={entry.title}
+                />
+              ))}
+            </PremiumBentoGrid>
+          ) : (
+            <PremiumStatePanel
+              action={
                 <Link
-                  href={localizeHref("/articles")}
-                  className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#d8c47a] bg-white px-5 py-2 text-sm font-semibold text-[#111111] transition hover:border-[#111111] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c7a95d]"
+                  className="text-sm font-semibold text-[color:var(--ui-color-text-primary)] underline decoration-[color:var(--ui-color-border-gold)] underline-offset-4"
+                  href={localizeHref("/from-the-desk")}
                 >
-                  Learn Articles
+                  Reset
                 </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="mx-auto w-full max-w-6xl px-4 py-4 sm:px-6 lg:px-8">
-          <div className="rounded-[1.4rem] border border-[#111111] bg-white p-5 sm:p-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#111111]">
-              Content Bridge
-            </p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {learningBridgeLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  href={localizeHref(link.href)}
-                  className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#d8c47a] bg-white px-4 py-2 text-sm font-semibold text-[#111111] transition hover:border-[#111111] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c7a95d]"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="rounded-[1.4rem] border border-[#111111] bg-white p-5 sm:p-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#111111]">
-              Safety and Ethics
-            </p>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {safetyPoints.map((point) => (
-                <div
-                  key={point}
-                  className="rounded-[1rem] border border-[#d8c47a] bg-white px-4 py-3 text-sm leading-6 text-[#111111]"
-                >
-                  {point}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      </main>
+              }
+              state="empty"
+              title="No Desk articles found."
+            />
+          )}
+        </PremiumBentoSection>
+      </PremiumPageShell>
     </>
   );
 }

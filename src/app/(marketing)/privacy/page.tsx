@@ -1,15 +1,12 @@
-import Link from "next/link";
-import { PageHero } from "@/components/site/page-hero";
 import { ConsentPreferencesPanel } from "@/components/site/consent-preferences-panel";
-import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Section } from "@/components/ui/section";
 import { buildPageMetadata } from "@/lib/metadata";
+import { LegalPage, type LegalSection } from "../legal-page";
 
 export const metadata = buildPageMetadata({
   title: "Privacy Policy",
   description:
-    "How NAVAGRAHA CENTRE handles account, birth-profile, and payment-adjacent data with calm and secure defaults.",
+    "How NAVAGRAHA CENTRE handles account, birth-profile, and payment-adjacent data with secure defaults.",
   path: "/privacy",
   keywords: ["privacy policy", "birth data privacy", "account safety"],
 });
@@ -20,7 +17,7 @@ const policySections = [
     points: [
       "Account details required for authentication and secure profile continuity.",
       "Birth profile data used strictly for chart generation and related guidance flows.",
-      "Behavioral product events used only for product quality and conversion visibility.",
+      "Product events used for product quality and public page reliability checks.",
     ],
   },
   {
@@ -47,81 +44,36 @@ const policySections = [
       "Third-party tracking is not enabled until a real consent choice and provider config exist.",
     ],
   },
-] as const;
+] as const satisfies readonly LegalSection[];
 
 export default function PrivacyPolicyPage() {
   return (
-    <>
-      <PageHero
-        eyebrow="Policy"
-        title="Privacy Policy"
-        description="NAVAGRAHA CENTRE is built to handle sensitive birth details and account flows with disciplined boundaries."
-        highlights={[
-          "Birth profile data is used for chart logic and related guidance only",
-          "Protected account ownership checks are enforced server-side",
-          "Security and reliability take precedence over growth shortcuts",
-        ]}
-        note="For direct requests, use the contact route and select the privacy or account-support intent."
-        primaryAction={{ href: "/contact?intent=account-support", label: "Contact Support" }}
-        secondaryAction={{ href: "/terms", label: "View Terms" }}
-        supportTitle="Data + Access Boundary"
-      />
-
-      <Section
-        eyebrow="Core Policy"
-        title="A practical policy for chart-centric account data."
-        description="This summary is written for clarity and launch safety. It does not expose implementation secrets."
-      >
-        <div className="grid gap-4 md:grid-cols-3">
-          {policySections.map((section) => (
-            <Card key={section.title} className="space-y-4">
-              <h2 className="text-[length:var(--font-size-body-lg)] font-medium text-[var(--color-ink-strong)]">
-                {section.title}
-              </h2>
-              <ul className="space-y-2">
-                {section.points.map((point) => (
-                  <li
-                    key={point}
-                    className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]"
-                  >
-                    {point}
-                  </li>
-                ))}
-              </ul>
-            </Card>
-          ))}
-        </div>
-      </Section>
-
-      <Section className="pt-0" tone="transparent" eyebrow="Your Choices" title="Manage consent preferences">
-        <div className="grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)]">
-          <ConsentPreferencesPanel />
-          <Card className="space-y-4">
-            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              Consent is stored in a first-party preference cookie only. It does not contain birth details, chart data, AI prompts, or payment information.
-            </p>
-            <p className="text-[length:var(--font-size-body-sm)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-              If you clear site data, the site falls back to necessary-only mode.
-            </p>
-          </Card>
-        </div>
-      </Section>
-
-      <Section className="pt-0" tone="transparent">
-        <Card tone="accent" className="space-y-4">
-          <p className="text-[length:var(--font-size-body-md)] leading-[var(--line-height-copy)] text-[color:var(--color-muted)]">
-            Questions about privacy, account ownership, or data correction can be submitted through the contact path for review.
+    <LegalPage
+      description="NAVAGRAHA CENTRE is built to handle sensitive birth details and account flows with disciplined boundaries."
+      effectiveDate="Effective July 13, 2026"
+      pagePath="/privacy"
+      pageTrackerFeature="privacy-page"
+      primaryAction={{ href: "/contact?intent=account-support", label: "Contact" }}
+      secondaryAction={{ href: "/terms", label: "Terms" }}
+      sections={policySections}
+      title="Privacy Policy"
+    >
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)]">
+        <ConsentPreferencesPanel />
+        <Card className="space-y-4">
+          <h2 className="text-base font-semibold text-[color:var(--ui-color-text-primary)]">
+            Consent Notes
+          </h2>
+          <p className="text-sm font-medium leading-6 text-[color:var(--ui-color-text-secondary)]">
+            Consent is stored in a first-party preference cookie only. It does
+            not contain birth details, chart data, AI prompts, or payment
+            information.
           </p>
-          <div className="flex flex-wrap gap-3">
-            <Link href="/contact?intent=account-support" className={buttonStyles({ size: "sm" })}>
-              Contact Support
-            </Link>
-            <Link href="/terms" className={buttonStyles({ size: "sm", tone: "secondary" })}>
-              Read Terms
-            </Link>
-          </div>
+          <p className="text-sm font-medium leading-6 text-[color:var(--ui-color-text-secondary)]">
+            If you clear site data, the site falls back to necessary-only mode.
+          </p>
         </Card>
-      </Section>
-    </>
+      </div>
+    </LegalPage>
   );
 }

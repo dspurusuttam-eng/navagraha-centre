@@ -1,145 +1,190 @@
+import Link from "next/link";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
-import { TrackedLink } from "@/components/analytics/tracked-link";
-import { buttonStyles } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Container } from "@/components/ui/container";
+import { JsonLd } from "@/components/seo/json-ld";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  PremiumArticleCard,
+  PremiumBentoGrid,
+  PremiumBentoSection,
+  PremiumPageShell,
+  PremiumSectionHeading,
+  PremiumStatusBadge,
+} from "@/components/ui/premium";
 import { createPageMetadata } from "@/lib/seo/metadata";
+import {
+  createBreadcrumbSchema,
+  createCollectionPageSchema,
+} from "@/lib/seo/schema";
+import { getContentAdapter } from "@/modules/content";
+import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
 import {
   getRequestLocale,
   hasExplicitLocalePrefixInRequest,
 } from "@/modules/localization/request";
+
+const monthLabels = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+] as const;
 
 export async function generateMetadata() {
   const locale = await getRequestLocale();
   const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
 
   return createPageMetadata({
-    title: "Learn Vedic Astrology Basics",
+    title: "Learn",
     description:
-      "Small NAVAGRAHA CENTRE learning hub for Kundli, Lagna, Rashi, Nakshatra, houses, planets, Acharya guidance, and remedy boundaries.",
+      "NAVAGRAHA CENTRE Learn index with real published Desk content.",
     path: "/learn",
     locale,
     explicitLocalePrefix: hasExplicitLocalePrefix,
-    keywords: [
-      "learn kundli",
-      "what is lagna",
-      "what is rashi",
-      "vedic astrology basics",
-    ],
+    keywords: ["learn astrology", "vedic astrology articles", "desk articles"],
   });
 }
 
 export const revalidate = 900;
 
-const learningCards = [
-  "What is Janam Kundli?",
-  "What is Lagna?",
-  "What is Rashi?",
-  "What is Nakshatra?",
-  "What are 12 Houses?",
-  "What are 9 Planets?",
-  "Why Consult an Acharya?",
-  "Remedies: Educational Only",
-] as const;
+function formatDeskDate(value: string) {
+  const [year, month, day] = value.slice(0, 10).split("-").map(Number);
 
-export default function LearnPage() {
+  if (!year || !month || !day) {
+    return value.slice(0, 10);
+  }
+
+  return `${day} ${monthLabels[month - 1]} ${year}`;
+}
+
+function toDeskHref(params: { category?: string; q?: string }) {
+  const search = new URLSearchParams();
+
+  if (params.category) {
+    search.set("category", params.category);
+  }
+
+  if (params.q) {
+    search.set("q", params.q);
+  }
+
+  const suffix = search.toString();
+
+  return suffix ? `/from-the-desk?${suffix}` : "/from-the-desk";
+}
+
+export default async function LearnPage() {
+  const locale = await getRequestLocale();
+  const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
+  const localizeHref = (href: string) =>
+    getLocalizedPath(locale, href, {
+      forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
+    });
+  const entries = await getContentAdapter().listPublishedEntriesByLocale(locale);
+  const categories = [...new Set(entries.map((entry) => entry.category))].sort();
+  const latestEntries = entries.slice(0, 9);
+  const learnSchemas = [
+    createBreadcrumbSchema({
+      locale,
+      explicitLocalePrefix: hasExplicitLocalePrefix,
+      items: [
+        { name: "Home", path: "/" },
+        { name: "Learn", path: "/learn" },
+      ],
+    }),
+    createCollectionPageSchema({
+      name: "Learn",
+      description: "Published NAVAGRAHA CENTRE Desk content index.",
+      path: "/learn",
+      locale,
+    }),
+  ];
+
   return (
     <>
-      <PageViewTracker page="/learn" feature="learn-mini-hub" />
+      <JsonLd id="learn-page-schema" data={learnSchemas} />
+      <PageViewTracker page="/learn" feature="learn-index" />
 
-      <main className="launch-page launch-page-learn min-w-0 overflow-hidden bg-white pb-[calc(7rem+env(safe-area-inset-bottom))] text-[#111111] xl:pb-12">
-        <section className="border-b border-black/8 bg-white">
-          <Container className="py-4 sm:py-7">
-            <Card
-              tone="default"
-              className="min-w-0 border-[rgba(184,137,67,0.24)] bg-white p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.98),inset_0_-8px_16px_rgba(184,137,67,0.035),0_16px_30px_rgba(17,17,17,0.065)] before:opacity-0 sm:p-6"
-            >
-              <p className="text-[0.68rem] font-extrabold uppercase tracking-[0.16em] text-[color:var(--color-accent-strong)]">
-                Small learning hub
-              </p>
-              <h1
-                className="mt-2 font-[family-name:var(--font-display)] text-[2.35rem] font-semibold text-[#111111] sm:text-[3.6rem]"
-                style={{ lineHeight: "0.96" }}
-              >
-                Learn
-              </h1>
-              <p className="mt-3 max-w-2xl text-[1rem] font-semibold leading-6 text-[#111111]">
-                Simple Vedic astrology basics to help you understand your Kundli
-                before asking Ask NI or consulting an Acharya.
-              </p>
-              <div className="mt-5 flex flex-wrap gap-3">
-                <TrackedLink
-                  href="/kundli"
-                  eventName="cta_click"
-                  eventPayload={{
-                    page: "/learn",
-                    feature: "learn-generate-kundli",
-                  }}
-                  className={buttonStyles({
-                    tone: "accent",
-                    size: "lg",
-                    className: "rounded-[var(--radius-pill)]",
-                  })}
-                >
-                  Generate Kundli
-                </TrackedLink>
-                <TrackedLink
-                  href="/ai"
-                  eventName="premium_ai_cta_click"
-                  eventPayload={{ page: "/learn", feature: "learn-ask-ni" }}
-                  className={buttonStyles({
-                    tone: "secondary",
-                    size: "lg",
-                    className:
-                      "rounded-[var(--radius-pill)] border-[rgba(76,187,23,0.34)]",
-                  })}
-                >
-                  Ask NI
-                </TrackedLink>
-              </div>
-            </Card>
-          </Container>
-        </section>
+      <PremiumPageShell
+        className="pb-[calc(6rem+env(safe-area-inset-bottom))] xl:pb-12"
+        tone="soft"
+      >
+        <PremiumBentoSection className="pt-5 sm:pt-8">
+          <nav
+            aria-label="Breadcrumb"
+            className="mb-4 flex flex-wrap items-center gap-2 text-[0.72rem] font-medium uppercase tracking-[var(--tracking-label)] text-[color:var(--ui-color-text-muted)]"
+          >
+            <Link href={localizeHref("/")}>Home</Link>
+            <span aria-hidden="true">/</span>
+            <span className="text-[color:var(--ui-color-text-primary)]">
+              Learn
+            </span>
+          </nav>
 
-        <section className="bg-white">
-          <Container className="space-y-3 py-4 sm:py-7">
-            <p className="text-[0.68rem] font-extrabold uppercase tracking-[0.14em] text-[color:var(--color-accent-strong)]">
-              Basics
-            </p>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {learningCards.map((card) => (
-                <Card
-                  key={card}
-                  tone="default"
-                  className="min-h-28 border-[rgba(184,137,67,0.22)] bg-white p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.98),0_10px_18px_rgba(17,17,17,0.05)] before:opacity-0"
-                >
-                  <h2 className="text-[1rem] font-extrabold leading-tight text-[#111111]">
-                    {card}
-                  </h2>
-                  <p className="mt-2 text-[0.8rem] font-semibold leading-5 text-[#111111]/80">
-                    A short, safe learning prompt for understanding Kundli
-                    language without fear-based claims.
-                  </p>
-                </Card>
-              ))}
+          <div className="rounded-[var(--ui-radius-2xl)] border border-[color:var(--ui-color-border-gold)] bg-white px-5 py-6 shadow-[var(--ui-shadow-md)] sm:px-6 sm:py-8">
+            <div className="flex flex-wrap gap-2">
+              <PremiumStatusBadge status="LIVE">Learn</PremiumStatusBadge>
+              <PremiumStatusBadge status="NEUTRAL">
+                {entries.length} articles
+              </PremiumStatusBadge>
             </div>
-          </Container>
-        </section>
+            <h1 className="mt-4 font-[family-name:var(--font-family-editorial)] text-[length:var(--font-size-title-lg)] leading-[var(--line-height-heading)] text-[color:var(--ui-color-text-primary)]">
+              Learn
+            </h1>
+          </div>
+        </PremiumBentoSection>
 
-        <section className="border-y border-[rgba(184,137,67,0.18)] bg-white">
-          <Container className="py-4 sm:py-6">
-            <Card
-              tone="default"
-              className="border-[rgba(76,187,23,0.22)] bg-white p-4 before:opacity-0"
-            >
-              <p className="text-[0.92rem] font-semibold leading-6 text-[#111111]">
-                Learning content is educational. Serious personal decisions
-                should be reviewed through Kundli context and human guidance.
-              </p>
-            </Card>
-          </Container>
-        </section>
-      </main>
+        <PremiumBentoSection label="Search" className="pt-0">
+          <form
+            action={localizeHref("/from-the-desk")}
+            className="grid gap-3 rounded-[var(--ui-radius-xl)] border border-[color:var(--ui-color-border-subtle)] bg-white p-4 shadow-[var(--ui-shadow-sm)] sm:grid-cols-[minmax(0,1fr)_auto]"
+          >
+            <label className="sr-only" htmlFor="learn-search">
+              Search Desk
+            </label>
+            <Input id="learn-search" name="q" placeholder="Search Desk" />
+            <Button type="submit">Search</Button>
+          </form>
+        </PremiumBentoSection>
+
+        <PremiumBentoSection label="Categories" className="pt-0">
+          <div className="flex min-w-0 flex-wrap gap-2">
+            {categories.map((category) => (
+              <Link
+                href={localizeHref(toDeskHref({ category }))}
+                key={category}
+              >
+                <PremiumStatusBadge status="NEUTRAL">
+                  {category}
+                </PremiumStatusBadge>
+              </Link>
+            ))}
+          </div>
+        </PremiumBentoSection>
+
+        <PremiumBentoSection className="pt-0">
+          <PremiumSectionHeading label="Latest" />
+          <PremiumBentoGrid className="sm:grid-cols-2 lg:grid-cols-3">
+            {latestEntries.map((entry) => (
+              <PremiumArticleCard
+                category={entry.category}
+                date={formatDeskDate(entry.publishedAt)}
+                href={localizeHref(entry.path)}
+                key={`${entry.locale ?? defaultLocale}-${entry.slug}`}
+                title={entry.title}
+              />
+            ))}
+          </PremiumBentoGrid>
+        </PremiumBentoSection>
+      </PremiumPageShell>
     </>
   );
 }
