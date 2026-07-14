@@ -717,6 +717,248 @@ groups.push(
   },
 );
 
+// ============================================================================
+// Card 14.2D — deterministic Varshaphal fixture corpus (full-engine proof).
+// Every fixture asserts a targeted behaviour; token-bearing fixtures also run
+// token/provenance/rule-ID integrity + a forbidden-wording scan via tokenIntegrity.
+// ============================================================================
+const GR: TajikaGraha[] = ["SUN", "MOON", "MARS", "MERCURY", "JUPITER", "VENUS", "SATURN"];
+const OWN_LON: Record<TajikaGraha, number> = { SUN: 130, MOON: 100, MARS: 10, MERCURY: 65, JUPITER: 245, VENUS: 40, SATURN: 275 };
+const TRIR: Record<string, { DAY: string; NIGHT: string }> = {
+  FIRE: { DAY: "SUN", NIGHT: "JUPITER" }, EARTH: { DAY: "VENUS", NIGHT: "MOON" },
+  AIR: { DAY: "SATURN", NIGHT: "MERCURY" }, WATER: { DAY: "VENUS", NIGHT: "MARS" },
+};
+let VFIX_COUNT = 0;
+function vfix(name: string, run: () => void): void {
+  VFIX_COUNT += 1;
+  groups.push({ name: `VFX${String(VFIX_COUNT).padStart(3, "0")} ${name}`, run });
+}
+
+// --- Solar-return accuracy + convergence + determinism sweep ---
+for (const [target, motion] of [[10, 0.9856], [95, 0.9856], [200, 0.9856], [357, 0.98565], [0.5, 0.9856], [123.45, 0.9856]] as const) {
+  for (const N of [0, 1, 5, 33]) {
+    vfix(`solar-return target=${target} N=${N}`, () => {
+      const t0 = Date.UTC(1980, 0, 1, 0, 0, 0);
+      const sun = makeSyntheticSun(target, motion, t0);
+      const input = { natalSunLongitudeDeg: target, natalInstantUtcMs: t0, yearNumber: N, sunSiderealLongitudeAtUtcMs: sun };
+      const r = findSolarReturn(input);
+      assert(r.status === "CONVERGED", `status ${r.status}`);
+      assert(r.finalErrorArcsec! <= 0.001 && r.iterations <= 64, `err ${r.finalErrorArcsec} iters ${r.iterations}`);
+      assert(Math.abs(norm180(sun(r.returnInstantUtcMs!) - target)) < 0.001, "sun back to natal");
+      assert(JSON.stringify(r) === JSON.stringify(findSolarReturn(input)), "deterministic");
+      tokenIntegrity(r.tokens);
+    });
+  }
+}
+
+// --- Leap / year-index boundaries ---
+for (let N = 0; N <= 15; N += 1) {
+  vfix(`year-index N=${N} leap-span`, () => {
+    const t0 = Date.UTC(2000, 1, 28, 12, 0, 0);
+    const sun = makeSyntheticSun(339, 0.9856, t0);
+    const r = findSolarReturn({ natalSunLongitudeDeg: 339, natalInstantUtcMs: t0, yearNumber: N, sunSiderealLongitudeAtUtcMs: sun });
+    assert(r.status === "CONVERGED", `N=${N} ${r.status}`);
+    assert(typeof r.civilYearBoundaryCrossed === "boolean" && r.yearNumber === N, "index + boundary flag");
+    tokenIntegrity(r.tokens);
+  });
+}
+
+// --- Timezone / date boundaries ---
+for (const iso of ["1999-12-31T23:58:00Z", "2000-01-01T00:01:00Z", "2020-02-29T00:00:00Z", "2021-01-01T00:00:30Z", "2016-12-31T23:59:30Z", "2024-02-29T12:00:00Z", "1985-07-01T00:00:00Z", "2030-01-01T00:00:00Z"]) {
+  vfix(`date-boundary ${iso}`, () => {
+    const t0 = Date.parse(iso);
+    const sun = makeSyntheticSun(120, 0.9856, t0);
+    const input = { natalSunLongitudeDeg: 120, natalInstantUtcMs: t0, yearNumber: 1, sunSiderealLongitudeAtUtcMs: sun };
+    const r = findSolarReturn(input);
+    assert(r.status === "CONVERGED" && !Number.isNaN(Date.parse(r.returnInstantUtcIso!)), "valid ISO");
+    assert(r.returnInstantUtcMs === findSolarReturn(input).returnInstantUtcMs, "deterministic");
+  });
+}
+
+// --- Varsha Lagna across signs + boundaries ---
+for (let s = 0; s < 12; s += 1) {
+  vfix(`varsha-lagna sign=${s}`, () => {
+    const r = computeVarshaLagna({ returnInstantUtcMs: 0, latitudeDeg: 20, longitudeDeg: 77, ascendantSiderealLongitudeAt: () => s * 30 + 15 });
+    assert(r.status === "CALCULATED" && r.signIndex === s, `sign ${r.signIndex}`);
+    tokenIntegrity(r.tokens);
+  });
+}
+vfix("varsha-lagna high-latitude unavailable", () => {
+  const r = computeVarshaLagna({ returnInstantUtcMs: 0, latitudeDeg: 72, longitudeDeg: 20, ascendantSiderealLongitudeAt: () => 100 });
+  assert(r.status === "UNAVAILABLE" && r.unavailableReasons[0]!.code === "HIGH_LATITUDE_ASCENDANT", "high-lat");
+});
+vfix("varsha-lagna null-ascendant unavailable", () => {
+  const r = computeVarshaLagna({ returnInstantUtcMs: 0, latitudeDeg: 20, longitudeDeg: 20, ascendantSiderealLongitudeAt: () => null });
+  assert(r.status === "UNAVAILABLE", "null asc");
+});
+
+// --- Muntha 12-year progression + tiers + states ---
+for (let n = 0; n < 12; n += 1) {
+  vfix(`muntha year=${n}`, () => {
+    const m = computeMuntha({ natalLagnaLongitudeDeg: 15, yearNumber: n, varshaLagnaSignIndex: 0 });
+    assert(m.signIndex === n % 12 && m.house === (n % 12) + 1, `sign ${m.signIndex} house ${m.house}`);
+    tokenIntegrity(m.tokens);
+  });
+}
+vfix("muntha birth-time missing unavailable", () => {
+  const m = computeMuntha({ natalLagnaLongitudeDeg: null, yearNumber: 3, varshaLagnaSignIndex: 0 });
+  assert(m.status === "UNAVAILABLE" && m.unavailableReasons[0]!.code === "BIRTH_TIME_REQUIRED", "unavailable");
+});
+vfix("muntha missing varsha-lagna partial", () => {
+  const m = computeMuntha({ natalLagnaLongitudeDeg: 45, yearNumber: 2, varshaLagnaSignIndex: null });
+  assert(m.status === "PARTIAL" && m.partialFlags.includes("MISSING_VARSHA_LAGNA"), "partial");
+});
+
+// --- Dinratri: 4 triplicities x day/night + boundaries ---
+for (const [sign, trip] of [[0, "FIRE"], [1, "EARTH"], [2, "AIR"], [3, "WATER"]] as const) {
+  for (const dn of ["DAY", "NIGHT"] as const) {
+    vfix(`dinratri ${trip} ${dn}`, () => {
+      const sr = { sunriseUtcMs: Date.parse("2025-06-10T01:00:00Z"), sunsetUtcMs: Date.parse("2025-06-10T13:00:00Z") };
+      const inst = dn === "DAY" ? Date.parse("2025-06-10T06:00:00Z") : Date.parse("2025-06-10T20:00:00Z");
+      const d = computeDinratri({ returnInstantUtcMs: inst, sunriseSunset: sr, varshaLagnaSignIndex: sign });
+      assert(d.dayNight === dn && d.trirashiPati === TRIR[trip][dn], `dn=${d.dayNight} trirashi=${d.trirashiPati}`);
+      tokenIntegrity(d.tokens);
+    });
+  }
+}
+vfix("dinratri pre-dawn previous weekday", () => {
+  const sr = { sunriseUtcMs: Date.parse("2025-06-10T01:00:00Z"), sunsetUtcMs: Date.parse("2025-06-10T13:00:00Z") };
+  const d = computeDinratri({ returnInstantUtcMs: Date.parse("2025-06-10T00:30:00Z"), sunriseSunset: sr, varshaLagnaSignIndex: 0 });
+  assert(d.dayNight === "NIGHT" && d.dinratriLord !== null, "pre-dawn");
+});
+vfix("dinratri indeterminate unavailable", () => {
+  const d = computeDinratri({ returnInstantUtcMs: 0, sunriseSunset: null, varshaLagnaSignIndex: 0 });
+  assert(d.status === "UNAVAILABLE" && d.unavailableReasons[0]!.code === "DAY_NIGHT_INDETERMINATE", "indeterminate");
+});
+
+// --- Tajika aspects: angle detection + applying/separating + orb edges ---
+for (const angle of [0, 60, 90, 120, 180] as const) {
+  vfix(`aspect detect ${angle}`, () => {
+    const r = evaluateTajikaAspect({ graha: "JUPITER", longitudeDeg: 0, speedDegPerDay: 0.08 }, { graha: "SUN", longitudeDeg: angle, speedDegPerDay: 0.98 });
+    assert(r.active && r.angle === angle, `angle ${r.angle}`);
+    tokenIntegrity(r.tokens);
+  });
+}
+vfix("aspect conjunction applying", () => { const r = evaluateTajikaAspect({ graha: "MOON", longitudeDeg: 10, speedDegPerDay: 13 }, { graha: "SATURN", longitudeDeg: 12, speedDegPerDay: 0.03 }); assert(r.motion === "APPLYING", `m ${r.motion}`); });
+vfix("aspect conjunction separating", () => { const r = evaluateTajikaAspect({ graha: "MOON", longitudeDeg: 14, speedDegPerDay: 13 }, { graha: "SATURN", longitudeDeg: 12, speedDegPerDay: 0.03 }); assert(r.motion === "SEPARATING", `m ${r.motion}`); });
+vfix("aspect opposition applying", () => { const r = evaluateTajikaAspect({ graha: "MOON", longitudeDeg: 178, speedDegPerDay: 13 }, { graha: "SATURN", longitudeDeg: 0, speedDegPerDay: 0.03 }); assert(r.active && r.angle === 180 && r.motion === "APPLYING", `m ${r.motion}`); });
+vfix("aspect opposition separating", () => { const r = evaluateTajikaAspect({ graha: "MOON", longitudeDeg: 182, speedDegPerDay: 13 }, { graha: "SATURN", longitudeDeg: 0, speedDegPerDay: 0.03 }); assert(r.angle === 180 && r.motion === "SEPARATING", `m ${r.motion}`); });
+for (const [ga, gb, allowed] of [["MERCURY", "VENUS", 7], ["SUN", "MOON", 13.5], ["MARS", "SATURN", 8.5]] as const) {
+  vfix(`aspect orb-edge ${ga}-${gb} active`, () => { const r = evaluateTajikaAspect({ graha: ga, longitudeDeg: 0, speedDegPerDay: 1 }, { graha: gb, longitudeDeg: allowed, speedDegPerDay: 0.5 }); assert(r.active && r.angle === 0, `active ${r.active}`); });
+  vfix(`aspect orb-edge ${ga}-${gb} inactive`, () => { const r = evaluateTajikaAspect({ graha: ga, longitudeDeg: 0, speedDegPerDay: 1 }, { graha: gb, longitudeDeg: allowed + 0.01, speedDegPerDay: 0.5 }); assert(!r.active, "inactive"); });
+}
+
+// --- Panchavargeeya Bala: own Griha, Uccha at exalt/debil per graha ---
+for (const g of GR) {
+  vfix(`panchavargeeya own-Griha=30 ${g}`, () => {
+    const r = computePanchavargeeyaBala({ graha: g, longitudes: lonMap({ [g]: OWN_LON[g] }), d3SignIndex: 0, d9SignIndex: 0 });
+    assert(Math.abs(r.griha - 30) < 1e-9, `griha ${r.griha}`);
+    tokenIntegrity(r.tokens);
+  });
+  vfix(`panchavargeeya Uccha=20@exalt ${g}`, () => {
+    const r = computePanchavargeeyaBala({ graha: g, longitudes: lonMap({ [g]: DEEP_EXALTATION_LONGITUDE[g] }), d3SignIndex: 0, d9SignIndex: 0 });
+    assert(Math.abs(r.uccha - 20) < 1e-6, `uccha ${r.uccha}`);
+  });
+  vfix(`panchavargeeya Uccha=0@debil ${g}`, () => {
+    const r = computePanchavargeeyaBala({ graha: g, longitudes: lonMap({ [g]: norm360(DEEP_EXALTATION_LONGITUDE[g] + 180) }), d3SignIndex: 0, d9SignIndex: 0 });
+    assert(Math.abs(r.uccha) < 1e-6, `uccha ${r.uccha}`);
+  });
+}
+
+// --- Eight Tajika Yogas (positive) + negatives ---
+const yogaHas = (r: ReturnType<typeof evaluateTajikaYogas>, y: string) => r.yogas.some((d) => d.yoga === y);
+vfix("yoga ITHASALA", () => assert(yogaHas(evaluateTajikaYogas({ significatorA: "MERCURY", significatorB: "JUPITER", planets: { MERCURY: yp("MERCURY", 10, 1.2), JUPITER: yp("JUPITER", 12, 0.08) } }), "ITHASALA"), "ithasala"));
+vfix("yoga ISHRAFA", () => assert(yogaHas(evaluateTajikaYogas({ significatorA: "MERCURY", significatorB: "JUPITER", planets: { MERCURY: yp("MERCURY", 14, 1.2), JUPITER: yp("JUPITER", 12, 0.08) } }), "ISHRAFA"), "ishrafa"));
+vfix("yoga IKKAVALA", () => assert(yogaHas(evaluateTajikaYogas({ significatorA: "MERCURY", significatorB: "JUPITER", planets: { MERCURY: yp("MERCURY", 10, 1.2), JUPITER: yp("JUPITER", 10.5, 0.08) } }), "IKKAVALA"), "ikkavala"));
+vfix("yoga INDUVARA", () => assert(yogaHas(evaluateTajikaYogas({ significatorA: "MERCURY", significatorB: "JUPITER", planets: { MERCURY: yp("MERCURY", 0, 1.2), JUPITER: yp("JUPITER", 90, 0.08) } }), "INDUVARA"), "induvara"));
+vfix("yoga KAMBOOLA", () => assert(yogaHas(evaluateTajikaYogas({ significatorA: "SUN", significatorB: "SATURN", planets: { SUN: yp("SUN", 0, 0.98), SATURN: yp("SATURN", 200, 0.03), MOON: yp("MOON", 350, 13) } }), "KAMBOOLA"), "kamboola"));
+vfix("yoga NAKTA", () => assert(yogaHas(evaluateTajikaYogas({ significatorA: "SATURN", significatorB: "JUPITER", planets: { SATURN: yp("SATURN", 0, 0.03), JUPITER: yp("JUPITER", 200, 0.08), MOON: yp("MOON", 80, 13) } }), "NAKTA"), "nakta"));
+vfix("yoga YAMAYA", () => assert(yogaHas(evaluateTajikaYogas({ significatorA: "MOON", significatorB: "MERCURY", planets: { MOON: yp("MOON", 10, 13), MERCURY: yp("MERCURY", 130, 1.2), SATURN: yp("SATURN", 70, 0.03) } }), "YAMAYA"), "yamaya"));
+vfix("yoga MANAU", () => assert(yogaHas(evaluateTajikaYogas({ significatorA: "MERCURY", significatorB: "JUPITER", planets: { MERCURY: yp("MERCURY", 10, 1.2), JUPITER: yp("JUPITER", 12, 0.08), MARS: yp("MARS", 15, 0.5) } }), "MANAU"), "manau"));
+vfix("yoga none when far apart", () => { const r = evaluateTajikaYogas({ significatorA: "SATURN", significatorB: "JUPITER", planets: { SATURN: yp("SATURN", 0, 0.03), JUPITER: yp("JUPITER", 47, 0.08) } }); assert(!yogaHas(r, "ITHASALA") && !yogaHas(r, "ISHRAFA"), "no yoga"); });
+vfix("yoga missing significator partial", () => { const r = evaluateTajikaYogas({ significatorA: "SATURN", significatorB: "JUPITER", planets: { SATURN: yp("SATURN", 0, 0.03) } }); assert(r.partialFlags.includes("MISSING_SIGNIFICATOR"), "partial"); });
+
+// --- Varshesha tie-break priority + weak + indeterminate ---
+const CANDS = ["MUNTHA_LORD", "VARSHA_LAGNA_LORD", "JANMA_LAGNA_LORD", "TRIRASHI_PATI", "DINARATRI_LORD"];
+for (let i = 0; i < CANDS.length - 1; i += 1) {
+  vfix(`varshesha tie ${CANDS[i]} beats ${CANDS[i + 1]}`, () => {
+    const list = CANDS.map((id, k) => ({ id: id as never, graha: "SUN" as TajikaGraha, balaVishwa: (k === i || k === i + 1) ? 50 : 10, hasIthasalaWithMunthaOrLagnaLord: true }));
+    const r = selectVarshesha(list);
+    assert(r.varshesha!.id === CANDS[i], `winner ${r.varshesha!.id}`);
+    tokenIntegrity(r.tokens);
+  });
+}
+vfix("varshesha weak (none eligible)", () => {
+  const list = CANDS.map((id, k) => ({ id: id as never, graha: "SUN" as TajikaGraha, balaVishwa: k === 1 ? 40 : 10, hasIthasalaWithMunthaOrLagnaLord: false }));
+  const r = selectVarshesha(list);
+  assert(r.weakYearLord && r.varshesha!.id === "VARSHA_LAGNA_LORD", `weak ${r.weakYearLord}`);
+});
+vfix("varshesha indeterminate", () => {
+  const r = selectVarshesha([{ id: "MUNTHA_LORD" as never, graha: null, balaVishwa: null, hasIthasalaWithMunthaOrLagnaLord: false }]);
+  assert(r.status === "UNAVAILABLE" && r.unavailableReasons[0]!.code === "YEAR_LORD_INDETERMINATE", "indeterminate");
+});
+
+// --- Mudda Maha/Antar invariants per start lord ---
+for (const lord of MUDDA_DASHA_SEQUENCE) {
+  vfix(`mudda start=${lord} invariants`, () => {
+    const Y = 365.2422;
+    const r = computeMuddaDasha({ startLord: lord, yearLengthDays: Y, returnInstantUtcMs: 0 });
+    assert(r.status === "CALCULATED" && r.maha[0]!.lord === lord && r.maha.length === 9, `maha ${r.maha.length}`);
+    assert(Math.abs(r.totalDays - Y) < 1e-6, `sum ${r.totalDays}`);
+    for (const m of r.maha) assert(Math.abs(m.antar.reduce((a, x) => a + x.days, 0) - m.days) < 1e-6, "antar sum");
+    tokenIntegrity(r.tokens);
+  });
+}
+vfix("mudda balance split sums to year", () => {
+  const Y = 365.2563;
+  const r = computeMuddaDasha({ startLord: "MOON", yearLengthDays: Y, returnInstantUtcMs: 0, startLordElapsedFraction: 0.4 });
+  assert(r.maha.length === 10 && Math.abs(r.totalDays - Y) < 1e-6, `sum ${r.totalDays}`);
+});
+vfix("mudda invalid year unavailable", () => {
+  const r = computeMuddaDasha({ startLord: "MOON", yearLengthDays: -1, returnInstantUtcMs: 0 });
+  assert(r.status === "UNAVAILABLE" && r.unavailableReasons[0]!.code === "MUDDA_YEAR_LENGTH", "invalid");
+});
+
+// --- Orchestrator: full runs, partial, unavailable, high-lat, dinratri-indeterminate ---
+for (const N of [0, 1, 10, 25, 40]) {
+  vfix(`orchestrator year=${N} CALCULATED + deterministic`, () => {
+    const r = buildVarshaphalSnapshot(fullInput({ yearNumber: N }));
+    assert(r.status === "CALCULATED", `status ${r.status} ${r.partialFlags.join(",")}`);
+    assert(/^[0-9a-f]{16}$/.test(r.provenance.rulebookHash) && r.contractVersion === "1.0.0", "provenance");
+    assert(JSON.stringify(r) === JSON.stringify(buildVarshaphalSnapshot(fullInput({ yearNumber: N }))), "deterministic");
+    tokenIntegrity(r.tokens);
+  });
+}
+vfix("orchestrator partial (missing divisional + moon lord)", () => {
+  const r = buildVarshaphalSnapshot(fullInput({ divisional: undefined, moonNakshatraLordAtReturn: null }));
+  assert(r.status === "PARTIAL" && r.partialFlags.includes("MISSING_D3_D9") && r.partialFlags.includes("MISSING_MOON_NAKSHATRA_LORD"), "partial");
+});
+vfix("orchestrator unavailable (solar-return failure)", () => {
+  const r = buildVarshaphalSnapshot(fullInput({ ephemeris: { ...synthEphemeris(), sunSiderealLongitudeAtUtcMs: () => 42 } }));
+  assert(r.status === "UNAVAILABLE_INVALID_INPUT" && r.muntha === null, "unavailable");
+});
+vfix("orchestrator high-latitude", () => {
+  const r = buildVarshaphalSnapshot(fullInput({ natal: { ...fullInput().natal, latitudeDeg: 71 } }));
+  assert(r.status === "PARTIAL" && r.varshaLagna!.status === "UNAVAILABLE", "high-lat");
+});
+vfix("orchestrator dinratri indeterminate", () => {
+  const r = buildVarshaphalSnapshot(fullInput({ ephemeris: { ...synthEphemeris(), sunriseSunsetAt: () => null } }));
+  assert(r.unavailableReasons.some((u) => u.code === "DAY_NIGHT_INDETERMINATE") && r.dinratri!.status === "UNAVAILABLE", "indeterminate");
+});
+
+// --- Provenance / rulebook hash / forbidden wording ---
+vfix("rulebook hash stable + 16-hex", () => {
+  assert(/^[0-9a-f]{16}$/.test(computeVarshaphalRulebookHash()), "hex");
+  assert(computeVarshaphalRulebookHash() === computeVarshaphalRulebookHash(), "stable");
+});
+vfix("forbidden-wording corpus scan (full snapshot)", () => {
+  const r = buildVarshaphalSnapshot(fullInput());
+  const blob = JSON.stringify({ ...r, disclaimer: "", provenance: null }).toLowerCase();
+  for (const w of ["guarantee", "guaranteed", "lucky", "percent", "perfect", "remedy", "remedies", "doom", "fatal"]) {
+    assert(!blob.includes(w), `forbidden token '${w}'`);
+  }
+});
+
 function main() {
   console.log("Premium Varshaphal / Tajika Core registry + constants QA (pure):");
   let passed = 0;
@@ -733,7 +975,7 @@ function main() {
     }
   }
   console.log(`\nvarshaphal premium registry QA summary: ${passed} passed, ${failed} failed (of ${groups.length}).`);
-  console.log(`  registry: ${VARSHAPHAL_RULE_REGISTRY.length} rules; rulebook hash ${computeVarshaphalRulebookHash()}`);
+  console.log(`  Card 14.2D fixture corpus: ${VFIX_COUNT} deterministic fixtures; registry ${VARSHAPHAL_RULE_REGISTRY.length} rules; rulebook hash ${computeVarshaphalRulebookHash()}`);
   if (failed > 0) process.exit(1);
 }
 
