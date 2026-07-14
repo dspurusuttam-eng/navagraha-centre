@@ -58,6 +58,8 @@
     "debug:panchang:premium:integration:qa": "tsx scripts/debug-panchang-premium-integration-qa.ts",
     "debug:muhurat:qa": "tsx scripts/debug-muhurat-intelligence-qa.ts",
     "debug:muhurat:premium:qa": "tsx scripts/debug-muhurat-premium-qa.ts",
+    "debug:varshaphal:premium:qa": "tsx scripts/debug-varshaphal-premium-qa.ts",
+    "debug:varshaphal:adapter:node22:qa": "tsx scripts/debug-varshaphal-adapter-node22.ts",
     "debug:panchang:muhurat:qa": "tsx scripts/debug-panchang-muhurat-qa.ts",
     "debug:matchmaking:qa": "tsx scripts/debug-matchmaking-qa.ts",
     "debug:matchmaking:compatibility:qa": "tsx scripts/debug-matchmaking-compatibility-qa.ts",
