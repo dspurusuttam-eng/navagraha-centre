@@ -18,6 +18,9 @@ concurrency:
   group: ephemeris-qa-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  NAVAGRAHA_INTERNAL_SWISS_QA: "1"
+
 jobs:
   ephemeris-qa:
     name: Ephemeris QA (Node 22)

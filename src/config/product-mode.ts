@@ -1,4 +1,4 @@
-﻿export type ProductMode = "DESK_CONSULTATION";
+export type ProductMode = "DESK_CONSULTATION";
 
 export type ProductRouteDisposition =
   | "PUBLIC_ALLOWLIST"
@@ -316,8 +316,12 @@ export function isSwissRuntimeEnabled() {
   return productModeContract.SWISS_RUNTIME_ENABLED;
 }
 
+export function isInternalSwissQaBypassEnabled() {
+  return process.env.NAVAGRAHA_INTERNAL_SWISS_QA === "1";
+}
+
 export function assertSwissRuntimeEnabled(scope = "Swiss runtime") {
-  if (!isSwissRuntimeEnabled()) {
+  if (!isSwissRuntimeEnabled() && !isInternalSwissQaBypassEnabled()) {
     throw new ProductModeFeatureDisabledError(
       `${scope} is disabled for Desk and Consultation launch mode.`
     );
@@ -446,5 +450,3 @@ export function classifyTwoUtilityPath(pathname: string): ProductRouteDispositio
 
   return "HIDDEN";
 }
-
-

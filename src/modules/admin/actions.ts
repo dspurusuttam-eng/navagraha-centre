@@ -38,6 +38,7 @@ const articleStatuses = [
   ArticleStatus.DRAFT,
   ArticleStatus.REVIEW,
   ArticleStatus.PUBLISHED,
+  ArticleStatus.UNPUBLISHED,
   ArticleStatus.ARCHIVED,
 ] as const;
 
