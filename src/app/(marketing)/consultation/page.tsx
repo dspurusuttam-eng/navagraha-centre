@@ -27,9 +27,9 @@ import {
   hasExplicitLocalePrefixInRequest,
 } from "@/modules/localization/request";
 
-const consultationMethod = "Account booking";
-const languageStatus = "Selected during booking";
-const availabilityStatus = "Slots shown after sign-in";
+const consultationMethod = "Contact request";
+const languageStatus = "Selected during consultation";
+const availabilityStatus = "Contact to confirm";
 
 export async function generateMetadata() {
   const locale = await getRequestLocale();
@@ -38,7 +38,7 @@ export async function generateMetadata() {
   return createToolMetadata({
     title: "Consultation Guidance",
     description:
-      "Calm Vedic consultation preparation with Acharya guidance, availability details and account booking access.",
+      "Calm Vedic consultation preparation with Acharya guidance, availability details and contact access.",
     path: "/consultation",
     locale,
     explicitLocalePrefix: hasExplicitLocalePrefix,
@@ -64,8 +64,8 @@ function formatPriceFrom(minorUnits: number) {
   }).format(minorUnits / 100);
 }
 
-function toBookingHref(packageSlug: string) {
-  return `/dashboard/consultations/book?package=${packageSlug}`;
+function toConsultationContactHref(packageSlug: string) {
+  return `/contact?intent=consultation&package=${packageSlug}`;
 }
 
 export default async function ConsultationPage() {
@@ -139,11 +139,11 @@ export default async function ConsultationPage() {
                 eventPayload={{
                   feature: "consultation-booking",
                   page: "/consultation",
-                  route: "/dashboard/consultations/book",
+                  route: "/contact?intent=consultation",
                 }}
-                href={localizeHref("/dashboard/consultations/book")}
+                href={localizeHref("/contact?intent=consultation")}
               >
-                Book from Account
+                Contact
               </TrackedLink>
               <TrackedLink
                 className={buttonStyles({ size: "lg", tone: "secondary" })}
@@ -184,7 +184,7 @@ export default async function ConsultationPage() {
           <PremiumBentoGrid className="sm:grid-cols-2 lg:grid-cols-3">
             {consultationPackages.map((item) => {
               const price = formatPriceFrom(item.priceFromMinor);
-              const bookingHref = toBookingHref(item.slug);
+              const contactHref = toConsultationContactHref(item.slug);
 
               return (
                 <Card
@@ -252,9 +252,9 @@ export default async function ConsultationPage() {
                     eventPayload={{
                       feature: `consultation-${item.slug}`,
                       page: "/consultation",
-                      route: bookingHref,
+                      route: contactHref,
                     }}
-                    href={localizeHref(bookingHref)}
+                    href={localizeHref(contactHref)}
                   >
                     Book
                   </TrackedLink>

@@ -27,7 +27,7 @@ import {
 
 const supportTiles = [
   { featureKey: "consult", label: "Consultation" },
-  { featureKey: "sign-in", label: "Account access" },
+  { featureKey: "contact", label: "Account support", href: "/contact?intent=account-support" },
   { featureKey: "desk", label: "Content / Desk" },
   {
     featureKey: "contact",
