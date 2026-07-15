@@ -1,4 +1,4 @@
-import type { NavagrahaIconRegistryKey } from "@/components/icons/navagraha-icon-registry";
+﻿import type { NavagrahaIconRegistryKey } from "@/components/icons/navagraha-icon-registry";
 
 export type FeatureVisibility = "LIVE" | "COMING_SOON" | "HIDDEN" | "INTERNAL_ONLY";
 export type FeatureAccess = "PUBLIC" | "AUTHENTICATED" | "ADMIN";
@@ -81,19 +81,19 @@ export const featureStatusRegistry = [
     label: "Account",
     route: "/dashboard",
     iconKey: "Account",
-    visibility: "LIVE",
-    runtimeEnabled: true,
+    visibility: "HIDDEN",
+    runtimeEnabled: false,
     dependsOnSwiss: false,
     access: "AUTHENTICATED",
-    navigationSurface: "PRIMARY",
+    navigationSurface: "HIDDEN",
   },
   {
     featureKey: "sign-in",
     label: "Sign In",
     route: "/sign-in",
     iconKey: "Account",
-    visibility: "LIVE",
-    runtimeEnabled: true,
+    visibility: "HIDDEN",
+    runtimeEnabled: false,
     dependsOnSwiss: false,
     access: "PUBLIC",
   },
@@ -174,11 +174,11 @@ export const featureStatusRegistry = [
     label: "Learn",
     route: "/learn",
     iconKey: "Learn",
-    visibility: "LIVE",
-    runtimeEnabled: true,
+    visibility: "HIDDEN",
+    runtimeEnabled: false,
     dependsOnSwiss: false,
     access: "PUBLIC",
-    navigationSurface: "FOOTER_ONLY",
+    navigationSurface: "HIDDEN",
   },
   {
     featureKey: "shop",

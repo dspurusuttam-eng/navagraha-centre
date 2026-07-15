@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { NavagrahaLogo } from "@/components/brand/navagraha-logo";
 import { Container } from "@/components/ui/container";
 import { featureStatusRegistry } from "@/config/feature-status-registry";

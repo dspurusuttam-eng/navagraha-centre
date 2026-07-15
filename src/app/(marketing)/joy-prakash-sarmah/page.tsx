@@ -29,9 +29,9 @@ import {
 import { astrologerPage } from "@/modules/marketing/content";
 
 const profileIconPath = "/icons/navagraha/Consult.png";
-const availabilityStatus = "Slots shown after sign-in";
-const consultationMethod = "Account booking";
-const languageStatus = "Selected during booking";
+const availabilityStatus = "Contact to confirm";
+const consultationMethod = "Contact request";
+const languageStatus = "Selected during consultation";
 
 const verifiedDetails = [
   {
@@ -65,8 +65,8 @@ const verifiedDetails = [
 ] as const;
 
 const policyItems = [
-  "Booking access is handled through the protected account flow.",
-  "If no slot is visible after sign-in, use the contact path.",
+  "Consultation access is handled through the public contact path.",
+  "Use the contact path to confirm availability.",
   "Consultation is guidance and does not guarantee outcomes.",
 ] as const;
 
@@ -82,8 +82,8 @@ export async function generateMetadata() {
 }
 export const revalidate = 3600;
 
-function toBookingHref(packageSlug: string) {
-  return `/dashboard/consultations/book?package=${packageSlug}`;
+function toConsultationContactHref(packageSlug: string) {
+  return `/contact?intent=consultation&package=${packageSlug}`;
 }
 
 export default async function JoyPrakashSarmahPage() {
@@ -153,9 +153,9 @@ export default async function JoyPrakashSarmahPage() {
                   eventPayload={{
                     feature: "acharya-booking",
                     page: "/joy-prakash-sarmah",
-                    route: "/dashboard/consultations/book",
+                    route: "/contact?intent=consultation",
                   }}
-                  href={localizeHref("/dashboard/consultations/book")}
+                  href={localizeHref("/contact?intent=consultation")}
                 >
                   Consult
                 </TrackedLink>
@@ -223,9 +223,9 @@ export default async function JoyPrakashSarmahPage() {
                   eventPayload={{
                     feature: `acharya-${item.slug}`,
                     page: "/joy-prakash-sarmah",
-                    route: toBookingHref(item.slug),
+                    route: toConsultationContactHref(item.slug),
                   }}
-                  href={localizeHref(toBookingHref(item.slug))}
+                  href={localizeHref(toConsultationContactHref(item.slug))}
                 >
                   Consult
                 </TrackedLink>

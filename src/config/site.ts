@@ -1,4 +1,4 @@
-import { getPublicEnvironment } from "@/config/env";
+﻿import { getPublicEnvironment } from "@/config/env";
 import {
   globalFooterCopy,
   globalNavigationCopy,
@@ -26,34 +26,19 @@ const marketingNav = [
   { href: "/", label: globalNavigationCopy.home },
   { href: "/from-the-desk", label: "Desk" },
   { href: "/consultation", label: globalNavigationCopy.consultation },
-  { href: "/dashboard", label: globalNavigationCopy.account },
 ] satisfies SiteNavItem[];
 
-const appNav = [
-  { href: "/dashboard", label: globalNavigationCopy.dashboard },
-  { href: "/dashboard/onboarding", label: globalNavigationCopy.onboarding },
-  { href: "/dashboard/ask-my-chart", label: globalNavigationCopy.askMyChart },
-  { href: "/dashboard/consultations", label: globalNavigationCopy.consultations },
-  { href: "/dashboard/orders", label: globalNavigationCopy.orders },
-  { href: "/dashboard/chart", label: globalNavigationCopy.chart },
-  { href: "/dashboard/report", label: globalNavigationCopy.report },
-  { href: "/settings", label: globalNavigationCopy.settings },
-] satisfies SiteNavItem[];
+const appNav = [] satisfies SiteNavItem[];
 
-const adminNav = [{ href: "/admin", label: globalNavigationCopy.admin }] satisfies SiteNavItem[];
+const adminNav = [] satisfies SiteNavItem[];
 
-const foundationNav = [
-  { href: "/style-guide", label: globalNavigationCopy.styleGuide },
-] satisfies SiteNavItem[];
+const foundationNav = [] satisfies SiteNavItem[];
 
 const offeringsNav = [
   { href: "/consultation", label: globalNavigationCopy.consultation },
   { href: "/joy-prakash-sarmah", label: "Acharya" },
   { href: "/from-the-desk", label: "Desk" },
-  { href: "/learn", label: "Learn" },
   { href: "/methodology", label: "Methodology" },
-  { href: "/sign-in", label: globalNavigationCopy.login },
-  { href: "/sign-in", label: globalNavigationCopy.account },
   { href: "/support", label: "Support" },
   { href: "/contact", label: globalFooterCopy.links.contact },
   { href: "/privacy", label: globalFooterCopy.links.privacy },
@@ -67,14 +52,11 @@ const profileNav = [
 ] satisfies SiteNavItem[];
 
 const supportNav = [
-  { href: "/sign-in", label: globalNavigationCopy.login },
-  { href: "/sign-in", label: globalNavigationCopy.account },
   { href: "/contact", label: globalFooterCopy.links.contact },
   { href: "/privacy", label: globalFooterCopy.links.privacy },
   { href: "/terms", label: globalFooterCopy.links.terms },
   { href: "/disclaimer", label: globalFooterCopy.links.disclaimer },
   { href: "/refund", label: globalFooterCopy.links.refundPolicy },
-  { href: "/forgot-password", label: globalNavigationCopy.passwordReset },
 ] satisfies SiteNavItem[];
 
 export const siteConfig = {

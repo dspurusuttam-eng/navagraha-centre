@@ -77,8 +77,8 @@ function isProductStatus(value: string): value is ProductStatus {
   return productStatuses.includes(value as ProductStatus);
 }
 
-function isArticleStatus(value: string): value is ArticleStatus {
-  return articleStatuses.includes(value as ArticleStatus);
+function isArticleStatus(value: string): value is (typeof articleStatuses)[number] {
+  return articleStatuses.includes(value as (typeof articleStatuses)[number]);
 }
 
 function isRemedyPublicationState(

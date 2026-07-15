@@ -1,4 +1,4 @@
-import type { MetadataRoute } from "next";
+﻿import type { MetadataRoute } from "next";
 import { siteConfig } from "@/config/site";
 import { getContentAdapter } from "@/modules/content";
 import {
@@ -83,7 +83,6 @@ const staticRoutes: readonly StaticRouteDefinition[] = [
   { path: "/consultation", changeFrequency: "weekly", priority: 0.9 },
   { path: "/joy-prakash-sarmah", changeFrequency: "monthly", priority: 0.82 },
   { path: "/from-the-desk", changeFrequency: "daily", priority: 0.8 },
-  { path: "/learn", changeFrequency: "weekly", priority: 0.65 },
   { path: "/methodology", changeFrequency: "monthly", priority: 0.6 },
   { path: "/support", changeFrequency: "monthly", priority: 0.6 },
   { path: "/contact", changeFrequency: "monthly", priority: 0.6 },
@@ -91,7 +90,6 @@ const staticRoutes: readonly StaticRouteDefinition[] = [
   { path: "/terms", changeFrequency: "yearly", priority: 0.4 },
   { path: "/disclaimer", changeFrequency: "yearly", priority: 0.4 },
   { path: "/refund", changeFrequency: "yearly", priority: 0.4 },
-  { path: "/refund-cancellation", changeFrequency: "yearly", priority: 0.2 },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

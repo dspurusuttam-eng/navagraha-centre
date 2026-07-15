@@ -1,4 +1,4 @@
-import { PageViewTracker } from "@/components/analytics/page-view-tracker";
+﻿import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import {
   PremiumArticleCard,
   PremiumBentoGrid,
@@ -43,7 +43,7 @@ export async function generateMetadata() {
 export const revalidate = 3600;
 
 const primaryFeatureKeys = ["consult", "desk"] as const;
-const secondaryFeatureKeys = ["acharya", "account"] as const;
+const secondaryFeatureKeys = ["acharya", "methodology", "support", "contact"] as const;
 const hiddenHomeContentTerms = [
   "Ask NI",
   "Dasha",
