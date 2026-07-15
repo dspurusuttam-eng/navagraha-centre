@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { toNextJsHandler } from "better-auth/next-js";
 import { getAuth } from "@/lib/auth";
 import {
@@ -8,8 +8,18 @@ import {
   getRateLimitHeaders,
 } from "@/lib/rate-limit";
 import { trackServerEvent } from "@/lib/observability";
+import { arePublicAccountsEnabled } from "@/config/product-mode";
+import { createFeatureDisabledApiResponse } from "@/lib/product-mode/responses";
 
 export const dynamic = "force-dynamic";
+
+function checkPublicAccountsEnabled(request: Request) {
+  if (arePublicAccountsEnabled()) {
+    return null;
+  }
+
+  return createFeatureDisabledApiResponse(new URL(request.url).pathname);
+}
 
 function checkAuthRateLimit(request: Request, method: string) {
   const clientAddress = getClientAddress(request);
@@ -49,6 +59,12 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const disabled = checkPublicAccountsEnabled(request);
+
+  if (disabled) {
+    return disabled;
+  }
+
   const limited = checkAuthRateLimit(request, "POST");
 
   if (limited) {
@@ -59,6 +75,12 @@ export async function POST(request: Request) {
 }
 
 export async function PUT(request: Request) {
+  const disabled = checkPublicAccountsEnabled(request);
+
+  if (disabled) {
+    return disabled;
+  }
+
   const limited = checkAuthRateLimit(request, "PUT");
 
   if (limited) {
@@ -69,6 +91,12 @@ export async function PUT(request: Request) {
 }
 
 export async function PATCH(request: Request) {
+  const disabled = checkPublicAccountsEnabled(request);
+
+  if (disabled) {
+    return disabled;
+  }
+
   const limited = checkAuthRateLimit(request, "PATCH");
 
   if (limited) {
@@ -79,6 +107,12 @@ export async function PATCH(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  const disabled = checkPublicAccountsEnabled(request);
+
+  if (disabled) {
+    return disabled;
+  }
+
   const limited = checkAuthRateLimit(request, "DELETE");
 
   if (limited) {

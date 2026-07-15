@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { NavigationLink } from "@/components/site/navigation-link";
 import {
   SiteDrawer,
@@ -97,7 +97,7 @@ export async function Header() {
     {
       title: "DISCOVER",
       items: getDrawerItems(
-        ["search", "learn", "methodology"],
+        ["search", "methodology"],
         localizeHref,
         { methodology: "Methodology" }
       ),
@@ -114,10 +114,9 @@ export async function Header() {
       ),
     },
   ];
-  const drawerAccountItems = getDrawerItems(["account"], localizeHref);
+  const drawerAccountItems: readonly SiteDrawerItem[] = [];
 
   const searchHref = localizeHref(getFeatureRoute("search"));
-  const accountHref = localizeHref(getFeatureRoute("account"));
 
   return (
     <header
@@ -161,14 +160,6 @@ export async function Header() {
                 className="inline-flex h-11 shrink-0 items-center justify-center whitespace-nowrap rounded-full border border-[rgba(185,139,70,0.22)] bg-white px-2.5 text-[12px] font-bold uppercase tracking-[0.02em] text-[#111111] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_4px_12px_rgba(17,17,17,0.07)] transition hover:border-[rgba(185,139,70,0.38)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] min-[390px]:px-3 min-[430px]:text-[13px]"
               >
                 Search
-              </Link>
-
-              <Link
-                href={accountHref}
-                aria-label="Account"
-                className="inline-flex h-11 shrink-0 items-center justify-center whitespace-nowrap rounded-full border border-[rgba(76,187,23,0.24)] bg-white px-2.5 text-[12px] font-bold uppercase tracking-[0.02em] text-[#111111] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_4px_12px_rgba(17,17,17,0.07)] transition hover:border-[rgba(76,187,23,0.38)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)] min-[390px]:px-3 min-[430px]:text-[13px]"
-              >
-                Account
               </Link>
             </div>
           </div>
@@ -221,13 +212,6 @@ export async function Header() {
               >
                 Search
               </Link>
-              <NavigationLink
-                href={accountHref}
-                className="min-h-11 rounded-full border border-[rgba(76,187,23,0.22)] bg-white px-3 text-[0.68rem] font-semibold tracking-[0.08em] !text-[color:var(--color-ink-strong)] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_4px_12px_rgba(17,17,17,0.05)] hover:border-[rgba(76,187,23,0.38)] hover:!text-black 2xl:px-4"
-                activeClassName="rounded-full border-[rgba(76,187,23,0.38)] bg-white !text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_4px_12px_rgba(17,17,17,0.06)]"
-              >
-                Account
-              </NavigationLink>
             </nav>
           </div>
         </div>

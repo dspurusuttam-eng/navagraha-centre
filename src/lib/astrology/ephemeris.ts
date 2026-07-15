@@ -1,7 +1,7 @@
-import "server-only";
+﻿import "server-only";
 
 import { existsSync } from "node:fs";
-import swisseph from "swisseph";
+import { getSwissEphModule } from "@/lib/astrology/swiss-module";
 import {
   houseSystemCodeMap,
   nakshatraCatalog,
@@ -18,6 +18,8 @@ import type {
   PlanetaryBody,
   ZodiacSign,
 } from "@/modules/astrology/types";
+
+type SwissEphModule = typeof import("swisseph");
 
 type SwissBodyResult =
   | {
@@ -58,19 +60,21 @@ export type SwissEphemerisRuntime = {
 
 export type PlanetPositionMap = Record<PlanetaryBody, PlanetPosition>;
 
-const bodyCodeMap: Record<Exclude<PlanetaryBody, "KETU">, number> = {
-  SUN: swisseph.SE_SUN,
-  MOON: swisseph.SE_MOON,
-  MARS: swisseph.SE_MARS,
-  MERCURY: swisseph.SE_MERCURY,
-  JUPITER: swisseph.SE_JUPITER,
-  VENUS: swisseph.SE_VENUS,
-  SATURN: swisseph.SE_SATURN,
-  RAHU: swisseph.SE_TRUE_NODE,
-  URANUS: swisseph.SE_URANUS,
-  NEPTUNE: swisseph.SE_NEPTUNE,
-  PLUTO: swisseph.SE_PLUTO,
-};
+function getBodyCodeMap(swisseph: SwissEphModule): Record<Exclude<PlanetaryBody, "KETU">, number> {
+  return {
+    SUN: swisseph.SE_SUN,
+    MOON: swisseph.SE_MOON,
+    MARS: swisseph.SE_MARS,
+    MERCURY: swisseph.SE_MERCURY,
+    JUPITER: swisseph.SE_JUPITER,
+    VENUS: swisseph.SE_VENUS,
+    SATURN: swisseph.SE_SATURN,
+    RAHU: swisseph.SE_TRUE_NODE,
+    URANUS: swisseph.SE_URANUS,
+    NEPTUNE: swisseph.SE_NEPTUNE,
+    PLUTO: swisseph.SE_PLUTO,
+  };
+}
 
 let cachedRuntime: SwissEphemerisRuntime | null = null;
 
@@ -192,6 +196,8 @@ export function convertZonedBirthToUtcDate(
 }
 
 export function getSwissEphemerisRuntime(): SwissEphemerisRuntime {
+  const swisseph = getSwissEphModule();
+
   if (cachedRuntime) {
     return cachedRuntime;
   }
@@ -224,6 +230,7 @@ export function buildJulianDayFromLocal(
   timeLocal: string,
   timezone: string
 ) {
+  const swisseph = getSwissEphModule();
   const utcDate = convertZonedBirthToUtcDate(dateLocal, timeLocal, timezone);
   const hourDecimal =
     utcDate.getUTCHours() +
@@ -248,6 +255,8 @@ export function calculateHouseCuspsRaw(
   longitude: number,
   houseSystem: HouseSystem
 ) {
+  const swisseph = getSwissEphModule();
+
   return getSwissHousesResult(
     swisseph.swe_houses_ex(
       julianDayUt,
@@ -319,6 +328,7 @@ export function getPlanetPositions(
   houseSystem: HouseSystem = "WHOLE_SIGN",
   houseCusps?: readonly number[]
 ): PlanetPositionMap {
+  const swisseph = getSwissEphModule();
   const runtime = getSwissEphemerisRuntime();
   const { julianDayUt } = buildJulianDayFromLocal(
     dateLocal,
@@ -332,6 +342,8 @@ export function getPlanetPositions(
     runtime.ephemerisFlag | swisseph.SEFLG_SIDEREAL | swisseph.SEFLG_SPEED;
 
   const result = {} as PlanetPositionMap;
+
+  const bodyCodeMap = getBodyCodeMap(swisseph);
 
   for (const [body, bodyCode] of Object.entries(bodyCodeMap) as Array<
     [Exclude<PlanetaryBody, "KETU">, number]

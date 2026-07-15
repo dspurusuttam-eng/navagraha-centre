@@ -1,4 +1,9 @@
-import { NextResponse, type NextRequest } from "next/server";
+﻿import { NextResponse, type NextRequest } from "next/server";
+import { classifyTwoUtilityPath } from "@/config/product-mode";
+import {
+  createFeatureDisabledApiResponse,
+  createFeatureDisabledPageResponse,
+} from "@/lib/product-mode/responses";
 import {
   defaultLocale,
   detectLocaleFromPathname,
@@ -30,8 +35,26 @@ function shouldBypass(pathname: string) {
   );
 }
 
-function shouldUseDefaultLocaleForUnprefixedRoute(pathname: string) {
-  return pathname === "/kundli" || pathname === "/kundli/";
+function shouldUseDefaultLocaleForUnprefixedRoute() {
+  return false;
+}
+
+function enforceProductMode(request: NextRequest) {
+  const disposition = classifyTwoUtilityPath(request.nextUrl.pathname);
+
+  if (
+    disposition === "PUBLIC_ALLOWLIST" ||
+    disposition === "STATIC_METADATA" ||
+    disposition === "PUBLIC_CONTENT_API"
+  ) {
+    return null;
+  }
+
+  if (request.nextUrl.pathname.startsWith("/api/")) {
+    return createFeatureDisabledApiResponse(request.nextUrl.pathname);
+  }
+
+  return createFeatureDisabledPageResponse(disposition);
 }
 
 function withLocaleHeaders(
@@ -67,11 +90,17 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
+  const productModeResponse = enforceProductMode(request);
+
+  if (productModeResponse) {
+    return productModeResponse;
+  }
+
   const pathnameLocale = detectLocaleFromPathname(pathname);
   const cookieLocale = request.cookies.get(localeCookieName)?.value ?? null;
   const acceptLanguage = request.headers.get("accept-language");
   const useDefaultLocaleForRoute =
-    !pathnameLocale && shouldUseDefaultLocaleForUnprefixedRoute(pathname);
+    !pathnameLocale && shouldUseDefaultLocaleForUnprefixedRoute();
   const resolvedLocale = resolveRequestLocaleFromSources({
     pathname,
     cookieLocale,

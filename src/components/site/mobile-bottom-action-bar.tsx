@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -96,7 +96,7 @@ function FeatureIcon({
 }
 
 function getBottomNavigationFeatures() {
-  const allowedFeatureKeys = new Set(["home", "desk", "consult", "account"]);
+  const allowedFeatureKeys = new Set(["home", "desk", "consult"]);
 
   return primaryNavigationFeatures.filter(
     (feature) =>
@@ -137,7 +137,7 @@ export function MobileBottomActionBar({
       aria-label="Mobile primary navigation"
       className="fixed inset-x-0 bottom-0 z-50 border-t border-[rgba(185,139,70,0.34)] bg-white shadow-[0_-8px_22px_rgba(5,5,5,0.07)] xl:hidden"
     >
-      <div className="mx-auto grid max-w-5xl grid-cols-4 px-2 pb-[calc(0.45rem+env(safe-area-inset-bottom))] pt-1.5">
+      <div className="mx-auto grid max-w-5xl grid-cols-3 px-2 pb-[calc(0.45rem+env(safe-area-inset-bottom))] pt-1.5">
         {bottomActions.map((action) => {
           const href = localizeHref(
             locale,
@@ -145,8 +145,6 @@ export function MobileBottomActionBar({
             action.route
           );
           const active = isActiveHref(pathname, href);
-          const isAccount = action.featureKey === "account";
-
           return (
             <Link
               key={action.featureKey}
@@ -165,9 +163,7 @@ export function MobileBottomActionBar({
                   "flex h-10 w-10 items-center justify-center rounded-full border bg-white",
                   active
                     ? "border-[rgba(184,137,67,0.4)] text-[color:var(--color-accent-strong)] shadow-[0_5px_14px_rgba(184,137,67,0.12)]"
-                    : isAccount
-                      ? "border-[rgba(76,187,23,0.24)] text-[color:var(--color-ink-strong)]"
-                      : "border-black/12 text-[color:var(--color-ink-strong)]"
+                    : "border-black/12 text-[color:var(--color-ink-strong)]"
                 )}
               >
                 <FeatureIcon iconKey={action.iconKey} label={action.label} />
