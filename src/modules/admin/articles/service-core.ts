@@ -4,6 +4,8 @@
 import {
   createArticleSchema,
   updateArticleSchema,
+  draftAutosaveSchema,
+  publishableIssues,
   estimateReadingTimeMinutes,
   resolveTransition,
   transitionTimestampField,
@@ -60,6 +62,12 @@ export async function getArticle(deps: ArticleServiceDeps, id: string): Promise<
   return { ok: true, status: 200, data: record };
 }
 
+export async function getRecentArticles(deps: ArticleServiceDeps, limit: number): Promise<ServiceResult<ArticleRecord[]>> {
+  const n = Math.min(Math.max(1, Math.trunc(Number(limit) || 5)), 20);
+  const items = await deps.repo.listRecentByUpdated(n);
+  return { ok: true, status: 200, data: items };
+}
+
 // --- Write operations (founder/editor) -------------------------------------
 export async function createArticle(deps: ArticleServiceDeps, actor: ArticleActor, input: unknown): Promise<ServiceResult<ArticleRecord>> {
   if (!canWriteArticles(actor)) return err(403, "FORBIDDEN", "You do not have write access to articles.");
@@ -96,7 +104,11 @@ export async function updateArticle(deps: ArticleServiceDeps, actor: ArticleActo
   if (!canWriteArticles(actor)) return err(403, "FORBIDDEN", "You do not have write access to articles.");
   const current = await deps.repo.findById(id);
   if (!current) return err(404, "NOT_FOUND", "Article not found.");
-  const parsed = updateArticleSchema.safeParse(input);
+  // C4B1A: DRAFTs use the relaxed autosave validator (incomplete edits allowed); any
+  // already-live state (PUBLISHED/UNPUBLISHED/ARCHIVED) keeps the strict validator so a
+  // published article can never be blanked below its completeness floor.
+  const isDraft = current.status === "DRAFT";
+  const parsed = (isDraft ? draftAutosaveSchema : updateArticleSchema).safeParse(input);
   if (!parsed.success) return err(422, "VALIDATION_ERROR", "Invalid article payload.", parsed.error.issues);
   const data = parsed.data;
 
@@ -134,6 +146,14 @@ export async function transitionArticle(deps: ArticleServiceDeps, actor: Article
   if (!state) return err(409, "UNSUPPORTED_STATE", `Article is in a legacy state (${current.status}) that this console cannot transition.`);
   const resolved = resolveTransition(action, state);
   if (!resolved.ok) return err(409, "ILLEGAL_TRANSITION", resolved.reason);
+
+  // C4B1A: strict completeness gate — an incomplete (relaxed) draft can never go live.
+  if (resolved.to === "PUBLISHED") {
+    const issues = publishableIssues(current);
+    if (issues.length > 0) {
+      return err(422, "INCOMPLETE_DRAFT", "This draft is missing required fields and cannot be published.", issues);
+    }
+  }
 
   const stampField = transitionTimestampField(resolved.to);
   const updated = await deps.repo.update(id, {

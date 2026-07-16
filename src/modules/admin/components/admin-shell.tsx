@@ -14,6 +14,7 @@ type AdminShellProps = {
   userName: string;
   userEmail: string;
   adminRoles: readonly AdminRoleSummary[];
+  headerAction?: ReactNode;
   children: ReactNode;
 };
 
@@ -21,6 +22,7 @@ export function AdminShell({
   userName,
   userEmail,
   adminRoles,
+  headerAction,
   children,
 }: Readonly<AdminShellProps>) {
   const visibleRoutes = getVisibleAdminRoutes(adminRoles);
@@ -45,6 +47,7 @@ export function AdminShell({
                   {userEmail}
                 </p>
               </div>
+              {headerAction ? <div className="pt-1">{headerAction}</div> : null}
             </div>
 
             <div className="space-y-3">

@@ -80,6 +80,10 @@ export function createPrismaArticleRepository(db: Db): ArticleRepository {
     async remove(id) {
       await db.article.delete({ where: { id } });
     },
+    async listRecentByUpdated(limit) {
+      const rows = await db.article.findMany({ orderBy: { updatedAt: "desc" }, take: limit });
+      return rows.map(mapRow);
+    },
   };
 }
 

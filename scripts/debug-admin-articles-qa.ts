@@ -57,6 +57,9 @@ function makeRepo(): ArticleRepository & { rows: ArticleRecord[] } {
       const i = rows.findIndex((x) => x.id === id);
       if (i >= 0) rows.splice(i, 1);
     },
+    async listRecentByUpdated(limit) {
+      return [...rows].sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()).slice(0, limit).map(clone);
+    },
   };
 }
 

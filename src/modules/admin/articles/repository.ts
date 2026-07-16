@@ -45,4 +45,6 @@ export interface ArticleRepository {
   create(data: ArticleCreateData): Promise<ArticleRecord>;
   update(id: string, data: ArticleUpdateData): Promise<ArticleRecord>;
   remove(id: string): Promise<void>;
+  /** Most recently updated articles (updatedAt desc). */
+  listRecentByUpdated(limit: number): Promise<ArticleRecord[]>;
 }
