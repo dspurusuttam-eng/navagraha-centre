@@ -41,6 +41,9 @@ const consultation = (over: Partial<ConsultationConfig> = {}): ConsultationConfi
 
 const brand = (over: Partial<BrandSettingsInput> = {}): BrandSettingsInput => ({
   ...defaultBrandSettings(),
+  // C8E: brand settings now publish on an editor's first save; an unpublished config
+  // correctly projects to the static fallback, so these fixtures are published.
+  isEnabled: true,
   acharyaName: "Acharya Purusuttam",
   professionalTitle: "Vedic Astrologer",
   profileImageAssetId: "media_abc",

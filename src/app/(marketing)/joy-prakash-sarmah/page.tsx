@@ -294,6 +294,94 @@ export default async function JoyPrakashSarmahPage() {
             </Link>
           </Card>
         </PremiumBentoSection>
+
+        {brand.profileImageUrl || brand.professionalTitle || brand.biography ? (
+          <PremiumBentoSection className="pt-0">
+            <PremiumSectionHeading label="Acharya" />
+            <Card className="grid gap-4 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-start">
+              {brand.profileImageUrl ? (
+                /* Admin-managed https image. next/image is not used: the URL is an
+                   arbitrary external reference and would need a remote-pattern allowlist. */
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  alt={brand.acharyaName}
+                  className="h-24 w-24 shrink-0 rounded-[var(--ui-radius-lg)] border bg-neutral-50 object-cover"
+                  src={brand.profileImageUrl}
+                />
+              ) : null}
+              <div className="min-w-0">
+                {brand.professionalTitle ? (
+                  <p className="text-sm font-semibold text-[color:var(--ui-color-text-primary)]">
+                    {brand.professionalTitle}
+                  </p>
+                ) : null}
+                {brand.biography ? (
+                  <p className="mt-2 whitespace-pre-wrap text-sm font-medium leading-6 text-[color:var(--ui-color-text-secondary)]">
+                    {brand.biography}
+                  </p>
+                ) : null}
+              </div>
+            </Card>
+          </PremiumBentoSection>
+        ) : null}
+
+        {brand.supportEmail || brand.officeHours ? (
+          <PremiumBentoSection className="pt-0">
+            <PremiumSectionHeading label="Contact" />
+            <Card className="space-y-2">
+              {brand.supportEmail ? (
+                <p className="text-sm font-medium leading-6 text-[color:var(--ui-color-text-secondary)]">
+                  <a
+                    className="underline decoration-[color:var(--ui-color-border-gold)] underline-offset-4"
+                    href={`mailto:${brand.supportEmail}`}
+                  >
+                    {brand.supportEmail}
+                  </a>
+                </p>
+              ) : null}
+              {brand.officeHours ? (
+                <p className="text-sm font-medium leading-6 text-[color:var(--ui-color-text-muted)]">
+                  {brand.officeHours}
+                </p>
+              ) : null}
+            </Card>
+          </PremiumBentoSection>
+        ) : null}
+
+        {brand.socialLinks.length ? (
+          <PremiumBentoSection className="pt-0">
+            <PremiumSectionHeading label="Elsewhere" />
+            <Card>
+              <ul aria-label="Social links" className="flex min-w-0 flex-wrap gap-2">
+                {brand.socialLinks.map((link) => (
+                  <li key={link.url}>
+                    {/* Admin-managed external link. https is enforced in the projection;
+                        noopener/noreferrer stops the opened tab reaching back. */}
+                    <a
+                      className="inline-flex min-h-11 items-center rounded-[var(--ui-radius-pill)] border border-[color:var(--ui-color-border-gold)] bg-white px-4 text-sm font-semibold text-[color:var(--ui-color-text-primary)]"
+                      href={link.url}
+                      rel="noopener noreferrer nofollow"
+                      target="_blank"
+                    >
+                      {link.platform}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          </PremiumBentoSection>
+        ) : null}
+
+        {brand.disclaimer ? (
+          <PremiumBentoSection className="pt-0">
+            <PremiumSectionHeading label="Disclaimer" />
+            <Card tone="muted">
+              <p className="whitespace-pre-wrap text-sm font-medium leading-6 text-[color:var(--ui-color-text-muted)]">
+                {brand.disclaimer}
+              </p>
+            </Card>
+          </PremiumBentoSection>
+        ) : null}
       </PremiumPageShell>
     </>
   );

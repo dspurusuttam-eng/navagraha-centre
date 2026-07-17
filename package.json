@@ -88,6 +88,7 @@
     "debug:admin:sidecar:service:qa": "tsx scripts/debug-admin-sidecar-service-qa.ts",
     "debug:public:settings:qa": "tsx scripts/debug-public-settings-qa.ts",
     "debug:consultation:activation:qa": "tsx scripts/debug-consultation-activation-qa.ts",
+    "debug:brand:public:qa": "tsx scripts/debug-brand-public-qa.ts",
     "debug:settings:import:plan": "tsx scripts/debug-settings-import-plan.ts",
     "debug:panchang:muhurat:qa": "tsx scripts/debug-panchang-muhurat-qa.ts",
     "debug:matchmaking:qa": "tsx scripts/debug-matchmaking-qa.ts",

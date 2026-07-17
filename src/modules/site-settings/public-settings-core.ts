@@ -186,7 +186,9 @@ export function toPublicBrand(
   config: BrandSettingsInput | null | undefined,
   profileImageUrl?: string | null,
 ): PublicBrand {
-  if (!config) return STATIC_BRAND_FALLBACK;
+  // Unpublished (or absent) settings render the controlled static surface, exactly like
+  // consultation — nothing configured can leak before an editor's first save.
+  if (!config || config.isEnabled !== true) return STATIC_BRAND_FALLBACK;
   return {
     acharyaName: config.acharyaName?.trim() || STATIC_BRAND_FALLBACK.acharyaName,
     professionalTitle: config.professionalTitle?.trim() || STATIC_BRAND_FALLBACK.professionalTitle,

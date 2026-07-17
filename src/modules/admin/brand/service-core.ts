@@ -46,7 +46,10 @@ export async function updateBrandSettings(
     return { ok: false, status: 422, code: "VALIDATION_ERROR", message: "Invalid brand settings.", issues: patch.error.issues };
   }
   const current = (await deps.repo.get()) ?? defaultBrandSettings();
-  const merged = { ...current, ...patch.data };
+  // C8E — activation: the FIRST successful founder/editor save publishes the brand
+  // settings, and every later save preserves that. There is deliberately no separate
+  // toggle. Enforced here so the Admin form and the PATCH API behave identically.
+  const merged = { ...current, ...patch.data, isEnabled: true };
   const validated = brandSettingsSchema.safeParse(merged);
   if (!validated.success) {
     return { ok: false, status: 422, code: "VALIDATION_ERROR", message: "Invalid brand settings.", issues: validated.error.issues };

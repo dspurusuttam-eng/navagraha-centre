@@ -24,6 +24,10 @@ const brandFooterSchema = z.object({
 
 // Base shape WITHOUT defaults — so the PATCH schema does not re-apply defaults.
 const baseBrandSettingsSchema = z.object({
+  // C8E: publication latch. Stored inside settingsJson, so this needs NO Prisma change.
+  // There is no editor toggle: the first valid founder/editor save sets it, and the public
+  // surface falls back to the static copy until then.
+  isEnabled: z.boolean(),
   acharyaName: z.string().trim().min(1).max(200).nullish(),
   professionalTitle: z.string().trim().max(200).nullish(),
   profileImageAssetId: mediaReferenceIdSchema.nullish(), // soft MediaAsset reference (no upload)
@@ -38,6 +42,7 @@ const baseBrandSettingsSchema = z.object({
 
 /** Full canonical brand/profile config (defaults applied). */
 export const brandSettingsSchema = baseBrandSettingsSchema.extend({
+  isEnabled: z.boolean().default(false),
   socialLinks: z.array(brandSocialLinkSchema).max(20).default([]),
 });
 export type BrandSettingsInput = z.infer<typeof brandSettingsSchema>;
