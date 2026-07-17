@@ -14,8 +14,10 @@ import {
   type BrandSocialLink,
 } from "@/modules/admin/domain";
 
-/** Locales the public consultation surface serves. */
-export const PUBLIC_SETTINGS_LOCALES = ["en", "as", "hi"] as const;
+// C10A LANGUAGE LOCK — the public Consultation surface serves English only. Any non-`en`
+// locale that might exist in a legacy stored config is stripped at this boundary, so the
+// public projection can never emit Assamese/Hindi. (Localization is a later additive phase.)
+export const PUBLIC_SETTINGS_LOCALES = ["en"] as const;
 export type PublicSettingsLocale = (typeof PUBLIC_SETTINGS_LOCALES)[number];
 
 export function isPublicSettingsLocale(value: string | null | undefined): value is PublicSettingsLocale {

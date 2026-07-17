@@ -56,6 +56,13 @@ export const adminRouteCatalog = [
     allowedRoles: ["founder", "editor"],
   },
   {
+    href: "/admin/consultation-catalogue",
+    label: "Consultation Catalogue",
+    description:
+      "Manage consultation tiers, utilities, priced modes, and their publication state.",
+    allowedRoles: ["founder", "editor"],
+  },
+  {
     href: "/admin/rashifal",
     label: "Daily Rashifal",
     description:

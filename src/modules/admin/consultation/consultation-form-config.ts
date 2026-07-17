@@ -17,6 +17,8 @@ export const CONSULTATION_FORM_FIELDS = [
   "preparationInstructions",
   "shortDescription",
   "disclaimer",
+  "generalEnquiryTemplate",
+  "selectedConsultationTemplate",
 ] as const;
 export type ConsultationFormField = (typeof CONSULTATION_FORM_FIELDS)[number];
 
@@ -30,11 +32,9 @@ export const CONSULTATION_AVAILABILITY_LABELS: Readonly<Record<string, string>> 
   UNAVAILABLE: "Unavailable",
 };
 
-/** Human labels for the EN/AS/HI language checkboxes. */
+/** Human labels for the consultation language checkboxes (English-only in V1 — C10A lock). */
 export const CONSULTATION_LANGUAGE_LABELS: Readonly<Record<string, string>> = {
   en: "English",
-  as: "Assamese",
-  hi: "Hindi",
 };
 
 /** Flat values used to seed the form (textareas hold newline-separated topics). */
@@ -48,6 +48,8 @@ export type ConsultationFormValues = {
   preparationInstructions: string;
   shortDescription: string;
   disclaimer: string;
+  generalEnquiryTemplate: string;
+  selectedConsultationTemplate: string;
 };
 
 /** One topic per line → trimmed, empty lines dropped (order preserved). */
@@ -74,6 +76,8 @@ export function consultationToFormValues(config: ConsultationConfig): Consultati
     preparationInstructions: config.preparationInstructions ?? "",
     shortDescription: config.shortDescription ?? "",
     disclaimer: config.disclaimer ?? "",
+    generalEnquiryTemplate: config.generalEnquiryTemplate ?? "",
+    selectedConsultationTemplate: config.selectedConsultationTemplate ?? "",
   };
 }
 
@@ -100,5 +104,7 @@ export function formDataToConsultationPatch(form: FormData): Record<string, unkn
     preparationInstructions: cleaned(form, "preparationInstructions"),
     shortDescription: cleaned(form, "shortDescription"),
     disclaimer: cleaned(form, "disclaimer"),
+    generalEnquiryTemplate: cleaned(form, "generalEnquiryTemplate"),
+    selectedConsultationTemplate: cleaned(form, "selectedConsultationTemplate"),
   };
 }

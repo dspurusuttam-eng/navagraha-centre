@@ -7,8 +7,11 @@ import { z } from "zod";
 export const CONSULTATION_AVAILABILITY = ["AVAILABLE", "LIMITED", "UNAVAILABLE"] as const;
 export type ConsultationAvailability = (typeof CONSULTATION_AVAILABILITY)[number];
 
-/** Consultation UI locales supported in V1 (English / Assamese / Hindi). */
-export const CONSULTATION_LOCALES = ["en", "as", "hi"] as const;
+// C10A LANGUAGE LOCK — Consultation V1 is English-only.
+// The public supported Consultation locale is exactly `en`. Assamese/Hindi are intentionally
+// NOT offered for Consultation content or Admin fields in this phase; localization is a later
+// additive phase. (Desk language support is unrelated and unchanged — see ADMIN_ARTICLE_LOCALES.)
+export const CONSULTATION_LOCALES = ["en"] as const;
 export type ConsultationLocale = (typeof CONSULTATION_LOCALES)[number];
 
 // WhatsApp number: optional leading +, country code + subscriber, 8–15 digits, no spaces.
@@ -36,6 +39,12 @@ const baseConsultationConfigSchema = z.object({
   preparationInstructions: z.string().trim().max(4000).nullish(),
   shortDescription: z.string().trim().max(500).nullish(),
   disclaimer: z.string().trim().max(2000).nullish(),
+  // C10A — approved English WhatsApp message templates. Two supported templates:
+  //  * generalEnquiryTemplate       — a general enquiry ("I'd like to know more…")
+  //  * selectedConsultationTemplate — a specific consultation, may carry a {utility} token
+  // English-only. Left null until the approved copy is entered by an editor; never invented.
+  generalEnquiryTemplate: z.string().trim().max(1000).nullish(),
+  selectedConsultationTemplate: z.string().trim().max(1000).nullish(),
 });
 
 /** Full canonical config (defaults applied for the required fields). */

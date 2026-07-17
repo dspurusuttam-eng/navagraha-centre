@@ -32,12 +32,11 @@ const editor: ConsultationActor = { userId: "u-e", roleKeys: ["editor"], primary
 const support: ConsultationActor = { userId: "u-s", roleKeys: ["support"], primaryRoleKey: "support" };
 
 const validPatch = {
-  isEnabled: true,
   availabilityStatus: "AVAILABLE",
   whatsappNumber: "+919876543210",
   prefilledMessage: "Namaste, I would like a consultation.",
   officeHours: "Mon–Sat, 10:00–18:00 IST",
-  languages: ["en", "as", "hi"],
+  languages: ["en"], // C10A language lock — English-only
   topics: ["Career", "Marriage", "Remedies"],
   preparationInstructions: "Please share your birth details.",
   shortDescription: "Personal Vedic consultation.",
@@ -69,6 +68,7 @@ const groups: Group[] = [
       assert(initial.ok && initial.data.languages.length === 1 && initial.data.languages[0] === "en", "default language en");
       const full = await updateConsultationSettings(deps, founder, validPatch);
       assert(full.ok && full.data.whatsappNumber === "+919876543210", "persisted whatsapp");
+      assert(full.ok && full.data.isEnabled === false, "C10A: saving never publishes (isEnabled stays false)");
       assert(peek() !== null, "singleton stored");
       // partial patch keeps prior fields
       const partial = await updateConsultationSettings(deps, founder, { availabilityStatus: "LIMITED" });
@@ -86,13 +86,15 @@ const groups: Group[] = [
       assert((await updateConsultationSettings(deps, founder, { whatsappNumber: "+91 98765" })).status === 422, "spaces rejected");
       assert((await updateConsultationSettings(deps, founder, { availabilityStatus: "MAYBE" })).status === 422, "bad status");
       assert((await updateConsultationSettings(deps, founder, { languages: ["fr"] })).status === 422, "unsupported language");
+      assert((await updateConsultationSettings(deps, founder, { languages: ["as"] })).status === 422, "Assamese rejected (English-only lock)");
+      assert((await updateConsultationSettings(deps, founder, { languages: ["hi"] })).status === 422, "Hindi rejected (English-only lock)");
       assert((await updateConsultationSettings(deps, founder, { languages: ["en", "en"] })).status === 422, "duplicate language");
       assert((await updateConsultationSettings(deps, founder, { languages: [] })).status === 422, "empty languages");
       assert((await updateConsultationSettings(deps, founder, { shortDescription: "x".repeat(501) })).status === 422, "short desc over limit");
       assert((await updateConsultationSettings(deps, founder, { disclaimer: "x".repeat(2001) })).status === 422, "disclaimer over limit");
       assert((await updateConsultationSettings(deps, founder, { topics: Array.from({ length: 31 }, (_, i) => `t${i}`) })).status === 422, "too many topics");
       // valid boundaries pass
-      assert((await updateConsultationSettings(deps, founder, { whatsappNumber: "919876543210", availabilityStatus: "UNAVAILABLE", languages: ["as", "hi"] })).ok, "valid variants ok");
+      assert((await updateConsultationSettings(deps, founder, { whatsappNumber: "919876543210", availabilityStatus: "UNAVAILABLE", languages: ["en"] })).ok, "valid variants ok");
     },
   },
   {

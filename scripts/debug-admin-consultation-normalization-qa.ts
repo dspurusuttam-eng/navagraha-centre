@@ -67,12 +67,12 @@ const groups: Group[] = [
         isEnabled: true,
         availabilityStatus: "AVAILABLE",
         whatsappNumber: "+919876543210",
-        languages: ["en", "as", "hi"],
+        languages: ["en"], // C10A language lock — English-only
         topics: ["Career", "Marriage"],
       });
       const merged = consultationConfigSchema.parse({ ...current, ...patch });
       assert(merged.availabilityStatus === "LIMITED", "status updated");
-      assert(merged.whatsappNumber === "+919876543210" && merged.languages.length === 3 && merged.topics.length === 2, "unspecified fields preserved");
+      assert(merged.whatsappNumber === "+919876543210" && merged.languages.length === 1 && merged.topics.length === 2, "unspecified fields preserved");
       // deterministic
       assert(JSON.stringify(merged) === JSON.stringify(consultationConfigSchema.parse({ ...current, ...patch })), "merge deterministic");
     },

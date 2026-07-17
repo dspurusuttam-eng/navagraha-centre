@@ -119,10 +119,12 @@ const groups: Group[] = [
   {
     name: "S1 Consultation config schema (canonical)",
     run: () => {
-      assert(ok(consultationConfigSchema.safeParse({ availabilityStatus: "AVAILABLE", whatsappNumber: "+919876543210", languages: ["en", "as"] })), "valid config");
+      assert(ok(consultationConfigSchema.safeParse({ availabilityStatus: "AVAILABLE", whatsappNumber: "+919876543210", languages: ["en"] })), "valid config");
       assert(bad(consultationConfigSchema.safeParse({ whatsappNumber: "abc" })), "bad whatsapp rejected");
       assert(bad(consultationConfigSchema.safeParse({ availabilityStatus: "MAYBE" })), "bad status rejected");
       assert(bad(consultationConfigSchema.safeParse({ languages: ["fr"] })), "unsupported language rejected");
+      assert(bad(consultationConfigSchema.safeParse({ languages: ["en", "as"] })), "C10A: Assamese rejected (English-only lock)");
+      assert(bad(consultationConfigSchema.safeParse({ languages: ["hi"] })), "C10A: Hindi rejected (English-only lock)");
       const d = consultationConfigSchema.parse({});
       assert(d.availabilityStatus === "UNAVAILABLE" && d.isEnabled === false && d.languages[0] === "en", "canonical defaults");
     },

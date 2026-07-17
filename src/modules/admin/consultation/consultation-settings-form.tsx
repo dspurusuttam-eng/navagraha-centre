@@ -171,6 +171,32 @@ export function ConsultationSettingsForm({ initial, canWrite, action }: Readonly
         {fieldError("disclaimer")}
       </div>
 
+      <div className="space-y-1">
+        <label htmlFor="generalEnquiryTemplate" className="block text-sm font-medium">General enquiry message (English)</label>
+        <textarea
+          id="generalEnquiryTemplate" name="generalEnquiryTemplate" rows={3} defaultValue={initial.generalEnquiryTemplate}
+          disabled={!canWrite} aria-invalid={invalid("generalEnquiryTemplate")}
+          aria-describedby={describedBy("generalEnquiryTemplate") ?? "generalEnquiryTemplate-hint"}
+          className="w-full rounded-md border px-3 py-2 disabled:bg-neutral-100"
+        />
+        {err("generalEnquiryTemplate") ? fieldError("generalEnquiryTemplate") : (
+          <p id="generalEnquiryTemplate-hint" className="text-xs text-neutral-500">Approved English template for a general enquiry. Leave empty until approved.</p>
+        )}
+      </div>
+
+      <div className="space-y-1">
+        <label htmlFor="selectedConsultationTemplate" className="block text-sm font-medium">Selected consultation message (English)</label>
+        <textarea
+          id="selectedConsultationTemplate" name="selectedConsultationTemplate" rows={3} defaultValue={initial.selectedConsultationTemplate}
+          disabled={!canWrite} aria-invalid={invalid("selectedConsultationTemplate")}
+          aria-describedby={describedBy("selectedConsultationTemplate") ?? "selectedConsultationTemplate-hint"}
+          className="w-full rounded-md border px-3 py-2 disabled:bg-neutral-100"
+        />
+        {err("selectedConsultationTemplate") ? fieldError("selectedConsultationTemplate") : (
+          <p id="selectedConsultationTemplate-hint" className="text-xs text-neutral-500">Approved English template for a selected consultation. May use {"{utility}"}. Leave empty until approved.</p>
+        )}
+      </div>
+
       {canWrite ? (
         <div className="flex flex-wrap items-center gap-3 pt-2">
           <button

@@ -53,7 +53,7 @@ const validPatch = (over: Record<string, unknown> = {}) => ({
   whatsappNumber: "+919876543210",
   prefilledMessage: "Namaste, I would like a consultation.",
   officeHours: "Mon–Sat, 10:00–18:00 IST",
-  languages: ["en", "as"],
+  languages: ["en"], // C10A language lock — English-only
   topics: ["Career", "Marriage"],
   preparationInstructions: "Share your birth details.",
   shortDescription: "One-to-one guidance over WhatsApp.",
@@ -69,7 +69,7 @@ function settingsForm(over: Record<string, string | string[]> = {}): FormData {
     whatsappNumber: "+919876543210",
     prefilledMessage: "Namaste",
     officeHours: "Mon–Sat 10–6",
-    languages: ["en", "hi"],
+    languages: ["en"],
     topics: "Career\nMarriage\n",
     preparationInstructions: "Bring birth details.",
     shortDescription: "WhatsApp guidance.",
@@ -87,17 +87,17 @@ const groups: Group[] = [
   {
     name: "F1 field config + consultationToFormValues (nulls → \"\", topics → lines)",
     run: () => {
-      for (const field of ["availabilityStatus", "whatsappNumber", "prefilledMessage", "officeHours", "languages", "topics", "preparationInstructions", "shortDescription", "disclaimer"]) {
+      for (const field of ["availabilityStatus", "whatsappNumber", "prefilledMessage", "officeHours", "languages", "topics", "preparationInstructions", "shortDescription", "disclaimer", "generalEnquiryTemplate", "selectedConsultationTemplate"]) {
         assert((CONSULTATION_FORM_FIELDS as readonly string[]).includes(field), `field ${field}`);
       }
-      assert(CONSULTATION_FORM_FIELDS.length === 9, "9 form fields");
+      assert(CONSULTATION_FORM_FIELDS.length === 11, "11 form fields (incl. two English message templates)");
       const values = consultationToFormValues(defaultConsultationConfig());
       assert(values.whatsappNumber === "" && values.prefilledMessage === "" && values.disclaimer === "", "nulls → empty strings");
       assert(values.availabilityStatus === "UNAVAILABLE" && values.languages.join() === "en", "defaults surfaced");
       assert(values.topics === "", "empty topics → empty textarea");
-      const seeded = consultationToFormValues({ ...defaultConsultationConfig(), topics: ["A", "B"], languages: ["en", "hi"], whatsappNumber: "+911234567890" });
+      const seeded = consultationToFormValues({ ...defaultConsultationConfig(), topics: ["A", "B"], languages: ["en"], whatsappNumber: "+911234567890" });
       assert(seeded.topics === "A\nB", "topics → newline separated");
-      assert(seeded.languages.join(",") === "en,hi", "languages preserved");
+      assert(seeded.languages.join(",") === "en", "languages preserved");
       assert(seeded.whatsappNumber === "+911234567890", "number surfaced");
     },
   },
@@ -117,7 +117,7 @@ const groups: Group[] = [
       const patch = formDataToConsultationPatch(settingsForm());
       assert(patch.availabilityStatus === "AVAILABLE", "availability");
       assert(patch.whatsappNumber === "+919876543210", "whatsapp");
-      assert(JSON.stringify(patch.languages) === JSON.stringify(["en", "hi"]), "languages from getAll");
+      assert(JSON.stringify(patch.languages) === JSON.stringify(["en"]), "languages from getAll");
       assert(JSON.stringify(patch.topics) === JSON.stringify(["Career", "Marriage"]), "topics parsed");
       assert(patch.preparationInstructions === "Bring birth details." && patch.disclaimer === "Advisory only.", "text fields");
       // Empty optional text clears to null.
@@ -131,8 +131,9 @@ const groups: Group[] = [
     },
   },
   {
-    name: "V1 service: valid save persists; isEnabled preserved through the merge",
+    name: "V1 service: valid save persists; isEnabled hard-locked false (C10A: saving never publishes)",
     run: async () => {
+      // Even a seeded-enabled config is locked back to false on save — publication is deferred.
       const seeded: ConsultationConfig = { ...defaultConsultationConfig(), isEnabled: true };
       const { deps, repo, audits } = makeDeps(seeded);
       const result = await updateConsultationSettings(deps, founder, validPatch());
@@ -140,7 +141,7 @@ const groups: Group[] = [
       if (!result.ok) return;
       assert(result.data.availabilityStatus === "AVAILABLE" && result.data.whatsappNumber === "+919876543210", "values stored");
       assert(JSON.stringify(result.data.topics) === JSON.stringify(["Career", "Marriage"]), "topics stored");
-      assert(result.data.isEnabled === true, "isEnabled preserved (not sent by the form)");
+      assert(result.data.isEnabled === false, "C10A: saving never publishes — isEnabled hard-locked to false");
       assert(repo.current?.disclaimer === "Guidance is advisory only.", "persisted to repo");
       assert(audits.some((a) => a.action === "consultation.settings.update"), "audited");
       const readBack = await getConsultationSettings(deps);

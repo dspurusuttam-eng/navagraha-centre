@@ -50,7 +50,7 @@ const formPatch = (over: Record<string, unknown> = {}) => ({
   whatsappNumber: "+919876543210",
   prefilledMessage: "Namaste",
   officeHours: "Mon-Sat 10-6",
-  languages: ["en", "as"],
+  languages: ["en"], // C10A language lock — English-only
   topics: ["Career"],
   preparationInstructions: "Share birth details.",
   shortDescription: "One-to-one guidance.",
@@ -63,7 +63,7 @@ const PAGE = () => read("src/app/(marketing)/consultation/page.tsx");
 type Group = { name: string; run: () => void | Promise<void> };
 const groups: Group[] = [
   {
-    name: "A1 activation: the FIRST successful save publishes; later saves preserve it",
+    name: "A1 publication deferred: saving NEVER publishes — isEnabled stays false across saves",
     run: async () => {
       const { deps, stored } = makeDeps();
       assert(defaultConsultationConfig().isEnabled === false, "Admin default is unpublished");
@@ -71,42 +71,43 @@ const groups: Group[] = [
 
       const first = await updateConsultationSettings(deps, founder, formPatch());
       assert(first.ok, "first save accepted");
-      assert(first.ok && first.data.isEnabled === true, "first save set isEnabled=true automatically");
-      assert(stored()?.isEnabled === true, "activation persisted");
+      assert(first.ok && first.data.isEnabled === false, "C10A: first save does NOT publish");
+      assert(stored()?.isEnabled === false, "stored config remains unpublished");
 
-      // Later saves preserve activation (and the form still never sends the flag).
+      // Later saves still never publish, and still apply their configuration change.
       const second = await updateConsultationSettings(deps, editor, formPatch({ availabilityStatus: "LIMITED" }));
-      assert(second.ok && second.data.isEnabled === true, "later save preserved activation");
+      assert(second.ok && second.data.isEnabled === false, "later save still unpublished");
       assert(second.ok && second.data.availabilityStatus === "LIMITED", "later save applied its change");
-      const third = await updateConsultationSettings(deps, founder, formPatch({ availabilityStatus: "UNAVAILABLE" }));
-      assert(third.ok && third.data.isEnabled === true, "turning availability off does NOT unpublish");
-      assert(third.ok && third.data.availabilityStatus === "UNAVAILABLE", "off-state stored as availability");
+
+      // Even a config that was somehow already enabled is hard-locked back to false on save.
+      const { deps: d3, stored: s3 } = makeDeps({ ...defaultConsultationConfig(), isEnabled: true });
+      const third = await updateConsultationSettings(d3, founder, formPatch());
+      assert(third.ok && third.data.isEnabled === false, "save hard-locks isEnabled to false");
+      assert(s3()?.isEnabled === false, "previously-enabled config is not left published");
     },
   },
   {
-    name: "A2 activation: only a SUCCESSFUL founder/editor save activates",
+    name: "A2 authorization: only founder/editor may save; a rejected save stores nothing",
     run: async () => {
-      // A rejected (invalid) save must not activate.
+      // A rejected (invalid) save must not persist anything.
       const { deps, stored } = makeDeps();
       const invalid = await updateConsultationSettings(deps, founder, formPatch({ whatsappNumber: "12 34 abc" }));
       assert(!invalid.ok && invalid.status === 422, "invalid save rejected");
-      assert(stored() === null, "nothing stored — NOT activated by a failed save");
+      assert(stored() === null, "nothing stored on a failed save");
 
-      // Support cannot save, so cannot activate.
+      // Support cannot save.
       const denied = await updateConsultationSettings(deps, support, formPatch());
       assert(!denied.ok && denied.status === 403, "support save → 403");
-      assert(stored() === null, "still not activated");
+      assert(stored() === null, "still nothing stored");
 
-      // A seeded-but-unpublished config activates on the next valid save.
-      const { deps: d2, stored: s2 } = makeDeps({ ...defaultConsultationConfig(), isEnabled: false });
-      assert(s2()?.isEnabled === false, "seeded unpublished");
-      const ok = await updateConsultationSettings(d2, editor, formPatch());
-      assert(ok.ok && s2()?.isEnabled === true, "next valid save activates");
-      assert((await getConsultationSettings(d2)).ok, "read still works");
+      // Founder/editor can save (but the save still never publishes).
+      const ok = await updateConsultationSettings(deps, editor, formPatch());
+      assert(ok.ok && stored()?.isEnabled === false, "valid save persists, unpublished");
+      assert((await getConsultationSettings(deps)).ok, "read still works");
     },
   },
   {
-    name: "A3 activation: no separate isEnabled toggle is exposed anywhere",
+    name: "A3 no activation path: no isEnabled toggle is exposed and the service never publishes",
     run: () => {
       // The Admin form never renders or submits the flag.
       const form = read("src/modules/admin/consultation/consultation-settings-form.tsx");
@@ -114,9 +115,10 @@ const groups: Group[] = [
       const config = read("src/modules/admin/consultation/consultation-form-config.ts");
       assert(!/name="isEnabled"/.test(config), "no isEnabled form control");
       assert(!/isEnabled/.test(config.split("formDataToConsultationPatch")[1] ?? ""), "form patch never carries isEnabled");
-      // The service is the single place activation happens.
+      // C10A: the service hard-locks isEnabled to false and never activates.
       const svc = read("src/modules/admin/consultation/service-core.ts");
-      assert(svc.includes("isEnabled: true"), "service activates on save");
+      assert(svc.includes("isEnabled: false"), "service hard-locks isEnabled to false");
+      assert(!/isEnabled:\s*true/.test(svc), "service never sets isEnabled=true (no activation path)");
       // The public surface never references the flag.
       assert(!PAGE().includes("isEnabled"), "public page never references isEnabled");
     },

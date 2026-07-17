@@ -31,7 +31,7 @@ const consultation = (over: Partial<ConsultationConfig> = {}): ConsultationConfi
   whatsappNumber: "+919876543210",
   prefilledMessage: "Namaste, I would like a consultation.",
   officeHours: "Mon-Sat, 10:00-18:00 IST",
-  languages: ["en", "as"],
+  languages: ["en"], // C10A language lock — English-only
   topics: ["Career", "Marriage"],
   preparationInstructions: "Share your birth details.",
   shortDescription: "One-to-one guidance.",
@@ -133,13 +133,14 @@ const groups: Group[] = [
     },
   },
   {
-    name: "P2 privacy: only public locales are exposed",
+    name: "P2 privacy: English-only — only the `en` public locale is exposed (C10A lock)",
     run: () => {
-      assert(JSON.stringify(PUBLIC_SETTINGS_LOCALES) === JSON.stringify(["en", "as", "hi"]), "en/as/hi");
-      assert(isPublicSettingsLocale("as") && !isPublicSettingsLocale("bn") && !isPublicSettingsLocale("fr"), "locale gate");
-      const p = toPublicConsultation(consultation({ languages: ["en", "as", "hi"] }));
-      assert(JSON.stringify(p.languages) === JSON.stringify(["en", "as", "hi"]), "all three public locales pass");
-      // A non-public locale stored by Admin is filtered out of the public projection.
+      assert(JSON.stringify(PUBLIC_SETTINGS_LOCALES) === JSON.stringify(["en"]), "en only");
+      assert(isPublicSettingsLocale("en"), "en is a public locale");
+      for (const loc of ["as", "hi", "bn", "fr"]) assert(!isPublicSettingsLocale(loc), `${loc} is not a public consultation locale`);
+      // Any non-en locale in a legacy stored config is stripped at the public boundary.
+      const p = toPublicConsultation(consultation({ languages: ["en", "as" as never, "hi" as never] }));
+      assert(JSON.stringify(p.languages) === JSON.stringify(["en"]), "only en survives the public boundary");
       const filtered = toPublicConsultation(consultation({ languages: ["en", "bn" as never] }));
       assert(JSON.stringify(filtered.languages) === JSON.stringify(["en"]), "bn filtered from the public list");
     },
