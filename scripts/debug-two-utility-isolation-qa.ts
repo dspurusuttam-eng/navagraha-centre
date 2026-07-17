@@ -30,6 +30,14 @@ async function expectDisabledApi(pathname: string, method = "POST") {
   assert.equal(payload.feature, pathname);
 }
 
+function expectReservedAdmin(pathname: string, method = "GET") {
+  const response = proxy(request(pathname, { method }));
+  assert.notEqual(response.status, 404, `${pathname} should reach the reserved private Admin runtime`);
+  assert.notEqual(response.status, 403, `${pathname} should not be blocked by product-mode`);
+  assert.equal(response.headers.get("x-robots-tag"), "noindex, nofollow, noarchive");
+  assert.equal(response.headers.get("x-navagraha-product-mode"), "RESERVED_PRIVATE_ADMIN");
+}
+
 async function main() {
   await expectAllowed("/");
 await expectAllowed("/from-the-desk");
@@ -60,11 +68,44 @@ for (const route of [
   "/dashboard",
   "/sign-in",
   "/sign-up",
-  "/admin",
   "/hi/kundli",
   "/as/dashboard",
 ]) {
   expectBlockedPage(route);
+}
+
+for (const route of ["/admin", "/admin/login", "/admin/denied", "/admin/articles"]) {
+  expectReservedAdmin(route);
+}
+
+for (const route of ["/api/admin", "/api/admin/articles"]) {
+  expectReservedAdmin(route);
+}
+
+for (const route of [
+  "/api/auth/sign-in/email",
+  "/api/auth/sign-out",
+]) {
+  expectReservedAdmin(route, "POST");
+}
+
+expectReservedAdmin("/api/auth/get-session");
+
+const allowedAdminAuthMethods = new Map([
+  ["/api/auth/sign-in/email", "POST"],
+  ["/api/auth/get-session", "GET"],
+  ["/api/auth/sign-out", "POST"],
+] as const);
+const testedAuthMethods = ["GET", "POST", "HEAD", "OPTIONS", "PUT", "PATCH", "DELETE"] as const;
+
+for (const [route, allowedMethod] of allowedAdminAuthMethods) {
+  for (const method of testedAuthMethods) {
+    if (method === allowedMethod) {
+      expectReservedAdmin(route, method);
+    } else {
+      await expectDisabledApi(route, method);
+    }
+  }
 }
 
 for (const apiRoute of [
@@ -76,10 +117,15 @@ for (const apiRoute of [
   "/api/platform/location-timezone",
   "/api/shop/checkout/init",
   "/api/subscriptions/checkout",
+  "/api/auth/sign-up",
   "/api/auth/sign-up/email",
-  "/api/auth/sign-in/email",
 ]) {
   await expectDisabledApi(apiRoute);
+}
+
+for (const route of ["/administrator", "/admin-public", "/api/administrator"]) {
+  const response = proxy(request(route));
+  assert.notEqual(response.headers.get("x-navagraha-product-mode"), "RESERVED_PRIVATE_ADMIN");
 }
 
   console.log("Two-utility isolation proxy QA passed.");

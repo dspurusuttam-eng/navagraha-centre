@@ -1,5 +1,9 @@
 ﻿import { NextResponse, type NextRequest } from "next/server";
-import { classifyTwoUtilityPath } from "@/config/product-mode";
+import {
+  classifyTwoUtilityPath,
+  isPrivateAdminAuthApi,
+  isPrivateAdminAuthRequestAllowed,
+} from "@/config/product-mode";
 import {
   createFeatureDisabledApiResponse,
   createFeatureDisabledPageResponse,
@@ -41,6 +45,20 @@ function shouldUseDefaultLocaleForUnprefixedRoute() {
 
 function enforceProductMode(request: NextRequest) {
   const disposition = classifyTwoUtilityPath(request.nextUrl.pathname);
+
+  if (disposition === "RESERVED_PRIVATE_ADMIN") {
+    if (
+      isPrivateAdminAuthApi(request.nextUrl.pathname) &&
+      !isPrivateAdminAuthRequestAllowed(request.nextUrl.pathname, request.method)
+    ) {
+      return createFeatureDisabledApiResponse(request.nextUrl.pathname);
+    }
+
+    const response = NextResponse.next();
+    response.headers.set("x-robots-tag", "noindex, nofollow, noarchive");
+    response.headers.set("x-navagraha-product-mode", disposition);
+    return response;
+  }
 
   if (
     disposition === "PUBLIC_ALLOWLIST" ||

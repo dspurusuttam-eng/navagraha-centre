@@ -8,13 +8,20 @@ import {
   getRateLimitHeaders,
 } from "@/lib/rate-limit";
 import { trackServerEvent } from "@/lib/observability";
-import { arePublicAccountsEnabled } from "@/config/product-mode";
+import {
+  arePublicAccountsEnabled,
+  isPrivateAdminAuthRequestAllowed,
+} from "@/config/product-mode";
 import { createFeatureDisabledApiResponse } from "@/lib/product-mode/responses";
 
 export const dynamic = "force-dynamic";
 
-function checkPublicAccountsEnabled(request: Request) {
+function checkPublicAccountsEnabled(request: Request, method: string) {
   if (arePublicAccountsEnabled()) {
+    return null;
+  }
+
+  if (isPrivateAdminAuthRequestAllowed(new URL(request.url).pathname, method)) {
     return null;
   }
 
@@ -55,11 +62,31 @@ function checkAuthRateLimit(request: Request, method: string) {
 }
 
 export async function GET(request: Request) {
+  const disabled = checkPublicAccountsEnabled(request, "GET");
+
+  if (disabled) {
+    return disabled;
+  }
+
   return toNextJsHandler(getAuth()).GET(request);
 }
 
+export async function HEAD(request: Request) {
+  return (
+    checkPublicAccountsEnabled(request, "HEAD") ??
+    createFeatureDisabledApiResponse(new URL(request.url).pathname)
+  );
+}
+
+export async function OPTIONS(request: Request) {
+  return (
+    checkPublicAccountsEnabled(request, "OPTIONS") ??
+    createFeatureDisabledApiResponse(new URL(request.url).pathname)
+  );
+}
+
 export async function POST(request: Request) {
-  const disabled = checkPublicAccountsEnabled(request);
+  const disabled = checkPublicAccountsEnabled(request, "POST");
 
   if (disabled) {
     return disabled;
@@ -75,7 +102,7 @@ export async function POST(request: Request) {
 }
 
 export async function PUT(request: Request) {
-  const disabled = checkPublicAccountsEnabled(request);
+  const disabled = checkPublicAccountsEnabled(request, "PUT");
 
   if (disabled) {
     return disabled;
@@ -91,7 +118,7 @@ export async function PUT(request: Request) {
 }
 
 export async function PATCH(request: Request) {
-  const disabled = checkPublicAccountsEnabled(request);
+  const disabled = checkPublicAccountsEnabled(request, "PATCH");
 
   if (disabled) {
     return disabled;
@@ -107,7 +134,7 @@ export async function PATCH(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const disabled = checkPublicAccountsEnabled(request);
+  const disabled = checkPublicAccountsEnabled(request, "DELETE");
 
   if (disabled) {
     return disabled;
