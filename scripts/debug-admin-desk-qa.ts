@@ -92,7 +92,8 @@ const groups: Group[] = [
       assert(src.includes('role="alert"'), "error alert role");
       assert(src.includes("Unsaved changes") && src.includes("beforeunload"), "unsaved-change handling");
       assert(src.includes("aria-invalid") && src.includes("aria-describedby"), "field error a11y");
-      assert(src.includes("Save Draft") && src.includes("disabled={pending}"), "save draft + pending");
+      // C8B2: the submit is also disabled while a damaged sidecar blocks the mutation.
+      assert(src.includes("Save Draft") && src.includes("disabled={pending"), "save draft + pending-disabled");
       assert(src.includes("min-h-11"), "touch targets");
     },
   },

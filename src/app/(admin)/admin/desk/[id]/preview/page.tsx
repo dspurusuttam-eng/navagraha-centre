@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getAdminArticleDeps } from "@/modules/admin/articles/service";
 import { getArticle } from "@/modules/admin/articles/service-core";
+import { inspectDeskBody } from "@/modules/desk-sidecar/sidecar";
 
 export const metadata: Metadata = {
   title: "Preview — Admin Console",
@@ -36,6 +37,8 @@ export default async function DeskPreviewPage({
   }
 
   const article = result.data;
+  // C8B2: preview the human-readable body only — the structured sidecar is never shown.
+  const { visibleBody } = inspectDeskBody(article.body);
   return (
     <article className="mx-auto max-w-3xl space-y-4">
       <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
@@ -46,8 +49,8 @@ export default async function DeskPreviewPage({
         <h1 className="text-3xl font-semibold tracking-tight">{article.title}</h1>
         {article.summary ? <p className="text-neutral-600">{article.summary}</p> : null}
       </header>
-      {article.body ? (
-        <div className="whitespace-pre-wrap text-sm leading-relaxed text-neutral-800">{article.body}</div>
+      {visibleBody ? (
+        <div className="whitespace-pre-wrap text-sm leading-relaxed text-neutral-800">{visibleBody}</div>
       ) : (
         <p className="text-sm text-neutral-500">No body content yet.</p>
       )}

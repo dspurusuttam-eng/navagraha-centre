@@ -1,4 +1,5 @@
 // Claude Admin Console C4A — Desk article form config + helpers (pure).
+import { inspectDeskBody } from "@/modules/desk-sidecar/sidecar";
 import type { ArticleRecord } from "@/modules/admin/articles/types";
 
 export const ARTICLE_FORM_FIELDS = [
@@ -40,11 +41,13 @@ export function emptyArticleFormValues(): ArticleFormValues {
 }
 
 export function articleToFormValues(article: ArticleRecord): ArticleFormValues {
+  // C8B2: the editor only ever sees the human-readable body. Any structured sidecar is
+  // withheld here and reattached on save, so it cannot be shown, edited or deleted.
   return {
     title: article.title,
     slug: article.slug,
     summary: article.summary ?? "",
-    body: article.body ?? "",
+    body: inspectDeskBody(article.body).visibleBody,
     language: article.language,
     category: article.category ?? "",
     coverImageAssetId: article.coverImageAssetId ?? "",

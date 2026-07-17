@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import { ArticleStatus, type Prisma } from "@prisma/client";
 import { getPrisma } from "@/lib/prisma";
 import { writeAuditLog } from "@/modules/admin/audit";
+import { withoutSidecar } from "@/modules/admin/articles/api-sanitize";
 import type { AdminApiContext } from "@/modules/admin/api-guard";
 import type { ArticleActor, ArticleRecord, ServiceResult } from "@/modules/admin/articles/types";
 import type { ArticleRepository } from "@/modules/admin/articles/repository";
@@ -101,7 +102,7 @@ export function articleActorFromContext(context: AdminApiContext): ArticleActor 
 
 export function articleServiceResponse<T>(result: ServiceResult<T>): NextResponse {
   if (result.ok) {
-    return NextResponse.json(result.data, { status: result.status });
+    return NextResponse.json(withoutSidecar(result.data), { status: result.status });
   }
   return NextResponse.json(
     { error: { code: result.code, message: result.message, ...(result.issues === undefined ? {} : { issues: result.issues }) } },

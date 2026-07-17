@@ -6,7 +6,9 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getAdminPageSessionOrNull } from "@/modules/admin/auth/page-guard";
 import { getAdminArticleDeps } from "@/modules/admin/articles/service";
-import { createArticle, updateArticle, transitionArticle, deleteArticle } from "@/modules/admin/articles/service-core";
+import { createArticle, updateArticle, getArticle, transitionArticle, deleteArticle } from "@/modules/admin/articles/service-core";
+import { inspectDeskBody, joinBodyAndSidecar } from "@/modules/desk-sidecar/sidecar";
+import { SIDECAR_MALFORMED_MESSAGE } from "@/modules/admin/desk/sidecar-notice";
 import { formDataToArticleInput } from "@/modules/admin/desk/article-form-config";
 import type { ArticleTransitionAction } from "@/modules/admin/domain";
 import type { ArticleActor, ServiceResult } from "@/modules/admin/articles/types";
@@ -58,8 +60,25 @@ export async function createArticleAction(_prev: ArticleFormState, formData: For
 export async function updateArticleAction(id: string, _prev: ArticleFormState, formData: FormData): Promise<ArticleFormState> {
   const actor = await adminActorOrNull();
   if (!actor) return { error: "You are not authorized to manage articles." };
+  const deps = getAdminArticleDeps();
+
   // preserveEmptyBody: a DRAFT autosave may intentionally clear the body ("" persists).
-  const result = await updateArticle(getAdminArticleDeps(), actor, id, formDataToArticleInput(formData, { preserveEmptyBody: true }));
+  const input = formDataToArticleInput(formData, { preserveEmptyBody: true });
+
+  // C8B2 — the editor only ever submits the visible body. Reattach the stored sidecar
+  // verbatim so an edit (including clearing the body) can never drop structured content.
+  if (input.body !== undefined) {
+    const current = await getArticle(deps, id);
+    if (!current.ok) return mapServiceError(current);
+    const parts = inspectDeskBody(current.data.body);
+    if (parts.state === "malformed") {
+      // Do not silently overwrite unreadable structured content — block the mutation.
+      return { error: SIDECAR_MALFORMED_MESSAGE };
+    }
+    input.body = joinBodyAndSidecar(String(input.body ?? ""), parts.sidecar);
+  }
+
+  const result = await updateArticle(deps, actor, id, input);
   if (!result.ok) return mapServiceError(result);
   revalidatePath("/admin/desk");
   revalidatePath(`/admin/desk/${id}`);

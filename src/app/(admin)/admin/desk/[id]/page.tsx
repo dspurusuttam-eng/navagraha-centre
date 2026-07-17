@@ -8,6 +8,8 @@ import { getAdminArticleDeps } from "@/modules/admin/articles/service";
 import { getArticle } from "@/modules/admin/articles/service-core";
 import { getAdminPageSessionOrNull } from "@/modules/admin/auth/page-guard";
 import { getMediaPickerOptions } from "@/modules/admin/media/picker-options";
+import { inspectDeskBody } from "@/modules/desk-sidecar/sidecar";
+import { SIDECAR_MALFORMED_MESSAGE } from "@/modules/admin/desk/sidecar-notice";
 import { hasAdminAccess } from "@/modules/admin/permissions";
 
 export const metadata: Metadata = {
@@ -41,6 +43,11 @@ export default async function DeskEditArticlePage({
     );
   }
 
+  // C8B2: a damaged sidecar blocks editing rather than risking an overwrite. Only the
+  // human message crosses to the client — never the raw block.
+  const sidecarWarning =
+    inspectDeskBody(result.data.body).state === "malformed" ? SIDECAR_MALFORMED_MESSAGE : null;
+
   return (
     <ArticleForm
       mode="edit"
@@ -50,6 +57,7 @@ export default async function DeskEditArticlePage({
       previewHref={`/admin/desk/${id}/preview`}
       mediaOptions={mediaOptions}
       canWrite={canWrite}
+      sidecarWarning={sidecarWarning}
       lifecycle={{
         articleId: id,
         status: result.data.status,

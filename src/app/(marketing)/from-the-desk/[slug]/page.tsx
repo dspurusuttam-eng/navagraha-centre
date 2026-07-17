@@ -14,9 +14,10 @@ import {
 } from "@/components/ui/premium";
 import {
   buildContentMetadata,
-  getContentAdapter,
   getContentStructuredData,
 } from "@/modules/content";
+// C8A: the Desk reads Admin-managed Articles; other surfaces keep the static catalog.
+import { getDeskContentAdapter } from "@/modules/content/desk-article-adapter";
 import type { ContentEntry } from "@/modules/content/types";
 import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
 import {
@@ -95,8 +96,11 @@ function toRelatedEntries(
     .slice(0, 3);
 }
 
+// C8A: Desk slugs now come from the database. The adapter degrades to an empty list when
+// the database is unavailable (e.g. at build time), so pages simply render on demand under
+// the existing `revalidate` window rather than failing the build.
 export async function generateStaticParams() {
-  const entries = await getContentAdapter().listPublishedEntries();
+  const entries = await getDeskContentAdapter().listPublishedEntries();
 
   return entries.map((entry) => ({
     slug: entry.slug,
@@ -107,7 +111,7 @@ export async function generateMetadata({ params }: DeskArticleDetailPageProps) {
   const { slug } = await params;
   const locale = await getRequestLocale();
   const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
-  const contentAdapter = getContentAdapter();
+  const contentAdapter = getDeskContentAdapter();
   const entry = await contentAdapter.getPublishedEntryBySlugForLocale(
     slug,
     locale
@@ -177,7 +181,7 @@ export default async function DeskArticleDetailPage({
     getLocalizedPath(locale, href, {
       forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
     });
-  const contentAdapter = getContentAdapter();
+  const contentAdapter = getDeskContentAdapter();
   const entry = await contentAdapter.getPublishedEntryBySlugForLocale(
     slug,
     locale

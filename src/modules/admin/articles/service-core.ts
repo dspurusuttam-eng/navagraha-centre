@@ -14,6 +14,7 @@ import {
   type ArticleTransitionAction,
 } from "@/modules/admin/domain";
 import { hasAdminAccess } from "@/modules/admin/permissions";
+import { inspectDeskBody, joinBodyAndSidecar } from "@/modules/desk-sidecar/sidecar";
 import type { AuditEntryInput, AuditWriteResult } from "@/modules/admin/audit-core";
 import type { ArticleActor, ArticleListFilters, ArticleListResult, ArticleRecord, ServiceResult } from "@/modules/admin/articles/types";
 import type { ArticleRepository } from "@/modules/admin/articles/repository";
@@ -26,6 +27,38 @@ export type ArticleServiceDeps = {
 
 const DEFAULT_PAGE_SIZE = 20;
 const MAX_PAGE_SIZE = 100;
+
+// --- C8B3: service-level structured-sidecar protection -----------------------
+// Some Articles carry a structured sidecar in `body` (Daily Rashifal payload / FAQ items /
+// original display category) that no column exists for. This service is the ONE place every
+// body write passes through — the Desk editor action, autosave, and the direct
+// `PATCH /api/admin/articles/[id]` route alike — so the guarantee is enforced here rather
+// than in any single caller:
+//
+//   * an ordinary write may change the VISIBLE body only; the stored sidecar is reattached
+//     verbatim, so it cannot be replaced, removed or duplicated no matter what is submitted;
+//   * only a trusted writer (the legacy import) may create or rewrite a sidecar;
+//   * a stored sidecar that cannot be read blocks the body write entirely, so damaged
+//     structured content is never silently overwritten.
+export type ArticleWriteOptions = {
+  /** Legacy-import only: permits writing a body that contains a sidecar verbatim. */
+  trustedSidecarWriter?: boolean;
+};
+
+/** Controlled, non-leaking message for a stored sidecar that cannot be parsed. */
+export const SIDECAR_MALFORMED_ERROR =
+  "This article's structured content is stored in a damaged state. The body cannot be updated until it is repaired.";
+
+/**
+ * Resolve the body an ordinary (untrusted) write may store: the submitted VISIBLE body plus
+ * the stored sidecar reattached verbatim. Any sidecar in the submitted body is discarded —
+ * that is what makes replace/remove/duplicate impossible through this path.
+ */
+function resolveGuardedBody(submitted: string, storedBody: string | null | undefined): string {
+  const stored = inspectDeskBody(storedBody);
+  const incoming = inspectDeskBody(submitted);
+  return joinBodyAndSidecar(incoming.visibleBody, stored.sidecar);
+}
 
 function canWriteArticles(actor: ArticleActor): boolean {
   return hasAdminAccess(actor.roleKeys.map((key) => ({ key })), ["founder", "editor"]);
@@ -69,7 +102,7 @@ export async function getRecentArticles(deps: ArticleServiceDeps, limit: number)
 }
 
 // --- Write operations (founder/editor) -------------------------------------
-export async function createArticle(deps: ArticleServiceDeps, actor: ArticleActor, input: unknown): Promise<ServiceResult<ArticleRecord>> {
+export async function createArticle(deps: ArticleServiceDeps, actor: ArticleActor, input: unknown, options?: ArticleWriteOptions): Promise<ServiceResult<ArticleRecord>> {
   if (!canWriteArticles(actor)) return err(403, "FORBIDDEN", "You do not have write access to articles.");
   const parsed = createArticleSchema.safeParse(input);
   if (!parsed.success) return err(422, "VALIDATION_ERROR", "Invalid article payload.", parsed.error.issues);
@@ -78,13 +111,21 @@ export async function createArticle(deps: ArticleServiceDeps, actor: ArticleActo
   const existing = await deps.repo.findBySlug(data.slug);
   if (existing) return err(409, "SLUG_TAKEN", "An article with this slug already exists.");
 
-  const readingTimeMinutes = data.readingTimeMinutes ?? estimateReadingTimeMinutes(data.body);
+  // C8B3 — only the trusted legacy import may create an Article whose body carries a
+  // sidecar; an ordinary create stores the visible body only.
+  const createdBody =
+    data.body === undefined || data.body === null
+      ? null
+      : options?.trustedSidecarWriter
+        ? data.body
+        : inspectDeskBody(data.body).visibleBody;
+  const readingTimeMinutes = data.readingTimeMinutes ?? estimateReadingTimeMinutes(inspectDeskBody(createdBody).visibleBody);
   const created = await deps.repo.create({
     slug: data.slug,
     title: data.title,
     excerpt: data.excerpt ?? data.summary ?? data.title,
     summary: data.summary ?? null,
-    body: data.body ?? null,
+    body: createdBody,
     language: data.language,
     category: data.category ?? null,
     coverImageAssetId: data.coverImageAssetId ?? null,
@@ -100,7 +141,7 @@ export async function createArticle(deps: ArticleServiceDeps, actor: ArticleActo
   return { ok: true, status: 201, data: created };
 }
 
-export async function updateArticle(deps: ArticleServiceDeps, actor: ArticleActor, id: string, input: unknown): Promise<ServiceResult<ArticleRecord>> {
+export async function updateArticle(deps: ArticleServiceDeps, actor: ArticleActor, id: string, input: unknown, options?: ArticleWriteOptions): Promise<ServiceResult<ArticleRecord>> {
   if (!canWriteArticles(actor)) return err(403, "FORBIDDEN", "You do not have write access to articles.");
   const current = await deps.repo.findById(id);
   if (!current) return err(404, "NOT_FOUND", "Article not found.");
@@ -117,14 +158,31 @@ export async function updateArticle(deps: ArticleServiceDeps, actor: ArticleActo
     if (clash && clash.id !== id) return err(409, "SLUG_TAKEN", "An article with this slug already exists.");
   }
 
-  const nextBody = data.body !== undefined ? data.body : current.body;
-  const readingTimeMinutes = data.readingTimeMinutes !== undefined ? data.readingTimeMinutes : estimateReadingTimeMinutes(nextBody);
+  // C8B3 — sidecar protection on the single shared body-write path.
+  let resolvedBody: string | null | undefined;
+  if (data.body !== undefined) {
+    const stored = inspectDeskBody(current.body);
+    if (stored.state === "malformed") {
+      // Retain the stored data untouched rather than overwrite unreadable structured content.
+      return err(409, "SIDECAR_MALFORMED", SIDECAR_MALFORMED_ERROR);
+    }
+    resolvedBody = options?.trustedSidecarWriter
+      ? (data.body ?? null)
+      : resolveGuardedBody(String(data.body ?? ""), current.body);
+  }
+
+  // Reading time is estimated from the human-readable body only, so a sidecar never inflates it.
+  const nextBody = resolvedBody !== undefined ? resolvedBody : current.body;
+  const readingTimeMinutes =
+    data.readingTimeMinutes !== undefined
+      ? data.readingTimeMinutes
+      : estimateReadingTimeMinutes(inspectDeskBody(nextBody).visibleBody);
   const updated = await deps.repo.update(id, {
     ...(data.slug !== undefined ? { slug: data.slug } : {}),
     ...(data.title !== undefined ? { title: data.title } : {}),
     ...(data.summary !== undefined ? { summary: data.summary ?? null } : {}),
     ...(data.excerpt !== undefined ? { excerpt: data.excerpt } : {}),
-    ...(data.body !== undefined ? { body: data.body ?? null } : {}),
+    ...(resolvedBody !== undefined ? { body: resolvedBody } : {}),
     ...(data.language !== undefined ? { language: data.language } : {}),
     ...(data.category !== undefined ? { category: data.category ?? null } : {}),
     ...(data.coverImageAssetId !== undefined ? { coverImageAssetId: data.coverImageAssetId ?? null } : {}),

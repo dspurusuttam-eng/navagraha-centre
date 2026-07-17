@@ -133,7 +133,7 @@ const groups: Group[] = [
       assert(src.includes("Saving…") && src.includes("Saved") && src.includes("Autosave failed") && src.includes("Retry"), "saving/saved/failed/retry states");
       assert(src.includes("beforeunload") && src.includes("Unsaved changes"), "unsaved-change protection preserved");
       // Autosave must be gated by enableAutosave so create mode never autosaves.
-      assert(src.includes("if (enableAutosave) autosave.notifyChange()"), "create mode does not autosave");
+      assert(/if \(enableAutosave[^)]*\) autosave\.notifyChange\(\)/.test(src), "create mode does not autosave (notifyChange gated on enableAutosave)");
     },
   },
   {

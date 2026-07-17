@@ -39,6 +39,12 @@ type ArticleFormProps = {
   mediaOptions?: readonly MediaPickerOption[] | null;
   /** Founder/editor may change the cover image; support is read-only (C6B). */
   canWrite?: boolean;
+  /**
+   * C8B2 — set when this article's protected structured content is stored damaged. The
+   * editor is put into a read-only, save-blocked state rather than risk overwriting it.
+   * Carries a human message only; the raw sidecar is never sent to the client.
+   */
+  sidecarWarning?: string | null;
 };
 
 function fieldError(state: ArticleFormState, field: string): string | undefined {
@@ -54,6 +60,7 @@ export function ArticleForm({
   lifecycle,
   mediaOptions = null,
   canWrite = true,
+  sidecarWarning = null,
 }: Readonly<ArticleFormProps>) {
   const [state, formAction, pending] = useActionState(action, INITIAL_STATE);
   const [title, setTitle] = useState(initial.title);
@@ -62,10 +69,12 @@ export function ArticleForm({
   const formRef = useRef<HTMLFormElement>(null);
 
   const saveDraft = useCallback(async (): Promise<boolean> => {
+    // Never autosave over damaged structured content.
+    if (sidecarWarning) return false;
     if (!enableAutosave || !formRef.current) return false;
     const result = await action({ error: null }, new FormData(formRef.current));
     return result.ok === true;
-  }, [action, enableAutosave]);
+  }, [action, enableAutosave, sidecarWarning]);
 
   const autosave = useAutosave(saveDraft);
 
@@ -85,7 +94,7 @@ export function ArticleForm({
 
   const onFormChange = () => {
     setDirty(true);
-    if (enableAutosave) autosave.notifyChange();
+    if (enableAutosave && !sidecarWarning) autosave.notifyChange();
   };
 
   const err = (field: string) => fieldError(state, field);
@@ -120,6 +129,11 @@ export function ArticleForm({
         </span>
       </div>
 
+      {sidecarWarning ? (
+        <p role="alert" className="rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+          {sidecarWarning}
+        </p>
+      ) : null}
       {state.error ? (
         <p role="alert" className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
           {state.error}
@@ -217,7 +231,7 @@ export function ArticleForm({
       </div>
 
       <div className="flex flex-wrap items-center gap-3 pt-2">
-        <button type="submit" disabled={pending} className="flex min-h-11 items-center rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60">
+        <button type="submit" disabled={pending || Boolean(sidecarWarning)} className="flex min-h-11 items-center rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60">
           {pending ? "Saving…" : "Save Draft"}
         </button>
         {previewHref ? (
