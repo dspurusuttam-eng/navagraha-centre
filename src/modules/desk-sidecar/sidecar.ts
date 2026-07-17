@@ -121,3 +121,48 @@ export function joinBodyAndSidecar(visibleBody: string, sidecar: string | null):
   if (!sidecar) return prose;
   return prose ? `${prose}\n\n${sidecar}` : sidecar;
 }
+
+// --- Body-to-sections parsing (C9C2) ----------------------------------------
+// Shared with the public Desk core AND the Admin private preview via this neutral module,
+// so neither side depends on the other's identity module — same reasoning as the codec above.
+
+export type DeskContentSection = { title: string; paragraphs: string[] };
+
+/** Title given to body content that appears before the first heading. */
+export const DESK_LEAD_SECTION_TITLE = "Overview";
+
+/**
+ * Split a prose body into the rendered section shape.
+ * Blank lines separate blocks; a markdown-style `#`..`######` block starts a new section;
+ * everything before the first heading becomes the lead section. Deterministic and total.
+ * Callers pass the sidecar-free body, so structured metadata can never render as prose.
+ */
+export function parseBodyToSections(body: string | null | undefined): DeskContentSection[] {
+  const text = (body ?? "").trim();
+  if (!text) return [];
+
+  const blocks = text
+    .split(/\n\s*\n/)
+    .map((block) => block.trim())
+    .filter((block) => block.length > 0);
+
+  const sections: DeskContentSection[] = [];
+  let current: DeskContentSection | null = null;
+
+  for (const block of blocks) {
+    const heading = /^#{1,6}\s+(.+)$/.exec(block);
+    if (heading) {
+      current = { title: heading[1]!.trim(), paragraphs: [] };
+      sections.push(current);
+      continue;
+    }
+    if (!current) {
+      current = { title: DESK_LEAD_SECTION_TITLE, paragraphs: [] };
+      sections.push(current);
+    }
+    // Collapse soft wraps inside a paragraph block.
+    current.paragraphs.push(block.replace(/\s*\n\s*/g, " "));
+  }
+
+  return sections;
+}

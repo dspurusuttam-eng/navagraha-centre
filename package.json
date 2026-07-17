@@ -75,6 +75,7 @@
     "debug:admin:draft:validation:qa": "tsx scripts/debug-admin-draft-validation-qa.ts",
     "debug:admin:draft:body:qa": "tsx scripts/debug-admin-draft-body-qa.ts",
     "debug:admin:desk:lifecycle:qa": "tsx scripts/debug-admin-desk-lifecycle-qa.ts",
+    "debug:admin:desk:preview:qa": "tsx scripts/debug-admin-desk-preview-qa.ts",
     "debug:admin:consultation:ui:qa": "tsx scripts/debug-admin-consultation-ui-qa.ts",
     "debug:admin:brand:ui:qa": "tsx scripts/debug-admin-brand-ui-qa.ts",
     "debug:admin:media:ui:qa": "tsx scripts/debug-admin-media-ui-qa.ts",

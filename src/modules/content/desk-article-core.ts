@@ -7,11 +7,10 @@
 //   * language must be one of the public Desk locales (EN / AS / HI)
 //   * publishedAt must exist and must not be in the future
 // Anything failing any check is absent from listings and 404s on detail.
-import { extractDeskMeta } from "@/modules/desk-sidecar/sidecar";
+import { extractDeskMeta, parseBodyToSections } from "@/modules/desk-sidecar/sidecar";
 import type {
   ContentCategory,
   ContentEntry,
-  ContentSection,
 } from "@/modules/content/types";
 import type { SupportedLocale } from "@/modules/localization/config";
 
@@ -111,12 +110,11 @@ export function deskPathForSlug(slug: string): string {
   return `${DESK_BASE_PATH}/${slug}`;
 }
 
-/** Title given to body content that appears before the first heading. */
-export const DESK_LEAD_SECTION_TITLE = "Overview";
-
 // --- Reversible structured sidecar (C8B1/C8B2) -----------------------------
 // The codec is shared with the Admin editor via the neutral `desk-sidecar` module, so the
 // exact same representation is written, hidden, reattached and recovered on both sides.
+// `parseBodyToSections` moved there too in C9C2, for the same reason: the Admin private
+// preview needed the identical parser without importing this public content module.
 // Re-exported here so existing public-Desk callers keep one import site.
 export {
   stableStringify,
@@ -126,46 +124,12 @@ export {
   appendDeskMeta,
   inspectDeskBody,
   joinBodyAndSidecar,
+  parseBodyToSections,
+  DESK_LEAD_SECTION_TITLE,
   type DeskMeta,
   type DeskBodyParts,
   type DeskSidecarState,
 } from "@/modules/desk-sidecar/sidecar";
-
-/**
- * Split a prose body into the rendered section shape.
- * Blank lines separate blocks; a markdown-style `#`..`######` block starts a new section;
- * everything before the first heading becomes the lead section. Deterministic and total.
- * Callers pass the sidecar-free body, so structured metadata can never render as prose.
- */
-export function parseBodyToSections(body: string | null | undefined): ContentSection[] {
-  const text = (body ?? "").trim();
-  if (!text) return [];
-
-  const blocks = text
-    .split(/\n\s*\n/)
-    .map((block) => block.trim())
-    .filter((block) => block.length > 0);
-
-  const sections: { title: string; paragraphs: string[] }[] = [];
-  let current: { title: string; paragraphs: string[] } | null = null;
-
-  for (const block of blocks) {
-    const heading = /^#{1,6}\s+(.+)$/.exec(block);
-    if (heading) {
-      current = { title: heading[1]!.trim(), paragraphs: [] };
-      sections.push(current);
-      continue;
-    }
-    if (!current) {
-      current = { title: DESK_LEAD_SECTION_TITLE, paragraphs: [] };
-      sections.push(current);
-    }
-    // Collapse soft wraps inside a paragraph block.
-    current.paragraphs.push(block.replace(/\s*\n\s*/g, " "));
-  }
-
-  return sections.map((section) => ({ title: section.title, paragraphs: section.paragraphs }));
-}
 
 /** ~200 words/minute, min 1 — mirrors the Admin estimate. */
 export function estimateReadingMinutes(body: string | null | undefined): number {
