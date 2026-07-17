@@ -21,6 +21,8 @@ import {
   consultationHost,
   consultationPackages,
 } from "@/modules/consultations/catalog";
+// C8D: Acharya identity is Admin-managed (static fallback when unset).
+import { getPublicBrandSettings } from "@/modules/site-settings/public-settings";
 import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
 import {
   getRequestLocale,
@@ -89,6 +91,7 @@ function toConsultationContactHref(packageSlug: string) {
 export default async function JoyPrakashSarmahPage() {
   const locale = await getRequestLocale();
   const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
+  const brand = await getPublicBrandSettings();
   const localizeHref = (href: string) =>
     getLocalizedPath(locale, href, {
       forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
@@ -144,7 +147,7 @@ export default async function JoyPrakashSarmahPage() {
                 </PremiumStatusBadge>
               </div>
               <h1 className="mt-4 font-[family-name:var(--font-family-editorial)] text-[length:var(--font-size-title-lg)] leading-[var(--line-height-heading)] text-[color:var(--ui-color-text-primary)]">
-                {consultationHost.astrologerName}
+                {brand.acharyaName}
               </h1>
               <div className="mt-5 flex flex-wrap gap-3">
                 <TrackedLink

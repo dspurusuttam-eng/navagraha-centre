@@ -46,7 +46,12 @@ export async function updateConsultationSettings(
     return { ok: false, status: 422, code: "VALIDATION_ERROR", message: "Invalid consultation settings.", issues: patch.error.issues };
   }
   const current = (await deps.repo.get()) ?? defaultConsultationConfig();
-  const merged = { ...current, ...patch.data };
+  // C8D1 — activation: the FIRST successful founder/editor save publishes the settings, and
+  // every later save preserves that. There is deliberately no separate isEnabled toggle:
+  // `isEnabled` only records "an editor has configured this", while UNAVAILABLE is the
+  // public operational off-state. Enforced here so the Admin form and the PATCH API behave
+  // identically.
+  const merged = { ...current, ...patch.data, isEnabled: true };
   const validated = consultationConfigSchema.safeParse(merged);
   if (!validated.success) {
     return { ok: false, status: 422, code: "VALIDATION_ERROR", message: "Invalid consultation settings.", issues: validated.error.issues };
