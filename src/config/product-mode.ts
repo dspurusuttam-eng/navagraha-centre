@@ -29,8 +29,8 @@ export const productModeContract = {
   SWISS_RUNTIME_ENABLED: false,
   PUBLIC_CALCULATION_ENGINES_ENABLED: false,
   PUBLIC_ACCOUNTS_ENABLED: false,
-  PRIVATE_ADMIN_CONSOLE_ENABLED: false,
-  PRIVATE_ADMIN_AUTH_ENABLED: false,
+  PRIVATE_ADMIN_CONSOLE_ENABLED: true,
+  PRIVATE_ADMIN_AUTH_ENABLED: true,
   PUBLIC_AUTH_REGISTRATION_ENABLED: false,
 } as const satisfies {
   readonly PUBLIC_PRODUCT_MODE: ProductMode;
@@ -88,6 +88,17 @@ export const twoUtilityReservedPrivatePrefixes = [] as const;
 
 export const twoUtilityReservedPrivateAdminPrefixes = ["/admin", "/api/admin"] as const;
 
+export const twoUtilityReservedPrivateAdminAuthApis = [
+  "/api/auth/sign-in/email",
+  "/api/auth/get-session",
+  "/api/auth/sign-out",
+] as const;
+
+export const twoUtilityPublicAuthRegistrationApis = [
+  "/api/auth/sign-up",
+  "/api/auth/sign-up/email",
+] as const;
+
 export const twoUtilityAuthenticationEntryPoints = [
   "/sign-in",
   "/sign-up",
@@ -96,11 +107,6 @@ export const twoUtilityAuthenticationEntryPoints = [
   "/dashboard",
   "/account",
   "/settings",
-] as const;
-
-
-export const twoUtilityReservedPrivateAdminAuthApis = [
-  "/api/auth",
 ] as const;
 
 export const twoUtilityHiddenPublicRoutes = [
@@ -358,6 +364,42 @@ export function canEnablePrivateAdminAccessWithoutReopeningPublicSurfaces() {
     !isSwissRuntimeEnabled()
   );
 }
+
+export function isPrivateAdminAuthApi(pathname: string): boolean {
+  const normalized = normalizeProductPath(pathname);
+
+  return twoUtilityReservedPrivateAdminAuthApis.includes(
+    normalized as (typeof twoUtilityReservedPrivateAdminAuthApis)[number]
+  );
+}
+
+export function isPublicAuthRegistrationApi(pathname: string): boolean {
+  const normalized = normalizeProductPath(pathname);
+
+  return twoUtilityPublicAuthRegistrationApis.includes(
+    normalized as (typeof twoUtilityPublicAuthRegistrationApis)[number]
+  );
+}
+
+export function isPrivateAdminAuthRequestAllowed(
+  pathname: string,
+  method: string
+): boolean {
+  if (!isPrivateAdminAuthEnabled()) {
+    return false;
+  }
+
+  const normalizedMethod = method.toUpperCase();
+  const normalizedPath = normalizeProductPath(pathname);
+
+  return (
+    (normalizedMethod === "POST" &&
+      (normalizedPath === "/api/auth/sign-in/email" ||
+        normalizedPath === "/api/auth/sign-out")) ||
+    (normalizedMethod === "GET" && normalizedPath === "/api/auth/get-session")
+  );
+}
+
 const localePrefixesToStrip = twoUtilityLocalePrefixes.filter(
   (prefix): prefix is Exclude<(typeof twoUtilityLocalePrefixes)[number], ""> => prefix !== "",
 );
@@ -416,7 +458,7 @@ export function classifyTwoUtilityPath(pathname: string): ProductRouteDispositio
     return "RESERVED_PRIVATE_ADMIN";
   }
 
-  if (matchesPattern(routePath, twoUtilityReservedPrivateAdminAuthApis)) {
+  if (isPrivateAdminAuthApi(routePath)) {
     return "RESERVED_PRIVATE_ADMIN";
   }
 

@@ -27,20 +27,41 @@ async function expectFeatureDisabledApi(pathname: string) {
 }
 
 async function main() {
-  assert.equal(productModeContract.PUBLIC_PRODUCT_MODE, "DESK_CONSULTATION");
+assert.equal(productModeContract.PUBLIC_PRODUCT_MODE, "DESK_CONSULTATION");
 assert.equal(arePublicAccountsEnabled(), false);
 assert.equal(isPublicAuthRegistrationEnabled(), false);
-assert.equal(isPrivateAdminConsoleEnabled(), false);
-assert.equal(isPrivateAdminAuthEnabled(), false);
+assert.equal(isPrivateAdminConsoleEnabled(), true);
+assert.equal(isPrivateAdminAuthEnabled(), true);
 assert.equal(isPublicCalculationEnginesEnabled(), false);
 assert.equal(isSwissRuntimeEnabled(), false);
-assert.equal(canEnablePrivateAdminAccessWithoutReopeningPublicSurfaces(), false);
+assert.equal(canEnablePrivateAdminAccessWithoutReopeningPublicSurfaces(), true);
 
-for (const path of ["/admin", "/admin/users", "/api/admin/users", "/api/auth/sign-in/email"]) {
+for (const path of [
+  "/admin",
+  "/admin/login",
+  "/admin/denied",
+  "/admin/users",
+  "/api/admin",
+  "/api/admin/users",
+  "/api/auth/sign-in/email",
+  "/api/auth/get-session",
+  "/api/auth/sign-out",
+]) {
   assert.equal(classifyTwoUtilityPath(path), "RESERVED_PRIVATE_ADMIN", path);
 }
 
-for (const path of ["/kundli", "/panchang", "/rashifal", "/shop", "/dashboard", "/sign-in"]) {
+for (const path of [
+  "/administrator",
+  "/admin-public",
+  "/api/administrator",
+  "/api/auth/sign-up/email",
+  "/kundli",
+  "/panchang",
+  "/rashifal",
+  "/shop",
+  "/dashboard",
+  "/sign-in",
+]) {
   assert.notEqual(classifyTwoUtilityPath(path), "RESERVED_PRIVATE_ADMIN", path);
 }
 
@@ -49,13 +70,14 @@ for (const path of ["/", "/from-the-desk", "/consultation", "/as/consultation", 
   assert.notEqual(response.status, 404, `${path} should remain available`);
 }
 
-for (const path of ["/admin", "/api/admin/users"]) {
+for (const path of ["/admin", "/admin/login", "/api/admin/users", "/api/auth/sign-in/email"]) {
   const response = proxy(request(path));
-  assert.equal(response.status, path.startsWith("/api/") ? 403 : 404, `${path} should be unavailable publicly`);
+  assert.notEqual(response.status, 404, `${path} should be delegated to private Admin runtime`);
+  assert.notEqual(response.status, 403, `${path} should not be feature-disabled by product mode`);
+  assert.equal(response.headers.get("x-robots-tag"), "noindex, nofollow, noarchive", path);
 }
 
 await expectFeatureDisabledApi("/api/auth/sign-up/email");
-await expectFeatureDisabledApi("/api/auth/sign-in/email");
 await expectFeatureDisabledApi("/api/astrology/chart");
 await expectFeatureDisabledApi("/api/astrology/panchang");
 

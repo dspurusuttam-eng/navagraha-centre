@@ -42,6 +42,13 @@ function shouldUseDefaultLocaleForUnprefixedRoute() {
 function enforceProductMode(request: NextRequest) {
   const disposition = classifyTwoUtilityPath(request.nextUrl.pathname);
 
+  if (disposition === "RESERVED_PRIVATE_ADMIN") {
+    const response = NextResponse.next();
+    response.headers.set("x-robots-tag", "noindex, nofollow, noarchive");
+    response.headers.set("x-navagraha-product-mode", disposition);
+    return response;
+  }
+
   if (
     disposition === "PUBLIC_ALLOWLIST" ||
     disposition === "STATIC_METADATA" ||
