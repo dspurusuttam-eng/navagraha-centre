@@ -62,7 +62,27 @@ function checkAuthRateLimit(request: Request, method: string) {
 }
 
 export async function GET(request: Request) {
+  const disabled = checkPublicAccountsEnabled(request, "GET");
+
+  if (disabled) {
+    return disabled;
+  }
+
   return toNextJsHandler(getAuth()).GET(request);
+}
+
+export async function HEAD(request: Request) {
+  return (
+    checkPublicAccountsEnabled(request, "HEAD") ??
+    createFeatureDisabledApiResponse(new URL(request.url).pathname)
+  );
+}
+
+export async function OPTIONS(request: Request) {
+  return (
+    checkPublicAccountsEnabled(request, "OPTIONS") ??
+    createFeatureDisabledApiResponse(new URL(request.url).pathname)
+  );
 }
 
 export async function POST(request: Request) {

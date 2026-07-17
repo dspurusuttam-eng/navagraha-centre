@@ -107,6 +107,34 @@ assert.equal(isPrivateAdminAuthRequestAllowed("/api/auth/sign-out", "POST"), tru
 assert.equal(isPrivateAdminAuthRequestAllowed("/api/auth/sign-up/email", "POST"), false);
 assert.equal(isPrivateAdminAuthRequestAllowed("/api/auth/sign-in/email", "GET"), false);
 
+const allowedAdminAuthMethods = new Map([
+  ["/api/auth/sign-in/email", "POST"],
+  ["/api/auth/get-session", "GET"],
+  ["/api/auth/sign-out", "POST"],
+] as const);
+const testedAuthMethods = ["GET", "POST", "HEAD", "OPTIONS", "PUT", "PATCH", "DELETE"] as const;
+
+for (const [route, allowedMethod] of allowedAdminAuthMethods) {
+  for (const method of testedAuthMethods) {
+    assert.equal(
+      isPrivateAdminAuthRequestAllowed(route, method),
+      method === allowedMethod,
+      `${method} ${route} allowlist mismatch`,
+    );
+  }
+}
+
+for (const signupRoute of ["/api/auth/sign-up", "/api/auth/sign-up/email"]) {
+  assert.equal(isPublicAuthRegistrationApi(signupRoute), true, signupRoute);
+  for (const method of testedAuthMethods) {
+    assert.equal(
+      isPrivateAdminAuthRequestAllowed(signupRoute, method),
+      false,
+      `${method} ${signupRoute} must not be privately allowed`,
+    );
+  }
+}
+
 for (const file of [
   "src/lib/astrology/swiss-module.ts",
   "src/lib/astrology/ephemeris.ts",

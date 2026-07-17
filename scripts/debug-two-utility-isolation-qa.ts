@@ -91,6 +91,23 @@ for (const route of [
 
 expectReservedAdmin("/api/auth/get-session");
 
+const allowedAdminAuthMethods = new Map([
+  ["/api/auth/sign-in/email", "POST"],
+  ["/api/auth/get-session", "GET"],
+  ["/api/auth/sign-out", "POST"],
+] as const);
+const testedAuthMethods = ["GET", "POST", "HEAD", "OPTIONS", "PUT", "PATCH", "DELETE"] as const;
+
+for (const [route, allowedMethod] of allowedAdminAuthMethods) {
+  for (const method of testedAuthMethods) {
+    if (method === allowedMethod) {
+      expectReservedAdmin(route, method);
+    } else {
+      await expectDisabledApi(route, method);
+    }
+  }
+}
+
 for (const apiRoute of [
   "/api/astrology/chart",
   "/api/astrology/panchang",
@@ -100,6 +117,7 @@ for (const apiRoute of [
   "/api/platform/location-timezone",
   "/api/shop/checkout/init",
   "/api/subscriptions/checkout",
+  "/api/auth/sign-up",
   "/api/auth/sign-up/email",
 ]) {
   await expectDisabledApi(apiRoute);
