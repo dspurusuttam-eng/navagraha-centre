@@ -6,7 +6,6 @@ import {
 } from "@/components/ui/premium";
 import type {
   ModeRecord,
-  TierWithUtilities,
   UtilityRecord,
 } from "@/modules/admin/consultation-catalogue/types";
 import {
@@ -15,10 +14,51 @@ import {
 } from "@/modules/consultations/components/consultation-selection-journey";
 import { ConsultationUtilitySelectButton } from "@/modules/consultations/components/consultation-utility-select-button";
 
+export type ConsultationDisplayMode = Pick<
+  ModeRecord,
+  | "id"
+  | "slug"
+  | "name"
+  | "shortDescription"
+  | "priceType"
+  | "currency"
+  | "launchPrice"
+  | "regularPrice"
+  | "priceLabel"
+  | "travelExcluded"
+>;
+
+export type ConsultationDisplayUtility = Pick<
+  UtilityRecord,
+  | "id"
+  | "slug"
+  | "name"
+  | "priceType"
+  | "currency"
+  | "launchPrice"
+  | "regularPrice"
+  | "priceLabel"
+  | "requiresScopeReview"
+  | "travelExcluded"
+  | "isPriority"
+  | "availabilityStatus"
+  | "publicationState"
+> & { modes: ConsultationDisplayMode[] };
+
+export type ConsultationDisplayTier = {
+  id: string;
+  slug: string;
+  name: string;
+  availabilityStatus: UtilityRecord["availabilityStatus"];
+  publicationState: UtilityRecord["publicationState"];
+  utilities: ConsultationDisplayUtility[];
+};
+
 type ConsultationCatalogueDisplayProps = {
-  tiers: readonly TierWithUtilities[];
+  tiers: readonly ConsultationDisplayTier[];
   heading?: string;
   whatsappBaseUrl?: string | null;
+  audience?: "admin" | "public";
 };
 
 function formatRupees(value: number | null, currency: string) {
@@ -45,7 +85,10 @@ function priceSummary(item: Pick<UtilityRecord | ModeRecord, "currency" | "launc
   return `${item.priceType === "FROM" ? "From " : ""}${formatRupees(item.launchPrice, item.currency)}`;
 }
 
-function FlagList({ utility }: Readonly<{ utility: UtilityRecord }>) {
+function FlagList({
+  showPublicationState,
+  utility,
+}: Readonly<{ showPublicationState: boolean; utility: ConsultationDisplayUtility }>) {
   return (
     <ul aria-label={`${utility.name} states`} className="flex min-w-0 flex-wrap gap-2">
       {utility.isPriority ? (
@@ -66,14 +109,16 @@ function FlagList({ utility }: Readonly<{ utility: UtilityRecord }>) {
       <li>
         <PremiumStatusBadge status="NEUTRAL">{utility.availabilityStatus}</PremiumStatusBadge>
       </li>
-      <li>
-        <PremiumStatusBadge status="NEUTRAL">{utility.publicationState}</PremiumStatusBadge>
-      </li>
+      {showPublicationState ? (
+        <li>
+          <PremiumStatusBadge status="NEUTRAL">{utility.publicationState}</PremiumStatusBadge>
+        </li>
+      ) : null}
     </ul>
   );
 }
 
-function PriceRows({ utility }: Readonly<{ utility: UtilityRecord }>) {
+function PriceRows({ utility }: Readonly<{ utility: ConsultationDisplayUtility }>) {
   return (
     <dl className="grid gap-3 text-sm">
       <div className="grid grid-cols-[7rem_minmax(0,1fr)] gap-3">
@@ -104,7 +149,7 @@ function PriceRows({ utility }: Readonly<{ utility: UtilityRecord }>) {
   );
 }
 
-function ModeList({ utility }: Readonly<{ utility: UtilityRecord }>) {
+function ModeList({ utility }: Readonly<{ utility: ConsultationDisplayUtility }>) {
   if (!utility.modes.length) {
     return null;
   }
@@ -139,10 +184,12 @@ function ModeList({ utility }: Readonly<{ utility: UtilityRecord }>) {
 }
 
 function UtilityCard({
+  audience,
   tierSlug,
   utility,
-}: Readonly<{ tierSlug: string; utility: UtilityRecord }>) {
+}: Readonly<{ audience: "admin" | "public"; tierSlug: string; utility: ConsultationDisplayUtility }>) {
   const isAvailable = utility.availabilityStatus === "AVAILABLE";
+  const showInternalState = audience === "admin";
 
   return (
     <Card
@@ -151,13 +198,15 @@ function UtilityCard({
       tone={utility.isPriority ? "accent" : "muted"}
     >
       <div className="space-y-3">
-        <FlagList utility={utility} />
+        <FlagList showPublicationState={showInternalState} utility={utility} />
         <h3 className="break-words text-base font-semibold leading-tight text-[color:var(--ui-color-text-primary)]">
           {utility.name}
         </h3>
-        <p className="text-xs font-medium uppercase tracking-[var(--tracking-label)] text-[color:var(--ui-color-text-muted)]">
-          {utility.slug}
-        </p>
+        {showInternalState ? (
+          <p className="text-xs font-medium uppercase tracking-[var(--tracking-label)] text-[color:var(--ui-color-text-muted)]">
+            {utility.slug}
+          </p>
+        ) : null}
       </div>
       <PriceRows utility={utility} />
       <ModeList utility={utility} />
@@ -174,7 +223,7 @@ function UtilityCard({
   );
 }
 
-function toJourneyTiers(tiers: readonly TierWithUtilities[]): ConsultationJourneyTier[] {
+function toJourneyTiers(tiers: readonly ConsultationDisplayTier[]): ConsultationJourneyTier[] {
   return tiers.map((tier) => ({
     id: tier.id,
     slug: tier.slug,
@@ -211,24 +260,32 @@ function toJourneyTiers(tiers: readonly TierWithUtilities[]): ConsultationJourne
 }
 
 export function ConsultationCatalogueDisplay({
+  audience = "admin",
   tiers,
   heading = "Consultation Preview",
   whatsappBaseUrl = null,
 }: Readonly<ConsultationCatalogueDisplayProps>) {
   const totalUtilities = tiers.reduce((sum, tier) => sum + tier.utilities.length, 0);
   const journeyTiers = toJourneyTiers(tiers);
+  const isPublic = audience === "public";
 
   return (
-    <section className="mx-auto flex w-full max-w-6xl flex-col gap-6" data-consultation-preview>
+    <section
+      className="mx-auto flex w-full max-w-6xl flex-col gap-6"
+      data-consultation-catalogue
+      data-consultation-preview={isPublic ? undefined : ""}
+    >
       <div className="space-y-3">
         <p className="text-xs font-semibold uppercase tracking-[var(--tracking-label)] text-[color:var(--ui-color-accent-gold)]">
-          Private Admin
+          {isPublic ? "Consultation" : "Private Admin"}
         </p>
         <h1 className="font-[family-name:var(--font-family-editorial)] text-[length:var(--font-size-title-lg)] leading-[var(--line-height-heading)] text-[color:var(--ui-color-text-primary)]">
           {heading}
         </h1>
         <p className="max-w-2xl text-sm font-medium leading-6 text-[color:var(--ui-color-text-secondary)]">
-          Draft catalogue preview for approved administrators. These records are not part of the public Consultation surface.
+          {isPublic
+            ? "Select one consultation, review the scope and continue with the approved WhatsApp handoff."
+            : "Draft catalogue preview for approved administrators. These records are not part of the public Consultation surface."}
         </p>
       </div>
 
@@ -263,15 +320,19 @@ export function ConsultationCatalogueDisplay({
         </div>
         <div>
           <p className="text-xs font-semibold uppercase tracking-[var(--tracking-label)] text-[color:var(--ui-color-text-muted)]">
-            Publication
+            {isPublic ? "Status" : "Publication"}
           </p>
           <p className="mt-1 text-xl font-semibold text-[color:var(--ui-color-text-primary)]">
-            Draft
+            {isPublic ? "Live" : "Draft"}
           </p>
         </div>
       </Card>
 
-      <ConsultationSelectionJourney tiers={journeyTiers} whatsappBaseUrl={whatsappBaseUrl} />
+      <ConsultationSelectionJourney
+        showPublicationState={!isPublic}
+        tiers={journeyTiers}
+        whatsappBaseUrl={whatsappBaseUrl}
+      />
 
       {tiers.map((tier) => (
         <PremiumBentoSection
@@ -281,12 +342,12 @@ export function ConsultationCatalogueDisplay({
           label={`${tier.name} - ${tier.utilities.length}`}
         >
           <div className="mb-4 flex flex-wrap items-center gap-2">
-            <PremiumStatusBadge status="NEUTRAL">{tier.publicationState}</PremiumStatusBadge>
+            {isPublic ? null : <PremiumStatusBadge status="NEUTRAL">{tier.publicationState}</PremiumStatusBadge>}
             <PremiumStatusBadge status="NEUTRAL">{tier.availabilityStatus}</PremiumStatusBadge>
           </div>
           <PremiumBentoGrid className="sm:grid-cols-2 xl:grid-cols-3">
             {tier.utilities.map((utility) => (
-              <UtilityCard key={utility.id} tierSlug={tier.slug} utility={utility} />
+              <UtilityCard audience={audience} key={utility.id} tierSlug={tier.slug} utility={utility} />
             ))}
           </PremiumBentoGrid>
         </PremiumBentoSection>

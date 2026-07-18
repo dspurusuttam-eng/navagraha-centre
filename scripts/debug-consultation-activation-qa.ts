@@ -141,7 +141,8 @@ const groups: Group[] = [
       assert(page.includes("availabilityBadgeStatus(consultation.availability)"), "badge tone from the helper");
       assert(page.includes("availabilityNote(consultation.availability)"), "note from the helper");
       assert(page.includes("{consultation.availabilityLabel}"), "human label rendered");
-      assert(!page.includes('"AVAILABLE"') && !page.includes('"UNAVAILABLE"'), "no raw enum literal in the page");
+      assert(!page.includes("consultation.availabilityStatus"), "settings status enum is never rendered directly");
+      assert(!page.includes("{consultation.availability}"), "raw settings availability is never rendered directly");
     },
   },
   {
@@ -232,7 +233,9 @@ const groups: Group[] = [
       // Route + design system unchanged: same shell and primitives, no bespoke markup.
       assert(page.includes("PremiumPageShell") && page.includes("PremiumBentoSection") && page.includes("PremiumSectionHeading"), "existing design system reused");
       assert(page.includes("PremiumStatusBadge") && page.includes("buttonStyles("), "existing badge + button styles");
-      assert(page.includes("consultationPackages"), "existing package grid preserved");
+      assert(page.includes("ConsultationCatalogueDisplay"), "launch catalogue journey is reused");
+      assert(page.includes('audience="public"'), "public catalogue hides Admin-only presentation");
+      assert(page.includes("!hasPublicCatalogue && showsWhatsappCta"), "legacy bare WhatsApp CTA is fallback-only");
       assert(page.includes('label="Acharya"') && page.includes('label="Availability"'), "existing sections preserved");
       // Accessibility: labelled lists for the badge groups, real list semantics.
       assert(page.includes('aria-label="Consultation languages"'), "languages list is labelled");

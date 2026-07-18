@@ -58,6 +58,7 @@ type JourneyStage = "tier" | "utility" | "mode" | "intake" | "review";
 type EnquiryMode = "selected" | "general";
 
 type ConsultationSelectionJourneyProps = {
+  showPublicationState?: boolean;
   tiers: readonly ConsultationJourneyTier[];
   whatsappBaseUrl: string | null;
 };
@@ -114,7 +115,10 @@ function selectableClass(selected: boolean) {
   );
 }
 
-function StateFlags({ utility }: Readonly<{ utility: ConsultationJourneyUtility }>) {
+function StateFlags({
+  showPublicationState,
+  utility,
+}: Readonly<{ showPublicationState: boolean; utility: ConsultationJourneyUtility }>) {
   return (
     <span className="flex min-w-0 flex-wrap gap-2">
       {utility.isPriority ? <PremiumStatusBadge status="LIVE">Priority</PremiumStatusBadge> : null}
@@ -125,7 +129,9 @@ function StateFlags({ utility }: Readonly<{ utility: ConsultationJourneyUtility 
         <PremiumStatusBadge status="NEUTRAL">Travel excluded</PremiumStatusBadge>
       ) : null}
       <PremiumStatusBadge status="NEUTRAL">{utility.availabilityStatus}</PremiumStatusBadge>
-      <PremiumStatusBadge status="NEUTRAL">{utility.publicationState}</PremiumStatusBadge>
+      {showPublicationState ? (
+        <PremiumStatusBadge status="NEUTRAL">{utility.publicationState}</PremiumStatusBadge>
+      ) : null}
     </span>
   );
 }
@@ -153,6 +159,7 @@ function PriceList({
 }
 
 export function ConsultationSelectionJourney({
+  showPublicationState = true,
   tiers,
   whatsappBaseUrl,
 }: Readonly<ConsultationSelectionJourneyProps>) {
@@ -351,9 +358,11 @@ export function ConsultationSelectionJourney({
             >
               <span className="flex min-w-0 flex-col gap-3">
                 <span className="flex min-w-0 flex-wrap gap-2">
-                  <PremiumStatusBadge status={selected ? "LIVE" : "NEUTRAL"}>
-                    {selected ? "Selected" : tier.publicationState}
-                  </PremiumStatusBadge>
+                  {showPublicationState || selected ? (
+                    <PremiumStatusBadge status={selected ? "LIVE" : "NEUTRAL"}>
+                      {selected ? "Selected" : tier.publicationState}
+                    </PremiumStatusBadge>
+                  ) : null}
                   <PremiumStatusBadge status="NEUTRAL">
                     {tier.utilities.length} services
                   </PremiumStatusBadge>
@@ -397,7 +406,7 @@ export function ConsultationSelectionJourney({
                   key={utility.id}
                 >
                   <div className="space-y-3">
-                    <StateFlags utility={utility} />
+                    <StateFlags showPublicationState={showPublicationState} utility={utility} />
                     <h4 className="break-words text-sm font-semibold text-[color:var(--ui-color-text-primary)]">
                       {utility.name}
                     </h4>
