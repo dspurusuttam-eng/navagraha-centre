@@ -4,7 +4,6 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
-  PremiumBentoGrid,
   PremiumBentoSection,
   PremiumPageShell,
   PremiumSectionHeading,
@@ -32,6 +31,11 @@ import {
   getRequestLocale,
   hasExplicitLocalePrefixInRequest,
 } from "@/modules/localization/request";
+import {
+  ConsultationCatalogueDisplay,
+  type ConsultationDisplayTier,
+} from "@/modules/consultations/components/consultation-catalogue-display";
+import type { PublicTier } from "@/modules/site-settings/public-catalogue-core";
 
 const consultationLanguageLabels: Readonly<Record<string, string>> = {
   en: "English",
@@ -42,7 +46,43 @@ const consultationLanguageLabels: Readonly<Record<string, string>> = {
 function languageLabel(code: string) {
   return consultationLanguageLabels[code] ?? code;
 }
-const languageStatus = "Selected during consultation";
+
+function toConsultationDisplayTiers(tiers: readonly PublicTier[]): ConsultationDisplayTier[] {
+  return tiers.map((tier) => ({
+    id: tier.slug,
+    slug: tier.slug,
+    name: tier.name,
+    availabilityStatus: tier.availability.status,
+    publicationState: "PUBLISHED",
+    utilities: tier.utilities.map((utility) => ({
+      id: utility.slug,
+      slug: utility.slug,
+      name: utility.name,
+      priceType: utility.priceType,
+      currency: utility.currency,
+      launchPrice: utility.launchPrice,
+      regularPrice: utility.regularPrice,
+      priceLabel: utility.priceLabel,
+      requiresScopeReview: utility.requiresScopeReview,
+      travelExcluded: utility.travelExcluded,
+      isPriority: utility.isPriority,
+      availabilityStatus: utility.availability.status,
+      publicationState: "PUBLISHED",
+      modes: utility.modes.map((mode) => ({
+        id: `${utility.slug}:${mode.slug}`,
+        slug: mode.slug,
+        name: mode.name,
+        shortDescription: mode.shortDescription,
+        priceType: mode.priceType,
+        currency: mode.currency,
+        launchPrice: mode.launchPrice,
+        regularPrice: mode.regularPrice,
+        priceLabel: mode.priceLabel,
+        travelExcluded: mode.travelExcluded,
+      })),
+    })),
+  }));
+}
 
 export async function generateMetadata() {
   const locale = await getRequestLocale();
@@ -162,57 +202,12 @@ export default async function ConsultationPage() {
 
         {hasPublicCatalogue ? (
           <PremiumBentoSection label="Consultation Types" className="pt-0">
-            <PremiumBentoGrid className="sm:grid-cols-2 lg:grid-cols-3">
-              {catalogue.tiers.map((tier) =>
-                tier.utilities.map((utility) => (
-                  <Card
-                    className="flex min-h-full flex-col justify-between gap-5"
-                    key={utility.slug}
-                    tone={utility.isPriority ? "accent" : "muted"}
-                  >
-                    <div className="space-y-4">
-                      <div className="flex flex-wrap gap-2">
-                        <PremiumStatusBadge status={availabilityBadgeStatus(utility.availability.status)}>
-                          {utility.availability.label}
-                        </PremiumStatusBadge>
-                        {utility.isPriority ? (
-                          <PremiumStatusBadge status="NEUTRAL">Priority</PremiumStatusBadge>
-                        ) : null}
-                      </div>
-                      <h2 className="text-base font-semibold leading-tight text-[color:var(--ui-color-text-primary)]">
-                        {utility.name}
-                      </h2>
-                      <dl className="grid gap-3 text-sm">
-                        <div className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-3">
-                          <dt className="font-medium text-[color:var(--ui-color-text-muted)]">
-                            Tier
-                          </dt>
-                          <dd className="font-semibold text-[color:var(--ui-color-text-primary)]">
-                            {tier.name}
-                          </dd>
-                        </div>
-                        <div className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-3">
-                          <dt className="font-medium text-[color:var(--ui-color-text-muted)]">
-                            Price
-                          </dt>
-                          <dd className="font-semibold text-[color:var(--ui-color-text-primary)]">
-                            {utility.priceLabel ?? (utility.launchPrice == null ? "Scope review" : `${utility.currency} ${utility.launchPrice}`)}
-                          </dd>
-                        </div>
-                        <div className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-3">
-                          <dt className="font-medium text-[color:var(--ui-color-text-muted)]">
-                            Language
-                          </dt>
-                          <dd className="font-semibold text-[color:var(--ui-color-text-primary)]">
-                            {languageStatus}
-                          </dd>
-                        </div>
-                      </dl>
-                    </div>
-                  </Card>
-                )),
-              )}
-            </PremiumBentoGrid>
+            <ConsultationCatalogueDisplay
+              audience="public"
+              heading="Consultation Types"
+              tiers={toConsultationDisplayTiers(catalogue.tiers)}
+              whatsappBaseUrl={catalogue.whatsappBaseUrl}
+            />
           </PremiumBentoSection>
         ) : null}
 
@@ -252,7 +247,7 @@ export default async function ConsultationPage() {
           </PremiumBentoSection>
         ) : null}
 
-        {showsWhatsappCta(consultation.availability, consultation.whatsappUrl) ? (
+        {!hasPublicCatalogue && showsWhatsappCta(consultation.availability, consultation.whatsappUrl) ? (
           <PremiumBentoSection className="pt-0">
             <PremiumSectionHeading label="Contact" />
             <Card className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
