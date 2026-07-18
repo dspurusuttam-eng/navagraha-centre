@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
-import { TrackedLink } from "@/components/analytics/tracked-link";
 import { JsonLd } from "@/components/seo/json-ld";
 import { buttonStyles } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -17,15 +16,12 @@ import {
   createPersonSchema,
   createServiceSchema,
 } from "@/lib/seo/schema";
-import {
-  consultationHost,
-  consultationPackages,
-} from "@/modules/consultations/catalog";
 // C8D: Acharya identity + availability are Admin-managed (static fallback when unset).
 import {
   getPublicBrandSettings,
   getPublicConsultationSettings,
 } from "@/modules/site-settings/public-settings";
+import { getPublicConsultationCatalogue } from "@/modules/site-settings/public-catalogue";
 import {
   availabilityBadgeStatus,
   availabilityNote,
@@ -37,8 +33,6 @@ import {
   hasExplicitLocalePrefixInRequest,
 } from "@/modules/localization/request";
 
-const consultationMethod = "Contact request";
-
 const consultationLanguageLabels: Readonly<Record<string, string>> = {
   en: "English",
   as: "Assamese",
@@ -49,7 +43,6 @@ function languageLabel(code: string) {
   return consultationLanguageLabels[code] ?? code;
 }
 const languageStatus = "Selected during consultation";
-const availabilityStatus = "Contact to confirm";
 
 export async function generateMetadata() {
   const locale = await getRequestLocale();
@@ -72,29 +65,15 @@ export async function generateMetadata() {
 
 export const revalidate = 3600;
 
-function formatPriceFrom(minorUnits: number) {
-  if (minorUnits <= 0) {
-    return null;
-  }
-
-  return new Intl.NumberFormat("en-IN", {
-    currency: "INR",
-    maximumFractionDigits: 0,
-    style: "currency",
-  }).format(minorUnits / 100);
-}
-
-function toConsultationContactHref(packageSlug: string) {
-  return `/contact?intent=consultation&package=${packageSlug}`;
-}
-
 export default async function ConsultationPage() {
   const locale = await getRequestLocale();
   const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
-  const [brand, consultation] = await Promise.all([
+  const [brand, consultation, catalogue] = await Promise.all([
     getPublicBrandSettings(),
     getPublicConsultationSettings(),
+    getPublicConsultationCatalogue(),
   ]);
+  const hasPublicCatalogue = catalogue.tiers.length > 0 && consultation.availability !== "UNAVAILABLE";
   const localizeHref = (href: string) =>
     getLocalizedPath(locale, href, {
       forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
@@ -150,38 +129,15 @@ export default async function ConsultationPage() {
             <div className="flex flex-wrap gap-2">
               <PremiumStatusBadge status="LIVE">Consult</PremiumStatusBadge>
               <PremiumStatusBadge status="NEUTRAL">
-                {availabilityStatus}
+                {consultation.availabilityLabel}
               </PremiumStatusBadge>
             </div>
             <h1 className="mt-4 font-[family-name:var(--font-family-editorial)] text-[length:var(--font-size-title-lg)] leading-[var(--line-height-heading)] text-[color:var(--ui-color-text-primary)]">
               Consultation
             </h1>
-            <div className="mt-5 flex flex-wrap gap-3">
-              <TrackedLink
-                className={buttonStyles({ size: "lg" })}
-                eventName="consultation_cta_click"
-                eventPayload={{
-                  feature: "consultation-booking",
-                  page: "/consultation",
-                  route: "/contact?intent=consultation",
-                }}
-                href={localizeHref("/contact?intent=consultation")}
-              >
-                Contact
-              </TrackedLink>
-              <TrackedLink
-                className={buttonStyles({ size: "lg", tone: "secondary" })}
-                eventName="consultation_cta_click"
-                eventPayload={{
-                  feature: "consultation-contact",
-                  page: "/consultation",
-                  route: "/contact?intent=consultation",
-                }}
-                href={localizeHref("/contact?intent=consultation")}
-              >
-                Contact
-              </TrackedLink>
-            </div>
+            <p className="mt-4 max-w-2xl text-sm font-medium leading-6 text-[color:var(--ui-color-text-secondary)]">
+              {availabilityNote(consultation.availability)}
+            </p>
           </div>
         </PremiumBentoSection>
 
@@ -192,7 +148,7 @@ export default async function ConsultationPage() {
                 {brand.acharyaName}
               </h2>
               <p className="mt-2 text-sm font-medium text-[color:var(--ui-color-text-muted)]">
-                {brand.professionalTitle ?? consultationHost.timezoneLabel}
+                {brand.professionalTitle ?? "Vedic Astrologer and Spiritual Guide"}
               </p>
             </div>
             <Link
@@ -204,89 +160,61 @@ export default async function ConsultationPage() {
           </Card>
         </PremiumBentoSection>
 
-        <PremiumBentoSection label="Consultation Types" className="pt-0">
-          <PremiumBentoGrid className="sm:grid-cols-2 lg:grid-cols-3">
-            {consultationPackages.map((item) => {
-              const price = formatPriceFrom(item.priceFromMinor);
-              const contactHref = toConsultationContactHref(item.slug);
-
-              return (
-                <Card
-                  className="flex min-h-full flex-col justify-between gap-5"
-                  key={item.slug}
-                  tone={item.isFeatured ? "accent" : "muted"}
-                >
-                  <div className="space-y-4">
-                    <div className="flex flex-wrap gap-2">
-                      <PremiumStatusBadge status="LIVE">
-                        {availabilityStatus}
-                      </PremiumStatusBadge>
-                      {item.isFeatured ? (
-                        <PremiumStatusBadge status="NEUTRAL">
-                          Featured
+        {hasPublicCatalogue ? (
+          <PremiumBentoSection label="Consultation Types" className="pt-0">
+            <PremiumBentoGrid className="sm:grid-cols-2 lg:grid-cols-3">
+              {catalogue.tiers.map((tier) =>
+                tier.utilities.map((utility) => (
+                  <Card
+                    className="flex min-h-full flex-col justify-between gap-5"
+                    key={utility.slug}
+                    tone={utility.isPriority ? "accent" : "muted"}
+                  >
+                    <div className="space-y-4">
+                      <div className="flex flex-wrap gap-2">
+                        <PremiumStatusBadge status={availabilityBadgeStatus(utility.availability.status)}>
+                          {utility.availability.label}
                         </PremiumStatusBadge>
-                      ) : null}
-                    </div>
-                    <h2 className="text-base font-semibold leading-tight text-[color:var(--ui-color-text-primary)]">
-                      {item.title}
-                    </h2>
-                    <dl className="grid gap-3 text-sm">
-                      <div className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-3">
-                        <dt className="font-medium text-[color:var(--ui-color-text-muted)]">
-                          Duration
-                        </dt>
-                        <dd className="font-semibold text-[color:var(--ui-color-text-primary)]">
-                          {item.durationMinutes} min
-                        </dd>
+                        {utility.isPriority ? (
+                          <PremiumStatusBadge status="NEUTRAL">Priority</PremiumStatusBadge>
+                        ) : null}
                       </div>
-                      {price ? (
+                      <h2 className="text-base font-semibold leading-tight text-[color:var(--ui-color-text-primary)]">
+                        {utility.name}
+                      </h2>
+                      <dl className="grid gap-3 text-sm">
+                        <div className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-3">
+                          <dt className="font-medium text-[color:var(--ui-color-text-muted)]">
+                            Tier
+                          </dt>
+                          <dd className="font-semibold text-[color:var(--ui-color-text-primary)]">
+                            {tier.name}
+                          </dd>
+                        </div>
                         <div className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-3">
                           <dt className="font-medium text-[color:var(--ui-color-text-muted)]">
                             Price
                           </dt>
                           <dd className="font-semibold text-[color:var(--ui-color-text-primary)]">
-                            From {price}
+                            {utility.priceLabel ?? (utility.launchPrice == null ? "Scope review" : `${utility.currency} ${utility.launchPrice}`)}
                           </dd>
                         </div>
-                      ) : null}
-                      <div className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-3">
-                        <dt className="font-medium text-[color:var(--ui-color-text-muted)]">
-                          Language
-                        </dt>
-                        <dd className="font-semibold text-[color:var(--ui-color-text-primary)]">
-                          {languageStatus}
-                        </dd>
-                      </div>
-                      <div className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-3">
-                        <dt className="font-medium text-[color:var(--ui-color-text-muted)]">
-                          Method
-                        </dt>
-                        <dd className="font-semibold text-[color:var(--ui-color-text-primary)]">
-                          {consultationMethod}
-                        </dd>
-                      </div>
-                    </dl>
-                  </div>
-                  <TrackedLink
-                    className={buttonStyles({
-                      className: "w-full",
-                      size: "md",
-                    })}
-                    eventName="consultation_cta_click"
-                    eventPayload={{
-                      feature: `consultation-${item.slug}`,
-                      page: "/consultation",
-                      route: contactHref,
-                    }}
-                    href={localizeHref(contactHref)}
-                  >
-                    Book
-                  </TrackedLink>
-                </Card>
-              );
-            })}
-          </PremiumBentoGrid>
-        </PremiumBentoSection>
+                        <div className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-3">
+                          <dt className="font-medium text-[color:var(--ui-color-text-muted)]">
+                            Language
+                          </dt>
+                          <dd className="font-semibold text-[color:var(--ui-color-text-primary)]">
+                            {languageStatus}
+                          </dd>
+                        </div>
+                      </dl>
+                    </div>
+                  </Card>
+                )),
+              )}
+            </PremiumBentoGrid>
+          </PremiumBentoSection>
+        ) : null}
 
         <PremiumBentoSection className="pt-0">
           <PremiumSectionHeading label="Availability" />
