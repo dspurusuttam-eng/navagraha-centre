@@ -41,25 +41,31 @@ export async function adminSignInAction(_prev: AdminSignInState, formData: FormD
   }
 
   const hdrs = await headers();
+  let signInResult: Awaited<ReturnType<ReturnType<typeof getAuth>["api"]["signInEmail"]>>;
   try {
-    await getAuth().api.signInEmail({ body: { email, password }, headers: hdrs });
+    signInResult = await getAuth().api.signInEmail({ body: { email, password }, headers: hdrs });
   } catch {
     loginRateLimiter.recordFailure(key, now);
     return { error: "Invalid credentials." };
   }
 
-  // Verify the signed-in account is an approved admin; otherwise sign back out.
-  const session = await getAuth().api.getSession({ headers: await headers() });
-  if (!session) {
+  // Server actions cannot read the newly issued cookie from the same request headers,
+  // so verify Admin access from the successful Better Auth sign-in result.
+  const signedInUserId = signInResult.user?.id;
+  if (!signedInUserId) {
     loginRateLimiter.recordFailure(key, now);
     return { error: "Invalid credentials." };
   }
   const assignments = await getPrisma().adminRoleAssignment.findMany({
-    where: { userId: session.user.id },
+    where: { userId: signedInUserId },
     select: { id: true },
   });
   if (!assignments.length) {
-    await getAuth().api.signOut({ headers: await headers() });
+    if (signInResult.token) {
+      await getPrisma().session.deleteMany({
+        where: { token: signInResult.token },
+      });
+    }
     return { error: "This account does not have Admin access." };
   }
 
