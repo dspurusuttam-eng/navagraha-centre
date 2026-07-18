@@ -28,10 +28,16 @@ export default function NotFound() {
             Return Home
           </Link>
           <Link
-            href="/dashboard"
+            href="/consultation"
             className={buttonStyles({ tone: "secondary", size: "sm" })}
           >
-            Open Dashboard
+            Consultation
+          </Link>
+          <Link
+            href="/from-the-desk"
+            className={buttonStyles({ tone: "secondary", size: "sm" })}
+          >
+            From the Desk
           </Link>
         </div>
       </Card>

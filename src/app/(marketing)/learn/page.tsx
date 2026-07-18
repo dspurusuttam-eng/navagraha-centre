@@ -114,7 +114,7 @@ export default async function LearnPage() {
       <PageViewTracker page="/learn" feature="learn-index" />
 
       <PremiumPageShell
-        className="pb-[calc(6rem+env(safe-area-inset-bottom))] xl:pb-12"
+        className="pb-10 xl:pb-12"
         tone="soft"
       >
         <PremiumBentoSection className="pt-5 sm:pt-8">
