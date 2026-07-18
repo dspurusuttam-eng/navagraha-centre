@@ -8,6 +8,8 @@ import {
   hasExplicitLocalePrefixInRequest,
 } from "@/modules/localization/request";
 import { getLocalizedRoutePath } from "@/modules/localization/routes";
+// C8E: footer details are Admin-managed (controlled static fallback until published).
+import { getPublicBrandSettings } from "@/modules/site-settings/public-settings";
 
 type FooterLink = {
   href: string;
@@ -50,6 +52,7 @@ function buildFooterLink({
 }
 
 export async function Footer() {
+  const brand = await getPublicBrandSettings();
   const requestLocale = await getRequestLocale();
   const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
   const localizeHref = (href: string) =>
@@ -139,8 +142,27 @@ export async function Footer() {
 
         <div className="rounded-[var(--radius-lg)] border border-[rgba(185,139,70,0.22)] bg-white px-4 py-3 text-[0.72rem] font-semibold tracking-[0.04em] text-[color:var(--color-text-primary)] shadow-[0_6px_14px_rgba(5,5,5,0.03)]">
           <p>
-            &copy; {new Date().getFullYear()}
+            {brand.footer.copyright ? (
+              <span>{brand.footer.copyright}</span>
+            ) : (
+              <>&copy; {new Date().getFullYear()}</>
+            )}
           </p>
+          {brand.footer.addressLine ? (
+            <p className="mt-1 font-medium text-[color:var(--color-text-secondary)]">
+              {brand.footer.addressLine}
+            </p>
+          ) : null}
+          {brand.footer.note ? (
+            <p className="mt-1 font-medium text-[color:var(--color-text-secondary)]">
+              {brand.footer.note}
+            </p>
+          ) : null}
+          {brand.disclaimer ? (
+            <p className="mt-1 font-medium text-[color:var(--color-text-secondary)]">
+              {brand.disclaimer}
+            </p>
+          ) : null}
         </div>
       </Container>
     </footer>

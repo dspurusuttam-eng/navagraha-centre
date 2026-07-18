@@ -18,7 +18,9 @@ import {
   createBreadcrumbSchema,
   createPersonSchema,
 } from "@/lib/seo/schema";
-import { getContentAdapter, type ContentEntry } from "@/modules/content";
+import type { ContentEntry } from "@/modules/content";
+// C8A: the Desk reads Admin-managed Articles; other surfaces keep the static catalog.
+import { getDeskContentAdapter } from "@/modules/content/desk-article-adapter";
 import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
 import {
   getRequestLocale,
@@ -131,7 +133,7 @@ export default async function FromTheDeskPage({
     getLocalizedPath(locale, href, {
       forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
     });
-  const entries = await getContentAdapter().listPublishedEntriesByLocale(locale);
+  const entries = await getDeskContentAdapter().listPublishedEntriesByLocale(locale);
   const categories = [...new Set(entries.map((entry) => entry.category))].sort();
   const filteredEntries = entries.filter(
     (entry) =>

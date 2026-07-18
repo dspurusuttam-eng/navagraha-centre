@@ -21,6 +21,16 @@ import {
   consultationHost,
   consultationPackages,
 } from "@/modules/consultations/catalog";
+// C8D: Acharya identity + availability are Admin-managed (static fallback when unset).
+import {
+  getPublicBrandSettings,
+  getPublicConsultationSettings,
+} from "@/modules/site-settings/public-settings";
+import {
+  availabilityBadgeStatus,
+  availabilityNote,
+  showsWhatsappCta,
+} from "@/modules/site-settings/public-settings-core";
 import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
 import {
   getRequestLocale,
@@ -28,6 +38,16 @@ import {
 } from "@/modules/localization/request";
 
 const consultationMethod = "Contact request";
+
+const consultationLanguageLabels: Readonly<Record<string, string>> = {
+  en: "English",
+  as: "Assamese",
+  hi: "Hindi",
+};
+
+function languageLabel(code: string) {
+  return consultationLanguageLabels[code] ?? code;
+}
 const languageStatus = "Selected during consultation";
 const availabilityStatus = "Contact to confirm";
 
@@ -71,6 +91,10 @@ function toConsultationContactHref(packageSlug: string) {
 export default async function ConsultationPage() {
   const locale = await getRequestLocale();
   const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
+  const [brand, consultation] = await Promise.all([
+    getPublicBrandSettings(),
+    getPublicConsultationSettings(),
+  ]);
   const localizeHref = (href: string) =>
     getLocalizedPath(locale, href, {
       forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
@@ -165,10 +189,10 @@ export default async function ConsultationPage() {
           <Card className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
             <div className="min-w-0">
               <h2 className="text-base font-semibold text-[color:var(--ui-color-text-primary)]">
-                {consultationHost.astrologerName}
+                {brand.acharyaName}
               </h2>
               <p className="mt-2 text-sm font-medium text-[color:var(--ui-color-text-muted)]">
-                {consultationHost.timezoneLabel}
+                {brand.professionalTitle ?? consultationHost.timezoneLabel}
               </p>
             </div>
             <Link
@@ -267,9 +291,19 @@ export default async function ConsultationPage() {
         <PremiumBentoSection className="pt-0">
           <PremiumSectionHeading label="Availability" />
           <Card className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
-            <p className="text-sm font-medium leading-6 text-[color:var(--ui-color-text-secondary)]">
-              If no booking slot is visible after sign-in, use the contact path.
-            </p>
+            <div className="min-w-0">
+              <PremiumStatusBadge status={availabilityBadgeStatus(consultation.availability)}>
+                {consultation.availabilityLabel}
+              </PremiumStatusBadge>
+              <p className="mt-2 text-sm font-medium leading-6 text-[color:var(--ui-color-text-secondary)]">
+                {availabilityNote(consultation.availability)}
+              </p>
+              {consultation.officeHours ? (
+                <p className="mt-1 text-sm font-medium leading-6 text-[color:var(--ui-color-text-muted)]">
+                  {consultation.officeHours}
+                </p>
+              ) : null}
+            </div>
             <Link
               className={buttonStyles({ size: "sm", tone: "secondary" })}
               href={localizeHref("/contact?intent=consultation")}
@@ -278,6 +312,90 @@ export default async function ConsultationPage() {
             </Link>
           </Card>
         </PremiumBentoSection>
+
+        {consultation.shortDescription ? (
+          <PremiumBentoSection className="pt-0">
+            <PremiumSectionHeading label="About" />
+            <Card>
+              <p className="text-sm font-medium leading-6 text-[color:var(--ui-color-text-secondary)]">
+                {consultation.shortDescription}
+              </p>
+            </Card>
+          </PremiumBentoSection>
+        ) : null}
+
+        {showsWhatsappCta(consultation.availability, consultation.whatsappUrl) ? (
+          <PremiumBentoSection className="pt-0">
+            <PremiumSectionHeading label="Contact" />
+            <Card className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+              <p className="text-sm font-medium leading-6 text-[color:var(--ui-color-text-secondary)]">
+                Send a consultation request directly on WhatsApp.
+              </p>
+              {/* Plain external link, opened in a new tab. noopener/noreferrer stops the
+                  opened tab reaching back into this window or leaking the referrer. */}
+              <a
+                className={buttonStyles({ size: "sm" })}
+                href={consultation.whatsappUrl as string}
+                rel="noopener noreferrer nofollow"
+                target="_blank"
+              >
+                WhatsApp
+              </a>
+            </Card>
+          </PremiumBentoSection>
+        ) : null}
+
+        {consultation.languages.length ? (
+          <PremiumBentoSection className="pt-0">
+            <PremiumSectionHeading label="Languages" />
+            <Card>
+              <ul aria-label="Consultation languages" className="flex min-w-0 flex-wrap gap-2">
+                {consultation.languages.map((code) => (
+                  <li key={code}>
+                    <PremiumStatusBadge status="NEUTRAL">{languageLabel(code)}</PremiumStatusBadge>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          </PremiumBentoSection>
+        ) : null}
+
+        {consultation.topics.length ? (
+          <PremiumBentoSection className="pt-0">
+            <PremiumSectionHeading label="Topics" />
+            <Card>
+              <ul aria-label="Consultation topics" className="flex min-w-0 flex-wrap gap-2">
+                {consultation.topics.map((topic) => (
+                  <li key={topic}>
+                    <PremiumStatusBadge status="NEUTRAL">{topic}</PremiumStatusBadge>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          </PremiumBentoSection>
+        ) : null}
+
+        {consultation.preparationInstructions ? (
+          <PremiumBentoSection className="pt-0">
+            <PremiumSectionHeading label="Preparation" />
+            <Card>
+              <p className="whitespace-pre-wrap text-sm font-medium leading-6 text-[color:var(--ui-color-text-secondary)]">
+                {consultation.preparationInstructions}
+              </p>
+            </Card>
+          </PremiumBentoSection>
+        ) : null}
+
+        {consultation.disclaimer ? (
+          <PremiumBentoSection className="pt-0">
+            <PremiumSectionHeading label="Disclaimer" />
+            <Card tone="muted">
+              <p className="whitespace-pre-wrap text-sm font-medium leading-6 text-[color:var(--ui-color-text-muted)]">
+                {consultation.disclaimer}
+              </p>
+            </Card>
+          </PremiumBentoSection>
+        ) : null}
       </PremiumPageShell>
     </>
   );

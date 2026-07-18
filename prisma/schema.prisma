@@ -131,6 +131,7 @@ enum ArticleStatus {
   DRAFT
   REVIEW
   PUBLISHED
+  UNPUBLISHED
   ARCHIVED
 }
 
@@ -188,20 +189,20 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
-  profile          Profile?
-  birthData        BirthData[]
-  charts           Chart[]
-  consultations    Consultation[]
-  orders           Order[]
-  subscriptions    Subscription[]
-  authoredArticles Article[]
-  adminAssignments AdminRoleAssignment[]
-  auditEntries     AuditLog[]            @relation("AuditActor")
-  aiConversations  AiConversationSession[]
-  aiTaskRuns       AiTaskRun[]
-  inquiryLeads     InquiryLead[]
+  profile                Profile?
+  birthData              BirthData[]
+  charts                 Chart[]
+  consultations          Consultation[]
+  orders                 Order[]
+  subscriptions          Subscription[]
+  authoredArticles       Article[]
+  adminAssignments       AdminRoleAssignment[]
+  auditEntries           AuditLog[]              @relation("AuditActor")
+  aiConversations        AiConversationSession[]
+  aiTaskRuns             AiTaskRun[]
+  inquiryLeads           InquiryLead[]
   inquiryLifecycleEvents InquiryLifecycleEvent[] @relation("InquiryLifecycleActor")
-  decisionDeskRecords DecisionDeskRecord[]
+  decisionDeskRecords    DecisionDeskRecord[]
 
   @@unique([email])
   @@map("user")
@@ -253,50 +254,50 @@ model Verification {
 }
 
 model Profile {
-  id        String   @id @default(cuid())
-  userId    String   @unique
-  phone     String?
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  phone             String?
   preferredLanguage String?
-  dob       String?
-  tob       String?
-  city      String?
-  region    String?
-  country   String?
-  timezone  String?
-  latitude  Decimal? @db.Decimal(9, 6)
-  longitude Decimal? @db.Decimal(9, 6)
-  chartData Json?
-  bio       String?
-  notes     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dob               String?
+  tob               String?
+  city              String?
+  region            String?
+  country           String?
+  timezone          String?
+  latitude          Decimal? @db.Decimal(9, 6)
+  longitude         Decimal? @db.Decimal(9, 6)
+  chartData         Json?
+  bio               String?
+  notes             String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("profile")
 }
 
 model BirthData {
-  id        String   @id @default(cuid())
-  userId    String
-  label     String
-  birthDate String
-  birthTime String?
-  timezone  String
-  city      String
-  region    String?
-  country   String
-  latitude  Decimal? @db.Decimal(9, 6)
-  longitude Decimal? @db.Decimal(9, 6)
-  isPrimary Boolean  @default(false)
-  notes     String?
+  id            String         @id @default(cuid())
+  userId        String
+  label         String
+  birthDate     String
+  birthTime     String?
+  timezone      String
+  city          String
+  region        String?
+  country       String
+  latitude      Decimal?       @db.Decimal(9, 6)
+  longitude     Decimal?       @db.Decimal(9, 6)
+  isPrimary     Boolean        @default(false)
+  notes         String?
   gender        String?
   ascendantSign String?
   moonSign      String?
   chartSummary  String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  charts    Chart[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  charts        Chart[]
   consultations Consultation[]
 
   @@index([userId, isPrimary])
@@ -304,20 +305,20 @@ model BirthData {
 }
 
 model ConsultationPackage {
-  id              String         @id @default(cuid())
-  slug            String         @unique
+  id              String           @id @default(cuid())
+  slug            String           @unique
   type            ConsultationType
   title           String
   summary         String
   description     String?
   durationMinutes Int
   priceFromMinor  Int?
-  currencyCode    String         @default("INR")
-  isFeatured      Boolean        @default(false)
-  isActive        Boolean        @default(true)
-  sortOrder       Int            @default(0)
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  currencyCode    String           @default("INR")
+  isFeatured      Boolean          @default(false)
+  isActive        Boolean          @default(true)
+  sortOrder       Int              @default(0)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
   consultations   Consultation[]
 
   @@index([isActive, sortOrder])
@@ -359,31 +360,31 @@ model Chart {
 }
 
 model Consultation {
-  id             String             @id @default(cuid())
-  userId         String
-  birthDataId    String?
-  packageId      String?
-  slotId         String?            @unique
-  type           ConsultationType
-  status         ConsultationStatus @default(REQUESTED)
-  confirmationCode String           @unique
-  astrologerName String             @default("Joy Prakash Sarmah")
-  serviceLabel   String
-  scheduledFor   DateTime?
-  scheduledEnd   DateTime?
-  durationMinutes Int?
-  clientTimezone String?
+  id                String               @id @default(cuid())
+  userId            String
+  birthDataId       String?
+  packageId         String?
+  slotId            String?              @unique
+  type              ConsultationType
+  status            ConsultationStatus   @default(REQUESTED)
+  confirmationCode  String               @unique
+  astrologerName    String               @default("Joy Prakash Sarmah")
+  serviceLabel      String
+  scheduledFor      DateTime?
+  scheduledEnd      DateTime?
+  durationMinutes   Int?
+  clientTimezone    String?
   preferredLanguage String?
-  contactPhone   String?
-  topicFocus     String?
-  intakeSummary  String?
-  internalNotes  String?
-  createdAt      DateTime           @default(now())
-  updatedAt      DateTime           @updatedAt
-  user           User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  birthData      BirthData?         @relation(fields: [birthDataId], references: [id], onDelete: SetNull)
-  package        ConsultationPackage? @relation(fields: [packageId], references: [id], onDelete: SetNull)
-  slot           ConsultationSlot?  @relation(fields: [slotId], references: [id], onDelete: SetNull)
+  contactPhone      String?
+  topicFocus        String?
+  intakeSummary     String?
+  internalNotes     String?
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+  user              User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  birthData         BirthData?           @relation(fields: [birthDataId], references: [id], onDelete: SetNull)
+  package           ConsultationPackage? @relation(fields: [packageId], references: [id], onDelete: SetNull)
+  slot              ConsultationSlot?    @relation(fields: [slotId], references: [id], onDelete: SetNull)
 
   @@index([userId, status])
   @@index([status, scheduledFor])
@@ -391,22 +392,22 @@ model Consultation {
 }
 
 model InquiryLead {
-  id                 String                @id @default(cuid())
+  id                 String                  @id @default(cuid())
   userId             String?
   fullName           String
   email              String
   phone              String?
   timezone           String?
   inquiryType        InquiryType
-  urgencyLevel       InquiryUrgencyLevel   @default(STANDARD)
+  urgencyLevel       InquiryUrgencyLevel     @default(STANDARD)
   desiredServiceSlug String?
   message            String
   sourcePath         String?
   lifecycleStage     InquiryLifecycleStage
-  lastLifecycleAt    DateTime              @default(now())
-  createdAt          DateTime              @default(now())
-  updatedAt          DateTime              @updatedAt
-  user               User?                 @relation(fields: [userId], references: [id], onDelete: SetNull)
+  lastLifecycleAt    DateTime                @default(now())
+  createdAt          DateTime                @default(now())
+  updatedAt          DateTime                @updatedAt
+  user               User?                   @relation(fields: [userId], references: [id], onDelete: SetNull)
   lifecycleEvents    InquiryLifecycleEvent[]
 
   @@index([email, createdAt])
@@ -416,15 +417,15 @@ model InquiryLead {
 }
 
 model InquiryLifecycleEvent {
-  id          String                @id @default(cuid())
+  id          String                 @id @default(cuid())
   leadId      String
   fromStage   InquiryLifecycleStage?
   toStage     InquiryLifecycleStage
   note        String?
   actorUserId String?
-  createdAt   DateTime              @default(now())
-  lead        InquiryLead           @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  actor       User?                 @relation("InquiryLifecycleActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+  createdAt   DateTime               @default(now())
+  lead        InquiryLead            @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  actor       User?                  @relation("InquiryLifecycleActor", fields: [actorUserId], references: [id], onDelete: SetNull)
 
   @@index([leadId, createdAt])
   @@index([toStage, createdAt])
@@ -433,29 +434,29 @@ model InquiryLifecycleEvent {
 }
 
 model Product {
-  id             String             @id @default(cuid())
-  slug           String             @unique
-  sku            String             @unique
+  id             String              @id @default(cuid())
+  slug           String              @unique
+  sku            String              @unique
   name           String
   summary        String
   description    String?
   category       ProductCategory
   type           ProductType
-  status         ProductStatus      @default(DRAFT)
+  status         ProductStatus       @default(DRAFT)
   priceInMinor   Int?
-  currencyCode   String             @default("INR")
+  currencyCode   String              @default("INR")
   imageUrl       String?
   badge          String?
   materialLabel  String?
   ritualFocus    String?
   inventoryCount Int?
-  isFeatured     Boolean            @default(false)
-  sortOrder      Int                @default(0)
+  isFeatured     Boolean             @default(false)
+  sortOrder      Int                 @default(0)
   metadata       Json?
   seoTitle       String?
   seoDescription String?
-  createdAt      DateTime           @default(now())
-  updatedAt      DateTime           @updatedAt
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
   orderItems     OrderItem[]
   remedyLinks    RemedyProductLink[]
 
@@ -513,17 +514,17 @@ model Subscription {
 }
 
 model OrderItem {
-  id               String          @id @default(cuid())
+  id               String           @id @default(cuid())
   orderId          String
   productId        String?
   titleSnapshot    String
   skuSnapshot      String?
   categorySnapshot ProductCategory?
-  unitAmount       Int             @default(0)
-  quantity         Int             @default(1)
-  createdAt        DateTime        @default(now())
-  order            Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product          Product?        @relation(fields: [productId], references: [id], onDelete: SetNull)
+  unitAmount       Int              @default(0)
+  quantity         Int              @default(1)
+  createdAt        DateTime         @default(now())
+  order            Order            @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product          Product?         @relation(fields: [productId], references: [id], onDelete: SetNull)
 
   @@index([orderId])
   @@map("order_item")
@@ -598,25 +599,25 @@ model RemedyRecommendationRun {
 }
 
 model AstrologerCopilotSnapshot {
-  id                  String   @id @default(cuid())
-  consultationId      String
-  astrologerUserId    String
-  providerKey         String
-  model               String?
-  promptTemplateKey   String?
-  promptVersionLabel  String?
-  inputHash           String?
-  snapshotPayload     Json
-  briefText           String
-  followUpDraft       String
-  recapDraft          String
+  id                   String    @id @default(cuid())
+  consultationId       String
+  astrologerUserId     String
+  providerKey          String
+  model                String?
+  promptTemplateKey    String?
+  promptVersionLabel   String?
+  inputHash            String?
+  snapshotPayload      Json
+  briefText            String
+  followUpDraft        String
+  recapDraft           String
   astrologerNotesDraft String
-  copyCount           Int      @default(0)
-  exportCount         Int      @default(0)
-  lastCopiedAt        DateTime?
-  lastExportedAt      DateTime?
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  copyCount            Int       @default(0)
+  exportCount          Int       @default(0)
+  lastCopiedAt         DateTime?
+  lastExportedAt       DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
 
   @@index([consultationId, createdAt])
   @@index([astrologerUserId, createdAt])
@@ -624,41 +625,53 @@ model AstrologerCopilotSnapshot {
 }
 
 model Article {
-  id             String        @id @default(cuid())
-  slug           String        @unique
-  title          String
-  excerpt        String
-  body           String?
-  status         ArticleStatus @default(DRAFT)
-  seoTitle       String?
-  seoDescription String?
-  publishedAt    DateTime?
-  authorId       String?
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-  author         User?         @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  id                 String        @id @default(cuid())
+  slug               String        @unique
+  title              String
+  excerpt            String
+  // C1A additive Admin-console fields (all optional / defaulted; no existing column changed).
+  summary            String?
+  body               String?
+  language           String        @default("en")
+  category           String?
+  coverImageAssetId  String? // soft reference to MediaAsset.id (URL/reference storage only)
+  status             ArticleStatus @default(DRAFT)
+  seoTitle           String?
+  seoDescription     String?
+  readingTimeMinutes Int?
+  isFeatured         Boolean       @default(false)
+  displayOrder       Int           @default(0)
+  publishedAt        DateTime?
+  unpublishedAt      DateTime?
+  archivedAt         DateTime?
+  authorId           String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  author             User?         @relation(fields: [authorId], references: [id], onDelete: SetNull)
 
   @@index([status, publishedAt])
+  @@index([status, isFeatured, displayOrder])
+  @@index([language, status])
   @@map("article")
 }
 
 model AiPromptTemplate {
-  id              String          @id @default(cuid())
-  key             String          @unique
+  id              String            @id @default(cuid())
+  key             String            @unique
   title           String
   description     String?
-  area            AiPromptArea    @default(REPORT_INTERPRETATION)
+  area            AiPromptArea      @default(REPORT_INTERPRETATION)
   activeVersionId String?
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  activeVersion   AiPromptVersion? @relation("PromptTemplateActiveVersion", fields: [activeVersionId], references: [id], onDelete: SetNull)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  activeVersion   AiPromptVersion?  @relation("PromptTemplateActiveVersion", fields: [activeVersionId], references: [id], onDelete: SetNull)
   versions        AiPromptVersion[] @relation("PromptTemplateVersions")
 
   @@map("ai_prompt_template")
 }
 
 model AiPromptVersion {
-  id                 String               @id @default(cuid())
+  id                 String                @id @default(cuid())
   templateId         String
   version            Int
   label              String
@@ -668,10 +681,10 @@ model AiPromptVersion {
   status             AiPromptVersionStatus @default(DRAFT)
   releaseNotes       String?
   activatedAt        DateTime?
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
-  template           AiPromptTemplate     @relation("PromptTemplateVersions", fields: [templateId], references: [id], onDelete: Cascade)
-  activeForTemplates AiPromptTemplate[]   @relation("PromptTemplateActiveVersion")
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
+  template           AiPromptTemplate      @relation("PromptTemplateVersions", fields: [templateId], references: [id], onDelete: Cascade)
+  activeForTemplates AiPromptTemplate[]    @relation("PromptTemplateActiveVersion")
   taskRuns           AiTaskRun[]
 
   @@unique([templateId, version])
@@ -680,16 +693,16 @@ model AiPromptVersion {
 }
 
 model AiConversationSession {
-  id         String               @id @default(cuid())
+  id         String                  @id @default(cuid())
   userId     String?
-  channelKey String               @default("dashboard")
+  channelKey String                  @default("dashboard")
   title      String?
-  status     AiConversationStatus @default(ACTIVE)
+  status     AiConversationStatus    @default(ACTIVE)
   context    Json?
-  createdAt  DateTime             @default(now())
-  updatedAt  DateTime             @updatedAt
+  createdAt  DateTime                @default(now())
+  updatedAt  DateTime                @updatedAt
   archivedAt DateTime?
-  user       User?                @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user       User?                   @relation(fields: [userId], references: [id], onDelete: SetNull)
   messages   AiConversationMessage[]
   taskRuns   AiTaskRun[]
 
@@ -714,11 +727,11 @@ model AiConversationMessage {
 }
 
 model AiTaskRun {
-  id                 String               @id @default(cuid())
+  id                 String                 @id @default(cuid())
   sessionId          String?
   userId             String?
   taskKind           AiTaskKind
-  status             AiTaskRunStatus      @default(QUEUED)
+  status             AiTaskRunStatus        @default(QUEUED)
   providerKey        String
   model              String?
   promptTemplateKey  String?
@@ -728,19 +741,19 @@ model AiTaskRun {
   inputPayload       Json?
   outputPayload      Json?
   normalizedOutput   Json?
-  policyPassed       Boolean              @default(true)
+  policyPassed       Boolean                @default(true)
   policyViolations   Json?
   usageInputTokens   Int?
   usageOutputTokens  Int?
   usageTotalTokens   Int?
   errorMessage       String?
-  startedAt          DateTime             @default(now())
+  startedAt          DateTime               @default(now())
   completedAt        DateTime?
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
   session            AiConversationSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
-  user               User?                @relation(fields: [userId], references: [id], onDelete: SetNull)
-  promptVersion      AiPromptVersion?     @relation(fields: [promptVersionId], references: [id], onDelete: SetNull)
+  user               User?                  @relation(fields: [userId], references: [id], onDelete: SetNull)
+  promptVersion      AiPromptVersion?       @relation(fields: [promptVersionId], references: [id], onDelete: SetNull)
 
   @@index([userId, taskKind, createdAt])
   @@index([sessionId, createdAt])
@@ -749,16 +762,16 @@ model AiTaskRun {
 }
 
 model AuditLog {
-  id          String   @id @default(cuid())
-  actorUserId String?
+  id           String   @id @default(cuid())
+  actorUserId  String?
   actorRoleKey String?
-  entityType  String
-  entityId    String
-  action      String
-  summary     String
-  metadata    Json?
-  createdAt   DateTime @default(now())
-  actor       User?    @relation("AuditActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+  entityType   String
+  entityId     String
+  action       String
+  summary      String
+  metadata     Json?
+  createdAt    DateTime @default(now())
+  actor        User?    @relation("AuditActor", fields: [actorUserId], references: [id], onDelete: SetNull)
 
   @@index([entityType, entityId, createdAt])
   @@index([actorUserId, createdAt])
@@ -816,4 +829,165 @@ model DecisionDeskRecord {
   @@index([userId, status])
   @@index([userId, createdAt])
   @@map("decision_desk_record")
+}
+
+// ===========================================================================
+// Claude Admin Console C1A — additive models (URL/reference storage only).
+// Standalone (soft references by id) to keep the migration purely additive.
+// ===========================================================================
+
+enum MediaAssetKind {
+  IMAGE
+}
+
+model MediaAsset {
+  id          String         @id @default(cuid())
+  kind        MediaAssetKind @default(IMAGE)
+  url         String // external https reference (no binary upload)
+  filename    String?
+  mimeType    String?
+  byteSize    Int?
+  width       Int?
+  height      Int?
+  altText     String?
+  caption     String?
+  createdById String? // soft reference to User.id
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([kind, createdAt])
+  @@map("media_asset")
+}
+
+model ConsultationSettings {
+  id           String   @id @default(cuid())
+  singletonKey String   @unique @default("default")
+  // Single canonical representation: the whole consultation config lives in this
+  // JSON document (validated by consultationConfigSchema). No duplicate config columns.
+  settingsJson Json?
+  updatedById  String? // soft reference to User.id
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("consultation_settings")
+}
+
+model BrandSettings {
+  id           String   @id @default(cuid())
+  singletonKey String   @unique @default("default")
+  // Single canonical representation: the whole brand/profile config lives in this
+  // JSON document (validated by brandSettingsSchema). No duplicate config columns.
+  settingsJson Json?
+  updatedById  String? // soft reference to User.id
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("brand_settings")
+}
+
+// =====================================================================================
+// Claude C10A — Consultation catalogue (structured, English-only, additive).
+// Normalized replacement for the flat global-topics model: four tiers, each with a set of
+// utilities, and utilities may carry priced modes (e.g. Residential Vastu remote/on-site).
+// Draft/publication state keeps incomplete edits private until an explicit publish action.
+// All content is English-only (no locale column). No intake/CRM/booking/payment models.
+// =====================================================================================
+
+enum ConsultationPriceType {
+  FIXED
+  FROM
+}
+
+enum ConsultationAvailabilityStatus {
+  AVAILABLE
+  LIMITED
+  UNAVAILABLE
+}
+
+enum ConsultationPublicationState {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model ConsultationTier {
+  id                 String                         @id @default(cuid())
+  slug               String                         @unique
+  name               String // English display name
+  shortDescription   String?
+  detailedScope      String?
+  bestFor            String?
+  isActive           Boolean                        @default(true)
+  availabilityStatus ConsultationAvailabilityStatus @default(AVAILABLE)
+  sortOrder          Int                            @default(0)
+  publicationState   ConsultationPublicationState   @default(DRAFT)
+  publishedAt        DateTime?
+  createdById        String? // soft reference to User.id
+  createdAt          DateTime                       @default(now())
+  updatedAt          DateTime                       @updatedAt
+
+  utilities ConsultationUtility[]
+
+  @@index([publicationState, isActive, sortOrder])
+  @@map("consultation_tier")
+}
+
+model ConsultationUtility {
+  id                  String                         @id @default(cuid())
+  slug                String                         @unique
+  tierId              String
+  name                String // English display name
+  shortDescription    String?
+  detailedScope       String?
+  bestFor             String?
+  includedItems       String[]                       @default([])
+  excludedItems       String[]                       @default([])
+  responseDescription String? // expected response / delivery description
+  priceType           ConsultationPriceType          @default(FIXED)
+  currency            String                         @default("INR")
+  launchPrice         Int? // whole rupees; null until approved
+  regularPrice        Int? // whole rupees; null until approved — never invented
+  priceLabel          String?
+  requiresScopeReview Boolean                        @default(false)
+  travelExcluded      Boolean                        @default(false)
+  isPriority          Boolean                        @default(false)
+  hasModes            Boolean                        @default(false)
+  isActive            Boolean                        @default(true)
+  availabilityStatus  ConsultationAvailabilityStatus @default(AVAILABLE)
+  sortOrder           Int                            @default(0)
+  publicationState    ConsultationPublicationState   @default(DRAFT)
+  publishedAt         DateTime?
+  createdById         String? // soft reference to User.id
+  createdAt           DateTime                       @default(now())
+  updatedAt           DateTime                       @updatedAt
+
+  tier  ConsultationTier          @relation(fields: [tierId], references: [id], onDelete: Restrict)
+  modes ConsultationUtilityMode[]
+
+  @@index([tierId, publicationState, isActive, sortOrder])
+  @@map("consultation_utility")
+}
+
+model ConsultationUtilityMode {
+  id               String                @id @default(cuid())
+  utilityId        String
+  slug             String // e.g. "remote", "on-site"
+  name             String // English display name
+  shortDescription String?
+  priceType        ConsultationPriceType @default(FIXED)
+  currency         String                @default("INR")
+  launchPrice      Int? // whole rupees; null until approved
+  regularPrice     Int? // whole rupees; null until approved — never invented
+  priceLabel       String?
+  travelExcluded   Boolean               @default(false)
+  isActive         Boolean               @default(true)
+  sortOrder        Int                   @default(0)
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+
+  utility ConsultationUtility @relation(fields: [utilityId], references: [id], onDelete: Cascade)
+
+  @@unique([utilityId, slug])
+  @@index([utilityId, sortOrder])
+  @@map("consultation_utility_mode")
 }
