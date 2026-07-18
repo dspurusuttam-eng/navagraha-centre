@@ -61,6 +61,7 @@ type ConsultationSelectionJourneyProps = {
   showPublicationState?: boolean;
   tiers: readonly ConsultationJourneyTier[];
   whatsappBaseUrl: string | null;
+  whatsappHandoffEndpoint?: string | null;
 };
 
 function formatRupees(value: number | null, currency: string) {
@@ -162,6 +163,7 @@ export function ConsultationSelectionJourney({
   showPublicationState = true,
   tiers,
   whatsappBaseUrl,
+  whatsappHandoffEndpoint = null,
 }: Readonly<ConsultationSelectionJourneyProps>) {
   const concernId = useId();
   const errorId = useId();
@@ -174,6 +176,7 @@ export function ConsultationSelectionJourney({
   const [mainConcern, setMainConcern] = useState("");
   const [intakeError, setIntakeError] = useState<string | null>(null);
   const [handoffError, setHandoffError] = useState<string | null>(null);
+  const [handoffPending, setHandoffPending] = useState(false);
 
   const selectedTier = useMemo(
     () => tiers.find((tier) => tier.slug === selectedTierSlug) ?? null,
@@ -274,7 +277,25 @@ export function ConsultationSelectionJourney({
     setStage("review");
   }
 
-  function continueOnWhatsapp() {
+  async function resolveWhatsappHandoffUrl(message: string) {
+    if (whatsappHandoffEndpoint) {
+      const response = await fetch(whatsappHandoffEndpoint, {
+        body: JSON.stringify({ message }),
+        cache: "no-store",
+        headers: { "content-type": "application/json" },
+        method: "POST",
+      });
+      if (!response.ok) {
+        return null;
+      }
+      const data = (await response.json()) as { url?: unknown };
+      return typeof data.url === "string" ? data.url : null;
+    }
+
+    return buildWhatsappHandoffUrl(whatsappBaseUrl, message);
+  }
+
+  async function continueOnWhatsapp() {
     if (!mainConcern.trim()) {
       setIntakeError("Main Concern is required.");
       setStage("intake");
@@ -294,14 +315,19 @@ export function ConsultationSelectionJourney({
             })
           : null;
 
-    const handoffUrl = message ? buildWhatsappHandoffUrl(whatsappBaseUrl, message) : null;
-    if (!handoffUrl) {
-      setHandoffError("WhatsApp handoff is unavailable for this preview.");
-      return;
-    }
+    setHandoffPending(true);
+    try {
+      const handoffUrl = message ? await resolveWhatsappHandoffUrl(message) : null;
+      if (!handoffUrl) {
+        setHandoffError("WhatsApp handoff is unavailable.");
+        return;
+      }
 
-    resetJourney();
-    window.location.assign(handoffUrl);
+      resetJourney();
+      window.location.assign(handoffUrl);
+    } finally {
+      setHandoffPending(false);
+    }
   }
 
   return (
@@ -536,7 +562,7 @@ export function ConsultationSelectionJourney({
             <p>Preferred Language: ENGLISH</p>
             <p>One-time case fee and no per-minute billing.</p>
           </div>
-          <Button disabled={!canContinueGeneral} onClick={continueOnWhatsapp}>
+          <Button disabled={!canContinueGeneral || handoffPending} onClick={continueOnWhatsapp}>
             Ask Before Booking
           </Button>
         </Card>
@@ -577,7 +603,7 @@ export function ConsultationSelectionJourney({
               <p>Travel is excluded from the displayed consultation fee.</p>
             ) : null}
           </div>
-          <Button disabled={!canContinueSelected} onClick={continueOnWhatsapp}>
+          <Button disabled={!canContinueSelected || handoffPending} onClick={continueOnWhatsapp}>
             Continue on WhatsApp
           </Button>
         </Card>

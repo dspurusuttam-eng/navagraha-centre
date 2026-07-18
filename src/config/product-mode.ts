@@ -81,6 +81,7 @@ export const twoUtilityStaticMetadataRoutes = [
 export const twoUtilityRequiredPublicContentApis = [
   "/api/health",
   "/api/analytics/event",
+  "/api/consultation/whatsapp-handoff",
   "/api/observability/web-vitals",
 ] as const;
 

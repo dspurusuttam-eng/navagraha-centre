@@ -124,8 +124,8 @@ const groups: Array<{ name: string; run: () => void }> = [
       const source = read("src/modules/consultations/components/consultation-selection-journey.tsx");
       assert(source.includes("Continue on WhatsApp"));
       assert(source.includes("Ask Before Booking"));
-      assert(source.includes("disabled={!canContinueSelected}"));
-      assert(source.includes("disabled={!canContinueGeneral}"));
+      assert(source.includes("disabled={!canContinueSelected || handoffPending}"));
+      assert(source.includes("disabled={!canContinueGeneral || handoffPending}"));
       assert(source.includes("onClick={continueOnWhatsapp}"));
       assert(source.includes("onClick={startGeneralEnquiry}"));
       assert.equal(source.includes("useEffect"), false);
@@ -133,14 +133,13 @@ const groups: Array<{ name: string; run: () => void }> = [
     },
   },
   {
-    name: "privacy boundaries avoid storage, cookies, APIs, logging and app URL state",
+    name: "privacy boundaries avoid storage, cookies, analytics, logging and app URL state",
     run() {
       const componentSource = read("src/modules/consultations/components/consultation-selection-journey.tsx");
       for (const forbidden of [
         "localStorage",
         "sessionStorage",
         "document.cookie",
-        "fetch(",
         "navigator.sendBeacon",
         "console.",
         "router.",
@@ -149,6 +148,8 @@ const groups: Array<{ name: string; run: () => void }> = [
       ]) {
         assert.equal(componentSource.includes(forbidden), false, `component includes ${forbidden}`);
       }
+      assert(componentSource.includes('fetch(whatsappHandoffEndpoint'), "only the explicit handoff endpoint is called");
+      assert(componentSource.includes('cache: "no-store"'), "handoff request is not cached");
     },
   },
   {
@@ -168,6 +169,8 @@ const groups: Array<{ name: string; run: () => void }> = [
       const publicSource = read("src/app/(marketing)/consultation/page.tsx");
       assert(publicSource.includes("getPublicConsultationSettings"));
       assert(publicSource.includes("showsWhatsappCta"));
+      assert(publicSource.includes('whatsappHandoffEndpoint="/api/consultation/whatsapp-handoff"'));
+      assert.equal(publicSource.includes("whatsappBaseUrl={catalogue.whatsappBaseUrl}"), false);
       assert.equal(lockedNumberPattern.test(publicSource), false);
       assert.equal(publicSource.includes("Book Astrologer"), false);
       assert.equal(publicSource.includes("Buy Now"), false);
