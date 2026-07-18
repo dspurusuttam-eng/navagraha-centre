@@ -9,6 +9,10 @@ import type {
   TierWithUtilities,
   UtilityRecord,
 } from "@/modules/admin/consultation-catalogue/types";
+import {
+  ConsultationSelectionJourney,
+  type ConsultationJourneyTier,
+} from "@/modules/consultations/components/consultation-selection-journey";
 
 type ConsultationCatalogueDisplayProps = {
   tiers: readonly TierWithUtilities[];
@@ -154,11 +158,48 @@ function UtilityCard({ utility }: Readonly<{ utility: UtilityRecord }>) {
   );
 }
 
+function toJourneyTiers(tiers: readonly TierWithUtilities[]): ConsultationJourneyTier[] {
+  return tiers.map((tier) => ({
+    id: tier.id,
+    slug: tier.slug,
+    name: tier.name,
+    availabilityStatus: tier.availabilityStatus,
+    publicationState: tier.publicationState,
+    utilities: tier.utilities.map((utility) => ({
+      id: utility.id,
+      slug: utility.slug,
+      name: utility.name,
+      priceType: utility.priceType,
+      currency: utility.currency,
+      launchPrice: utility.launchPrice,
+      regularPrice: utility.regularPrice,
+      priceLabel: utility.priceLabel,
+      requiresScopeReview: utility.requiresScopeReview,
+      travelExcluded: utility.travelExcluded,
+      isPriority: utility.isPriority,
+      availabilityStatus: utility.availabilityStatus,
+      publicationState: utility.publicationState,
+      modes: utility.modes.map((mode) => ({
+        id: mode.id,
+        slug: mode.slug,
+        name: mode.name,
+        priceType: mode.priceType,
+        currency: mode.currency,
+        launchPrice: mode.launchPrice,
+        regularPrice: mode.regularPrice,
+        priceLabel: mode.priceLabel,
+        travelExcluded: mode.travelExcluded,
+      })),
+    })),
+  }));
+}
+
 export function ConsultationCatalogueDisplay({
   tiers,
   heading = "Consultation Preview",
 }: Readonly<ConsultationCatalogueDisplayProps>) {
   const totalUtilities = tiers.reduce((sum, tier) => sum + tier.utilities.length, 0);
+  const journeyTiers = toJourneyTiers(tiers);
 
   return (
     <section className="mx-auto flex w-full max-w-6xl flex-col gap-6" data-consultation-preview>
@@ -212,6 +253,8 @@ export function ConsultationCatalogueDisplay({
           </p>
         </div>
       </Card>
+
+      <ConsultationSelectionJourney tiers={journeyTiers} />
 
       {tiers.map((tier) => (
         <PremiumBentoSection
