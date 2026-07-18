@@ -10,7 +10,6 @@ import {
   EMPTY_PUBLIC_CATALOGUE,
   type PublicConsultationCatalogue,
 } from "@/modules/site-settings/public-catalogue-core";
-import { buildWhatsappUrl } from "@/modules/site-settings/public-settings-core";
 import type { TierWithUtilities, UtilityRecord, ModeRecord } from "@/modules/admin/consultation-catalogue/types";
 
 function assert(condition: unknown, message: string): asserts condition {
@@ -83,13 +82,14 @@ const groups: Group[] = [
     },
   },
   {
-    name: "PRIVACY: no raw WhatsApp number; only a derived base link",
+    name: "PRIVACY: no raw WhatsApp number or base link in the public DTO",
     run: () => {
-      const withLink = toPublicCatalogue([tier()], { globalAvailability: "AVAILABLE", whatsappBaseUrl: buildWhatsappUrl("+919876543210") });
-      assert(withLink.whatsappBaseUrl === "https://wa.me/919876543210", "derived wa.me base link");
+      const withLink = toPublicCatalogue([tier()], { globalAvailability: "AVAILABLE", whatsappBaseUrl: null });
+      assert(withLink.whatsappBaseUrl === null, "public DTO keeps WhatsApp base link null");
       const json = JSON.stringify(withLink);
       assert(!/"whatsappNumber"/.test(json), "no whatsappNumber field");
       assert(!json.includes("+919876543210"), "no raw +E.164 number in the payload");
+      assert(!json.includes("wa.me"), "no derived wa.me link in the payload");
       // While Consultation is unpublished the reader supplies null → no link at all.
       const noLink = toPublicCatalogue([tier()], { globalAvailability: "UNAVAILABLE", whatsappBaseUrl: null });
       assert(noLink.whatsappBaseUrl === null, "no link when settings are unpublished");

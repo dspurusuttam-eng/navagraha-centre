@@ -11,10 +11,7 @@ import "server-only";
 import { getPrisma } from "@/lib/prisma";
 import { consultationConfigSchema } from "@/modules/admin/domain";
 import { createPrismaCatalogueRepository } from "@/modules/admin/consultation-catalogue/service";
-import {
-  buildWhatsappUrl,
-  safeSettingsRead,
-} from "@/modules/site-settings/public-settings-core";
+import { safeSettingsRead } from "@/modules/site-settings/public-settings-core";
 import {
   EMPTY_PUBLIC_CATALOGUE,
   toPublicCatalogue,
@@ -42,7 +39,7 @@ async function readCatalogueContext(): Promise<PublicCatalogueContext> {
   return {
     globalAvailability: parsed.data.availabilityStatus,
     // Base link only — no prefilled message, and the raw number is never returned as a field.
-    whatsappBaseUrl: buildWhatsappUrl(parsed.data.whatsappNumber),
+    whatsappBaseUrl: null,
   };
 }
 

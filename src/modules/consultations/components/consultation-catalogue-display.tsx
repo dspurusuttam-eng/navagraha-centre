@@ -58,6 +58,7 @@ type ConsultationCatalogueDisplayProps = {
   tiers: readonly ConsultationDisplayTier[];
   heading?: string;
   whatsappBaseUrl?: string | null;
+  whatsappHandoffEndpoint?: string | null;
   audience?: "admin" | "public";
 };
 
@@ -264,6 +265,7 @@ export function ConsultationCatalogueDisplay({
   tiers,
   heading = "Consultation Preview",
   whatsappBaseUrl = null,
+  whatsappHandoffEndpoint = null,
 }: Readonly<ConsultationCatalogueDisplayProps>) {
   const totalUtilities = tiers.reduce((sum, tier) => sum + tier.utilities.length, 0);
   const journeyTiers = toJourneyTiers(tiers);
@@ -332,6 +334,7 @@ export function ConsultationCatalogueDisplay({
         showPublicationState={!isPublic}
         tiers={journeyTiers}
         whatsappBaseUrl={whatsappBaseUrl}
+        whatsappHandoffEndpoint={whatsappHandoffEndpoint}
       />
 
       {tiers.map((tier) => (

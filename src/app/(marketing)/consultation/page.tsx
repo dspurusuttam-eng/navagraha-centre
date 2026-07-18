@@ -206,7 +206,7 @@ export default async function ConsultationPage() {
               audience="public"
               heading="Consultation Types"
               tiers={toConsultationDisplayTiers(catalogue.tiers)}
-              whatsappBaseUrl={catalogue.whatsappBaseUrl}
+              whatsappHandoffEndpoint="/api/consultation/whatsapp-handoff"
             />
           </PremiumBentoSection>
         ) : null}

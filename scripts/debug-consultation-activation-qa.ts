@@ -158,16 +158,17 @@ const groups: Group[] = [
     },
   },
   {
-    name: "W1 WhatsApp CTA: secure external link, no API/booking/payment",
+    name: "W1 WhatsApp CTA: secure fallback link and private handoff endpoint",
     run: () => {
       const page = PAGE();
       assert(page.includes('rel="noopener noreferrer nofollow"'), "noopener + noreferrer + nofollow");
       assert(page.includes('target="_blank"'), "opens in a new tab");
       assert(page.includes("{consultation.whatsappUrl as string}"), "href comes from the settings-derived URL");
       assert(!page.includes("wa.me"), "no hardcoded WhatsApp link in the page");
+      assert(page.includes('whatsappHandoffEndpoint="/api/consultation/whatsapp-handoff"'), "public journey uses controlled handoff endpoint");
       // No booking / payment / CRM / WhatsApp API anywhere on the surface.
       const code = page.split("\n").filter((l) => { const t = l.trim(); return !t.startsWith("//") && !t.startsWith("*") && !t.startsWith("/*") && !t.startsWith("{/*"); }).join("\n");
-      assert(!/graph\.facebook|whatsapp.*api|razorpay|stripe|\bcrm\b|fetch\(/i.test(code), "no API/payment/CRM call");
+      assert(!/graph\.facebook|api\.whatsapp\.com|whatsapp\.com\/business|razorpay|stripe|\bcrm\b/i.test(code), "no payment/CRM/WhatsApp API call");
       // The link is only ever an https wa.me URL built by the validated helper.
       const projected = toPublicConsultation({ ...defaultConsultationConfig(), isEnabled: true, whatsappNumber: "+919876543210", prefilledMessage: "Hi" });
       assert(projected.whatsappUrl!.startsWith("https://wa.me/"), "https wa.me only");

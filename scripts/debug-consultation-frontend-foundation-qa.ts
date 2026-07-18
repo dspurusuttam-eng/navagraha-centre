@@ -21,7 +21,6 @@ import type {
 
 const root = process.cwd();
 const now = new Date("2026-07-18T00:00:00.000Z");
-const qaWhatsappBaseUrl = `https://wa.me/${"9"}${"1".repeat(9)}`;
 
 function read(relativePath: string) {
   return fs.readFileSync(path.join(root, relativePath), "utf8");
@@ -110,11 +109,11 @@ const groups: Array<{ name: string; run: () => void }> = [
     run() {
       const publicCatalogue = toPublicCatalogue(draftCatalogueFixture(), {
         globalAvailability: "UNAVAILABLE",
-        whatsappBaseUrl: qaWhatsappBaseUrl,
+        whatsappBaseUrl: null,
       });
       assert.equal(publicCatalogue.tiers.length, 0);
       assert.equal(publicCatalogue.global.status, "UNAVAILABLE");
-      assert.equal(publicCatalogue.whatsappBaseUrl, qaWhatsappBaseUrl);
+      assert.equal(publicCatalogue.whatsappBaseUrl, null);
     },
   },
   {
