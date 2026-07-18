@@ -17,6 +17,7 @@ import {
 type ConsultationCatalogueDisplayProps = {
   tiers: readonly TierWithUtilities[];
   heading?: string;
+  whatsappBaseUrl?: string | null;
 };
 
 function formatRupees(value: number | null, currency: string) {
@@ -197,6 +198,7 @@ function toJourneyTiers(tiers: readonly TierWithUtilities[]): ConsultationJourne
 export function ConsultationCatalogueDisplay({
   tiers,
   heading = "Consultation Preview",
+  whatsappBaseUrl = null,
 }: Readonly<ConsultationCatalogueDisplayProps>) {
   const totalUtilities = tiers.reduce((sum, tier) => sum + tier.utilities.length, 0);
   const journeyTiers = toJourneyTiers(tiers);
@@ -254,7 +256,7 @@ export function ConsultationCatalogueDisplay({
         </div>
       </Card>
 
-      <ConsultationSelectionJourney tiers={journeyTiers} />
+      <ConsultationSelectionJourney tiers={journeyTiers} whatsappBaseUrl={whatsappBaseUrl} />
 
       {tiers.map((tier) => (
         <PremiumBentoSection

@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { requireAdminPageSession } from "@/modules/admin/auth/page-guard";
+import { getConsultationDeps } from "@/modules/admin/consultation/service";
+import { getConsultationSettings } from "@/modules/admin/consultation/service-core";
 import { getCatalogueDeps } from "@/modules/admin/consultation-catalogue/service";
 import { listCatalogue } from "@/modules/admin/consultation-catalogue/service-core";
 import { ConsultationCatalogueDisplay } from "@/modules/consultations/components/consultation-catalogue-display";
+import { buildWhatsappUrl } from "@/modules/site-settings/public-settings-core";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +20,13 @@ export const metadata: Metadata = {
 
 export default async function AdminConsultationPreviewPage() {
   await requireAdminPageSession();
-  const result = await listCatalogue(getCatalogueDeps());
+  const [result, settingsResult] = await Promise.all([
+    listCatalogue(getCatalogueDeps()),
+    getConsultationSettings(getConsultationDeps()),
+  ]);
+  const whatsappBaseUrl = settingsResult.ok
+    ? buildWhatsappUrl(settingsResult.data.whatsappNumber)
+    : null;
 
   if (!result.ok) {
     return (
@@ -34,6 +43,7 @@ export default async function AdminConsultationPreviewPage() {
     <ConsultationCatalogueDisplay
       heading="Consultation Catalogue Preview"
       tiers={result.data}
+      whatsappBaseUrl={whatsappBaseUrl}
     />
   );
 }

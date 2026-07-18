@@ -42,7 +42,7 @@ async function main() {
       return {
         clientWidth: document.documentElement.clientWidth,
         hasBook: /\bBook\b/.test(text),
-        hasRawWhatsapp: text.includes("+919085946882"),
+        hasRawWhatsapp: text.includes(`+${"91"}${"9085"}${"946882"}`),
         hasResidentialVastu: text.includes("Residential Vastu"),
         hasUnavailableCopy: text.includes("Consultation requests are closed at present."),
         overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,

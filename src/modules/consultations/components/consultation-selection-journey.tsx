@@ -10,6 +10,11 @@ import type {
   ConsultationPriceType,
   ConsultationPublicationState,
 } from "@/modules/admin/consultation-catalogue/domain";
+import {
+  buildGeneralEnquiryMessage,
+  buildSelectedConsultationMessage,
+  buildWhatsappHandoffUrl,
+} from "@/modules/consultations/whatsapp-handoff";
 
 export type ConsultationJourneyMode = {
   id: string;
@@ -50,9 +55,11 @@ export type ConsultationJourneyTier = {
 };
 
 type JourneyStage = "tier" | "utility" | "mode" | "intake" | "review";
+type EnquiryMode = "selected" | "general";
 
 type ConsultationSelectionJourneyProps = {
   tiers: readonly ConsultationJourneyTier[];
+  whatsappBaseUrl: string | null;
 };
 
 function formatRupees(value: number | null, currency: string) {
@@ -100,7 +107,7 @@ function priceDetails(
 
 function selectableClass(selected: boolean) {
   return cn(
-    "w-full min-w-0 rounded-[var(--ui-radius-xl)] border bg-white p-4 text-left shadow-[var(--ui-shadow-sm)] transition [transition-duration:var(--ui-motion-base)] [transition-timing-function:var(--ui-ease-emphasized)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ui-color-focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+    "w-full min-w-0 rounded-[var(--ui-radius-xl)] border bg-white p-4 text-left shadow-[var(--ui-shadow-sm)] transition [transition-duration:var(--ui-motion-base)] [transition-timing-function:var(--ui-ease-emphasized)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ui-color-focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-white motion-reduce:transition-none motion-reduce:hover:translate-y-0",
     selected
       ? "border-[color:var(--ui-color-border-gold)] shadow-[var(--ui-shadow-md)]"
       : "border-[color:var(--ui-color-border-subtle)] hover:-translate-y-0.5 hover:border-[color:var(--ui-color-border-gold)]",
@@ -147,15 +154,19 @@ function PriceList({
 
 export function ConsultationSelectionJourney({
   tiers,
+  whatsappBaseUrl,
 }: Readonly<ConsultationSelectionJourneyProps>) {
   const concernId = useId();
   const errorId = useId();
+  const handoffStatusId = useId();
   const [stage, setStage] = useState<JourneyStage>("tier");
+  const [enquiryMode, setEnquiryMode] = useState<EnquiryMode>("selected");
   const [selectedTierSlug, setSelectedTierSlug] = useState<string | null>(null);
   const [selectedUtilitySlug, setSelectedUtilitySlug] = useState<string | null>(null);
   const [selectedModeSlug, setSelectedModeSlug] = useState<string | null>(null);
   const [mainConcern, setMainConcern] = useState("");
   const [intakeError, setIntakeError] = useState<string | null>(null);
+  const [handoffError, setHandoffError] = useState<string | null>(null);
 
   const selectedTier = useMemo(
     () => tiers.find((tier) => tier.slug === selectedTierSlug) ?? null,
@@ -172,6 +183,13 @@ export function ConsultationSelectionJourney({
   const effectivePrice = selectedMode ?? selectedUtility;
   const needsMode = Boolean(selectedUtility?.modes.length);
   const canStartIntake = Boolean(selectedUtility && (!needsMode || selectedMode));
+  const hasValidConcern = Boolean(mainConcern.trim());
+  const canContinueSelected =
+    enquiryMode === "selected" &&
+    stage === "review" &&
+    Boolean(selectedTier && selectedUtility && effectivePrice) &&
+    hasValidConcern;
+  const canContinueGeneral = enquiryMode === "general" && stage === "review" && hasValidConcern;
 
   function resetJourney() {
     setStage("tier");
@@ -180,14 +198,18 @@ export function ConsultationSelectionJourney({
     setSelectedModeSlug(null);
     setMainConcern("");
     setIntakeError(null);
+    setHandoffError(null);
+    setEnquiryMode("selected");
   }
 
   function chooseTier(tier: ConsultationJourneyTier) {
+    setEnquiryMode("selected");
     setSelectedTierSlug(tier.slug);
     setSelectedUtilitySlug(null);
     setSelectedModeSlug(null);
     setMainConcern("");
     setIntakeError(null);
+    setHandoffError(null);
     setStage("utility");
   }
 
@@ -199,7 +221,19 @@ export function ConsultationSelectionJourney({
     setSelectedModeSlug(null);
     setMainConcern("");
     setIntakeError(null);
+    setHandoffError(null);
     setStage(utility.modes.length ? "mode" : "utility");
+  }
+
+  function startGeneralEnquiry() {
+    setEnquiryMode("general");
+    setSelectedTierSlug(null);
+    setSelectedUtilitySlug(null);
+    setSelectedModeSlug(null);
+    setMainConcern("");
+    setIntakeError(null);
+    setHandoffError(null);
+    setStage("intake");
   }
 
   function startIntake() {
@@ -211,7 +245,9 @@ export function ConsultationSelectionJourney({
       setStage("mode");
       return;
     }
+    setEnquiryMode("selected");
     setIntakeError(null);
+    setHandoffError(null);
     setStage("intake");
   }
 
@@ -222,7 +258,38 @@ export function ConsultationSelectionJourney({
       return;
     }
     setIntakeError(null);
+    setHandoffError(null);
     setStage("review");
+  }
+
+  function continueOnWhatsapp() {
+    if (!mainConcern.trim()) {
+      setIntakeError("Main Concern is required.");
+      setStage("intake");
+      return;
+    }
+
+    const message =
+      enquiryMode === "general"
+        ? buildGeneralEnquiryMessage({ concern: mainConcern })
+        : selectedTier && selectedUtility && effectivePrice
+          ? buildSelectedConsultationMessage({
+              concern: mainConcern,
+              modeName: selectedMode?.name ?? null,
+              priceLabel: priceSummary(effectivePrice),
+              tierName: selectedTier.name,
+              utilityName: selectedUtility.name,
+            })
+          : null;
+
+    const handoffUrl = message ? buildWhatsappHandoffUrl(whatsappBaseUrl, message) : null;
+    if (!handoffUrl) {
+      setHandoffError("WhatsApp handoff is unavailable for this preview.");
+      return;
+    }
+
+    resetJourney();
+    window.location.assign(handoffUrl);
   }
 
   return (
@@ -246,12 +313,23 @@ export function ConsultationSelectionJourney({
       </div>
 
       <Card className="grid gap-3" tone="muted">
+        <div className="grid gap-1">
+          <p className="text-base font-semibold text-[color:var(--ui-color-text-primary)]">
+            One Fee. Complete Solution. No Clock Running.
+          </p>
+          <p className="text-sm font-semibold text-[color:var(--ui-color-text-secondary)]">
+            One-time case fee · No per-minute billing.
+          </p>
+        </div>
         <p className="text-sm font-semibold text-[color:var(--ui-color-text-primary)]">
           Preferred Language: ENGLISH
         </p>
         <p className="text-sm font-medium leading-6 text-[color:var(--ui-color-text-secondary)]">
-          State is held only in this browser component while the preview is open. C11B does not write to database, browser storage, cookies, URLs or analytics.
+          The fee applies to one selected concern. There is no per-minute or call-duration billing. Outcomes are not promised and service scope stays limited to the selected concern.
         </p>
+        <Button className="justify-self-start" onClick={startGeneralEnquiry} size="sm" tone="secondary">
+          Ask Before Booking
+        </Button>
       </Card>
 
       <div className="grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -358,6 +436,7 @@ export function ConsultationSelectionJourney({
                   onClick={() => {
                     setSelectedModeSlug(mode.slug);
                     setIntakeError(null);
+                    setHandoffError(null);
                   }}
                   type="button"
                 >
@@ -377,20 +456,24 @@ export function ConsultationSelectionJourney({
         </Card>
       ) : null}
 
-      {selectedUtility ? (
-        <Card className="grid min-w-0 gap-4">
+      {selectedUtility || enquiryMode === "general" ? (
+        <Card className="grid min-w-0 gap-4" data-enquiry-mode={enquiryMode}>
           <div className="flex min-w-0 flex-wrap items-center justify-between gap-3">
             <div className="min-w-0">
               <h3 className="text-base font-semibold text-[color:var(--ui-color-text-primary)]">
                 Case Intake
               </h3>
               <p className="mt-1 text-sm font-medium text-[color:var(--ui-color-text-muted)]">
-                Main Concern is the only C11B intake field.
+                {enquiryMode === "general"
+                  ? "General enquiry: Main Concern is required before WhatsApp handoff."
+                  : "Selected consultation: Main Concern is required before scope review."}
               </p>
             </div>
-            <Button disabled={!canStartIntake} onClick={startIntake} size="sm" tone="secondary">
-              Start Case Intake
-            </Button>
+            {enquiryMode === "selected" ? (
+              <Button disabled={!canStartIntake} onClick={startIntake} size="sm" tone="secondary">
+                Start Case Intake
+              </Button>
+            ) : null}
           </div>
           {stage === "intake" || stage === "review" ? (
             <div className="grid min-w-0 gap-2">
@@ -410,6 +493,7 @@ export function ConsultationSelectionJourney({
                   if (event.target.value.trim()) {
                     setIntakeError(null);
                   }
+                  setHandoffError(null);
                 }}
                 value={mainConcern}
               />
@@ -424,7 +508,27 @@ export function ConsultationSelectionJourney({
         </Card>
       ) : null}
 
-      {stage === "review" && selectedTier && selectedUtility && effectivePrice ? (
+      {stage === "review" && enquiryMode === "general" ? (
+        <Card className="grid min-w-0 gap-4" data-journey-review tone="accent">
+          <div className="min-w-0">
+            <p className="text-xs font-semibold uppercase tracking-[var(--tracking-label)] text-[color:var(--ui-color-accent-gold)]">
+              General Enquiry Review
+            </p>
+            <h3 className="mt-1 text-base font-semibold text-[color:var(--ui-color-text-primary)]">
+              Ask Before Booking
+            </h3>
+          </div>
+          <div className="grid min-w-0 gap-2 text-sm font-medium leading-6 text-[color:var(--ui-color-text-secondary)]">
+            <p>Preferred Language: ENGLISH</p>
+            <p>One-time case fee and no per-minute billing.</p>
+          </div>
+          <Button disabled={!canContinueGeneral} onClick={continueOnWhatsapp}>
+            Ask Before Booking
+          </Button>
+        </Card>
+      ) : null}
+
+      {stage === "review" && enquiryMode === "selected" && selectedTier && selectedUtility && effectivePrice ? (
         <Card className="grid min-w-0 gap-4" data-journey-review tone="accent">
           <div className="min-w-0">
             <p className="text-xs font-semibold uppercase tracking-[var(--tracking-label)] text-[color:var(--ui-color-accent-gold)]">
@@ -459,8 +563,20 @@ export function ConsultationSelectionJourney({
               <p>Travel is excluded from the displayed consultation fee.</p>
             ) : null}
           </div>
+          <Button disabled={!canContinueSelected} onClick={continueOnWhatsapp}>
+            Continue on WhatsApp
+          </Button>
         </Card>
       ) : null}
+
+      <p
+        aria-live="polite"
+        className="min-h-5 text-sm font-semibold text-red-700"
+        id={handoffStatusId}
+        role={handoffError ? "alert" : "status"}
+      >
+        {handoffError}
+      </p>
     </section>
   );
 }

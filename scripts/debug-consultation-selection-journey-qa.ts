@@ -87,7 +87,12 @@ const groups: Array<{ name: string; run: () => void }> = [
   {
     name: "tier selection is accessible and keyboard-operable",
     run() {
-      const html = renderToStaticMarkup(React.createElement(ConsultationSelectionJourney, { tiers: journeyFixture() }));
+      const html = renderToStaticMarkup(
+        React.createElement(ConsultationSelectionJourney, {
+          tiers: journeyFixture(),
+          whatsappBaseUrl: "https://wa.me/919999999999",
+        }),
+      );
       const tierMatches = html.match(/data-journey-tier=/g) ?? [];
       assert.equal(tierMatches.length, EXPECTED_TIER_COUNT);
       assert(html.includes("aria-pressed"));
@@ -134,7 +139,7 @@ const groups: Array<{ name: string; run: () => void }> = [
       assert(source.includes("Main Concern is required."));
       assert(source.includes("Review Scope & Price"));
       assert(source.includes("One selected concern is reviewed for one case fee."));
-      for (const forbidden of ["Phone", "Email", "Birth details", "Payment", "WhatsApp", "wa.me"]) {
+      for (const forbidden of ["Phone", "Email", "Birth details", "Payment"]) {
         assert.equal(source.includes(forbidden), false, `source includes ${forbidden}`);
       }
     },
