@@ -220,9 +220,14 @@ export function ConsultationSelectionJourney({
     setSelectedUtilitySlug(utility.slug);
     setSelectedModeSlug(null);
     setMainConcern("");
-    setIntakeError(null);
     setHandoffError(null);
-    setStage(utility.modes.length ? "mode" : "utility");
+    if (utility.modes.length) {
+      setIntakeError(null);
+      setStage("mode");
+      return;
+    }
+    setIntakeError("Main Concern is required.");
+    setStage("intake");
   }
 
   function startGeneralEnquiry() {
@@ -457,7 +462,7 @@ export function ConsultationSelectionJourney({
       ) : null}
 
       {selectedUtility || enquiryMode === "general" ? (
-        <Card className="grid min-w-0 gap-4" data-enquiry-mode={enquiryMode}>
+        <Card className="grid min-w-0 gap-4" data-enquiry-mode={enquiryMode} data-journey-case-intake>
           <div className="flex min-w-0 flex-wrap items-center justify-between gap-3">
             <div className="min-w-0">
               <h3 className="text-base font-semibold text-[color:var(--ui-color-text-primary)]">

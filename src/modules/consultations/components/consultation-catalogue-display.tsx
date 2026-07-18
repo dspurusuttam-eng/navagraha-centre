@@ -13,6 +13,7 @@ import {
   ConsultationSelectionJourney,
   type ConsultationJourneyTier,
 } from "@/modules/consultations/components/consultation-selection-journey";
+import { ConsultationUtilitySelectButton } from "@/modules/consultations/components/consultation-utility-select-button";
 
 type ConsultationCatalogueDisplayProps = {
   tiers: readonly TierWithUtilities[];
@@ -137,7 +138,12 @@ function ModeList({ utility }: Readonly<{ utility: UtilityRecord }>) {
   );
 }
 
-function UtilityCard({ utility }: Readonly<{ utility: UtilityRecord }>) {
+function UtilityCard({
+  tierSlug,
+  utility,
+}: Readonly<{ tierSlug: string; utility: UtilityRecord }>) {
+  const isAvailable = utility.availabilityStatus === "AVAILABLE";
+
   return (
     <Card
       className="flex min-h-full min-w-0 flex-col gap-4"
@@ -155,6 +161,15 @@ function UtilityCard({ utility }: Readonly<{ utility: UtilityRecord }>) {
       </div>
       <PriceRows utility={utility} />
       <ModeList utility={utility} />
+      {isAvailable ? (
+        <div className="mt-auto">
+          <ConsultationUtilitySelectButton
+            label={utility.requiresScopeReview ? "Request Scope Review" : "Select This Consultation"}
+            tierSlug={tierSlug}
+            utilitySlug={utility.slug}
+          />
+        </div>
+      ) : null}
     </Card>
   );
 }
@@ -271,7 +286,7 @@ export function ConsultationCatalogueDisplay({
           </div>
           <PremiumBentoGrid className="sm:grid-cols-2 xl:grid-cols-3">
             {tier.utilities.map((utility) => (
-              <UtilityCard key={utility.id} utility={utility} />
+              <UtilityCard key={utility.id} tierSlug={tier.slug} utility={utility} />
             ))}
           </PremiumBentoGrid>
         </PremiumBentoSection>
