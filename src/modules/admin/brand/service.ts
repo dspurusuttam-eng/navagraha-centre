@@ -4,6 +4,10 @@ import "server-only";
 import { NextResponse } from "next/server";
 import type { Prisma } from "@prisma/client";
 import { getPrisma } from "@/lib/prisma";
+import {
+  PUBLIC_CONTENT_TAGS,
+  invalidatePublicContent,
+} from "@/lib/public-content-cache";
 import { writeAuditLog } from "@/modules/admin/audit";
 import { brandSettingsSchema, type BrandSettingsInput } from "@/modules/admin/domain";
 import type { AdminApiContext } from "@/modules/admin/api-guard";
@@ -33,6 +37,7 @@ export function createPrismaBrandRepository(db: Db): BrandSettingsRepository {
         update: { settingsJson: data },
         create: { singletonKey: SINGLETON_KEY, settingsJson: data },
       });
+      invalidatePublicContent(PUBLIC_CONTENT_TAGS.brandSettings);
       const parsed = brandSettingsSchema.safeParse(row.settingsJson);
       return parsed.success ? parsed.data : config;
     },

@@ -8,7 +8,12 @@
 // detail to the caller.
 import "server-only";
 
+import { unstable_cache } from "next/cache";
 import { getPrisma } from "@/lib/prisma";
+import {
+  PUBLIC_CONTENT_REVALIDATE_SECONDS,
+  PUBLIC_CONTENT_TAGS,
+} from "@/lib/public-content-cache";
 import {
   PUBLIC_DESK_LOCALES,
   PUBLIC_DESK_STATUS,
@@ -126,6 +131,21 @@ async function readPublicEntries(now: Date): Promise<ContentEntry[]> {
   return toPublicDeskEntries(sources, now);
 }
 
+// Perf: the whole public Desk read (articles + covers + the pure publish gate) is cached so
+// list pages, article pages and the home rail never repeat the database round trips on
+// navigation. `now` is taken when the cache entry is (re)built: Admin publish/update actions
+// invalidate the tag immediately, and scheduled `publishedAt` flips surface within the
+// revalidate window. The error-throwing read stays inside the cache; `safeDeskRead` remains
+// outside so a transient failure degrades for that request without caching the empty state.
+const readPublicEntriesCached = unstable_cache(
+  async (): Promise<ContentEntry[]> => readPublicEntries(new Date()),
+  ["public-desk-entries"],
+  {
+    tags: [PUBLIC_CONTENT_TAGS.deskContent],
+    revalidate: PUBLIC_CONTENT_REVALIDATE_SECONDS,
+  },
+);
+
 function toLocale(value?: string | null): SupportedLocale {
   return normalizeLocaleCode(value) ?? defaultLocale;
 }
@@ -142,13 +162,13 @@ export const adminArticleDeskAdapter: DeskContentAdapter = {
   key: "admin-article",
 
   async listPublishedEntries() {
-    return safeDeskRead(() => readPublicEntries(new Date()), []);
+    return safeDeskRead(() => readPublicEntriesCached(), []);
   },
 
   async listPublishedEntriesByLocale(locale) {
     return safeDeskRead(async () => {
       const requested = toLocale(locale);
-      const entries = await readPublicEntries(new Date());
+      const entries = await readPublicEntriesCached();
       // A non-public locale (e.g. bn) never falls back to another locale's content; it
       // simply has no Desk content of its own beyond the default-locale set.
       const target = isPublicDeskLocale(requested) ? requested : defaultLocale;
@@ -161,7 +181,7 @@ export const adminArticleDeskAdapter: DeskContentAdapter = {
   async getPublishedEntryBySlugForLocale(slug, locale) {
     return safeDeskRead(async () => {
       const requested = toLocale(locale);
-      const entries = await readPublicEntries(new Date());
+      const entries = await readPublicEntriesCached();
       const exact = entries.find((entry) => entry.slug === slug && entry.locale === requested);
       if (exact) return exact;
       // Slugs are unique across the Admin model, so fall back to the slug in any public
@@ -172,7 +192,7 @@ export const adminArticleDeskAdapter: DeskContentAdapter = {
 
   async listTranslationAlternates(translationGroup) {
     return safeDeskRead(async () => {
-      const entries = await readPublicEntries(new Date());
+      const entries = await readPublicEntriesCached();
       return entries
         .filter((entry) => (entry.translationGroup ?? entry.slug) === translationGroup)
         .reduce<Partial<Record<SupportedLocale, string>>>((bucket, entry) => {

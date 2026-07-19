@@ -4,6 +4,10 @@ import "server-only";
 import { NextResponse } from "next/server";
 import { ArticleStatus, type Prisma } from "@prisma/client";
 import { getPrisma } from "@/lib/prisma";
+import {
+  PUBLIC_CONTENT_TAGS,
+  invalidatePublicContent,
+} from "@/lib/public-content-cache";
 import { writeAuditLog } from "@/modules/admin/audit";
 import { withoutSidecar } from "@/modules/admin/articles/api-sanitize";
 import type { AdminApiContext } from "@/modules/admin/api-guard";
@@ -72,14 +76,17 @@ export function createPrismaArticleRepository(db: Db): ArticleRepository {
     },
     async create(data) {
       const row = await db.article.create({ data: { ...data, status: data.status as ArticleStatus } });
+      invalidatePublicContent(PUBLIC_CONTENT_TAGS.deskContent);
       return mapRow(row);
     },
     async update(id, data) {
       const row = await db.article.update({ where: { id }, data: data as Prisma.ArticleUpdateInput });
+      invalidatePublicContent(PUBLIC_CONTENT_TAGS.deskContent);
       return mapRow(row);
     },
     async remove(id) {
       await db.article.delete({ where: { id } });
+      invalidatePublicContent(PUBLIC_CONTENT_TAGS.deskContent);
     },
     async listRecentByUpdated(limit) {
       const rows = await db.article.findMany({ orderBy: { updatedAt: "desc" }, take: limit });

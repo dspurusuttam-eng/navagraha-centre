@@ -4,6 +4,10 @@ import "server-only";
 import { NextResponse } from "next/server";
 import { MediaAssetKind, type Prisma } from "@prisma/client";
 import { getPrisma } from "@/lib/prisma";
+import {
+  PUBLIC_CONTENT_TAGS,
+  invalidatePublicContent,
+} from "@/lib/public-content-cache";
 import { writeAuditLog } from "@/modules/admin/audit";
 import { brandSettingsSchema } from "@/modules/admin/domain";
 import type { AdminApiContext } from "@/modules/admin/api-guard";
@@ -62,6 +66,7 @@ export function createPrismaMediaRepository(db: Db): MediaRepository {
     async create(data) {
       const { kind, ...rest } = data;
       const row = await db.mediaAsset.create({ data: { ...rest, kind: kind as MediaAssetKind } });
+      invalidatePublicContent(PUBLIC_CONTENT_TAGS.deskContent, PUBLIC_CONTENT_TAGS.brandSettings);
       return mapRow(row);
     },
     async update(id, data) {
@@ -70,10 +75,12 @@ export function createPrismaMediaRepository(db: Db): MediaRepository {
         where: { id },
         data: { ...rest, ...(kind !== undefined ? { kind: kind as MediaAssetKind } : {}) },
       });
+      invalidatePublicContent(PUBLIC_CONTENT_TAGS.deskContent, PUBLIC_CONTENT_TAGS.brandSettings);
       return mapRow(row);
     },
     async remove(id) {
       await db.mediaAsset.delete({ where: { id } });
+      invalidatePublicContent(PUBLIC_CONTENT_TAGS.deskContent, PUBLIC_CONTENT_TAGS.brandSettings);
     },
   };
 }

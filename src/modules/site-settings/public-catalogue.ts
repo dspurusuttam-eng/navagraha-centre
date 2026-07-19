@@ -8,9 +8,14 @@
 // WhatsApp API, and no intake.
 import "server-only";
 
+import { unstable_cache } from "next/cache";
 import { getPrisma } from "@/lib/prisma";
 import { consultationConfigSchema } from "@/modules/admin/domain";
 import { createPrismaCatalogueRepository } from "@/modules/admin/consultation-catalogue/service";
+import {
+  PUBLIC_CONTENT_REVALIDATE_SECONDS,
+  PUBLIC_CONTENT_TAGS,
+} from "@/lib/public-content-cache";
 import { safeSettingsRead } from "@/modules/site-settings/public-settings-core";
 import {
   EMPTY_PUBLIC_CATALOGUE,
@@ -43,11 +48,26 @@ async function readCatalogueContext(): Promise<PublicCatalogueContext> {
   };
 }
 
-/** The public Consultation catalogue, or the controlled empty catalogue. */
-export async function getPublicConsultationCatalogue(): Promise<PublicConsultationCatalogue> {
-  return safeSettingsRead(async () => {
+// Perf: the projected catalogue is cached (tagged with the catalogue AND the settings tag,
+// since global availability comes from the settings singleton); Admin writes invalidate it.
+// A transient database failure falls back per-request without caching the empty catalogue.
+const readPublicConsultationCatalogue = unstable_cache(
+  async (): Promise<PublicConsultationCatalogue> => {
     const repo = createPrismaCatalogueRepository(getPrisma());
     const [tiers, context] = await Promise.all([repo.listPublishedCatalogue(), readCatalogueContext()]);
     return toPublicCatalogue(tiers, context);
-  }, EMPTY_PUBLIC_CATALOGUE);
+  },
+  ["public-consultation-catalogue"],
+  {
+    tags: [
+      PUBLIC_CONTENT_TAGS.consultationCatalogue,
+      PUBLIC_CONTENT_TAGS.consultationSettings,
+    ],
+    revalidate: PUBLIC_CONTENT_REVALIDATE_SECONDS,
+  },
+);
+
+/** The public Consultation catalogue, or the controlled empty catalogue. */
+export async function getPublicConsultationCatalogue(): Promise<PublicConsultationCatalogue> {
+  return safeSettingsRead(() => readPublicConsultationCatalogue(), EMPTY_PUBLIC_CATALOGUE);
 }

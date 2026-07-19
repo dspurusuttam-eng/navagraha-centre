@@ -3,6 +3,10 @@ import "server-only";
 
 import { NextResponse } from "next/server";
 import { getPrisma } from "@/lib/prisma";
+import {
+  PUBLIC_CONTENT_TAGS,
+  invalidatePublicContent,
+} from "@/lib/public-content-cache";
 import { writeAuditLog } from "@/modules/admin/audit";
 import type { AdminApiContext } from "@/modules/admin/api-guard";
 import type {
@@ -153,14 +157,17 @@ export function createPrismaCatalogueRepository(db: Db): CatalogueRepository {
     },
     async createTier(data: TierCreateData) {
       const row = await db.consultationTier.create({ data });
+      invalidatePublicContent(PUBLIC_CONTENT_TAGS.consultationCatalogue);
       return mapTier(row as unknown as TierRow);
     },
     async updateTier(id, data: TierUpdateData) {
       const row = await db.consultationTier.update({ where: { id }, data });
+      invalidatePublicContent(PUBLIC_CONTENT_TAGS.consultationCatalogue);
       return mapTier(row as unknown as TierRow);
     },
     async removeTier(id) {
       await db.consultationTier.delete({ where: { id } });
+      invalidatePublicContent(PUBLIC_CONTENT_TAGS.consultationCatalogue);
     },
     async countUtilitiesForTier(tierId) {
       return db.consultationUtility.count({ where: { tierId } });
@@ -176,14 +183,17 @@ export function createPrismaCatalogueRepository(db: Db): CatalogueRepository {
     },
     async createUtility(data: UtilityCreateData) {
       const row = await db.consultationUtility.create({ data, include: utilityInclude });
+      invalidatePublicContent(PUBLIC_CONTENT_TAGS.consultationCatalogue);
       return mapUtility(row as unknown as UtilityRow);
     },
     async updateUtility(id, data: UtilityUpdateData) {
       const row = await db.consultationUtility.update({ where: { id }, data, include: utilityInclude });
+      invalidatePublicContent(PUBLIC_CONTENT_TAGS.consultationCatalogue);
       return mapUtility(row as unknown as UtilityRow);
     },
     async removeUtility(id) {
       await db.consultationUtility.delete({ where: { id } });
+      invalidatePublicContent(PUBLIC_CONTENT_TAGS.consultationCatalogue);
     },
 
     async findModeById(id) {
@@ -192,14 +202,17 @@ export function createPrismaCatalogueRepository(db: Db): CatalogueRepository {
     },
     async createMode(data: ModeCreateData) {
       const row = await db.consultationUtilityMode.create({ data });
+      invalidatePublicContent(PUBLIC_CONTENT_TAGS.consultationCatalogue);
       return mapMode(row as unknown as ModeRow);
     },
     async updateMode(id, data: ModeUpdateData) {
       const row = await db.consultationUtilityMode.update({ where: { id }, data });
+      invalidatePublicContent(PUBLIC_CONTENT_TAGS.consultationCatalogue);
       return mapMode(row as unknown as ModeRow);
     },
     async removeMode(id) {
       await db.consultationUtilityMode.delete({ where: { id } });
+      invalidatePublicContent(PUBLIC_CONTENT_TAGS.consultationCatalogue);
     },
 
     async listPublishedCatalogue() {

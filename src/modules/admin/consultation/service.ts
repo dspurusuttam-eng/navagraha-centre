@@ -4,6 +4,10 @@ import "server-only";
 import { NextResponse } from "next/server";
 import type { Prisma } from "@prisma/client";
 import { getPrisma } from "@/lib/prisma";
+import {
+  PUBLIC_CONTENT_TAGS,
+  invalidatePublicContent,
+} from "@/lib/public-content-cache";
 import { writeAuditLog } from "@/modules/admin/audit";
 import { consultationConfigSchema, type ConsultationConfig } from "@/modules/admin/domain";
 import type { AdminApiContext } from "@/modules/admin/api-guard";
@@ -34,6 +38,7 @@ export function createPrismaConsultationRepository(db: Db): ConsultationSettings
         update: { settingsJson: data },
         create: { singletonKey: SINGLETON_KEY, settingsJson: data },
       });
+      invalidatePublicContent(PUBLIC_CONTENT_TAGS.consultationSettings);
       const parsed = consultationConfigSchema.safeParse(row.settingsJson);
       return parsed.success ? parsed.data : config;
     },
