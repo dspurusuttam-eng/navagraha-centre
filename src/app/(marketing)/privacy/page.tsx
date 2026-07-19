@@ -1,4 +1,3 @@
-import { ConsentPreferencesPanel } from "@/components/site/consent-preferences-panel";
 import { buildPageMetadata } from "@/lib/metadata";
 import { publicContactEmail } from "@/config/public-contact";
 import { LegalPage } from "../legal-page";
@@ -32,10 +31,6 @@ export default function PrivacyPage() {
       pageTrackerFeature="privacy-page"
       paragraphs={privacyParagraphs}
       title="Privacy Policy"
-    >
-      {/* Retained: the cookie/advertising consent control is an active, legally relevant
-          mechanism rather than policy prose. Inline — never a popup. */}
-      <ConsentPreferencesPanel />
-    </LegalPage>
+    />
   );
 }
