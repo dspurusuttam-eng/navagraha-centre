@@ -575,8 +575,9 @@ export function ConsultationSelectionJourney({
             </h3>
           </div>
           <div className="grid min-w-0 gap-2 text-sm font-medium leading-6 text-[color:var(--ui-color-text-secondary)]">
+            {/* The commercial statement is shown once, in the page hero — it is
+                deliberately not repeated inside the selection journey. */}
             <p>Preferred Language: ENGLISH</p>
-            <p>One-time case fee and no per-minute billing.</p>
           </div>
           <Button disabled={!canContinueGeneral || handoffPending} onClick={continueOnWhatsapp}>
             Ask Before Booking

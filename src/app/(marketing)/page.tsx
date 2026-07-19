@@ -13,6 +13,7 @@ import {
   type FeatureStatusRegistryEntry,
   featureStatusRegistry,
 } from "@/config/feature-status-registry";
+import { resolveHeroTaglines } from "@/config/commercial-message";
 import { createPageMetadata } from "@/lib/seo/metadata";
 import { getContentAdapter } from "@/modules/content";
 // Hero tagline comes from the Admin-approved consultation settings (static fallback when unset).
@@ -136,12 +137,9 @@ export default async function HomePage() {
   const latestDeskEntries = latestDeskEntriesRaw
     .filter(isHomeSafeDeskEntry)
     .slice(0, 4);
-  // Admin-approved commercial framing (e.g. "One Fee. Complete Solution. No Clock
-  // Running."). Rendered line-by-line; the hero degrades to the plain title when unset.
-  const heroTaglines = (consultationSettings.shortDescription ?? "")
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter(Boolean);
+  // The locked commercial sentence leads the hero; retired variants authored in
+  // the admin short description are filtered out so they cannot resurface.
+  const heroTaglines = resolveHeroTaglines(consultationSettings.shortDescription);
   const primaryFeatures = primaryFeatureKeys
     .map((featureKey) => getFeature(featureKey))
     .filter(isFeature);

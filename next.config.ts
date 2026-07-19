@@ -70,6 +70,20 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   compress: true,
   serverExternalPackages: ["swisseph"],
+  experimental: {
+    // Public pages render dynamically because locale resolution reads request
+    // headers/cookies, so Next marks every response `no-store` and the CDN never
+    // caches it — each navigation cost a full origin round trip (measured
+    // 560-750 ms per RSC fetch). These stale times let the client Router Cache
+    // reuse an already-fetched payload, so repeat navigation between Home, Desk
+    // and Consultation is served from memory with no origin request at all.
+    // Deliberately short: Admin edits still surface on the next fetch, and
+    // server-side `unstable_cache` tag invalidation is untouched.
+    staleTimes: {
+      dynamic: 30,
+      static: 300,
+    },
+  },
   outputFileTracingIncludes: {
     "/*": [
       "./node_modules/swisseph/build/Release/**/*",

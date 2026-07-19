@@ -151,6 +151,12 @@ export function MobileBottomActionBar({
               href={href}
               aria-label={action.label}
               aria-current={active ? "page" : undefined}
+              // These three are the app's primary destinations and the routes
+              // render dynamically, so the default "auto" prefetch would only
+              // fetch the loading shell. Fetching the full payload up front makes
+              // the tap resolve from the Router Cache instead of the origin.
+              // Skipped for the current route, which needs no prefetch.
+              prefetch={active ? false : true}
               className={cn(
                 "flex min-w-0 flex-col items-center gap-1 rounded-[1.1rem] px-1.5 py-2 text-center transition [transition-duration:var(--motion-duration-base)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]",
                 active
