@@ -6,6 +6,7 @@
 // select-replace-clear; support sees the selection read-only. Handles a deleted reference
 // and a library outage without ever silently dropping the stored value.
 import { useState } from "react";
+import { MediaUploadButton } from "@/modules/admin/media/media-upload-button";
 import {
   resolvePickerSelection,
   pickerStatusLabel,
@@ -29,7 +30,11 @@ type Props = {
 export function MediaPicker({ name, label, initialAssetId, options, canWrite, error, onChange }: Readonly<Props>) {
   const [selectedId, setSelectedId] = useState(initialAssetId ?? "");
   const [open, setOpen] = useState(false);
-  const selection = resolvePickerSelection(selectedId, options);
+  // Assets uploaded in this session, so the preview and the library list update immediately
+  // without a page reload (the server list refreshes on the next load).
+  const [uploaded, setUploaded] = useState<MediaPickerOption[]>([]);
+  const mergedOptions = options === null ? (uploaded.length ? uploaded : null) : [...uploaded, ...options];
+  const selection = resolvePickerSelection(selectedId, mergedOptions);
   const statusId = `${name}-status`;
   const errorId = `${name}-error`;
 
@@ -39,8 +44,13 @@ export function MediaPicker({ name, label, initialAssetId, options, canWrite, er
     onChange?.();
   };
 
-  const canChoose = canWrite && options !== null;
-  const hasOptions = options !== null && options.length > 0;
+  const handleUploaded = (option: MediaPickerOption) => {
+    setUploaded((current) => [option, ...current.filter((entry) => entry.id !== option.id)]);
+    commit(option.id);
+  };
+
+  const canChoose = canWrite && mergedOptions !== null;
+  const hasOptions = mergedOptions !== null && mergedOptions.length > 0;
 
   return (
     <div role="group" aria-label={label} className="space-y-2">
@@ -81,33 +91,42 @@ export function MediaPicker({ name, label, initialAssetId, options, canWrite, er
       ) : null}
 
       {canWrite ? (
-        <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={() => setOpen((value) => !value)}
-            disabled={!canChoose}
-            aria-expanded={open}
-            aria-describedby={error ? errorId : statusId}
-            className="flex min-h-11 items-center rounded-md border px-4 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            {selection.state === "selected" ? "Replace image" : "Select image"}
-          </button>
-          {selectedId !== "" ? (
+        <div className="space-y-2">
+          {/* Primary path: upload straight from the device (Android gallery / PWA / desktop). */}
+          <MediaUploadButton
+            label={selection.state === "selected" ? "Upload new cover image" : "Upload cover image"}
+            onUploaded={handleUploaded}
+            altText={selection.state === "selected" ? selection.option.altText : undefined}
+          />
+
+          <div className="flex flex-wrap gap-2">
             <button
               type="button"
-              onClick={() => commit("")}
-              className="flex min-h-11 items-center rounded-md border px-4 py-2 text-sm"
+              onClick={() => setOpen((value) => !value)}
+              disabled={!canChoose}
+              aria-expanded={open}
+              aria-describedby={error ? errorId : statusId}
+              className="flex min-h-11 items-center rounded-md border px-4 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-40"
             >
-              Clear
+              {selection.state === "selected" ? "Choose from library" : "Select from library"}
             </button>
-          ) : null}
+            {selectedId !== "" ? (
+              <button
+                type="button"
+                onClick={() => commit("")}
+                className="flex min-h-11 items-center rounded-md border px-4 py-2 text-sm"
+              >
+                Remove image
+              </button>
+            ) : null}
+          </div>
         </div>
       ) : null}
 
       {open && canChoose ? (
         hasOptions ? (
           <ul aria-label={`${label} options`} className="max-h-72 divide-y overflow-y-auto rounded-md border">
-            {options!.map((option) => {
+            {mergedOptions!.map((option) => {
               const isSelected = option.id === selectedId;
               return (
                 <li key={option.id}>

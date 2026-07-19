@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AnalyticsEventTracker } from "@/components/analytics/event-tracker";
@@ -256,6 +257,20 @@ export default async function DeskArticleDetailPage({
             <h1 className="font-[family-name:var(--font-family-editorial)] text-[length:var(--font-size-title-lg)] leading-[var(--line-height-heading)] text-[color:var(--ui-color-text-primary)]">
               {entry.title}
             </h1>
+            {entry.featuredImage ? (
+              // Above the fold on the article, so this one is eager with high priority; the
+              // fixed 16:9 box reserves layout space so the LCP image cannot shift the page.
+              <div className="relative mt-2 aspect-[16/9] w-full overflow-hidden rounded-[var(--ui-radius-lg)] bg-[color:var(--ui-color-surface-muted,#f5f2ec)]">
+                <Image
+                  alt={entry.featuredImage.alt}
+                  className="object-cover"
+                  fill
+                  priority
+                  sizes="(max-width: 768px) 100vw, 768px"
+                  src={entry.featuredImage.src}
+                />
+              </div>
+            ) : null}
           </article>
         </PremiumBentoSection>
 

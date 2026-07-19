@@ -251,11 +251,14 @@ export type PremiumArticleCardProps = AnchorHTMLAttributes<HTMLAnchorElement> & 
   href: string;
   iconKey?: FeatureIconKey;
   title: string;
+  /** Optional Desk cover image; falls back to the icon mark when absent. */
+  coverImage?: { src: string; alt: string } | null;
 };
 
 export function PremiumArticleCard({
   category,
   className,
+  coverImage,
   date,
   href,
   iconKey,
@@ -271,7 +274,22 @@ export function PremiumArticleCard({
       href={href}
       {...props}
     >
-      <SymbolMark className="size-10" iconKey={iconKey} label={title} />
+      {coverImage ? (
+        // Fixed 16:9 box reserves the space before the image loads, so a cover can never
+        // shift the card (CLS). `sizes` keeps mobile from downloading a desktop-width file.
+        <span className="relative mb-3 block aspect-[16/9] w-full overflow-hidden rounded-[var(--ui-radius-lg)] bg-[color:var(--ui-color-surface-muted,#f5f2ec)]">
+          <Image
+            alt={coverImage.alt}
+            className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+            fill
+            loading="lazy"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            src={coverImage.src}
+          />
+        </span>
+      ) : (
+        <SymbolMark className="size-10" iconKey={iconKey} label={title} />
+      )}
       <span className="min-w-0">
         <span className="line-clamp-2 text-sm font-semibold leading-snug text-[color:var(--ui-color-text-primary)]">
           {title}
