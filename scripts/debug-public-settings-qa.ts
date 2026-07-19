@@ -227,7 +227,8 @@ const groups: Group[] = [
       assert(consult.includes("getPublicConsultationSettings") && consult.includes("getPublicBrandSettings"), "consultation page reads Admin settings");
       assert(consult.includes("{brand.acharyaName}"), "Acharya name from settings");
       assert(consult.includes("{consultation.availabilityLabel}"), "availability from settings");
-      assert(consult.includes("consultationPackages"), "existing package catalog preserved");
+      // C12 replaced the legacy static package grid with the live published catalogue.
+      assert(consult.includes("ConsultationCatalogueDisplay"), "live consultation catalogue rendered");
       // Design/route preserved: no new sections, same shell/components.
       assert(consult.includes('PremiumBentoSection label="Acharya"') && consult.includes('label="Availability"'), "existing sections reused, not added");
       assert(!consult.includes("wa.me"), "no hardcoded link; the URL comes from settings");

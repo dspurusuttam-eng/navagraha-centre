@@ -150,7 +150,7 @@ export default async function ConsultationPage() {
       />
 
       <PremiumPageShell
-        className="pb-[calc(6rem+env(safe-area-inset-bottom))] xl:pb-12"
+        className="pb-10 xl:pb-12"
         tone="soft"
       >
         <PremiumBentoSection className="pt-5 sm:pt-8">
@@ -175,7 +175,12 @@ export default async function ConsultationPage() {
             <h1 className="mt-4 font-[family-name:var(--font-family-editorial)] text-[length:var(--font-size-title-lg)] leading-[var(--line-height-heading)] text-[color:var(--ui-color-text-primary)]">
               Consultation
             </h1>
-            <p className="mt-4 max-w-2xl text-sm font-medium leading-6 text-[color:var(--ui-color-text-secondary)]">
+            {consultation.shortDescription ? (
+              <p className="mt-4 max-w-2xl whitespace-pre-line text-base font-semibold leading-7 text-[color:var(--ui-color-text-primary)]">
+                {consultation.shortDescription}
+              </p>
+            ) : null}
+            <p className="mt-3 max-w-2xl text-sm font-medium leading-6 text-[color:var(--ui-color-text-secondary)]">
               {availabilityNote(consultation.availability)}
             </p>
           </div>
@@ -236,17 +241,7 @@ export default async function ConsultationPage() {
           </Card>
         </PremiumBentoSection>
 
-        {consultation.shortDescription ? (
-          <PremiumBentoSection className="pt-0">
-            <PremiumSectionHeading label="About" />
-            <Card>
-              <p className="text-sm font-medium leading-6 text-[color:var(--ui-color-text-secondary)]">
-                {consultation.shortDescription}
-              </p>
-            </Card>
-          </PremiumBentoSection>
-        ) : null}
-
+        {/* The approved commercial framing now lives in the hero above — no duplicate About card. */}
         {!hasPublicCatalogue && showsWhatsappCta(consultation.availability, consultation.whatsappUrl) ? (
           <PremiumBentoSection className="pt-0">
             <PremiumSectionHeading label="Contact" />

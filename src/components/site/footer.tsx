@@ -98,7 +98,9 @@ export async function Footer() {
       data-nosnippet
       className="border-t border-[rgba(185,139,70,0.32)] bg-white text-[color:var(--color-ink-strong)]"
     >
-      <Container className="space-y-3 pb-[calc(7rem+env(safe-area-inset-bottom))] pt-[var(--space-5)] sm:pb-[calc(7rem+env(safe-area-inset-bottom))] sm:pt-[var(--space-6)] xl:space-y-3 xl:pb-[var(--space-7)]">
+      {/* Single source of mobile-dock clearance; --space-7 does not exist in the token
+          scale, so desktop uses the defined --space-8 (2rem) instead of collapsing to 0. */}
+      <Container className="space-y-3 pb-[calc(7rem+env(safe-area-inset-bottom))] pt-[var(--space-5)] sm:pt-[var(--space-6)] xl:space-y-3 xl:pb-[var(--space-8)]">
         <div className="grid gap-4 rounded-[var(--radius-card)] border border-[rgba(185,139,70,0.24)] bg-white p-4 shadow-[0_8px_20px_rgba(5,5,5,0.04)] lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] lg:items-start lg:gap-6 lg:p-5">
           <div>
             <Link

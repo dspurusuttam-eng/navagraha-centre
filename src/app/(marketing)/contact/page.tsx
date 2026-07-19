@@ -99,7 +99,7 @@ export default async function ContactPage({
       <PageViewTracker page="/contact" feature="contact-page" />
 
       <PremiumPageShell
-        className="pb-[calc(6rem+env(safe-area-inset-bottom))] xl:pb-12"
+        className="pb-10 xl:pb-12"
         tone="soft"
       >
         <PremiumBentoSection className="pt-5 sm:pt-8">

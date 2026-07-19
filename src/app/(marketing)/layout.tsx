@@ -12,8 +12,9 @@ export default async function MarketingLayout({
   const locale = await getRequestLocale();
   const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
 
+  // Dock clearance lives once, on the footer's bottom padding — no duplicate spacer here.
   return (
-    <div className="min-h-dvh pb-[calc(6.5rem+env(safe-area-inset-bottom))] xl:pb-0">
+    <div className="min-h-dvh">
       <div className="min-w-0">{children}</div>
       <MobileBottomActionBar
         locale={locale}

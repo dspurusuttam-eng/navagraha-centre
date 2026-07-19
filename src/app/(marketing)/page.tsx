@@ -1,4 +1,6 @@
-﻿import { PageViewTracker } from "@/components/analytics/page-view-tracker";
+﻿import Link from "next/link";
+import { PageViewTracker } from "@/components/analytics/page-view-tracker";
+import { buttonStyles } from "@/components/ui/button";
 import {
   PremiumArticleCard,
   PremiumBentoGrid,
@@ -13,6 +15,8 @@ import {
 } from "@/config/feature-status-registry";
 import { createPageMetadata } from "@/lib/seo/metadata";
 import { getContentAdapter } from "@/modules/content";
+// Hero tagline comes from the Admin-approved consultation settings (static fallback when unset).
+import { getPublicConsultationSettings } from "@/modules/site-settings/public-settings";
 import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
 import {
   getRequestLocale,
@@ -24,7 +28,9 @@ export async function generateMetadata() {
   const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
 
   return createPageMetadata({
-    title: "NAVAGRAHA CENTRE Consultation Desk",
+    // The site-wide template appends "| NAVAGRAHA CENTRE"; keep the brand out of the
+    // page title so it is not duplicated in the rendered <title>.
+    title: "Consultation Desk",
     description:
       "Consultation-first Vedic astrology guidance, Desk articles, methodology and support from NAVAGRAHA CENTRE.",
     path: "/",
@@ -123,11 +129,19 @@ export default async function HomePage() {
     });
 
   const contentAdapter = getContentAdapter();
-  const latestDeskEntries = (
-    await contentAdapter.listPublishedEntriesByLocale(locale)
-  )
+  const [latestDeskEntriesRaw, consultationSettings] = await Promise.all([
+    contentAdapter.listPublishedEntriesByLocale(locale),
+    getPublicConsultationSettings(),
+  ]);
+  const latestDeskEntries = latestDeskEntriesRaw
     .filter(isHomeSafeDeskEntry)
     .slice(0, 4);
+  // Admin-approved commercial framing (e.g. "One Fee. Complete Solution. No Clock
+  // Running."). Rendered line-by-line; the hero degrades to the plain title when unset.
+  const heroTaglines = (consultationSettings.shortDescription ?? "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
   const primaryFeatures = primaryFeatureKeys
     .map((featureKey) => getFeature(featureKey))
     .filter(isFeature);
@@ -140,7 +154,7 @@ export default async function HomePage() {
       <PageViewTracker page="/" feature="consultation-first-home" />
 
       <PremiumPageShell
-        className="pb-[calc(6rem+env(safe-area-inset-bottom))] xl:pb-12"
+        className="pb-10 xl:pb-12"
         tone="soft"
       >
         <PremiumBentoSection className="pt-5 sm:pt-8">
@@ -148,10 +162,39 @@ export default async function HomePage() {
             <h1 className="font-[family-name:var(--font-family-editorial)] text-[length:var(--font-size-title-lg)] leading-[var(--line-height-heading)] text-[color:var(--ui-color-text-primary)]">
               NAVAGRAHA CENTRE
             </h1>
+            {heroTaglines.length ? (
+              <div className="mt-3 space-y-1">
+                <p className="text-base font-semibold leading-7 text-[color:var(--ui-color-text-primary)] sm:text-lg">
+                  {heroTaglines[0]}
+                </p>
+                {heroTaglines.slice(1).map((line) => (
+                  <p
+                    key={line}
+                    className="text-sm font-medium leading-6 text-[color:var(--ui-color-text-secondary)]"
+                  >
+                    {line}
+                  </p>
+                ))}
+              </div>
+            ) : null}
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link
+                href={localizeHref("/consultation")}
+                className={buttonStyles({ size: "sm" })}
+              >
+                Consult
+              </Link>
+              <Link
+                href={localizeHref("/from-the-desk")}
+                className={buttonStyles({ size: "sm", tone: "secondary" })}
+              >
+                Desk
+              </Link>
+            </div>
           </div>
         </PremiumBentoSection>
 
-        <PremiumBentoSection label="Primary">
+        <PremiumBentoSection>
           <PremiumBentoGrid className="sm:grid-cols-2 lg:grid-cols-2">
             {primaryFeatures.map((feature) => (
               <PremiumRouteTile
@@ -167,7 +210,7 @@ export default async function HomePage() {
           </PremiumBentoGrid>
         </PremiumBentoSection>
 
-        <PremiumBentoSection label="Secondary" className="pt-0">
+        <PremiumBentoSection className="pt-0">
           <PremiumBentoGrid className="sm:grid-cols-2 lg:grid-cols-2">
             {secondaryFeatures.map((feature) => (
               <PremiumRouteTile
