@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.navagrahacentre.app",
+      "sha256_cert_fingerprints": [
+        "F8:DD:3F:D2:CE:22:53:0B:C8:72:4E:CA:ED:5A:3A:C4:FB:05:8E:08:BB:54:29:C1:BF:2E:9E:83:89:43:6C:66"
+      ]
+    }
+  }
+]
