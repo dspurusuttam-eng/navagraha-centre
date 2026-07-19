@@ -357,7 +357,10 @@ export function SiteDrawer({
             aria-labelledby={titleId}
             aria-modal="true"
             className={cn(
-              "pointer-events-auto relative z-10 flex h-[100dvh] w-[min(100vw,25rem)] flex-col overflow-y-auto overscroll-contain border-r border-[rgba(185,139,70,0.2)] bg-white px-4 shadow-[0_18px_40px_rgba(5,5,5,0.12)] outline-none transition-transform duration-[160ms] ease-out will-change-transform motion-reduce:transition-none sm:px-5",
+              // Width must always leave a scrim strip: `min(100vw, …)` collapsed to
+              // the full viewport on a 360dp phone, so there was nothing outside the
+              // panel to tap and tap-to-dismiss was impossible on mobile.
+              "pointer-events-auto relative z-10 flex h-[100dvh] w-[min(86vw,22rem)] flex-col overflow-y-auto overscroll-contain border-r border-[rgba(185,139,70,0.2)] bg-white px-4 shadow-[0_18px_40px_rgba(5,5,5,0.12)] outline-none transition-transform duration-[160ms] ease-out will-change-transform motion-reduce:transition-none sm:px-5",
               entered ? "translate-x-0" : "-translate-x-full"
             )}
             id={drawerId}
