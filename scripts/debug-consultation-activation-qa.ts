@@ -179,7 +179,10 @@ const groups: Group[] = [
     run: () => {
       const page = PAGE();
       // Each optional section is guarded by its own truthiness/length check.
-      assert(page.includes("{consultation.shortDescription ? ("), "description hidden when unset");
+      // The hero now shows the single approved commercial statement (fixed copy), so the
+      // Admin shortDescription is no longer rendered on the Consultation page at all.
+      assert(!page.includes("consultation.shortDescription"), "Admin shortDescription not rendered on the page");
+      assert(page.includes("One-time case fee. No Clock Running."), "approved commercial line present");
       assert(page.includes("{consultation.languages.length ? ("), "languages hidden when empty");
       assert(page.includes("{consultation.topics.length ? ("), "topics hidden when empty");
       assert(page.includes("{consultation.preparationInstructions ? ("), "preparation hidden when unset");

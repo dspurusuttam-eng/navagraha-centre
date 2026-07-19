@@ -49,8 +49,10 @@ await expectAllowed("/support");
 await expectAllowed("/contact");
 await expectAllowed("/privacy");
 await expectAllowed("/terms");
-await expectAllowed("/disclaimer");
-await expectAllowed("/refund");
+// /disclaimer now 308-redirects to /terms (handled by next.config redirects, which run
+// before middleware), and /refund is hidden until paid consultation is activated.
+await expectBlockedPage("/refund");
+await expectBlockedPage("/refund-cancellation");
 await expectAllowed("/en/from-the-desk/sample-entry");
 await expectAllowed("/as/consultation");
 await expectAllowed("/hi/methodology");

@@ -55,8 +55,6 @@ export const twoUtilityPublicBaseRoutes = [
   "/contact",
   "/privacy",
   "/terms",
-  "/disclaimer",
-  "/refund",
 ] as const;
 
 export const twoUtilityStaticMetadataRoutes = [
@@ -148,6 +146,10 @@ export const twoUtilityHiddenPublicRoutes = [
   "/panchang",
   "/pricing",
   "/rashifal",
+  // Refund/Cancellation stays hidden until paid consultation + payment processing are
+  // officially activated. (/disclaimer is NOT hidden — it 308-redirects to /terms, which
+  // requires crawlers to be able to follow it.)
+  "/refund",
   "/refund-cancellation",
   "/remedies",
   "/reports",

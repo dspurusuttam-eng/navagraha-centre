@@ -16,14 +16,16 @@ import {
   buildWhatsappHandoffUrl,
 } from "@/modules/consultations/whatsapp-handoff";
 
+// Internal fields are optional: the public Consultation page never passes them, so they never
+// reach this client component's props (and therefore never the RSC payload / HTML).
 export type ConsultationJourneyMode = {
   id: string;
   slug: string;
   name: string;
-  priceType: ConsultationPriceType;
+  priceType?: ConsultationPriceType;
   currency: string;
   launchPrice: number | null;
-  regularPrice: number | null;
+  regularPrice?: number | null;
   priceLabel: string | null;
   travelExcluded: boolean;
 };
@@ -32,16 +34,16 @@ export type ConsultationJourneyUtility = {
   id: string;
   slug: string;
   name: string;
-  priceType: ConsultationPriceType;
+  priceType?: ConsultationPriceType;
   currency: string;
   launchPrice: number | null;
-  regularPrice: number | null;
+  regularPrice?: number | null;
   priceLabel: string | null;
   requiresScopeReview: boolean;
   travelExcluded: boolean;
-  isPriority: boolean;
+  isPriority?: boolean;
   availabilityStatus: CatalogueAvailability;
-  publicationState: ConsultationPublicationState;
+  publicationState?: ConsultationPublicationState;
   modes: ConsultationJourneyMode[];
 };
 
@@ -50,7 +52,7 @@ export type ConsultationJourneyTier = {
   slug: string;
   name: string;
   availabilityStatus: CatalogueAvailability;
-  publicationState: ConsultationPublicationState;
+  publicationState?: ConsultationPublicationState;
   utilities: ConsultationJourneyUtility[];
 };
 
@@ -93,6 +95,15 @@ function priceSummary(
   return `${item.priceType === "FROM" ? "From " : ""}${formatRupees(item.launchPrice, item.currency)}`;
 }
 
+/** Single visitor-facing price; null when the utility is priced by its modes. */
+function publicPrice(
+  item: Pick<ConsultationJourneyUtility | ConsultationJourneyMode, "currency" | "launchPrice" | "priceLabel">,
+): string | null {
+  if (item.priceLabel?.trim()) return item.priceLabel.trim();
+  if (item.launchPrice == null) return null;
+  return formatRupees(item.launchPrice, item.currency);
+}
+
 function priceDetails(
   item: Pick<
     ConsultationJourneyUtility | ConsultationJourneyMode,
@@ -102,7 +113,7 @@ function priceDetails(
   return [
     ["Price label", priceSummary(item)],
     ["Launch", formatRupees(item.launchPrice, item.currency)],
-    ["Regular", formatRupees(item.regularPrice, item.currency)],
+    ["Regular", formatRupees(item.regularPrice ?? null, item.currency)],
     ["Price type", item.priceType],
   ] as const;
 }
@@ -122,7 +133,9 @@ function StateFlags({
 }: Readonly<{ showPublicationState: boolean; utility: ConsultationJourneyUtility }>) {
   return (
     <span className="flex min-w-0 flex-wrap gap-2">
-      {utility.isPriority ? <PremiumStatusBadge status="LIVE">Priority</PremiumStatusBadge> : null}
+      {showPublicationState && utility.isPriority ? (
+        <PremiumStatusBadge status="LIVE">Priority</PremiumStatusBadge>
+      ) : null}
       {utility.requiresScopeReview ? (
         <PremiumStatusBadge status="COMING_SOON">Scope review</PremiumStatusBadge>
       ) : null}
@@ -130,7 +143,7 @@ function StateFlags({
         <PremiumStatusBadge status="NEUTRAL">Travel excluded</PremiumStatusBadge>
       ) : null}
       <PremiumStatusBadge status="NEUTRAL">{utility.availabilityStatus}</PremiumStatusBadge>
-      {showPublicationState ? (
+      {showPublicationState && utility.publicationState ? (
         <PremiumStatusBadge status="NEUTRAL">{utility.publicationState}</PremiumStatusBadge>
       ) : null}
     </span>
@@ -139,12 +152,21 @@ function StateFlags({
 
 function PriceList({
   item,
+  showInternal = true,
 }: Readonly<{
   item: Pick<
     ConsultationJourneyUtility | ConsultationJourneyMode,
     "currency" | "launchPrice" | "priceLabel" | "priceType" | "regularPrice"
   >;
+  showInternal?: boolean;
 }>) {
+  if (!showInternal) {
+    const price = publicPrice(item);
+    return price ? (
+      <p className="text-base font-semibold text-[color:var(--ui-color-text-primary)]">{price}</p>
+    ) : null;
+  }
+
   return (
     <dl className="grid gap-2 text-sm">
       {priceDetails(item).map(([label, value]) => (
@@ -309,7 +331,7 @@ export function ConsultationSelectionJourney({
           ? buildSelectedConsultationMessage({
               concern: mainConcern,
               modeName: selectedMode?.name ?? null,
-              priceLabel: priceSummary(effectivePrice),
+              priceLabel: publicPrice(effectivePrice) ?? priceSummary(effectivePrice),
               tierName: selectedTier.name,
               utilityName: selectedUtility.name,
             })
@@ -351,19 +373,13 @@ export function ConsultationSelectionJourney({
       </div>
 
       <Card className="grid gap-3" tone="muted">
-        <div className="grid gap-1">
-          <p className="text-base font-semibold text-[color:var(--ui-color-text-primary)]">
-            One Fee. Complete Solution. No Clock Running.
-          </p>
-          <p className="text-sm font-semibold text-[color:var(--ui-color-text-secondary)]">
-            One-time case fee · No per-minute billing.
-          </p>
-        </div>
+        {/* The commercial statement is shown exactly once, in the Consultation hero. The
+            journey carries only the scope disclaimer, never a second pricing headline. */}
         <p className="text-sm font-semibold text-[color:var(--ui-color-text-primary)]">
           Preferred Language: ENGLISH
         </p>
         <p className="text-sm font-medium leading-6 text-[color:var(--ui-color-text-secondary)]">
-          The fee applies to one selected concern. There is no per-minute or call-duration billing. Outcomes are not promised and service scope stays limited to the selected concern.
+          The fee applies to one selected concern. Outcomes are not promised and service scope stays limited to the selected concern.
         </p>
         <Button className="justify-self-start" onClick={startGeneralEnquiry} size="sm" tone="secondary">
           Ask Before Booking
@@ -437,7 +453,7 @@ export function ConsultationSelectionJourney({
                       {utility.name}
                     </h4>
                   </div>
-                  <PriceList item={utility} />
+                  <PriceList item={utility} showInternal={showPublicationState} />
                   <Button
                     aria-pressed={selected}
                     disabled={isUnavailable}
@@ -484,7 +500,7 @@ export function ConsultationSelectionJourney({
                     <span className="break-words text-sm font-semibold text-[color:var(--ui-color-text-primary)]">
                       {mode.name}
                     </span>
-                    <PriceList item={mode} />
+                    <PriceList item={mode} showInternal={showPublicationState} />
                     {mode.travelExcluded ? (
                       <PremiumStatusBadge status="NEUTRAL">Travel excluded</PremiumStatusBadge>
                     ) : null}

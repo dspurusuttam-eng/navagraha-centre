@@ -10,6 +10,7 @@ import {
   PremiumPageShell,
   PremiumStatusBadge,
 } from "@/components/ui/premium";
+import { PolicyProse } from "@/components/site/policy-prose";
 import {
   createBreadcrumbSchema,
   createWebPageSchema,
@@ -39,17 +40,22 @@ type LegalPageProps = {
     href: string;
     label: string;
   };
-  sections: readonly LegalSection[];
+  /** Legacy bullet sections (Admin-era pages). Optional now that copy is approved prose. */
+  sections?: readonly LegalSection[];
+  /** Approved policy prose. When present it replaces the bullet sections. */
+  paragraphs?: readonly string[];
   title: string;
 };
 
+// Final locked public policy set — identical to the footer. Disclaimer and Refund are
+// deliberately absent: disclaimer protection now lives inside Terms, and Refund stays hidden
+// until paid consultation is activated.
 const legalLinks = [
-  { label: "Privacy", href: "/privacy" },
-  { label: "Terms", href: "/terms" },
-  { label: "Disclaimer", href: "/disclaimer" },
-  { label: "Refund", href: "/refund" },
   { label: "Support", href: "/support" },
   { label: "Contact", href: "/contact" },
+  { label: "Privacy", href: "/privacy" },
+  { label: "Terms", href: "/terms" },
+  { label: "Method", href: "/methodology" },
 ] as const;
 
 export async function LegalPage({
@@ -61,6 +67,7 @@ export async function LegalPage({
   primaryAction,
   secondaryAction,
   sections,
+  paragraphs,
   title,
 }: Readonly<LegalPageProps>) {
   const locale = await getRequestLocale();
@@ -148,7 +155,7 @@ export async function LegalPage({
         </PremiumBentoSection>
 
         <PremiumBentoSection label="Legal Pages" className="pt-0">
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             {legalLinks.map((item) => (
               <Link
                 className="rounded-[var(--ui-radius-xl)] border border-[color:var(--ui-color-border-subtle)] bg-white px-4 py-3 text-center text-sm font-semibold text-[color:var(--ui-color-text-primary)] shadow-[var(--ui-shadow-sm)] transition hover:border-[color:var(--ui-color-border-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ui-color-focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
@@ -162,8 +169,14 @@ export async function LegalPage({
         </PremiumBentoSection>
 
         <PremiumBentoSection label="Policy" className="pt-0">
+          {paragraphs?.length ? (
+            <Card>
+              <PolicyProse consultationHref={localizeHref("/consultation")} paragraphs={paragraphs} />
+            </Card>
+          ) : null}
+          {paragraphs?.length ? null : (
           <PremiumBentoGrid className="sm:grid-cols-2 lg:grid-cols-2">
-            {sections.map((section) => (
+            {(sections ?? []).map((section) => (
               <Card className="space-y-4" key={section.title}>
                 <h2 className="text-base font-semibold leading-tight text-[color:var(--ui-color-text-primary)]">
                   {section.title}
@@ -176,6 +189,7 @@ export async function LegalPage({
               </Card>
             ))}
           </PremiumBentoGrid>
+          )}
         </PremiumBentoSection>
 
         {children ? (

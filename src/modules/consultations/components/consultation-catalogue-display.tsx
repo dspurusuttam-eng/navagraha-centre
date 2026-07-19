@@ -14,43 +14,37 @@ import {
 } from "@/modules/consultations/components/consultation-selection-journey";
 import { ConsultationUtilitySelectButton } from "@/modules/consultations/components/consultation-utility-select-button";
 
+// Internal merchandising fields (priceType / regularPrice / isPriority) are OPTIONAL: the
+// Admin preview passes them, the public surface never receives them, so they cannot appear in
+// public HTML or the RSC payload.
 export type ConsultationDisplayMode = Pick<
   ModeRecord,
-  | "id"
-  | "slug"
-  | "name"
-  | "shortDescription"
-  | "priceType"
-  | "currency"
-  | "launchPrice"
-  | "regularPrice"
-  | "priceLabel"
-  | "travelExcluded"
->;
+  "id" | "slug" | "name" | "shortDescription" | "currency" | "launchPrice" | "priceLabel" | "travelExcluded"
+> &
+  Partial<Pick<ModeRecord, "priceType" | "regularPrice">>;
 
 export type ConsultationDisplayUtility = Pick<
   UtilityRecord,
   | "id"
   | "slug"
   | "name"
-  | "priceType"
   | "currency"
   | "launchPrice"
-  | "regularPrice"
   | "priceLabel"
   | "requiresScopeReview"
   | "travelExcluded"
-  | "isPriority"
   | "availabilityStatus"
-  | "publicationState"
-> & { modes: ConsultationDisplayMode[] };
+> &
+  Partial<Pick<UtilityRecord, "priceType" | "regularPrice" | "isPriority" | "publicationState">> & {
+    modes: ConsultationDisplayMode[];
+  };
 
 export type ConsultationDisplayTier = {
   id: string;
   slug: string;
   name: string;
   availabilityStatus: UtilityRecord["availabilityStatus"];
-  publicationState: UtilityRecord["publicationState"];
+  publicationState?: UtilityRecord["publicationState"];
   utilities: ConsultationDisplayUtility[];
 };
 
@@ -74,7 +68,10 @@ function formatRupees(value: number | null, currency: string) {
   }).format(value);
 }
 
-function priceSummary(item: Pick<UtilityRecord | ModeRecord, "currency" | "launchPrice" | "priceLabel" | "priceType">) {
+function priceSummary(
+  item: Pick<ConsultationDisplayUtility | ConsultationDisplayMode, "currency" | "launchPrice" | "priceLabel"> &
+    Partial<Pick<UtilityRecord, "priceType">>,
+) {
   if (item.priceLabel) {
     return item.priceLabel;
   }
@@ -86,13 +83,26 @@ function priceSummary(item: Pick<UtilityRecord | ModeRecord, "currency" | "launc
   return `${item.priceType === "FROM" ? "From " : ""}${formatRupees(item.launchPrice, item.currency)}`;
 }
 
+/**
+ * The single visitor-facing price. Approved `priceLabel` wins (e.g. "From ₹4,999"); otherwise
+ * the launch price is shown plainly (₹299). Returns null when the utility is priced by its
+ * modes or has no approved price, so the card renders nothing rather than "Not set".
+ */
+function publicPrice(
+  item: Pick<ConsultationDisplayUtility | ConsultationDisplayMode, "currency" | "launchPrice" | "priceLabel">,
+): string | null {
+  if (item.priceLabel?.trim()) return item.priceLabel.trim();
+  if (item.launchPrice == null) return null;
+  return formatRupees(item.launchPrice, item.currency);
+}
+
 function FlagList({
-  showPublicationState,
+  showInternalState,
   utility,
-}: Readonly<{ showPublicationState: boolean; utility: ConsultationDisplayUtility }>) {
+}: Readonly<{ showInternalState: boolean; utility: ConsultationDisplayUtility }>) {
   return (
     <ul aria-label={`${utility.name} states`} className="flex min-w-0 flex-wrap gap-2">
-      {utility.isPriority ? (
+      {showInternalState && utility.isPriority ? (
         <li>
           <PremiumStatusBadge status="LIVE">Priority</PremiumStatusBadge>
         </li>
@@ -110,7 +120,7 @@ function FlagList({
       <li>
         <PremiumStatusBadge status="NEUTRAL">{utility.availabilityStatus}</PremiumStatusBadge>
       </li>
-      {showPublicationState ? (
+      {showInternalState && utility.publicationState ? (
         <li>
           <PremiumStatusBadge status="NEUTRAL">{utility.publicationState}</PremiumStatusBadge>
         </li>
@@ -119,6 +129,7 @@ function FlagList({
   );
 }
 
+/** Admin-only internal pricing breakdown. Never rendered on the public surface. */
 function PriceRows({ utility }: Readonly<{ utility: ConsultationDisplayUtility }>) {
   return (
     <dl className="grid gap-3 text-sm">
@@ -137,7 +148,7 @@ function PriceRows({ utility }: Readonly<{ utility: ConsultationDisplayUtility }
       <div className="grid grid-cols-[7rem_minmax(0,1fr)] gap-3">
         <dt className="font-medium text-[color:var(--ui-color-text-muted)]">Regular</dt>
         <dd className="font-semibold text-[color:var(--ui-color-text-primary)]">
-          {formatRupees(utility.regularPrice, utility.currency)}
+          {formatRupees(utility.regularPrice ?? null, utility.currency)}
         </dd>
       </div>
       <div className="grid grid-cols-[7rem_minmax(0,1fr)] gap-3">
@@ -171,7 +182,7 @@ function ModeList({ utility }: Readonly<{ utility: ConsultationDisplayUtility }>
                 {mode.name}
               </p>
               <p className="mt-1 text-xs font-medium text-[color:var(--ui-color-text-muted)]">
-                {mode.priceType} - {priceSummary(mode)}
+                {publicPrice(mode) ?? priceSummary(mode)}
               </p>
             </div>
             {mode.travelExcluded ? (
@@ -191,15 +202,18 @@ function UtilityCard({
 }: Readonly<{ audience: "admin" | "public"; tierSlug: string; utility: ConsultationDisplayUtility }>) {
   const isAvailable = utility.availabilityStatus === "AVAILABLE";
   const showInternalState = audience === "admin";
+  const visitorPrice = publicPrice(utility);
 
   return (
     <Card
       className="flex min-h-full min-w-0 flex-col gap-4"
       data-consultation-utility={utility.slug}
-      tone={utility.isPriority ? "accent" : "muted"}
+      // Public cards are uniformly muted: the accent tone is derived from the internal
+      // priority flag and must not signal internal merchandising to visitors.
+      tone={showInternalState && utility.isPriority ? "accent" : "muted"}
     >
       <div className="space-y-3">
-        <FlagList showPublicationState={showInternalState} utility={utility} />
+        <FlagList showInternalState={showInternalState} utility={utility} />
         <h3 className="break-words text-base font-semibold leading-tight text-[color:var(--ui-color-text-primary)]">
           {utility.name}
         </h3>
@@ -209,7 +223,11 @@ function UtilityCard({
           </p>
         ) : null}
       </div>
-      <PriceRows utility={utility} />
+      {showInternalState ? (
+        <PriceRows utility={utility} />
+      ) : visitorPrice ? (
+        <p className="text-lg font-semibold text-[color:var(--ui-color-text-primary)]">{visitorPrice}</p>
+      ) : null}
       <ModeList utility={utility} />
       {isAvailable ? (
         <div className="mt-auto">
@@ -224,37 +242,44 @@ function UtilityCard({
   );
 }
 
+/**
+ * Map display tiers onto the client journey's props.
+ *
+ * Internal fields are spread in ONLY when present. Writing them unconditionally would put
+ * `"priceType":"$undefined"` style keys into the RSC flight payload — i.e. the internal field
+ * names would still ship inside public HTML even though nothing renders them.
+ */
 function toJourneyTiers(tiers: readonly ConsultationDisplayTier[]): ConsultationJourneyTier[] {
   return tiers.map((tier) => ({
     id: tier.id,
     slug: tier.slug,
     name: tier.name,
     availabilityStatus: tier.availabilityStatus,
-    publicationState: tier.publicationState,
+    ...(tier.publicationState === undefined ? {} : { publicationState: tier.publicationState }),
     utilities: tier.utilities.map((utility) => ({
       id: utility.id,
       slug: utility.slug,
       name: utility.name,
-      priceType: utility.priceType,
       currency: utility.currency,
       launchPrice: utility.launchPrice,
-      regularPrice: utility.regularPrice,
       priceLabel: utility.priceLabel,
       requiresScopeReview: utility.requiresScopeReview,
       travelExcluded: utility.travelExcluded,
-      isPriority: utility.isPriority,
       availabilityStatus: utility.availabilityStatus,
-      publicationState: utility.publicationState,
+      ...(utility.priceType === undefined ? {} : { priceType: utility.priceType }),
+      ...(utility.regularPrice === undefined ? {} : { regularPrice: utility.regularPrice }),
+      ...(utility.isPriority === undefined ? {} : { isPriority: utility.isPriority }),
+      ...(utility.publicationState === undefined ? {} : { publicationState: utility.publicationState }),
       modes: utility.modes.map((mode) => ({
         id: mode.id,
         slug: mode.slug,
         name: mode.name,
-        priceType: mode.priceType,
         currency: mode.currency,
         launchPrice: mode.launchPrice,
-        regularPrice: mode.regularPrice,
         priceLabel: mode.priceLabel,
         travelExcluded: mode.travelExcluded,
+        ...(mode.priceType === undefined ? {} : { priceType: mode.priceType }),
+        ...(mode.regularPrice === undefined ? {} : { regularPrice: mode.regularPrice }),
       })),
     })),
   }));

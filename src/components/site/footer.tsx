@@ -16,39 +16,11 @@ type FooterLink = {
   label: string;
 };
 
-type FooterColumn = {
-  title: string;
-  links: readonly FooterLink[];
-};
-
 function getFeatureRoute(featureKey: string) {
   return (
     featureStatusRegistry.find((feature) => feature.featureKey === featureKey)
       ?.route ?? "/"
   );
-}
-
-function buildFooterLink({
-  featureKey,
-  label,
-  localizeHref,
-}: {
-  featureKey: string;
-  label?: string;
-  localizeHref: (href: string) => string;
-}): FooterLink | null {
-  const feature = featureStatusRegistry.find(
-    (entry) => entry.featureKey === featureKey
-  );
-
-  if (!feature || feature.visibility !== "LIVE" || !feature.runtimeEnabled) {
-    return null;
-  }
-
-  return {
-    href: localizeHref(feature.route),
-    label: label ?? feature.label,
-  };
 }
 
 export async function Footer() {
@@ -60,37 +32,17 @@ export async function Footer() {
       forcePrefix: hasExplicitLocalePrefix || requestLocale !== defaultLocale,
     });
 
-  const guidanceLinks = [
-    buildFooterLink({ featureKey: "desk", localizeHref }),
-    buildFooterLink({ featureKey: "consult", localizeHref }),
-    buildFooterLink({ featureKey: "acharya", localizeHref }),
-    buildFooterLink({ featureKey: "learn", localizeHref }),
-  ].filter((link): link is FooterLink => Boolean(link));
-
-  const supportLinks = [
-    buildFooterLink({ featureKey: "support", localizeHref }),
-    buildFooterLink({ featureKey: "contact", localizeHref }),
-    buildFooterLink({ featureKey: "privacy", localizeHref }),
-    buildFooterLink({ featureKey: "terms", localizeHref }),
-    buildFooterLink({ featureKey: "disclaimer", localizeHref }),
-    buildFooterLink({ featureKey: "methodology", localizeHref }),
-    buildFooterLink({
-      featureKey: "refund-cancellation",
-      label: "Refund",
-      localizeHref,
-    }),
-  ].filter((link): link is FooterLink => Boolean(link));
-
-  const footerColumns: readonly FooterColumn[] = [
-    {
-      title: "Guidance",
-      links: guidanceLinks,
-    },
-    {
-      title: "Support",
-      links: supportLinks,
-    },
+  // FINAL LOCKED public footer set. Exactly five crawlable links.
+  // Copyright and disclaimer protections live inside Terms; Refund stays hidden until paid
+  // consultation is activated, so neither has a footer link.
+  const footerLinks: readonly FooterLink[] = [
+    { href: localizeHref("/support"), label: "Support" },
+    { href: localizeHref("/contact"), label: "Contact" },
+    { href: localizeHref("/privacy"), label: "Privacy" },
+    { href: localizeHref("/terms"), label: "Terms" },
+    { href: localizeHref("/methodology"), label: "Method" },
   ];
+
   const homeHref = localizeHref(getFeatureRoute("home"));
 
   return (
@@ -116,53 +68,28 @@ export async function Footer() {
             </Link>
           </div>
 
-          <div className="grid min-w-0 gap-3 sm:grid-cols-2 xl:gap-4">
-            {footerColumns.map((column) => (
-              <div
-                key={column.title}
-                className="rounded-[var(--radius-lg)] border border-[rgba(185,139,70,0.18)] bg-white p-3 shadow-[0_6px_14px_rgba(5,5,5,0.03)]"
-              >
-                <h2 className="text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-accent-gold-dark)]">
-                  {column.title}
-                </h2>
-                <ul className="mt-2.5 flex flex-wrap gap-x-4 gap-y-2">
-                  {column.links.map((link) => (
-                    <li key={`${column.title}-${link.href}-${link.label}`}>
-                      <Link
-                        href={link.href}
-                        className="mobile-safe-text inline-flex min-h-11 min-w-11 max-w-full items-center rounded-sm text-[length:var(--font-size-body-sm)] font-medium text-[color:var(--color-text-primary)] transition [transition-duration:var(--motion-duration-base)] hover:text-[color:var(--color-accent-gold-dark)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
-                      >
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
+          <nav aria-label="Footer" className="min-w-0">
+            <ul className="flex flex-wrap gap-x-5 gap-y-2">
+              {footerLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="mobile-safe-text inline-flex min-h-11 items-center rounded-sm text-[length:var(--font-size-body-sm)] font-medium text-[color:var(--color-text-primary)] transition [transition-duration:var(--motion-duration-base)] hover:text-[color:var(--color-accent-gold-dark)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
         </div>
 
         <div className="rounded-[var(--radius-lg)] border border-[rgba(185,139,70,0.22)] bg-white px-4 py-3 text-[0.72rem] font-semibold tracking-[0.04em] text-[color:var(--color-text-primary)] shadow-[0_6px_14px_rgba(5,5,5,0.03)]">
-          <p>
-            {brand.footer.copyright ? (
-              <span>{brand.footer.copyright}</span>
-            ) : (
-              <>&copy; {new Date().getFullYear()}</>
-            )}
-          </p>
+          {/* Exact locked copyright line. */}
+          <p>&copy; 2026 NAVAGRAHA CENTRE. All rights reserved.</p>
           {brand.footer.addressLine ? (
             <p className="mt-1 font-medium text-[color:var(--color-text-secondary)]">
               {brand.footer.addressLine}
-            </p>
-          ) : null}
-          {brand.footer.note ? (
-            <p className="mt-1 font-medium text-[color:var(--color-text-secondary)]">
-              {brand.footer.note}
-            </p>
-          ) : null}
-          {brand.disclaimer ? (
-            <p className="mt-1 font-medium text-[color:var(--color-text-secondary)]">
-              {brand.disclaimer}
             </p>
           ) : null}
         </div>
