@@ -86,31 +86,23 @@ export async function Header() {
         label: feature.label,
       }));
 
+  // Drawer navigation is scoped to the live MVP: the three primary destinations,
+  // then supporting guidance. Policy pages (Disclaimer, Refund, Copyright) stay in
+  // the footer so the drawer does not become a crowded sitemap, and Admin/Founder
+  // surfaces are never listed here.
   const drawerGroups: readonly SiteDrawerGroup[] = [
     {
       title: "MAIN",
-      items: getDrawerItems(
-        ["home", "desk", "consult", "acharya"],
-        localizeHref
-      ),
+      variant: "primary",
+      items: getDrawerItems(["home", "desk", "consult"], localizeHref),
     },
     {
-      title: "DISCOVER",
+      title: "GUIDANCE & INFORMATION",
+      variant: "compact",
       items: getDrawerItems(
-        ["search", "methodology"],
+        ["acharya", "methodology", "support", "contact"],
         localizeHref,
-        { methodology: "Methodology" }
-      ),
-    },
-    {
-      title: "SUPPORT",
-      items: getDrawerItems(["support", "contact"], localizeHref),
-    },
-    {
-      title: "LEGAL",
-      items: getDrawerItems(
-        ["privacy", "terms", "disclaimer", "refund-cancellation"],
-        localizeHref
+        { methodology: "Method" }
       ),
     },
   ];

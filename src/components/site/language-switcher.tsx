@@ -24,6 +24,17 @@ type LanguageSwitcherProps = {
 
 const visibleLanguageCodes = ["en", "as", "hi"] as const;
 
+/** Spoken names for the two-letter pills, so the codes are not read as letters. */
+const languageAccessibleNames: Readonly<Record<string, string>> = {
+  en: "English",
+  as: "Assamese",
+  hi: "Hindi",
+};
+
+function getAccessibleLanguageName(locale: string) {
+  return languageAccessibleNames[locale] ?? locale.toUpperCase();
+}
+
 function getVisibleLocales() {
   return visibleLanguageCodes.map((locale) => getLocaleRouteDescriptor(locale));
 }
@@ -159,10 +170,11 @@ function LanguageSwitcherInline({
           <span
             key={locale.code}
             aria-current="true"
+            aria-label={`${getAccessibleLanguageName(locale.code)} (selected)`}
             className={buttonStyles({
               tone: "secondary",
               size: "sm",
-              className: "cursor-default px-3",
+              className: "min-h-11 cursor-default px-3",
             })}
             dir={locale.dir}
             lang={locale.code}
@@ -173,11 +185,12 @@ function LanguageSwitcherInline({
           <Link
             key={locale.code}
             href={targetPathResolver(locale.code)}
+            aria-label={getAccessibleLanguageName(locale.code)}
             className={buttonStyles({
               tone: "ghost",
               size: "sm",
               className:
-                "border border-[rgba(185,139,70,0.22)] bg-white px-3 text-[color:var(--color-ink-strong)] hover:border-[rgba(185,139,70,0.38)]",
+                "min-h-11 border border-[rgba(185,139,70,0.22)] bg-white px-3 text-[color:var(--color-ink-strong)] hover:border-[rgba(185,139,70,0.38)]",
             })}
             dir={locale.dir}
             lang={locale.code}

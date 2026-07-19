@@ -9,6 +9,7 @@ import {
   PremiumSectionHeading,
   PremiumStatusBadge,
 } from "@/components/ui/premium";
+import { COMMERCIAL_MESSAGE } from "@/config/commercial-message";
 import { createToolMetadata } from "@/lib/seo/metadata";
 import {
   createBreadcrumbSchema,
@@ -38,7 +39,7 @@ import {
 import type { PublicTier } from "@/modules/site-settings/public-catalogue-core";
 
 /** Approved visitor-facing Consultation commercial statement — shown exactly once. */
-const CONSULTATION_COMMERCIAL_LINE = "One-time case fee. No Clock Running.";
+const CONSULTATION_COMMERCIAL_LINE = COMMERCIAL_MESSAGE;
 
 const consultationLanguageLabels: Readonly<Record<string, string>> = {
   en: "English",
