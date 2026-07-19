@@ -83,13 +83,12 @@ const staticRoutes: readonly StaticRouteDefinition[] = [
   { path: "/consultation", changeFrequency: "weekly", priority: 0.9 },
   { path: "/joy-prakash-sarmah", changeFrequency: "monthly", priority: 0.82 },
   { path: "/from-the-desk", changeFrequency: "daily", priority: 0.8 },
+  // Public footer label is "Method"; /methodology stays the canonical path.
   { path: "/methodology", changeFrequency: "monthly", priority: 0.6 },
   { path: "/support", changeFrequency: "monthly", priority: 0.6 },
   { path: "/contact", changeFrequency: "monthly", priority: 0.6 },
   { path: "/privacy", changeFrequency: "yearly", priority: 0.4 },
   { path: "/terms", changeFrequency: "yearly", priority: 0.4 },
-  { path: "/disclaimer", changeFrequency: "yearly", priority: 0.4 },
-  { path: "/refund", changeFrequency: "yearly", priority: 0.4 },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

@@ -86,6 +86,17 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
     ],
   },
+  async redirects() {
+    // Legacy policy routes consolidate into the final locked set. Permanent (308) so search
+    // engines transfer any existing link equity instead of indexing duplicate policy pages.
+    return [
+      // Disclaimer protection now lives inside Terms.
+      { source: "/disclaimer", destination: "/terms", permanent: true },
+      { source: "/copyright", destination: "/terms", permanent: true },
+      // Public footer label is "Method"; /methodology remains the canonical page.
+      { source: "/method", destination: "/methodology", permanent: true },
+    ];
+  },
   async headers() {
     const productionHeaders = [
       ...securityHeaders,

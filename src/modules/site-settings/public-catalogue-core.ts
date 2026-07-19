@@ -10,19 +10,20 @@
 // English-only (C10A language lock): the DTO carries `locale: "en"` and no localized fields.
 // No CTA labels, no raw WhatsApp number, no Admin metadata, no intake — read-only.
 import { availabilityLabel, type PublicSettingsLocale } from "@/modules/site-settings/public-settings-core";
-import type {
-  ConsultationPriceType,
-  CatalogueAvailability,
-} from "@/modules/admin/consultation-catalogue/domain";
+import type { CatalogueAvailability } from "@/modules/admin/consultation-catalogue/domain";
 import type { TierWithUtilities, UtilityRecord, ModeRecord } from "@/modules/admin/consultation-catalogue/types";
 
 // --- Public shapes (allow-listed) -------------------------------------------
+/**
+ * Visitor-facing pricing only. `priceType` (FIXED/FROM), `regularPrice` and `isPriority` are
+ * internal catalogue/merchandising fields: they are deliberately NOT part of the public DTO,
+ * so they can never reach rendered HTML or the RSC payload. Any "From ..." wording a visitor
+ * should see is carried by the approved `priceLabel` instead.
+ */
 export type PublicPrice = {
-  priceType: ConsultationPriceType;
   currency: string;
   /** Whole rupees, or null when not approved / priced by modes. Never invented. */
   launchPrice: number | null;
-  regularPrice: number | null;
   priceLabel: string | null;
 };
 
@@ -49,7 +50,6 @@ export type PublicUtility = PublicPrice & {
   responseDescription: string | null;
   requiresScopeReview: boolean;
   travelExcluded: boolean;
-  isPriority: boolean;
   hasModes: boolean;
   availability: PublicAvailability;
   modes: PublicMode[];
@@ -94,10 +94,8 @@ function projectMode(mode: ModeRecord): PublicMode {
     slug: mode.slug,
     name: mode.name,
     shortDescription: mode.shortDescription,
-    priceType: mode.priceType,
     currency: mode.currency,
     launchPrice: mode.launchPrice,
-    regularPrice: mode.regularPrice,
     priceLabel: mode.priceLabel,
     travelExcluded: mode.travelExcluded,
   };
@@ -113,14 +111,11 @@ function projectUtility(utility: UtilityRecord): PublicUtility {
     includedItems: [...utility.includedItems],
     excludedItems: [...utility.excludedItems],
     responseDescription: utility.responseDescription,
-    priceType: utility.priceType,
     currency: utility.currency,
     launchPrice: utility.launchPrice,
-    regularPrice: utility.regularPrice,
     priceLabel: utility.priceLabel,
     requiresScopeReview: utility.requiresScopeReview,
     travelExcluded: utility.travelExcluded,
-    isPriority: utility.isPriority,
     hasModes: utility.hasModes,
     availability: toAvailability(utility.availabilityStatus),
     // Defensive: only active modes are ever public.

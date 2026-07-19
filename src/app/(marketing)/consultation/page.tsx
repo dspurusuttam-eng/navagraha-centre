@@ -37,6 +37,9 @@ import {
 } from "@/modules/consultations/components/consultation-catalogue-display";
 import type { PublicTier } from "@/modules/site-settings/public-catalogue-core";
 
+/** Approved visitor-facing Consultation commercial statement — shown exactly once. */
+const CONSULTATION_COMMERCIAL_LINE = "One-time case fee. No Clock Running.";
+
 const consultationLanguageLabels: Readonly<Record<string, string>> = {
   en: "English",
   as: "Assamese",
@@ -53,30 +56,26 @@ function toConsultationDisplayTiers(tiers: readonly PublicTier[]): ConsultationD
     slug: tier.slug,
     name: tier.name,
     availabilityStatus: tier.availability.status,
-    publicationState: "PUBLISHED",
+    // Internal merchandising fields (priceType / regularPrice / isPriority / publicationState)
+    // are intentionally NOT mapped: the public catalogue DTO no longer carries them, so they
+    // cannot reach the client journey component, the RSC payload or the rendered HTML.
     utilities: tier.utilities.map((utility) => ({
       id: utility.slug,
       slug: utility.slug,
       name: utility.name,
-      priceType: utility.priceType,
       currency: utility.currency,
       launchPrice: utility.launchPrice,
-      regularPrice: utility.regularPrice,
       priceLabel: utility.priceLabel,
       requiresScopeReview: utility.requiresScopeReview,
       travelExcluded: utility.travelExcluded,
-      isPriority: utility.isPriority,
       availabilityStatus: utility.availability.status,
-      publicationState: "PUBLISHED",
       modes: utility.modes.map((mode) => ({
         id: `${utility.slug}:${mode.slug}`,
         slug: mode.slug,
         name: mode.name,
         shortDescription: mode.shortDescription,
-        priceType: mode.priceType,
         currency: mode.currency,
         launchPrice: mode.launchPrice,
-        regularPrice: mode.regularPrice,
         priceLabel: mode.priceLabel,
         travelExcluded: mode.travelExcluded,
       })),
@@ -175,11 +174,12 @@ export default async function ConsultationPage() {
             <h1 className="mt-4 font-[family-name:var(--font-family-editorial)] text-[length:var(--font-size-title-lg)] leading-[var(--line-height-heading)] text-[color:var(--ui-color-text-primary)]">
               Consultation
             </h1>
-            {consultation.shortDescription ? (
-              <p className="mt-4 max-w-2xl whitespace-pre-line text-base font-semibold leading-7 text-[color:var(--ui-color-text-primary)]">
-                {consultation.shortDescription}
-              </p>
-            ) : null}
+            {/* Task 2: the single approved Consultation commercial statement. Fixed copy —
+                deliberately not the Admin shortDescription, whose multi-line variants were
+                duplicating this message across the page. */}
+            <p className="mt-4 max-w-2xl text-base font-semibold leading-7 text-[color:var(--ui-color-text-primary)]">
+              {CONSULTATION_COMMERCIAL_LINE}
+            </p>
             <p className="mt-3 max-w-2xl text-sm font-medium leading-6 text-[color:var(--ui-color-text-secondary)]">
               {availabilityNote(consultation.availability)}
             </p>

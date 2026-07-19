@@ -120,8 +120,24 @@ const groups: Group[] = [
     run: () => {
       const u = utility({ priceType: "FROM", launchPrice: 4999, regularPrice: null, priceLabel: "From ₹4,999", requiresScopeReview: true, hasModes: false, modes: [] });
       const p = toPublicCatalogue([tier({ utilities: [u] })], { globalAvailability: "AVAILABLE", whatsappBaseUrl: null }).tiers[0]!.utilities[0]!;
-      assert(p.priceType === "FROM" && p.launchPrice === 4999 && p.regularPrice === null, "FROM ₹4999, regular null");
-      assert(p.priceLabel === "From ₹4,999" && p.requiresScopeReview === true, "label + scope-review exposed");
+      // Visitor-facing pricing only: the approved label carries any "From ..." wording.
+      assert(p.launchPrice === 4999 && p.priceLabel === "From ₹4,999", "launch price + approved label");
+      assert(p.requiresScopeReview === true, "scope-review flag drives the CTA");
+      // Internal merchandising fields must NOT be part of the public DTO at all.
+      const keys = Object.keys(p);
+      for (const internal of ["priceType", "regularPrice", "isPriority", "publicationState"]) {
+        assert(!keys.includes(internal), `public utility DTO omits ${internal}`);
+      }
+      const modeKeys = Object.keys(
+        toPublicCatalogue([tier()], { globalAvailability: "AVAILABLE", whatsappBaseUrl: null }).tiers[0]!.utilities[0]!.modes[0]!,
+      );
+      for (const internal of ["priceType", "regularPrice"]) {
+        assert(!modeKeys.includes(internal), `public mode DTO omits ${internal}`);
+      }
+      const json = JSON.stringify(toPublicCatalogue([tier({ utilities: [u] })], { globalAvailability: "AVAILABLE", whatsappBaseUrl: null }));
+      for (const token of ["\"FIXED\"", "\"FROM\"", "Not set", "priceType", "regularPrice", "isPriority"]) {
+        assert(!json.includes(token), `public payload has no ${token}`);
+      }
     },
   },
   {

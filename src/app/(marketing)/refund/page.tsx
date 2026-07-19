@@ -1,7 +1,11 @@
 import { buildPageMetadata } from "@/lib/metadata";
 import { LegalPage, type LegalSection } from "../legal-page";
 
+// Hidden until paid consultation and payment processing are officially activated: the route
+// is blocked by product-mode, excluded from the sitemap and never linked publicly. This
+// noindex is the final belt-and-braces so it can never be indexed if it is ever reachable.
 export const metadata = buildPageMetadata({
+  index: false,
   title: "Refund and Cancellation",
   description:
     "Refund and cancellation policy guidance for NAVAGRAHA CENTRE consultation access and support review.",

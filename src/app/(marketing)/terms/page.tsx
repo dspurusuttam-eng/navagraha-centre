@@ -1,60 +1,41 @@
 import { buildPageMetadata } from "@/lib/metadata";
-import { LegalPage, type LegalSection } from "../legal-page";
+import { publicContactEmail } from "@/config/public-contact";
+import { LegalPage } from "../legal-page";
 
 export const metadata = buildPageMetadata({
-  title: "Terms Of Use",
+  title: "Terms of Use",
   description:
-    "Public usage terms for NAVAGRAHA CENTRE covering account ownership, guidance boundaries, and platform use.",
+    "Terms of use for NAVAGRAHA CENTRE, including copyright protection, responsible use, and the limits of astrological guidance.",
   path: "/terms",
-  keywords: ["terms of use", "astrology platform terms", "service policy"],
+  keywords: ["terms of use", "copyright", "disclaimer", "responsible use"],
 });
 
-const termsSections = [
-  {
-    title: "Service Scope",
-    points: [
-      "The platform provides chart tools, guidance surfaces, reports, and consultation pathways where available.",
-      "Content is informational and reflective in nature.",
-      "Consultation remains the human-guided path for personal context.",
-    ],
-  },
-  {
-    title: "Account Responsibility",
-    points: [
-      "Users are responsible for secure login usage.",
-      "Users are responsible for accurate profile inputs.",
-      "Users should maintain control of their account credentials.",
-    ],
-  },
-  {
-    title: "Payment And Access",
-    points: [
-      "Premium access is controlled server-side by verified payment and subscription state where paid access is active.",
-      "Unauthorized bypass attempts are not permitted.",
-      "Refund and cancellation details are listed on the refund policy page.",
-    ],
-  },
-  {
-    title: "Operational Limits",
-    points: [
-      "Service continuity can depend on hosting, email, AI, and payment infrastructure.",
-      "Safe fallback behavior is applied when dependencies fail.",
-      "Unavailable states should not be treated as completed guidance.",
-    ],
-  },
-] as const satisfies readonly LegalSection[];
+/**
+ * Approved terms copy — locked source content.
+ * This page carries the copyright protection, responsible-use conditions, disclaimer
+ * protection, professional-advice limitation and user-responsibility statement, so no separate
+ * public Copyright or Disclaimer page exists.
+ */
+const termsParagraphs = [
+  "By using NAVAGRAHA CENTRE, you agree to use the website and app lawfully and responsibly.",
+  "Desk content is provided for general learning, awareness and spiritual guidance. Personalised guidance is available only through the Consultation section.",
+  "You may not copy, republish, translate, scrape, sell, commercially use or reproduce our articles, handwritten content, images, graphics, icons, design, software, reports or other original materials without permission.",
+  "You must not misuse the platform, attempt unauthorised access, impersonate others or submit abusive, false or unlawful information.",
+  "Astrological guidance is interpretative and should not replace qualified medical, legal, financial or psychological advice. Important decisions remain the responsibility of the user.",
+  "Temporary errors, interruptions or updates may occur.",
+  "NAVAGRAHA CENTRE may restrict access where misuse, fraud or violation of these terms is detected.",
+  `For questions or copyright concerns, contact: ${publicContactEmail}`,
+] as const;
 
 export default function TermsPage() {
   return (
     <LegalPage
-      description="These terms define how NAVAGRAHA CENTRE services are delivered and how account safety is maintained."
-      effectiveDate="Effective July 13, 2026"
+      description="Lawful and responsible use, copyright protection, and the limits of astrological guidance."
+      effectiveDate="Effective 2026"
       pagePath="/terms"
       pageTrackerFeature="terms-page"
-      primaryAction={{ href: "/privacy", label: "Privacy" }}
-      secondaryAction={{ href: "/refund", label: "Refund" }}
-      sections={termsSections}
-      title="Terms Of Use"
+      paragraphs={termsParagraphs}
+      title="Terms of Use"
     />
   );
 }
