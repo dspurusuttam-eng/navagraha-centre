@@ -227,7 +227,13 @@ export function SiteDrawer({
               </button>
             </div>
 
-            <nav aria-label="Site navigation" className="grid gap-5 py-5">
+            {/* Bottom padding must clear the fixed mobile action dock (z-50, xl:hidden) so the
+                last drawer sections (Language, Account) stay reachable; same clearance
+                convention as the footer. */}
+            <nav
+              aria-label="Site navigation"
+              className="grid gap-5 py-5 pb-[calc(7rem+env(safe-area-inset-bottom))] xl:pb-5"
+            >
               {groups.map((group) => (
                 <section key={group.title} className="grid gap-2">
                   <h2 className="px-1 text-[0.64rem] font-bold uppercase tracking-[var(--tracking-label)] text-[var(--color-antique-gold-dark)]">
