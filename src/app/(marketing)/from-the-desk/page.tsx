@@ -255,6 +255,11 @@ export default async function FromTheDeskPage({
                 <PremiumArticleCard
                   key={`${entry.locale ?? defaultLocale}-${entry.slug}`}
                   category={entry.category}
+                  coverImage={
+                    entry.featuredImage
+                      ? { src: entry.featuredImage.src, alt: entry.featuredImage.alt }
+                      : null
+                  }
                   date={formatDeskDate(entry.publishedAt)}
                   href={localizeHref(entry.path)}
                   title={entry.title}

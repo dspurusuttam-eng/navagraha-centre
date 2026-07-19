@@ -201,7 +201,15 @@ const groups: Group[] = [
       assert(src.includes("<img") && src.includes("option.url"), "thumbnails");
       assert(src.includes("option.filename") && src.includes("option.altText"), "filename + alt text shown");
       assert(src.includes("aria-pressed={isSelected}") && src.includes("Selected"), "selected state exposed");
-      assert(src.includes("Select image") && src.includes("Replace image") && src.includes("Clear"), "select / replace / clear");
+      // Upload-first vocabulary: device upload is primary, the library is the secondary path,
+      // and the clear control is now "Remove image".
+      assert(
+        src.includes("Upload cover image") &&
+          src.includes("Select from library") &&
+          src.includes("Choose from library") &&
+          src.includes("Remove image"),
+        "upload / library select / remove",
+      );
       assert(src.includes('commit("")'), "clear resets the reference");
       assert(src.includes("Missing asset reference"), "deleted reference surfaced");
       assert(src.includes("No image assets available"), "empty library state");

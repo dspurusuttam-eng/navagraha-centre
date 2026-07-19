@@ -80,6 +80,11 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 60 * 60 * 24 * 7,
+    // Desk cover images live in Vercel Blob public storage; the optimizer needs the host
+    // allow-listed. Scoped to blob storage only — not a wildcard over the whole internet.
+    remotePatterns: [
+      { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
+    ],
   },
   async headers() {
     const productionHeaders = [
