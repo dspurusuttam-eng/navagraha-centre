@@ -15,7 +15,7 @@ import {
 } from "@/config/feature-status-registry";
 import { resolveHeroTaglines } from "@/config/commercial-message";
 import { createPageMetadata } from "@/lib/seo/metadata";
-import { getContentAdapter } from "@/modules/content";
+import { getDeskContentAdapter } from "@/modules/content/desk-article-adapter";
 // Hero tagline comes from the Admin-approved consultation settings (static fallback when unset).
 import { getPublicConsultationSettings } from "@/modules/site-settings/public-settings";
 import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
@@ -51,22 +51,10 @@ export const revalidate = 3600;
 
 const primaryFeatureKeys = ["consult", "desk"] as const;
 const secondaryFeatureKeys = ["acharya", "methodology", "support", "contact"] as const;
-const hiddenHomeContentTerms = [
-  "Ask NI",
-  "Dasha",
-  "Gemstone",
-  "Gochar",
-  "Horoscope",
-  "Kundli",
-  "Muhurat",
-  "Numerology",
-  "Panchang",
-  "Rashifal",
-  "Remedies",
-  "Reports",
-  "Shop",
-  "Tools",
-] as const;
+// The former hidden-terms filter existed to keep locked astrology-utility DEMO
+// entries (from the static catalog) off the home page. The rail now reads the
+// Admin-managed Desk articles — real editorial content that must never be
+// filtered by keyword (it would hide the daily Rashifal) — so the filter is gone.
 
 const monthLabels = [
   "Jan",
@@ -110,17 +98,6 @@ function formatDeskDate(value: string) {
   return `${day} ${monthLabels[month - 1]} ${year}`;
 }
 
-function isHomeSafeDeskEntry(entry: {
-  category: string;
-  title: string;
-}) {
-  const candidate = `${entry.title} ${entry.category}`.toLowerCase();
-
-  return !hiddenHomeContentTerms.some((term) =>
-    candidate.includes(term.toLowerCase())
-  );
-}
-
 export default async function HomePage() {
   const locale = await getRequestLocale();
   const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
@@ -129,14 +106,22 @@ export default async function HomePage() {
       forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
     });
 
-  const contentAdapter = getContentAdapter();
+  // Latest Desk reads the SAME authoritative source as /from-the-desk — the
+  // Admin-managed Article model — never the static demo catalog. Strictly
+  // newest-first by real publication time (the Desk listing's displayOrder
+  // curation is deliberate there but wrong for a "latest" rail), capped at 5,
+  // never padded: two published articles render two cards.
   const [latestDeskEntriesRaw, consultationSettings] = await Promise.all([
-    contentAdapter.listPublishedEntriesByLocale(locale),
+    getDeskContentAdapter().listPublishedEntriesByLocale(locale),
     getPublicConsultationSettings(),
   ]);
-  const latestDeskEntries = latestDeskEntriesRaw
-    .filter(isHomeSafeDeskEntry)
-    .slice(0, 4);
+  const latestDeskEntries = [...latestDeskEntriesRaw]
+    .sort(
+      (a, b) =>
+        new Date(b.publishedAt ?? 0).getTime() -
+        new Date(a.publishedAt ?? 0).getTime()
+    )
+    .slice(0, 5);
   // The locked commercial sentence leads the hero; retired variants authored in
   // the admin short description are filtered out so they cannot resurface.
   const heroTaglines = resolveHeroTaglines(consultationSettings.shortDescription);
