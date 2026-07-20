@@ -10,5 +10,17 @@
         "F8:DD:3F:D2:CE:22:53:0B:C8:72:4E:CA:ED:5A:3A:C4:FB:05:8E:08:BB:54:29:C1:BF:2E:9E:83:89:43:6C:66"
       ]
     }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.navagrahacentre.admin",
+      "sha256_cert_fingerprints": [
+        "D9:EC:92:A2:4D:79:25:33:71:0C:8C:D8:61:CE:D9:3A:AF:42:C3:AA:7C:95:38:6F:D8:07:A2:1D:80:F6:E2:34"
+      ]
+    }
   }
 ]
