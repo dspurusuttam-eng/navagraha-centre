@@ -107,12 +107,14 @@ export default async function HomePage() {
     });
 
   // Latest Desk reads the SAME authoritative source as /from-the-desk — the
-  // Admin-managed Article model — never the static demo catalog. Strictly
-  // newest-first by real publication time (the Desk listing's displayOrder
-  // curation is deliberate there but wrong for a "latest" rail), capped at 5,
-  // never padded: two published articles render two cards.
+  // Admin-managed Article model — never the static demo catalog. The rail spans
+  // ALL public locales: the Desk is authored as single trilingual articles
+  // (often stored under one language), so filtering by the visitor's locale
+  // leaves e.g. the English home empty while real content exists. Article
+  // links resolve by slug in any locale. Strictly newest-first by real
+  // publication time, capped at 5, never padded.
   const [latestDeskEntriesRaw, consultationSettings] = await Promise.all([
-    getDeskContentAdapter().listPublishedEntriesByLocale(locale),
+    getDeskContentAdapter().listPublishedEntries(),
     getPublicConsultationSettings(),
   ]);
   const latestDeskEntries = [...latestDeskEntriesRaw]
