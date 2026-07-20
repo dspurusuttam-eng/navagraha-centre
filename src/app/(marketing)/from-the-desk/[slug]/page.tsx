@@ -20,6 +20,7 @@ import {
 // C8A: the Desk reads Admin-managed Articles; other surfaces keep the static catalog.
 import { getDeskContentAdapter } from "@/modules/content/desk-article-adapter";
 import type { ContentEntry } from "@/modules/content/types";
+import { ArticleShareBar } from "@/modules/content/components/article-share-bar";
 import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
 import {
   getRequestLocale,
@@ -57,26 +58,6 @@ function formatDate(value: string) {
   }
 
   return `${day} ${monthLabels[month - 1]} ${year}`;
-}
-
-function buildShareLinks(currentUrl: string, title: string) {
-  const encodedUrl = encodeURIComponent(currentUrl);
-  const encodedTitle = encodeURIComponent(title);
-
-  return [
-    {
-      label: "X",
-      href: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`,
-    },
-    {
-      label: "Facebook",
-      href: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
-    },
-    {
-      label: "LinkedIn",
-      href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
-    },
-  ] as const;
 }
 
 function toRelatedEntries(
@@ -199,7 +180,6 @@ export default async function DeskArticleDetailPage({
     explicitLocalePrefix: hasExplicitLocalePrefix,
   });
   const publicUrl = `${seoConfig.siteUrl}${localizeHref(entry.path)}`;
-  const shareLinks = buildShareLinks(publicUrl, entry.title);
 
   return (
     <>
@@ -339,19 +319,12 @@ export default async function DeskArticleDetailPage({
 
               <Card className="space-y-3" tone="muted">
                 <PremiumSectionHeading label="Share" />
-                <div className="flex flex-wrap gap-2">
-                  {shareLinks.map((link) => (
-                    <a
-                      className="inline-flex min-h-10 items-center rounded-[var(--ui-radius-pill)] border border-[color:var(--ui-color-border-gold)] bg-white px-4 text-sm font-semibold text-[color:var(--ui-color-text-primary)] shadow-[var(--ui-shadow-sm)] transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ui-color-focus)]"
-                      href={link.href}
-                      key={link.href}
-                      rel="noreferrer"
-                      target="_blank"
-                    >
-                      {link.label}
-                    </a>
-                  ))}
-                </div>
+                <ArticleShareBar
+                  locale={locale}
+                  route={entry.path}
+                  title={entry.title}
+                  url={publicUrl}
+                />
               </Card>
             </aside>
           </div>

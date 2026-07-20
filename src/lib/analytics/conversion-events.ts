@@ -101,6 +101,11 @@ export function trackConsultationBookClick(context: SafeConversionContext) {
   emit("consultation_book_click", context);
 }
 
+/** Anonymous share-channel event: `source` carries the channel (native/whatsapp/copy/x/facebook/linkedin). */
+export function trackArticleShare(context: SafeConversionContext) {
+  emit("desk_article_share", context);
+}
+
 export function trackLanguageSwitch(context: SafeConversionContext) {
   emit("language_switch", context);
 }
