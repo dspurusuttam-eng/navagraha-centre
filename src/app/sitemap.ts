@@ -1,6 +1,6 @@
 ﻿import type { MetadataRoute } from "next";
 import { siteConfig } from "@/config/site";
-import { getContentAdapter } from "@/modules/content";
+import { getDeskContentAdapter } from "@/modules/content/desk-article-adapter";
 import {
   defaultLocale,
   getLiveLocales,
@@ -109,7 +109,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entries.push(...buildLocalizedStaticEntries(route, now));
   }
 
-  const contentAdapter = getContentAdapter();
+  // Article URLs come from the SAME authoritative source as the public Desk
+  // pages (Admin-managed articles), never the static demo catalog — otherwise
+  // the sitemap advertises retired demo URLs and omits real publications.
+  const contentAdapter = getDeskContentAdapter();
   const publishedEntries = await contentAdapter.listPublishedEntries();
   const groupedByTranslation = publishedEntries.reduce<
     Map<string, typeof publishedEntries>
