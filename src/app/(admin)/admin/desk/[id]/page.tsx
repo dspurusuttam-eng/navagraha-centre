@@ -11,6 +11,7 @@ import { getMediaPickerOptions } from "@/modules/admin/media/picker-options";
 import { inspectDeskBody } from "@/modules/desk-sidecar/sidecar";
 import { SIDECAR_MALFORMED_MESSAGE } from "@/modules/admin/desk/sidecar-notice";
 import { hasAdminAccess } from "@/modules/admin/permissions";
+import { getPrisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
   title: "Edit Article — Admin Console",
@@ -23,10 +24,14 @@ export default async function DeskEditArticlePage({
   params,
 }: Readonly<{ params: Promise<{ id: string }> }>) {
   const { id } = await params;
-  const [result, session, mediaOptions] = await Promise.all([
+  const [result, session, mediaOptions, likeCount] = await Promise.all([
     getArticle(getAdminArticleDeps(), id),
     getAdminPageSessionOrNull(),
     getMediaPickerOptions(),
+    // Founder-facing engagement: anonymous public likes for this article.
+    getPrisma()
+      .articleLike.count({ where: { articleId: id } })
+      .catch(() => null),
   ]);
   const roleKeys = session?.adminRoles.map((role) => role.key) ?? [];
   const canWrite = hasAdminAccess(session?.adminRoles ?? [], ["founder", "editor"]);
@@ -49,7 +54,13 @@ export default async function DeskEditArticlePage({
     inspectDeskBody(result.data.body).state === "malformed" ? SIDECAR_MALFORMED_MESSAGE : null;
 
   return (
-    <ArticleForm
+    <>
+      {likeCount !== null ? (
+        <p className="mx-auto mb-3 max-w-3xl text-sm font-medium text-neutral-600">
+          Reader likes: <span className="font-semibold text-neutral-900">{likeCount}</span>
+        </p>
+      ) : null}
+      <ArticleForm
       mode="edit"
       action={updateArticleAction.bind(null, id)}
       initial={articleToFormValues(result.data)}
@@ -65,6 +76,7 @@ export default async function DeskEditArticlePage({
         transition: runArticleTransition,
         remove: deleteArticlePermanently,
       }}
-    />
+      />
+    </>
   );
 }

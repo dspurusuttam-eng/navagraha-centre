@@ -21,6 +21,7 @@ import {
 import { getDeskContentAdapter } from "@/modules/content/desk-article-adapter";
 import type { ContentEntry } from "@/modules/content/types";
 import { ArticleShareBar } from "@/modules/content/components/article-share-bar";
+import { ArticleLikeButton } from "@/modules/content/components/article-like-button";
 import { defaultLocale, getLocalizedPath } from "@/modules/localization/config";
 import {
   getRequestLocale,
@@ -319,6 +320,9 @@ export default async function DeskArticleDetailPage({
 
               <Card className="space-y-3" tone="muted">
                 <PremiumSectionHeading label="Share" />
+                <div className="flex flex-wrap items-center gap-2">
+                  <ArticleLikeButton slug={entry.slug} />
+                </div>
                 <ArticleShareBar
                   locale={locale}
                   route={entry.path}
