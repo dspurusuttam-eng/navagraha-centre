@@ -45,6 +45,7 @@ export const trackedEventNames = [
   "continue_ai_click",
   "consultation_followup_click",
   "from_the_desk_read",
+  "desk_article_share",
   "tools_hub_view",
   "utility_card_click",
   "numerology_tool_click",
