@@ -11,16 +11,13 @@ import {
 import {
   defaultLocale,
   detectLocaleFromPathname,
-  getLocalizedPath,
   isLocaleSelectable,
-  localePrefixingEnabled,
   stripLocaleFromPathname,
 } from "@/modules/localization/config";
 import {
   localeCookieName,
   localeExplicitHeaderName,
   localeHeaderName,
-  resolveRequestLocaleFromSources,
 } from "@/modules/localization/runtime";
 
 function isStaticAsset(pathname: string) {
@@ -36,10 +33,6 @@ function shouldBypass(pathname: string) {
     pathname.startsWith("/ads.txt") ||
     isStaticAsset(pathname)
   );
-}
-
-function shouldUseDefaultLocaleForUnprefixedRoute() {
-  return false;
 }
 
 function enforceProductMode(request: NextRequest) {
@@ -115,12 +108,6 @@ export function proxy(request: NextRequest) {
 
   const pathnameLocale = detectLocaleFromPathname(pathname);
   const cookieLocale = request.cookies.get(localeCookieName)?.value ?? null;
-  const useDefaultLocaleForRoute =
-    !pathnameLocale && shouldUseDefaultLocaleForUnprefixedRoute();
-  const resolvedLocale = resolveRequestLocaleFromSources({
-    pathname,
-    cookieLocale,
-  });
 
   if (pathnameLocale) {
     const rewriteUrl = request.nextUrl.clone();
@@ -137,43 +124,16 @@ export function proxy(request: NextRequest) {
     return response;
   }
 
-  if (
-    localePrefixingEnabled &&
-    !pathname.startsWith("/api") &&
-    !useDefaultLocaleForRoute &&
-    cookieLocale &&
-    isLocaleSelectable(resolvedLocale) &&
-    resolvedLocale !== defaultLocale
-  ) {
-    const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = getLocalizedPath(resolvedLocale, pathname, {
-      forcePrefix: true,
-    });
+  // A previously stored locale cookie used to redirect un-prefixed routes to
+  // /as or /hi, which silently put the whole app into a content locale: one
+  // visit to an Assamese article left every later visit on /as, with the drawer
+  // language selector showing AS. The interface is English-only, so a stored
+  // cookie must never move the reader off an un-prefixed URL. Assamese and
+  // Hindi are reached only by an explicit /as or /hi link.
 
-    const redirectResponse = NextResponse.redirect(redirectUrl);
-    persistLocaleCookie(redirectResponse, resolvedLocale);
-
-    return redirectResponse;
-  }
-
-  const headerLocale = request.headers.get(localeHeaderName);
-  // No Accept-Language fallback: a device configured in Assamese or Hindi must
-  // still get the English interface on a first, un-prefixed visit. Only an
-  // explicit signal (URL prefix, derived header, or the reader's own cookie)
-  // selects a non-default locale.
-  const candidateLocaleForRequest = useDefaultLocaleForRoute
-    ? defaultLocale
-    : (pathnameLocale ??
-      (headerLocale || cookieLocale
-        ? resolveRequestLocaleFromSources({ headerLocale, cookieLocale })
-        : defaultLocale));
-  const shouldUseCandidateLocale =
-    useDefaultLocaleForRoute ||
-    Boolean(pathnameLocale) ||
-    isLocaleSelectable(candidateLocaleForRequest);
-  const localeForRequest = shouldUseCandidateLocale
-    ? candidateLocaleForRequest
-    : defaultLocale;
+  // Neither the device language nor a stored cookie may pick the locale: an
+  // un-prefixed URL is always the English interface.
+  const localeForRequest = defaultLocale;
 
   const response = NextResponse.next({
     request: {
@@ -181,8 +141,10 @@ export function proxy(request: NextRequest) {
     },
   });
 
-  if (!useDefaultLocaleForRoute && cookieLocale !== localeForRequest) {
-    persistLocaleCookie(response, localeForRequest);
+  // Clear any locale cookie left by an earlier build so returning devices
+  // (which may still be pinned to /as) self-heal on their next request.
+  if (cookieLocale) {
+    response.cookies.delete(localeCookieName);
   }
 
   return response;
