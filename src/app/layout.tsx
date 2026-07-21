@@ -19,7 +19,7 @@ import {
   createOrganizationSchema,
   createWebsiteSchema,
 } from "@/lib/seo/schema";
-import { defaultLocale, getLocaleDirection } from "@/modules/localization/config";
+import { getLocaleDirection, systemUiLocale } from "@/modules/localization/config";
 import {
   getRequestLocale,
   hasExplicitLocalePrefixInRequest,
@@ -133,8 +133,12 @@ export default async function RootLayout({
 
   return (
     <html
-      lang={locale ?? defaultLocale}
-      dir={getLocaleDirection(locale ?? defaultLocale)}
+      // The DOCUMENT language is the interface language, which is English by
+      // product decision. Published article text keeps its own language and is
+      // marked up at the content level, so assistive tech still announces
+      // Assamese/Hindi passages correctly.
+      lang={systemUiLocale}
+      dir={getLocaleDirection(systemUiLocale)}
       className={[
         uiFont.variable,
         editorialFont.variable,

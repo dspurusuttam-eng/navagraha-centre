@@ -4,6 +4,7 @@ import {
   loadLocaleDictionary,
   type LocaleDictionary,
 } from "@/modules/localization/dictionary";
+import { systemUiLocale } from "@/modules/localization/config";
 
 type GlobalCopyBundle = {
   cta: typeof globalCtaCopy;
@@ -275,8 +276,19 @@ export const globalFooterCopy = defaultBundle.footer;
 export const globalLocaleCopy = defaultBundle.locale;
 export const globalMonetizationCopy = defaultBundle.monetization;
 
-export async function getGlobalCopyBundleForLocale(locale?: string | null): Promise<GlobalCopyBundle> {
-  const loaded = await loadLocaleDictionary(locale);
+/**
+ * System interface copy. LOCKED TO ENGLISH by product decision: the application
+ * chrome (header, drawer, dock, Search, Notifications, Consultation UI,
+ * policies, validation, errors, Admin) always renders in English, whatever the
+ * reader's device or content language is.
+ *
+ * Assamese and Hindi remain CONTENT languages: published articles keep their own
+ * language and their own `lang` metadata, and the `/as` and `/hi` routes are
+ * untouched. The parameter is kept so callers need no change (and so this can be
+ * reverted in one place if the product decision ever changes).
+ */
+export async function getGlobalCopyBundleForLocale(): Promise<GlobalCopyBundle> {
+  const loaded = await loadLocaleDictionary(systemUiLocale);
 
   return createGlobalCopyBundle(loaded.dictionary);
 }
