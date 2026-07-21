@@ -706,6 +706,29 @@ model NotificationSend {
   @@map("notification_send")
 }
 
+// Durable anonymous analytics event. Only the sanitised safe fields the client
+// pipeline already produces are stored (short strings; no identities, no form
+// contents). `cid` is the SHA-256 of the same opaque random browser token the
+// like system uses — it powers daily-active counts and nothing else. Rows are
+// pruned after 90 days.
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  name      String
+  route     String?
+  locale    String?
+  source    String?
+  section   String?
+  status    String?
+  cid       String?
+  day       String
+  createdAt DateTime @default(now())
+
+  @@index([day, name])
+  @@index([name, createdAt])
+  @@index([createdAt])
+  @@map("analytics_event")
+}
+
 model AiPromptTemplate {
   id              String            @id @default(cuid())
   key             String            @unique

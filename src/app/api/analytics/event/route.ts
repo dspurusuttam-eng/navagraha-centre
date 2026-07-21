@@ -14,6 +14,7 @@ import {
   isTrackedEventName,
   recordAnalyticsEventSafely,
 } from "@/lib/analytics/event-store";
+import { persistAnalyticsEvent } from "@/lib/analytics/persist-event";
 import type { AnalyticsEventPayload } from "@/lib/analytics/types";
 
 export const dynamic = "force-dynamic";
@@ -126,11 +127,15 @@ export async function POST(request: Request) {
 
     return null;
   });
+  const payload = toPayload(body?.payload);
   const record = recordAnalyticsEventSafely({
     event,
-    payload: toPayload(body?.payload),
+    payload,
     userId: toUserId(session?.user.id ?? null, body?.userId),
   });
+  // Durable write-through (Neon): the in-memory counters above are per-instance
+  // and evaporate; this row is what the Founder analytics reads. Best-effort.
+  await persistAnalyticsEvent(event, payload);
 
   if (!record) {
     return Response.json(
