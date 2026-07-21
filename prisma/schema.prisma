@@ -729,6 +729,18 @@ model AnalyticsEvent {
   @@map("analytics_event")
 }
 
+// Singleton state for the homepage YouTube rail (id is always "singleton"):
+// Founder show/hide toggle + last synchronisation outcome for the Admin app.
+model YoutubeRailState {
+  id         String    @id @default("singleton")
+  enabled    Boolean   @default(true)
+  lastSyncAt DateTime?
+  lastError  String?
+  updatedAt  DateTime  @updatedAt
+
+  @@map("youtube_rail_state")
+}
+
 model AiPromptTemplate {
   id              String            @id @default(cuid())
   key             String            @unique
