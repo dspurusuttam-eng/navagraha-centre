@@ -12,6 +12,7 @@ import { inspectDeskBody } from "@/modules/desk-sidecar/sidecar";
 import { SIDECAR_MALFORMED_MESSAGE } from "@/modules/admin/desk/sidecar-notice";
 import { hasAdminAccess } from "@/modules/admin/permissions";
 import { getPrisma } from "@/lib/prisma";
+import { NotifyReadersButton } from "@/modules/admin/notifications/notification-controls";
 
 export const metadata: Metadata = {
   title: "Edit Article — Admin Console",
@@ -55,11 +56,19 @@ export default async function DeskEditArticlePage({
 
   return (
     <>
-      {likeCount !== null ? (
-        <p className="mx-auto mb-3 max-w-3xl text-sm font-medium text-neutral-600">
-          Reader likes: <span className="font-semibold text-neutral-900">{likeCount}</span>
-        </p>
-      ) : null}
+      <div className="mx-auto mb-3 max-w-3xl space-y-3">
+        {likeCount !== null ? (
+          <p className="text-sm font-medium text-neutral-600">
+            Reader likes: <span className="font-semibold text-neutral-900">{likeCount}</span>
+          </p>
+        ) : null}
+        {result.data.status === "PUBLISHED" && canWrite ? (
+          // Publish-with-notification = publish first (normal lifecycle), then
+          // this explicit, confirmed, once-per-article announcement. Publishing
+          // WITHOUT notification is simply not tapping it.
+          <NotifyReadersButton articleId={id} />
+        ) : null}
+      </div>
       <ArticleForm
       mode="edit"
       action={updateArticleAction.bind(null, id)}

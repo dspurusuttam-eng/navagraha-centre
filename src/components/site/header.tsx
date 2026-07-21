@@ -1,5 +1,6 @@
 ﻿import Link from "next/link";
 import { NavigationLink } from "@/components/site/navigation-link";
+import { NotificationBell } from "@/components/site/notification-bell";
 import {
   SiteDrawer,
   type SiteDrawerGroup,
@@ -146,6 +147,7 @@ export async function Header() {
             </div>
 
             <div className="flex shrink-0 items-center gap-1">
+              <NotificationBell />
               <Link
                 href={searchHref}
                 aria-label="Search"
@@ -197,6 +199,7 @@ export async function Header() {
                   {item.label}
                 </NavigationLink>
               ))}
+              <NotificationBell />
               <Link
                 href={searchHref}
                 aria-label="Search"

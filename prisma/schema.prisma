@@ -672,6 +672,40 @@ model ArticleLike {
   @@map("article_like")
 }
 
+// Web-push subscription for article notifications. Stores only what the Push
+// API requires to deliver (endpoint + encryption keys) — no account linkage,
+// no identity. Dead endpoints (404/410 from the push service) are deleted on
+// send; persistent other failures accumulate failCount for cleanup.
+model PushSubscription {
+  id        String   @id @default(cuid())
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  locale    String   @default("en")
+  failCount Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@map("push_subscription")
+}
+
+// One broadcast record per article (unique articleId = duplicate-send guard).
+// articleId is intentionally NOT a foreign key so send history survives
+// article deletion.
+model NotificationSend {
+  id        String   @id @default(cuid())
+  articleId String   @unique
+  title     String
+  url       String
+  total     Int
+  succeeded Int
+  failed    Int
+  kind      String   @default("article")
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@map("notification_send")
+}
+
 model AiPromptTemplate {
   id              String            @id @default(cuid())
   key             String            @unique
