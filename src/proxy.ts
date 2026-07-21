@@ -20,7 +20,6 @@ import {
   localeCookieName,
   localeExplicitHeaderName,
   localeHeaderName,
-  readLocaleFromAcceptLanguage,
   resolveRequestLocaleFromSources,
 } from "@/modules/localization/runtime";
 
@@ -116,13 +115,11 @@ export function proxy(request: NextRequest) {
 
   const pathnameLocale = detectLocaleFromPathname(pathname);
   const cookieLocale = request.cookies.get(localeCookieName)?.value ?? null;
-  const acceptLanguage = request.headers.get("accept-language");
   const useDefaultLocaleForRoute =
     !pathnameLocale && shouldUseDefaultLocaleForUnprefixedRoute();
   const resolvedLocale = resolveRequestLocaleFromSources({
     pathname,
     cookieLocale,
-    acceptLanguage,
   });
 
   if (pathnameLocale) {
@@ -160,16 +157,16 @@ export function proxy(request: NextRequest) {
   }
 
   const headerLocale = request.headers.get(localeHeaderName);
+  // No Accept-Language fallback: a device configured in Assamese or Hindi must
+  // still get the English interface on a first, un-prefixed visit. Only an
+  // explicit signal (URL prefix, derived header, or the reader's own cookie)
+  // selects a non-default locale.
   const candidateLocaleForRequest = useDefaultLocaleForRoute
     ? defaultLocale
     : (pathnameLocale ??
       (headerLocale || cookieLocale
-        ? resolveRequestLocaleFromSources({
-            headerLocale,
-            cookieLocale,
-            acceptLanguage,
-          })
-        : (readLocaleFromAcceptLanguage(acceptLanguage) ?? defaultLocale)));
+        ? resolveRequestLocaleFromSources({ headerLocale, cookieLocale })
+        : defaultLocale));
   const shouldUseCandidateLocale =
     useDefaultLocaleForRoute ||
     Boolean(pathnameLocale) ||

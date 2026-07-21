@@ -72,7 +72,8 @@ function getDrawerItems(
 export async function Header() {
   const requestLocale = await getRequestLocale();
   const hasExplicitLocalePrefix = await hasExplicitLocalePrefixInRequest();
-  const copy = await getGlobalCopyBundleForLocale(requestLocale);
+  // System interface copy is English-only by product decision.
+  const copy = await getGlobalCopyBundleForLocale();
 
   const localizeHref = (href: string) =>
     getLocalizedRoutePath(requestLocale, href, {

@@ -87,15 +87,14 @@ export function resolveRequestLocaleFromSources(input: {
   const fromPath = input.pathname ? detectLocaleFromPathname(input.pathname) : null;
   const fromHeader = normalizeLocaleCode(input.headerLocale);
   const fromCookie = normalizeLocaleCode(input.cookieLocale);
-  const fromAcceptLanguage = readLocaleFromAcceptLanguage(input.acceptLanguage);
 
-  return (
-    fromPath ??
-    fromHeader ??
-    fromCookie ??
-    fromAcceptLanguage ??
-    defaultLocale
-  );
+  // Accept-Language is deliberately NOT consulted. The device/browser language
+  // must never decide the application locale: an Assamese- or Hindi-configured
+  // phone used to receive a non-English interface on its very first visit.
+  // Locale now comes only from an EXPLICIT signal — the URL the reader opened,
+  // the locale header the proxy derived from it, or the cookie written by their
+  // own language choice — and otherwise falls back to English.
+  return fromPath ?? fromHeader ?? fromCookie ?? defaultLocale;
 }
 
 export function isExplicitLocalePath(pathname: string) {

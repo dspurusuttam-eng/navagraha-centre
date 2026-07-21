@@ -408,6 +408,14 @@ export const localeDefinitions = [
 export type SupportedLocale = (typeof localeDefinitions)[number]["code"];
 
 export const defaultLocale: SupportedLocale = "en";
+
+/**
+ * The language of the APPLICATION INTERFACE — locked to English by product
+ * decision, and deliberately separate from the content locale. Content locales
+ * (`as`, `hi`) still drive published articles, routes and metadata; they never
+ * translate the system chrome.
+ */
+export const systemUiLocale: SupportedLocale = "en";
 export const fallbackLocale: SupportedLocale = "en";
 export const localePrefixStrategy = "prefix-and-default-root" as const;
 export const localePrefixingEnabled = true;
