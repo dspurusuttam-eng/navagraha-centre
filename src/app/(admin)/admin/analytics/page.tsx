@@ -67,7 +67,13 @@ function CountTable({
   title,
   rows,
   empty,
-}: Readonly<{ title: string; rows: readonly { label: string; count: number }[]; empty: string }>) {
+  footnote,
+}: Readonly<{
+  title: string;
+  rows: readonly { label: string; count: number }[];
+  empty: string;
+  footnote?: string;
+}>) {
   return (
     <div className="rounded-lg border border-neutral-200 bg-white p-4">
       <h2 className="mb-2 text-sm font-semibold">{title}</h2>
@@ -83,6 +89,9 @@ function CountTable({
           ))}
         </ul>
       )}
+      {footnote && rows.length > 0 ? (
+        <p className="mt-2 text-xs text-neutral-500">{footnote}</p>
+      ) : null}
     </div>
   );
 }
@@ -114,6 +123,9 @@ export default async function AdminAnalyticsPage() {
     sharesByChannel,
     localeRows,
     searchRows,
+    notifOpens7,
+    ctaClicks7,
+    events7Total,
     likesTotal,
     subscriberCount,
     sends,
@@ -164,6 +176,23 @@ export default async function AdminAnalyticsPage() {
       orderBy: { _count: { status: "desc" } },
       take: 10,
     }),
+    // These two headline numbers must be counted directly. They were previously
+    // read out of `events7`, which is a top-12 leaderboard: any event outside
+    // the twelve busiest names is simply absent from that list, so the cards
+    // reported a confident 0 for events that had genuinely occurred. Both
+    // `notification_open` and the consultation CTAs are low-volume by nature and
+    // therefore were never in the top twelve. `@@index([name, createdAt])`
+    // covers these counts, so exactness costs nothing.
+    prisma.analyticsEvent.count({
+      where: { name: "notification_open", createdAt: { gte: since7 } },
+    }),
+    prisma.analyticsEvent.count({
+      where: {
+        name: { in: ["consultation_cta_click", "consultation_book_click"] },
+        createdAt: { gte: since7 },
+      },
+    }),
+    prisma.analyticsEvent.count({ where: { createdAt: { gte: since7 } } }),
     prisma.articleLike.count(),
     prisma.pushSubscription.count(),
     prisma.notificationSend.aggregate({
@@ -177,11 +206,6 @@ export default async function AdminAnalyticsPage() {
     }),
     readBlobUsage(),
   ]);
-
-  const notifOpens7 = events7.find((row) => row.name === "notification_open")?._count._all ?? 0;
-  const ctaClicks7 = events7
-    .filter((row) => ["consultation_cta_click", "consultation_book_click"].includes(row.name))
-    .reduce((sum, row) => sum + row._count._all, 0);
 
   const freshnessDays = daysSince(latestArticle?.publishedAt);
 
@@ -221,9 +245,13 @@ export default async function AdminAnalyticsPage() {
 
       <div className="grid gap-3 sm:grid-cols-2">
         <CountTable
-          title="Events (7 days)"
+          // Explicitly a leaderboard, not the full ledger: the table is capped
+          // at twelve names, so it is labelled and footnoted as such rather
+          // than reading like a complete list of everything that happened.
+          title="Busiest events (7 days)"
           empty="No events recorded yet — data accumulates from now on."
           rows={events7.map((row) => ({ label: row.name, count: row._count._all }))}
+          footnote={`Top ${events7.length} of ${events7Total} event(s) recorded in the period.`}
         />
         <CountTable
           title="Top Desk reads (30 days)"
