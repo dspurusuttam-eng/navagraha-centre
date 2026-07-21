@@ -100,47 +100,16 @@ export async function generateMetadata({ params }: DeskArticleDetailPageProps) {
     locale
   );
 
+  // A slug with no published entry must 404 here, before anything is sent.
+  // This used to return a fabricated "published" article -- real-looking title,
+  // author and a publishedAt of `now` -- which made generateMetadata succeed, so
+  // Next committed the response head with status 200. The page body below then
+  // called notFound(), but the status was already on the wire: the not-found UI
+  // streamed inside a 200. Deleted and never-existent articles therefore kept
+  // answering 200 forever, which is precisely the stale-content condition the
+  // Founder's publish/delete certification has to be able to detect.
   if (!entry) {
-    return buildContentMetadata(
-      {
-        id: "desk-fallback",
-        slug,
-        path: `/from-the-desk/${slug}`,
-        category: "Vedic Astrology",
-        tags: [],
-        type: "BLOG_ARTICLE",
-        status: "published",
-        title: "From the Desk",
-        excerpt: "NAVAGRAHA CENTRE editorial content.",
-        content: "NAVAGRAHA CENTRE editorial content.",
-        description: "NAVAGRAHA CENTRE editorial content.",
-        seoTitle: "From the Desk of J P Sarmah",
-        seoDescription: "NAVAGRAHA CENTRE editorial content page.",
-        isFeatured: false,
-        keywords: [],
-        publishedAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        readingTime: "1 min read",
-        readingTimeMinutes: 1,
-        authorName: "J P Sarmah",
-        authorTitle: "Vedic Astrologer and Spiritual Guide",
-        heroEyebrow: "From the Desk",
-        heroHighlights: [],
-        heroNote: "",
-        author: {
-          name: "J P Sarmah",
-          title: "Vedic Astrologer and Spiritual Guide",
-          bio: "",
-        },
-        sections: [],
-        aiDraftReady: true,
-        autoPublish: false,
-      },
-      {
-        locale,
-        explicitLocalePrefix: hasExplicitLocalePrefix,
-      }
-    );
+    notFound();
   }
 
   const alternatesByLocale = await contentAdapter.listTranslationAlternates(
