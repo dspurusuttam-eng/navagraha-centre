@@ -1,5 +1,6 @@
 ﻿import Link from "next/link";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
+import { YoutubeRail } from "@/components/site/youtube-rail";
 import { buttonStyles } from "@/components/ui/button";
 import {
   PremiumArticleCard,
@@ -230,6 +231,7 @@ export default async function HomePage() {
             ))}
           </PremiumBentoGrid>
         </PremiumBentoSection>
+        <YoutubeRail />
       </PremiumPageShell>
     </>
   );

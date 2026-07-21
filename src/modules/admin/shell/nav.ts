@@ -8,6 +8,7 @@ export const ADMIN_NAV_ITEMS: readonly AdminNavItem[] = [
   { key: "media", label: "Media", href: "/admin/media" },
   { key: "notifications", label: "Notifications", href: "/admin/notifications" },
   { key: "analytics", label: "Analytics", href: "/admin/analytics" },
+  { key: "youtube", label: "YouTube", href: "/admin/youtube" },
   { key: "settings", label: "Settings", href: "/admin/settings" },
 ];
 
