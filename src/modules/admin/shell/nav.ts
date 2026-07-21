@@ -6,6 +6,7 @@ export const ADMIN_NAV_ITEMS: readonly AdminNavItem[] = [
   { key: "desk", label: "Desk", href: "/admin/desk" },
   { key: "consultation", label: "Consultation", href: "/admin/consultation" },
   { key: "media", label: "Media", href: "/admin/media" },
+  { key: "notifications", label: "Notifications", href: "/admin/notifications" },
   { key: "settings", label: "Settings", href: "/admin/settings" },
 ];
 

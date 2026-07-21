@@ -82,6 +82,8 @@ export const twoUtilityRequiredPublicContentApis = [
   "/api/consultation/whatsapp-handoff",
   "/api/observability/web-vitals",
   "/api/desk/likes",
+  "/api/desk/notifications",
+  "/api/push/subscribe",
 ] as const;
 
 export const twoUtilityReservedPrivatePrefixes = [] as const;
