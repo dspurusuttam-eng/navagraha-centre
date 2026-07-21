@@ -330,6 +330,9 @@ export default async function DeskArticleDetailPage({
                   <ArticleLikeButton slug={entry.slug} />
                 </div>
                 <ArticleShareBar
+                  // Curated published copy only (SEO description → summary →
+                  // excerpt), straight from the article DTO — never page text.
+                  excerpt={entry.seoDescription || entry.description || entry.excerpt}
                   locale={locale}
                   route={entry.path}
                   title={entry.title}
