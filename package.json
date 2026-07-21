@@ -130,7 +130,8 @@
     "launch:check": "npm run env:check && npm run check:images && npm run test:smoke && npm run test:smoke:critical && npm run test:smoke:launch",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "debug:media:upload:qa": "tsx scripts/debug-media-upload-qa.ts"
+    "debug:media:upload:qa": "tsx scripts/debug-media-upload-qa.ts",
+    "debug:admin:analytics:qa": "tsx scripts/debug-admin-analytics-qa.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.6.0",
