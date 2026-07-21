@@ -51,6 +51,12 @@ export type ConsultationDisplayTier = {
 type ConsultationCatalogueDisplayProps = {
   tiers: readonly ConsultationDisplayTier[];
   heading?: string;
+  // The catalogue is a whole page on /admin/consultation-preview, where its
+  // heading is the document title, but only a section of /consultation, which
+  // already has its own <h1>. Callers that embed it must demote the heading so
+  // the page keeps a single top-level heading; the styling is unchanged either
+  // way, so this only affects the document outline.
+  headingLevel?: "h1" | "h2";
   whatsappBaseUrl?: string | null;
   whatsappHandoffEndpoint?: string | null;
   audience?: "admin" | "public";
@@ -289,6 +295,7 @@ export function ConsultationCatalogueDisplay({
   audience = "admin",
   tiers,
   heading = "Consultation Preview",
+  headingLevel: Heading = "h1",
   whatsappBaseUrl = null,
   whatsappHandoffEndpoint = null,
 }: Readonly<ConsultationCatalogueDisplayProps>) {
@@ -306,9 +313,9 @@ export function ConsultationCatalogueDisplay({
         <p className="text-xs font-semibold uppercase tracking-[var(--tracking-label)] text-[color:var(--ui-color-accent-gold)]">
           {isPublic ? "Consultation" : "Private Admin"}
         </p>
-        <h1 className="font-[family-name:var(--font-family-editorial)] text-[length:var(--font-size-title-lg)] leading-[var(--line-height-heading)] text-[color:var(--ui-color-text-primary)]">
+        <Heading className="font-[family-name:var(--font-family-editorial)] text-[length:var(--font-size-title-lg)] leading-[var(--line-height-heading)] text-[color:var(--ui-color-text-primary)]">
           {heading}
-        </h1>
+        </Heading>
         <p className="max-w-2xl text-sm font-medium leading-6 text-[color:var(--ui-color-text-secondary)]">
           {isPublic
             ? "Select one consultation, review the scope and continue with the approved WhatsApp handoff."
