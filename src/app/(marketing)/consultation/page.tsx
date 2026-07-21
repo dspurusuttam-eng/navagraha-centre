@@ -211,6 +211,9 @@ export default async function ConsultationPage() {
             <ConsultationCatalogueDisplay
               audience="public"
               heading="Consultation Types"
+              // This page already has its own <h1>; the catalogue is a section
+              // of it, so its heading is demoted to keep one <h1> per page.
+              headingLevel="h2"
               tiers={toConsultationDisplayTiers(catalogue.tiers)}
               whatsappHandoffEndpoint="/api/consultation/whatsapp-handoff"
             />
