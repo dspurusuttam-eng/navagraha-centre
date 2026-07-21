@@ -17,6 +17,30 @@ type AnalyticsEventRequest = {
 };
 
 const analyticsEndpoint = "/api/analytics/event";
+const CID_STORAGE_KEY = "nvg-device-token";
+
+/**
+ * Same opaque random per-browser token the like system uses (shared key);
+ * generated on first use, never derived from any identity.
+ */
+function readClientCid(): string | null {
+  try {
+    if (typeof window === "undefined") return null;
+    const existing = window.localStorage.getItem(CID_STORAGE_KEY);
+    if (existing && /^[A-Za-z0-9_-]{16,64}$/.test(existing)) return existing;
+    const bytes = new Uint8Array(24);
+    window.crypto.getRandomValues(bytes);
+    const token = Array.from(
+      bytes,
+      (b) => "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_"[b % 64]
+    ).join("");
+    window.localStorage.setItem(CID_STORAGE_KEY, token);
+    return token;
+  } catch {
+    return null;
+  }
+}
+
 const idleDispatchTimeoutMs = 2000;
 const duplicateEventWindowMs = 5000;
 const maxRecentEventKeys = 80;
@@ -119,10 +143,12 @@ export function trackEvent(
     return;
   }
 
+  const cid = readClientCid();
   const requestPayload: AnalyticsEventRequest = {
     event: eventName,
     payload: {
       ...payload,
+      ...(cid ? { cid } : {}),
       timestamp: new Date().toISOString(),
     },
     userId: input.userId,
