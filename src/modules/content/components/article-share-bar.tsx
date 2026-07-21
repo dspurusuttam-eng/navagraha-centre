@@ -7,10 +7,32 @@ type ArticleShareBarProps = {
   /** Absolute, locale-correct canonical URL of the article. */
   url: string;
   title: string;
+  /**
+   * Clean excerpt from the PUBLISHED article DTO (SEO description → summary →
+   * excerpt). Never page text, never rendered DOM, never admin/draft content.
+   */
+  excerpt?: string | null;
   /** Route path recorded with the anonymous share event. */
   route: string;
   locale?: string;
 };
+
+/** Max excerpt length in a share payload — long enough to inform, short enough for a phone preview. */
+const EXCERPT_LIMIT = 200;
+
+/**
+ * Normalise a DTO excerpt for sharing: collapse whitespace and clamp at a word
+ * boundary. The input is already plain published text, so this only shapes it —
+ * it never parses or extracts anything from the page.
+ */
+function toShareExcerpt(value: string | null | undefined): string {
+  const text = (value ?? "").replace(/\s+/g, " ").trim();
+  if (!text) return "";
+  if (text.length <= EXCERPT_LIMIT) return text;
+  const clipped = text.slice(0, EXCERPT_LIMIT);
+  const lastSpace = clipped.lastIndexOf(" ");
+  return `${(lastSpace > 80 ? clipped.slice(0, lastSpace) : clipped).trimEnd()}…`;
+}
 
 const pillClass =
   "inline-flex min-h-11 items-center rounded-[var(--ui-radius-pill)] border border-[color:var(--ui-color-border-gold)] bg-white px-4 text-sm font-semibold text-[color:var(--ui-color-text-primary)] shadow-[var(--ui-shadow-sm)] transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ui-color-focus)] motion-reduce:hover:translate-y-0";
@@ -21,7 +43,8 @@ const pillClass =
  * web targets. Every action records an anonymous channel event — never the
  * recipient, never clipboard contents.
  */
-export function ArticleShareBar({ url, title, route, locale }: Readonly<ArticleShareBarProps>) {
+export function ArticleShareBar({ url, title, excerpt, route, locale }: Readonly<ArticleShareBarProps>) {
+  const shareText = toShareExcerpt(excerpt);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -41,7 +64,8 @@ export function ArticleShareBar({ url, title, route, locale }: Readonly<ArticleS
       return;
     }
     try {
-      await navigator.share({ title, url });
+      // Title + clean published excerpt + canonical URL. Nothing else.
+      await navigator.share(shareText ? { title, text: shareText, url } : { title, url });
       record("native");
     } catch {
       // Dismissed the sheet — not an error, not recorded.
@@ -61,7 +85,12 @@ export function ArticleShareBar({ url, title, route, locale }: Readonly<ArticleS
   }
 
   const encodedUrl = encodeURIComponent(url);
-  const encodedText = encodeURIComponent(`${title}\n${url}`);
+  // WhatsApp carries title + excerpt + canonical URL (a blank line before the
+  // link keeps the preview readable). X / Facebook / LinkedIn are deliberately
+  // unchanged — they build their own preview from Open Graph metadata.
+  const encodedText = encodeURIComponent(
+    shareText ? `${title}\n\n${shareText}\n\n${url}` : `${title}\n${url}`
+  );
   const external = [
     { label: "WhatsApp", channel: "whatsapp", href: `https://wa.me/?text=${encodedText}` },
     { label: "X", channel: "x", href: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodeURIComponent(title)}` },
