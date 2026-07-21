@@ -94,6 +94,13 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 60 * 60 * 24 * 7,
+    // 75 = the Next default, used for every card/thumbnail (light delivery).
+    // 90 = reserved for the ARTICLE HERO only. Measured on a real Desk cover
+    // (1672x941 master): the platform encoder at q=75 delivered 107 KB at
+    // 35.6 dB PSNR against the master — visibly softer than the source. Next 16
+    // rejects any quality not listed here (HTTP 400), so the hero value must be
+    // declared explicitly rather than passed ad hoc.
+    qualities: [75, 90],
     // Desk cover images live in Vercel Blob public storage; the optimizer needs the host
     // allow-listed. Scoped to blob storage only — not a wildcard over the whole internet.
     remotePatterns: [
