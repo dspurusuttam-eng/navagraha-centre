@@ -93,12 +93,18 @@ function matchesQuery(entry: ContentEntry, query: string) {
     return true;
   }
 
+  // Titles carry the date ("… 19 July 2026 (Sunday) …"), so numeric queries such
+  // as "19" match through the title. Summary/description are included so a
+  // reader can also find an article by its opening wording.
   const haystack = [
     entry.title,
     entry.category,
     entry.authorName,
+    entry.description,
+    entry.excerpt,
     ...entry.tags,
   ]
+    .filter(Boolean)
     .join(" ")
     .toLowerCase();
 
@@ -133,7 +139,13 @@ export default async function FromTheDeskPage({
     getLocalizedPath(locale, href, {
       forcePrefix: locale !== defaultLocale || hasExplicitLocalePrefix,
     });
-  const entries = await getDeskContentAdapter().listPublishedEntriesByLocale(locale);
+  // The Desk lists EVERY published article, exactly like the Home rail and the
+  // sitemap. Filtering by the request locale silently hid real content: the
+  // interface is English-only, so `locale` is now always "en", while the Desk is
+  // authored as single trilingual articles stored under one content language
+  // (currently "as"). That combination dropped the Assamese-stored articles from
+  // the listing and therefore from Search as well.
+  const entries = await getDeskContentAdapter().listPublishedEntries();
   const categories = [...new Set(entries.map((entry) => entry.category))].sort();
   const filteredEntries = entries.filter(
     (entry) =>
