@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { trackEvent } from "@/lib/analytics/track-event";
 import {
   defaultLocale,
@@ -52,6 +53,8 @@ export function NotificationBell() {
   const [pushBusy, setPushBusy] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const pushedHistoryRef = useRef(false);
+  const headingId = useId();
   const pathname = usePathname();
   const locale = detectLocaleFromPathname(pathname ?? "/") ?? defaultLocale;
 
@@ -101,30 +104,66 @@ export function NotificationBell() {
       .catch(() => setPushState("granted"));
   }, []);
 
-  const close = useCallback(() => setOpen(false), []);
+  /** Single dismissal path: unwinds our history entry when we pushed one. */
+  const close = useCallback(() => {
+    if (pushedHistoryRef.current) {
+      pushedHistoryRef.current = false;
+      window.history.back();
+      return;
+    }
+    setOpen(false);
+    window.requestAnimationFrame(() => buttonRef.current?.focus());
+  }, []);
 
-  // Outside tap + Escape close the panel.
+  // Escape (desktop) closes the sheet. Outside tap is handled by the scrim.
   useEffect(() => {
     if (!open) return;
-    function onPointerDown(event: PointerEvent) {
-      const target = event.target as Node;
-      if (
-        panelRef.current && !panelRef.current.contains(target) &&
-        buttonRef.current && !buttonRef.current.contains(target)
-      ) {
-        close();
-      }
-    }
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") close();
     }
-    window.addEventListener("pointerdown", onPointerDown);
     window.addEventListener("keydown", onKeyDown);
-    return () => {
-      window.removeEventListener("pointerdown", onPointerDown);
-      window.removeEventListener("keydown", onKeyDown);
-    };
+    return () => window.removeEventListener("keydown", onKeyDown);
   }, [open, close]);
+
+  // Android system Back (and browser Back) dismisses the sheet instead of
+  // leaving the page — same throwaway-history-entry pattern as the drawer.
+  useEffect(() => {
+    if (!open) return;
+    window.history.pushState({ navagrahaNotifications: true }, "");
+    pushedHistoryRef.current = true;
+    const handlePopState = () => {
+      pushedHistoryRef.current = false;
+      setOpen(false);
+      buttonRef.current?.focus();
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [open]);
+
+  // Lock background scrolling without shifting layout (scrollbar compensated).
+  useEffect(() => {
+    if (!open) return;
+    const { body, documentElement } = document;
+    const previousOverflow = body.style.overflow;
+    const previousPaddingRight = body.style.paddingRight;
+    const scrollbarWidth = window.innerWidth - documentElement.clientWidth;
+    body.style.overflow = "hidden";
+    if (scrollbarWidth > 0) {
+      const current = Number.parseFloat(window.getComputedStyle(body).paddingRight || "0");
+      body.style.paddingRight = `${current + scrollbarWidth}px`;
+    }
+    return () => {
+      body.style.overflow = previousOverflow;
+      body.style.paddingRight = previousPaddingRight;
+    };
+  }, [open]);
+
+  // Move focus into the sheet once it is on screen.
+  useEffect(() => {
+    if (!open) return;
+    const frame = window.requestAnimationFrame(() => panelRef.current?.focus());
+    return () => window.cancelAnimationFrame(frame);
+  }, [open]);
 
   function toggleOpen() {
     const next = !open;
@@ -218,88 +257,137 @@ export function NotificationBell() {
         ) : null}
       </button>
 
-      {open ? (
-        <div
-          ref={panelRef}
-          aria-label="Notifications"
-          className="absolute right-0 top-[calc(100%+0.5rem)] z-[70] w-[min(92vw,22rem)] rounded-[var(--radius-xl)] border border-[rgba(185,139,70,0.24)] bg-white p-3 shadow-[0_18px_40px_rgba(5,5,5,0.14)]"
-          role="dialog"
-        >
-          <p className="px-1 pb-2 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-[var(--color-antique-gold-dark)]">
-            Latest from the Desk
-          </p>
-          <div className="grid max-h-[50vh] gap-1 overflow-y-auto overscroll-contain">
-            {items === null ? (
-              <p className="px-2 py-3 text-sm text-[color:var(--ui-color-text-muted)]">Loading…</p>
-            ) : items.length === 0 ? (
-              <p className="px-2 py-3 text-sm text-[color:var(--ui-color-text-muted)]">
-                No articles yet.
-              </p>
-            ) : (
-              items.map((item) => (
-                <Link
-                  key={item.slug}
-                  className="rounded-[var(--radius-lg)] px-2 py-2.5 text-sm font-semibold leading-5 text-[#111111] transition hover:bg-[rgba(185,139,70,0.07)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
-                  href={localize(item.path)}
-                  onClick={() => {
-                    trackEvent("notification_open", { route: item.path, source: "bell" }, { dispatch: "idle" });
-                    close();
-                  }}
-                >
-                  {item.title}
-                  {item.publishedAt ? (
-                    <span className="mt-0.5 block text-[0.7rem] font-medium text-[color:var(--ui-color-text-muted)]">
-                      {item.publishedAt.slice(0, 10)}
-                    </span>
-                  ) : null}
-                </Link>
-              ))
-            )}
-          </div>
+      {open
+        ? createPortal(
+            <>
+              {/* Scrim: outside-tap dismissal + focus containment. Mobile only —
+                  the desktop popover is anchored and closes on Escape/blur. */}
+              <button
+                aria-label="Close notifications"
+                className="fixed inset-0 z-[78] bg-[rgba(5,5,5,0.28)] xl:hidden"
+                type="button"
+                onClick={close}
+              />
 
-          <div className="mt-2 border-t border-[rgba(185,139,70,0.18)] pt-2">
-            {pushState === "unsupported" ? (
-              <p className="px-1 text-[0.72rem] leading-5 text-[color:var(--ui-color-text-muted)]">
-                New-article alerts appear here whenever you open the app.
-              </p>
-            ) : pushState === "denied" ? (
-              <p className="px-1 text-[0.72rem] leading-5 text-[color:var(--ui-color-text-muted)]">
-                Notifications are blocked in your device settings. The bell still
-                shows every new article here.
-              </p>
-            ) : pushState === "subscribed" ? (
-              <div className="grid gap-1.5">
-                <p className="px-1 text-[0.72rem] leading-5 text-[color:var(--ui-color-text-muted)]">
-                  You will be notified when a new article is published.
-                </p>
-                <button
-                  className="min-h-11 rounded-[var(--radius-lg)] border border-[rgba(185,139,70,0.24)] bg-white px-3 text-sm font-semibold text-[#111111] transition hover:bg-[rgba(185,139,70,0.06)] disabled:opacity-60"
-                  disabled={pushBusy}
-                  type="button"
-                  onClick={disablePush}
-                >
-                  Disable Notifications
-                </button>
+              {/* Mobile: a viewport-anchored sheet with 16px side margins that
+                  sits ABOVE the fixed bottom dock. The previous panel mixed a
+                  viewport-relative width (92vw) with bell-anchored positioning
+                  (absolute right-0), so on every phone width its left edge fell
+                  outside the viewport and the content was clipped.
+                  Desktop (xl): the anchored popover, which fits comfortably. */}
+              <div
+                ref={panelRef}
+                aria-labelledby={headingId}
+                aria-modal="true"
+                className="fixed inset-x-4 bottom-[calc(5.75rem+env(safe-area-inset-bottom))] top-auto z-[80] flex max-h-[min(68vh,30rem)] flex-col overflow-hidden rounded-[var(--radius-xl)] border border-[rgba(185,139,70,0.24)] bg-white shadow-[0_18px_40px_rgba(5,5,5,0.18)] outline-none xl:absolute xl:inset-x-auto xl:bottom-auto xl:right-4 xl:top-[4.25rem] xl:max-h-[32rem] xl:w-[22rem]"
+                role="dialog"
+                tabIndex={-1}
+              >
+                <div className="flex items-center justify-between gap-3 border-b border-[rgba(185,139,70,0.18)] px-4 py-3">
+                  <h2
+                    className="text-[0.72rem] font-bold uppercase tracking-[0.12em] text-[var(--color-antique-gold-dark)]"
+                    id={headingId}
+                  >
+                    Notifications
+                  </h2>
+                  <button
+                    aria-label="Close notifications"
+                    className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[rgba(185,139,70,0.22)] bg-white text-[#111111] transition hover:bg-[rgba(185,139,70,0.06)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
+                    type="button"
+                    onClick={close}
+                  >
+                    <span aria-hidden="true" className="text-base leading-none">
+                      ✕
+                    </span>
+                  </button>
+                </div>
+
+                <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-2 py-2">
+                  {items === null ? (
+                    <p className="px-2 py-4 text-sm text-[color:var(--ui-color-text-muted)]">
+                      Loading…
+                    </p>
+                  ) : items.length === 0 ? (
+                    <p className="px-2 py-4 text-sm text-[color:var(--ui-color-text-muted)]">
+                      No articles yet. New Desk articles will appear here.
+                    </p>
+                  ) : (
+                    <ul className="grid gap-0.5">
+                      {items.map((item) => (
+                        <li key={item.slug}>
+                          <Link
+                            className="flex min-h-11 flex-col justify-center gap-0.5 rounded-[var(--radius-lg)] px-2.5 py-2.5 transition hover:bg-[rgba(185,139,70,0.07)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent-ring)]"
+                            href={localize(item.path)}
+                            onClick={() => {
+                              trackEvent(
+                                "notification_open",
+                                { route: item.path, source: "bell" },
+                                { dispatch: "idle" }
+                              );
+                              close();
+                            }}
+                          >
+                            <span className="text-[0.82rem] font-semibold leading-5 text-[#111111] [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] overflow-hidden">
+                              {item.title}
+                            </span>
+                            {item.publishedAt ? (
+                              <span className="text-[0.7rem] font-medium text-[color:var(--ui-color-text-muted)]">
+                                {item.publishedAt.slice(0, 10)}
+                              </span>
+                            ) : null}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+
+                <div className="shrink-0 border-t border-[rgba(185,139,70,0.18)] px-4 py-3">
+                  {pushState === "unsupported" ? (
+                    <p className="text-[0.72rem] leading-5 text-[color:var(--ui-color-text-muted)]">
+                      New-article alerts appear here whenever you open the app.
+                    </p>
+                  ) : pushState === "denied" ? (
+                    <p className="text-[0.72rem] leading-5 text-[color:var(--ui-color-text-muted)]">
+                      Notifications are blocked in your device settings. The bell
+                      still shows every new article here.
+                    </p>
+                  ) : pushState === "subscribed" ? (
+                    <div className="grid gap-2">
+                      <p className="text-[0.72rem] leading-5 text-[color:var(--ui-color-text-muted)]">
+                        You will be notified when a new article is published.
+                      </p>
+                      <button
+                        className="min-h-11 rounded-[var(--radius-lg)] border border-[rgba(185,139,70,0.24)] bg-white px-3 text-sm font-semibold text-[#111111] transition hover:bg-[rgba(185,139,70,0.06)] disabled:opacity-60"
+                        disabled={pushBusy}
+                        type="button"
+                        onClick={disablePush}
+                      >
+                        Disable Notifications
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="grid gap-2">
+                      <p className="text-[0.72rem] leading-5 text-[color:var(--ui-color-text-muted)]">
+                        Get an alert when a new Desk article is published. Your
+                        device will ask for permission — nothing else is collected.
+                      </p>
+                      <button
+                        className="min-h-11 rounded-[var(--radius-lg)] border border-[rgba(185,139,70,0.34)] bg-[rgba(185,139,70,0.08)] px-3 text-sm font-semibold text-[#111111] transition hover:bg-[rgba(185,139,70,0.14)] disabled:opacity-60"
+                        disabled={pushBusy}
+                        type="button"
+                        onClick={enablePush}
+                      >
+                        Enable Notifications
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
-            ) : (
-              <div className="grid gap-1.5">
-                <p className="px-1 text-[0.72rem] leading-5 text-[color:var(--ui-color-text-muted)]">
-                  Get an alert when a new Desk article is published. Your device
-                  will ask for permission — nothing else is collected.
-                </p>
-                <button
-                  className="min-h-11 rounded-[var(--radius-lg)] border border-[rgba(185,139,70,0.34)] bg-[rgba(185,139,70,0.08)] px-3 text-sm font-semibold text-[#111111] transition hover:bg-[rgba(185,139,70,0.14)] disabled:opacity-60"
-                  disabled={pushBusy}
-                  type="button"
-                  onClick={enablePush}
-                >
-                  Enable Notifications
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      ) : null}
+            </>,
+            document.body
+          )
+        : null}
     </div>
   );
 }
