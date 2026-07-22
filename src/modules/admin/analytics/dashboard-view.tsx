@@ -419,7 +419,7 @@ export function AnalyticsDashboard({
             value={view.ingestionOk ? "Receiving" : "No events yet"}
           />
           <Stat label="Newest event" value={formatWhen(view.lastEventAt)} />
-          <Stat label="Events stored" value={String(health.eventsStored)} />
+          <Stat label="Events this period" value={String(health.eventsInPeriod)} />
           <Stat label="Database" value={health.databaseOk ? "Reachable" : "Unreachable"} />
           <Stat label="Latest publication" value={formatWhen(health.latestPublicationAt)} />
           <Stat label="YouTube last sync" value={formatWhen(health.youtubeLastSyncAt)} />
