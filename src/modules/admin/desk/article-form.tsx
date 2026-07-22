@@ -232,7 +232,14 @@ export function ArticleForm({
 
       <div className="flex flex-wrap items-center gap-3 pt-2">
         <button type="submit" disabled={pending || Boolean(sidecarWarning)} className="flex min-h-11 items-center rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60">
-          {pending ? "Saving…" : "Save Draft"}
+          {/* On a live article this button saves the edit and leaves it
+              published (verified on device); calling it "Save Draft" made it
+              read as though it would pull the article down. */}
+          {pending
+            ? "Saving…"
+            : lifecycle?.status?.toUpperCase() === "PUBLISHED"
+              ? "Save changes"
+              : "Save Draft"}
         </button>
         {previewHref ? (
           <Link href={previewHref} className="flex min-h-11 items-center rounded-md border px-4 py-2 text-sm" target="_blank" rel="noopener noreferrer">

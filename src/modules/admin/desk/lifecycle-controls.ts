@@ -23,8 +23,31 @@ export type LifecycleActionSpec = {
 };
 
 export const LIFECYCLE_ACTIONS: readonly LifecycleActionSpec[] = [
-  { key: "PUBLISH", label: "Publish", kind: "transition", intent: "primary", requiresConfirm: false },
-  { key: "REPUBLISH", label: "Republish", kind: "transition", intent: "primary", requiresConfirm: false },
+  // Publishing is the one action here that makes something visible to the
+  // public, and on a phone it sat one stray tap away from doing so: the Founder
+  // certification found Publish firing immediately while Delete -- which only
+  // affects private state -- correctly asked first. Going public deserves at
+  // least the same deliberation as taking something down.
+  {
+    key: "PUBLISH",
+    label: "Publish",
+    kind: "transition",
+    intent: "primary",
+    requiresConfirm: true,
+    confirmLabel: "Publish now",
+    confirmMessage:
+      "This makes the article public immediately — on the Desk, the home rail, Search and the sitemap.",
+  },
+  {
+    key: "REPUBLISH",
+    label: "Republish",
+    kind: "transition",
+    intent: "primary",
+    requiresConfirm: true,
+    confirmLabel: "Republish now",
+    confirmMessage:
+      "This makes the article public again immediately — on the Desk, the home rail, Search and the sitemap.",
+  },
   { key: "UNPUBLISH", label: "Unpublish", kind: "transition", intent: "neutral", requiresConfirm: false },
   {
     key: "ARCHIVE",
