@@ -38,6 +38,12 @@ const approvedKeys = [
   "OPS_HEALTHCHECK_URL",
   "OPS_HEALTHCHECK_TIMEOUT_MS",
   "SMOKE_BASE_URL",
+  // Web Push (VAPID). The private key signs pushes and must stay server-side;
+  // the public key is exposed to browsers by design -- that is what a VAPID
+  // public key is for -- and NEXT_PUBLIC_ is the correct home for it.
+  "WEB_PUSH_VAPID_PUBLIC_KEY",
+  "WEB_PUSH_VAPID_PRIVATE_KEY",
+  "NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY",
 ] as const;
 
 const requiredKeys = [

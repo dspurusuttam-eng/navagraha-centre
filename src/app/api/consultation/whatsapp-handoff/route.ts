@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { persistAnalyticsEvent } from "@/lib/analytics/persist-event";
 import { getPrisma } from "@/lib/prisma";
 import { consultationConfigSchema } from "@/modules/admin/domain";
 import { buildWhatsappUrl } from "@/modules/site-settings/public-settings-core";
@@ -49,6 +50,16 @@ export async function POST(request: NextRequest) {
   if (!url) {
     return jsonError(503, "HANDOFF_UNAVAILABLE", "Consultation handoff is unavailable.");
   }
+
+  // The handoff is the last measurable step of the consultation funnel and was
+  // entirely uninstrumented, so the Admin console could show CTA clicks with no
+  // way to tell how many became real enquiries. Only the fact of a successful
+  // handoff is recorded. The message is the reader's private consultation
+  // question and the WhatsApp number is a business secret; neither is passed to
+  // the analytics writer, which persists nothing but the event name here.
+  await persistAnalyticsEvent("consultation_whatsapp_handoff", {
+    source: "consultation",
+  });
 
   return NextResponse.json(
     { ok: true, url },

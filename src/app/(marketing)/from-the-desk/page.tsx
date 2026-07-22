@@ -88,6 +88,22 @@ function normalizeQuery(value?: string) {
   return (value ?? "").trim();
 }
 
+/**
+ * Reduce a search box entry to a coarse, non-identifying token before it is
+ * recorded: lowercase, letters/digits/spaces only, collapsed whitespace and
+ * clamped to 40 characters. Anything a reader pastes in — an email, a phone
+ * number, a birth date — loses its structure here, and the Admin console
+ * additionally refuses to display any term below a minimum occurrence count.
+ */
+function normalizeSearchTermForAnalytics(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9ऀ-ॿঀ-৿ ]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 40);
+}
+
 function matchesQuery(entry: ContentEntry, query: string) {
   if (!query) {
     return true;
@@ -178,6 +194,22 @@ export default async function FromTheDeskPage({
         event="from_the_desk_read"
         payload={{ page: "/from-the-desk", feature: "from-the-desk-page" }}
       />
+      {query ? (
+        // Desk search was entirely uninstrumented, so the Admin console could
+        // not tell the Founder what readers look for or which searches come
+        // back empty. Tracked from the client so it reflects real readers with
+        // a device token, not crawlers hitting ?q=. Only the normalised term
+        // and whether it matched are recorded — never a raw personal query —
+        // and the console suppresses terms below a minimum count so a single
+        // unusual search can never be singled out.
+        <AnalyticsEventTracker
+          event="desk_search"
+          payload={{
+            status: filteredEntries.length > 0 ? "results" : "empty",
+            section: normalizeSearchTermForAnalytics(query),
+          }}
+        />
+      ) : null}
       <JsonLd id="from-the-desk-schema" data={deskSchemas} />
 
       <PremiumPageShell
