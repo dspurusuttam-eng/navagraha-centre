@@ -91,6 +91,26 @@ const staticRoutes: readonly StaticRouteDefinition[] = [
   { path: "/terms", changeFrequency: "yearly", priority: 0.4 },
 ];
 
+// The sitemap MUST be rendered per request, not prerendered at build time.
+//
+// Measured on Production: publishing an article never changed /sitemap.xml. Every
+// response came back `X-Vercel-Cache: HIT` with the article set frozen as of the
+// last deployment — even with a unique cache-busting query string, and even long
+// past the revalidate window, with `Age` climbing monotonically and never
+// resetting. A newly published article therefore never entered the sitemap, and a
+// deleted one never left it, until the next deploy happened to rebuild it.
+//
+// The publish path does call `revalidateTag(PUBLIC_CONTENT_TAGS.deskContent)`,
+// which is why the Desk listing and the home rail update immediately — those are
+// dynamic routes. That tag expires the *data* cache; it does not regenerate a
+// route Next has already prerendered to a static asset.
+//
+// Rendering on demand is the correct trade here: sitemaps are fetched rarely (by
+// crawlers), and `listPublishedEntries()` underneath is still served from
+// `unstable_cache` with the same tag plus a 300 s backstop, so this costs a cache
+// read rather than a database round trip on the typical request.
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const entries: SitemapEntry[] = [
