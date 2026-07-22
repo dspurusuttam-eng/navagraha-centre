@@ -160,6 +160,13 @@ export default async function DeskArticleDetailPage({
       <AnalyticsEventTracker
         event="from_the_desk_read"
         payload={{
+          // `route` is the only one of these the analytics writer actually
+          // stores; `page` and `feature` are dropped on the floor. Without it
+          // every article read was recorded with a NULL route, so the Admin
+          // console could show a healthy total for article views while
+          // "Most viewed" sat empty — the share event carried `route` and
+          // ranked correctly, which is what exposed the difference.
+          route: `/from-the-desk/${entry.slug}`,
           page: `/from-the-desk/${entry.slug}`,
           feature: `from-the-desk-detail-${entry.slug}`,
         }}

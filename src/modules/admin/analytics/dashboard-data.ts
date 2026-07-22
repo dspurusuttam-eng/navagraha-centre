@@ -109,7 +109,9 @@ export type AnalyticsDashboardView = {
     youtubeLastError: string | null;
     youtubeEnabled: boolean;
     blob: { count: number; bytes: number } | null;
-    eventsStored: number;
+    /** Events recorded in the SELECTED window. A full-table count was a
+     * sequential scan on every page view, for one status line. */
+    eventsInPeriod: number;
     databaseOk: boolean;
   };
 };
@@ -202,7 +204,6 @@ export async function loadAnalyticsDashboard(
     recentSends,
     publishedArticles,
     youtubeState,
-    eventsStored,
     lastEvent,
     blob,
   ] = await Promise.all([
@@ -286,7 +287,6 @@ export async function loadAnalyticsDashboard(
       take: 200,
     }),
     prisma.youtubeRailState.findUnique({ where: { id: "singleton" } }).catch(() => null),
-    prisma.analyticsEvent.count(),
     prisma.analyticsEvent.findFirst({
       orderBy: { createdAt: "desc" },
       select: { createdAt: true },
@@ -295,6 +295,7 @@ export async function loadAnalyticsDashboard(
   ]);
 
   const hasCurrentEvents = current.length > 0;
+  const eventsInPeriod = current.reduce((total, row) => total + row.count, 0);
 
   // ---- content performance -------------------------------------------------
   const articleBySlug = new Map(publishedArticles.map((a) => [a.slug, a]));
@@ -462,7 +463,7 @@ export async function loadAnalyticsDashboard(
       youtubeLastError: youtubeState?.lastError ?? null,
       youtubeEnabled: youtubeState?.enabled ?? true,
       blob,
-      eventsStored,
+      eventsInPeriod,
       databaseOk: true,
     },
   };
