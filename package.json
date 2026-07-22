@@ -132,7 +132,8 @@
     "format:check": "prettier --check .",
     "debug:media:upload:qa": "tsx scripts/debug-media-upload-qa.ts",
     "debug:admin:analytics:qa": "tsx scripts/debug-admin-analytics-qa.ts",
-    "debug:phase6a:residuals:qa": "tsx scripts/debug-phase6a-residuals-qa.ts"
+    "debug:phase6a:residuals:qa": "tsx scripts/debug-phase6a-residuals-qa.ts",
+    "debug:admin:analytics:6b:qa": "tsx scripts/debug-admin-analytics-6b-qa.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.6.0",

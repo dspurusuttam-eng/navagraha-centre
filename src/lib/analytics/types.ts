@@ -59,6 +59,13 @@ export const trackedEventNames = [
   "muhurta_tool_click",
   "premium_utility_cta_click",
   "assistant_query",
+  // Desk search: records only whether the query matched, plus a normalised
+  // term. Rare terms are suppressed at display time by a minimum-count
+  // threshold so a single unusual search can never identify anyone.
+  "desk_search",
+  // Consultation handoff to WhatsApp. Records that a handoff happened -- never
+  // the message, which is the reader's private consultation question.
+  "consultation_whatsapp_handoff",
   "premium_click",
   "consultation_cta_click",
   "report_cta_click",
