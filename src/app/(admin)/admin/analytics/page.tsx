@@ -18,8 +18,47 @@ export const dynamic = "force-dynamic";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
+/** NAVAGRAHA CENTRE operates from Assam; every reported day boundary is IST. */
+const CENTRE_TIME_ZONE = "Asia/Kolkata";
+
 function daysAgoIso(days: number) {
   return new Date(Date.now() - days * DAY_MS);
+}
+
+/**
+ * Start of "today" in the Centre's own timezone.
+ *
+ * "Active today" used to match on the stored `day` string, which is written in
+ * UTC. India is UTC+5:30, so every reader between midnight and 05:30 IST was
+ * counted against the *previous* day and the card read 0 through the entire
+ * Indian early morning -- observed live at 06:24 IST: "Active today 0" beside
+ * "Active 7 days 33". The audience and the Founder both live in IST, so the day
+ * boundary has to be IST.
+ *
+ * Deriving the offset from the zone (rather than hard-coding +5:30) keeps this
+ * correct if the zone is ever changed, and needs no migration: existing rows are
+ * matched on `createdAt`, which is absolute, instead of on the UTC `day` string.
+ */
+function zoneOffsetMs(instant: Date, timeZone: string): number {
+  const asUtc = new Date(instant.toLocaleString("en-US", { timeZone: "UTC" }));
+  const asZone = new Date(instant.toLocaleString("en-US", { timeZone }));
+  return asZone.getTime() - asUtc.getTime();
+}
+
+function startOfTodayInCentreTimezone(): Date {
+  const now = new Date();
+  const offsetMs = zoneOffsetMs(now, CENTRE_TIME_ZONE);
+  // Shift into the zone, then read the calendar date with getUTC* accessors so
+  // the result never depends on the timezone of the machine running the server
+  // (Vercel runs UTC; a developer laptop may not).
+  const zoneNow = new Date(now.getTime() + offsetMs);
+  const zoneMidnight = Date.UTC(
+    zoneNow.getUTCFullYear(),
+    zoneNow.getUTCMonth(),
+    zoneNow.getUTCDate()
+  );
+
+  return new Date(zoneMidnight - offsetMs);
 }
 
 async function readBlobUsage(): Promise<{ count: number; bytes: number } | null> {
@@ -113,7 +152,7 @@ export default async function AdminAnalyticsPage() {
 
   const since7 = daysAgoIso(7);
   const since30 = daysAgoIso(30);
-  const today = new Date().toISOString().slice(0, 10);
+  const startOfToday = startOfTodayInCentreTimezone();
 
   const [
     dauRows,
@@ -133,7 +172,7 @@ export default async function AdminAnalyticsPage() {
     blobUsage,
   ] = await Promise.all([
     prisma.analyticsEvent.findMany({
-      where: { day: today, cid: { not: null } },
+      where: { createdAt: { gte: startOfToday }, cid: { not: null } },
       distinct: ["cid"],
       select: { cid: true },
     }),
@@ -222,7 +261,11 @@ export default async function AdminAnalyticsPage() {
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Stat label="Active today" value={String(dauRows.length)} hint="distinct anonymous devices" />
+        <Stat
+          label="Active today"
+          value={String(dauRows.length)}
+          hint="distinct anonymous devices · since midnight IST"
+        />
         <Stat label="Active 7 days" value={String(wauRows.length)} hint="distinct anonymous devices" />
         <Stat label="Total likes" value={String(likesTotal)} />
         <Stat label="Push subscribers" value={String(subscriberCount)} />
